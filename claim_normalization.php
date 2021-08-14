@@ -8,6 +8,7 @@
 
 <html>
 <head>
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/style_claim_normalization.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
@@ -21,7 +22,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 
-    <script src="js/claim_normalization.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
 
     <meta name="viewport" content="width=device-width"/>
 </head>
@@ -31,7 +32,7 @@
 <div class="topnav" id="myTopnav">
 <!--    <a href="user-details.php" id="user-details" class="fa fa-user-circle-o">User Details</a>-->
     <a href="annotation_guidelines/guideline.pdf" target="_blank" class="guidelines fa fa-file-pdf-o">Annotation Guidelines</a>
-    <a href="" class="logout fa fa-sign-out" style="text-align:right">Logout</a>
+    <a href="" class="logout fa fa-sign-out" style="text-align:right">Logout</a>    
 </div>
 
 <div class="menu-frame" id="my-menu-frame">
@@ -39,6 +40,8 @@
         <button id= 'go-back' class="btn btn-primary fa fa-arrow-circle-left fa-lg pull-left button-responsive-info"></button>
         <button id= 'go-forward' class=" btn btn-primary fa fa-lg fa-arrow-circle-right pull-left button-responsive-info" disabled></button>
     </div>
+
+    <div id="claim_entry_container"></div>
 
 
     <script type="text/javascript">
@@ -147,6 +150,11 @@
 </div>
 
 
+
+    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+
+    <script type="module" src="client/claim_normalization/metadata_entry_bar.js"></script>
 
 </body>
 </html>

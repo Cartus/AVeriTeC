@@ -1,5 +1,6 @@
 import './App.css';
 import ClaimNormalization from './claim_normalization/ClaimNormalization';
+import QuestionGeneration from './question_generation/QuestionGeneration';
 
 function App() {
   
@@ -10,7 +11,7 @@ function App() {
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
       </header>
       <body>
-        <ClaimNormalization/>
+        <QuestionGeneration/>
       </body>
     </div>
   );

@@ -6,12 +6,8 @@ import TextFieldWithTooltip from '../components/TextFieldWithTooltip';
 import styled from 'styled-components';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
-import Card from '@material-ui/core/Card';
 import IconButton from '@material-ui/core/IconButton';
-import ClearIcon from '@material-ui/icons/Clear';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import Tooltip from '@material-ui/core/Tooltip';
-import Button from '@material-ui/core/Button';
+import EntryCardContainer from '../components/EntryCardContainer';
 
 const ColumnDiv = styled.div`
     width:100%;
@@ -27,27 +23,6 @@ const ClaimGrid = styled(Grid)`
 
 const ClaimGridElement = styled(Grid)`
     width: 32%;
-`
-
-const DeleteButton = styled(IconButton)`
-  float: right;
-  width:40px;
-`
-
-const ClaimCard = styled(Card)`
-  margin:10px;
-`
-
-const AddClaimCard = styled(ClaimCard)`
-  text-align: center;
-  cursor: pointer;
-  padding-top: 5px;
-`
-
-const SubmitButton = styled(Button)`
-  float:right;
-  width:120px;
-  margin:10px !important;
 `
 
 class ClaimEntryField extends React.Component {
@@ -68,15 +43,8 @@ class ClaimEntryField extends React.Component {
     }
 
     render() {
-      var deleteButton = <DeleteButton onClick={this.handleDelete}><ClearIcon /></DeleteButton>
-
-      if (this.props.removeDelete) {
-        deleteButton = ""
-      }
-
         return (
             <div>
-              <ClaimCard variant="outlined">
               <ClaimGrid container direction="row" justifyContent="space-evenly" alignItems="center" spacing={3}>
                 <ClaimGridElement item xs>
                 <ColumnDiv>
@@ -134,90 +102,6 @@ class ClaimEntryField extends React.Component {
               </ColumnDiv>
               </ClaimGridElement>
             </ClaimGrid>
-
-            {deleteButton}
-            </ClaimCard>
-              
-            </div>        
-        );
-      }
-}
-
-class ClaimEntryContainer extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            claimEntries: {
-                "claim_entry_field_0": this.new_claim_dict()
-            },
-            added_claims: 1
-        };
-        this.handleFieldChange = this.handleFieldChange.bind(this);
-        this.deleteClaim = this.deleteClaim.bind(this);
-      }
-
-    new_claim_dict = () => {
-        return {};
-    }
-    
-    deleteClaim = (claimId) => {
-      let claimEntries = this.state.claimEntries
-      delete claimEntries[claimId]
-      
-      this.setState({
-        claimEntries: claimEntries
-    });
-    }
-
-    addClaim = () => {
-        const field_id = "claim_entry_field_" + this.state.added_claims
-        
-        this.setState({
-            claimEntries: {
-                ...this.state.claimEntries, 
-                [field_id]:this.new_claim_dict()
-            },
-            added_claims: this.state.added_claims + 1
-        });
-    }
-
-    handleFieldChange(fieldId, element, value) {
-        this.setState(prevState => ({
-            claimEntries: {
-                ...prevState.claimEntries,
-                [fieldId]: {
-                    ...prevState.claimEntries[fieldId],
-                    [element]: value
-                }
-            }
-        }))
-      }
-
-    render() {
-        const claimEntryFields = Object.keys(this.state.claimEntries).map(field_id => (
-            <ClaimEntryField
-              key={field_id}
-              id={field_id}
-              onChange={this.handleFieldChange}
-              onDelete={this.deleteClaim}
-              removeDelete={field_id === "claim_entry_field_0"}
-            />
-          ));
-
-        
-        return (
-            <div>
-                {claimEntryFields}
-                <Tooltip title="Add another claim. Only do so if the article fact checks more than one claim, or a claim consisting of parts that are checked independently.">
-                <AddClaimCard onClick={this.addClaim} variant="outlined">
-                  <AddCircleIcon/>
-                </AddClaimCard>
-                </Tooltip>
-
-                <SubmitButton variant="contained" color="primary" onClick={this.doSubmit}>
-                  Submit
-                </SubmitButton>
-                <div>{JSON.stringify(this.state)}</div>
             </div>
         );
       }
@@ -226,7 +110,11 @@ class ClaimEntryContainer extends React.Component {
 function MetadataEntryBar() {
   return(
     <div>
-      <ClaimEntryContainer/>
+      <EntryCardContainer 
+      contentClass={ClaimEntryField} 
+      entryName="claim" 
+      addTooltip="Add another claim. Only do so if the article fact checks more than one claim, or a claim consisting of parts that are checked independently."
+      />
     </div>
   );
 } 
