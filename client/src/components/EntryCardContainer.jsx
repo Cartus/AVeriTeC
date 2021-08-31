@@ -102,6 +102,7 @@ class EntryCardContainer extends React.Component {
               onChange={this.handleFieldChange}
               onDelete={this.deleteEntry}
               removeDelete={field_id === this.props.entryName + "_entry_field_0"}
+              {...this.props}
             />
             {field_id === this.props.entryName + "_entry_field_0"? "": <DeleteButton onClick={()=> this.deleteEntry(field_id)}><ClearIcon /></DeleteButton>}
             </EntryCard>
@@ -112,12 +113,13 @@ class EntryCardContainer extends React.Component {
           key={this.props.entryName + "_header"}
           id={this.props.entryName + "_header"}
           onChange={this.handleFieldChange}
+          {...this.props}
           />
         };
         
         return (
             <div>
-                {headerField}
+              {headerField}
                 {entryFields}
                 <Tooltip title={this.props.addTooltip}>
                 <AddEntryCard onClick={this.addEntry} variant="outlined">

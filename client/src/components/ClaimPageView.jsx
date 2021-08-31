@@ -13,7 +13,7 @@ class ClaimPageView extends React.Component {
 
     render() {
         return (
-            <ClaimFrame src={this.props.claim.web_archive} />
+            <ClaimFrame src={this.props.claim.web_archive} style={this.props.style}/>
         );
       }
 }

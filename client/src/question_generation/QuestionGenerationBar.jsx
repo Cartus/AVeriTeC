@@ -60,6 +60,12 @@ class QATopField extends React.Component {
     render() {
         return (
             <EntryCard>
+                <h4>{this.props.claim.claim_text}</h4>
+                <TextFieldWithTooltip name='claim_speaker' label="Claim Speaker" defaultValue={this.props.claim.claim_speaker} InputProps={{readOnly: true}} variant="filled" tooltip="The name of the person or organization who produced the claim"/>
+                <TextFieldWithTooltip name='claim_date' label="Claim Date" defaultValue={this.props.claim.claim_date} InputProps={{readOnly: true}} variant="filled" tooltip="The date the claim was made"/>
+                
+                {this.props.claim.fact_checking_strategy}
+                {this.props.claim.claim_type}
                 <SelectWithTooltip name="phase_2_label" label="Claim Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Information", "Missing Context"]} tooltip="
                 <ul>
                 <li>Supported: The claim is fully supported by the arguments and evidence presented.
@@ -105,6 +111,7 @@ class QAEntryField extends React.Component {
                         <TextFieldWithTooltip name='answer' label="Answer" required multiline rows={2} onChange={this.handleFieldChange} tooltip="Please write the answer here."/>
                         <TextFieldWithTooltip name='answer_url' label="URL" onChange={this.handleFieldChange} tooltip="Please copy-paste the URL where you found the answer here."/>
                         <SelectWithTooltip name="answer_type" label="Answer Type" onChange={this.handleFieldChange} items={["Extractive", "Abstractive", "Boolean", "Unanswerable"]} tooltip="Helpful tooltip TBA"/>
+                        <SelectWithTooltip name="answer_medium" label="Answer Medium" onChange={this.handleFieldChange} items={["Web text", "Web table", "PDF", "Image/graphic", "Video", "Audio", "Other"]} tooltip="Describe what medium you found the answer in."/>
                     </ColumnDiv>
                 </QAGridElementRight>
             </QAGrid>
@@ -114,9 +121,6 @@ class QAEntryField extends React.Component {
 }
 
 class QuestionGenerationBar extends React.Component {
-    constructor(props) {
-        super(props);
-      }
 
     render() {
         return (
@@ -126,6 +130,7 @@ class QuestionGenerationBar extends React.Component {
             entryName="qa_pair" 
             addTooltip="Add another question."
             numInitialEntries={2}
+            claim={this.props.claim}
             />
         );
       }
