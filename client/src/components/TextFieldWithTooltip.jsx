@@ -27,7 +27,7 @@ export default function TextFieldWithTooltip(props){
     if (props.required != null){
         required_text = <FormHelperText>Required</FormHelperText>
     }
-    
+
     return (
         <ElementContainer>
             <TextFieldContainer>

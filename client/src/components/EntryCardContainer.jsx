@@ -33,12 +33,15 @@ class EntryCardContainer extends React.Component {
         super(props);
 
         const id = {}; 
-        const initialString = this.props.entryName + "_entry_field_0"
-        id[initialString] = this.newEntryDict()
+
+        for (var i = 0; i < this.props.numInitialEntries; i++) {
+          var initialString = this.props.entryName + "_entry_field_" + i
+          id[initialString] = this.newEntryDict()
+        }        
 
         this.state = {
             entries: id,
-            added_entries: 1
+            added_entries: this.props.numInitialEntries
         };
         this.handleFieldChange = this.handleFieldChange.bind(this);
         this.deleteEntry = this.deleteEntry.bind(this);
@@ -70,6 +73,14 @@ class EntryCardContainer extends React.Component {
     }
 
     handleFieldChange(fieldId, element, value) {
+      if (fieldId === this.props.entryName + "_header"){
+        this.setState(prevState => ({
+          header: {
+                ...prevState.header,
+                [element]: value
+            }
+        }))  
+      } else{
         this.setState(prevState => ({
           entries: {
                 ...prevState.entries,
@@ -79,6 +90,7 @@ class EntryCardContainer extends React.Component {
                 }
             }
         }))
+      }   
       }
 
     render() {
@@ -94,9 +106,18 @@ class EntryCardContainer extends React.Component {
             {field_id === this.props.entryName + "_entry_field_0"? "": <DeleteButton onClick={()=> this.deleteEntry(field_id)}><ClearIcon /></DeleteButton>}
             </EntryCard>
           ));
+
+        if (this.props.headerClass != null){
+          var headerField = <this.props.headerClass
+          key={this.props.entryName + "_header"}
+          id={this.props.entryName + "_header"}
+          onChange={this.handleFieldChange}
+          />
+        };
         
         return (
             <div>
+                {headerField}
                 {entryFields}
                 <Tooltip title={this.props.addTooltip}>
                 <AddEntryCard onClick={this.addEntry} variant="outlined">

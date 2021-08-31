@@ -114,6 +114,7 @@ function MetadataEntryBar() {
       contentClass={ClaimEntryField} 
       entryName="claim" 
       addTooltip="Add another claim. Only do so if the article fact checks more than one claim, or a claim consisting of parts that are checked independently."
+      numInitialEntries={1}
       />
     </div>
   );
