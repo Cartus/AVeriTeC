@@ -114,7 +114,7 @@ class EntryCardContainer extends React.Component {
           id={this.props.entryName + "_header"}
           onChange={this.handleFieldChange}
           {...this.props}
-          />
+          />;
         };
         
         return (
