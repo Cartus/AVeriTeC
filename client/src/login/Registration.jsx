@@ -7,16 +7,35 @@ import Grid from '@material-ui/core/Grid';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+import styled from 'styled-components';
+
+const AvatarBox = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 15px 15%;
+  `
+
+const TopSpacing = styled.div`
+    height:15vh;
+    width:100%;
+`
 
 export default function Registration() {
   
     return (
       <Container>
         <div>
-          <Avatar>
-            <AssignmentIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">Register</Typography>
+          <TopSpacing/>
+          <AvatarBox>
+            <Avatar>
+              <AssignmentIcon />
+            </Avatar>
+          </AvatarBox>
+          <AvatarBox>
+            <Typography component="h1" variant="h5">Register</Typography>
+          </AvatarBox>
+          
           <form noValidate>
             <TextField
               variant="outlined"

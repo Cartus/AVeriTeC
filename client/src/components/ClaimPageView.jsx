@@ -12,8 +12,18 @@ class ClaimPageView extends React.Component {
       }
 
     render() {
+
+        let className = ''
+
+        if(this.props.className !== undefined){
+            className = this.props.className
+        }
+
         return (
-            <ClaimFrame src={this.props.claim.web_archive} style={this.props.style}/>
+            <div style={this.props.style} className={className}>
+                <ClaimFrame src={this.props.claim.web_archive}/>
+            </div>
+            
         );
       }
 }

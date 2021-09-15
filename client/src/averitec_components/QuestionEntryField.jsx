@@ -6,6 +6,7 @@ import EntryCardContainer from '../components/EntryCardContainer';
 import TextFieldWithTooltip from '../components/TextFieldWithTooltip';
 import SelectWithTooltip from '../components/SelectWithTooltip';
 import ClaimTopField from '../averitec_components/ClaimTopField';
+import {notEmptyValidator, atLeastOneValidator} from '../utils/validation.js'
 
 const ColumnDiv = styled.div`
     width:100%;
@@ -58,14 +59,14 @@ class QuestionEntryField extends React.Component {
               <QAGrid container direction="row" justifyContent="space-evenly" alignItems="center" spacing={3}>
                 <QAGridElementLeft item xs>
                     <ColumnDiv>
-                        <TextFieldWithTooltip name='question' label="Question" required multiline rows={2} onChange={this.handleFieldChange} tooltip="Please write a question that will help you gather evidence for or against the claim."/>
+                        <TextFieldWithTooltip validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["question"]} name='question' label="Question" required multiline rows={2} onChange={this.handleFieldChange} tooltip="Please write a question that will help you gather evidence for or against the claim."/>
                     </ColumnDiv>
                 </QAGridElementLeft>
                 <PaddingDiv/>
                 <Divider orientation="vertical" flexItem />
                 <QAGridElementRight item xs>
                     <ColumnDiv>
-                        <TextFieldWithTooltip name='answer' label="Answer" required multiline rows={2} onChange={this.handleFieldChange} tooltip="Please write the answer here."/>
+                        <TextFieldWithTooltip validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["answer"]} name='answer' label="Answer" required multiline rows={2} onChange={this.handleFieldChange} tooltip="Please write the answer here."/>
                         <TextFieldWithTooltip name='answer_url' label="URL" onChange={this.handleFieldChange} tooltip="Please copy-paste the URL where you found the answer here."/>
                         <SelectWithTooltip name="answer_type" label="Answer Type" onChange={this.handleFieldChange} items={["Extractive", "Abstractive", "Boolean", "Unanswerable"]} tooltip="Helpful tooltip TBA"/>
                         <SelectWithTooltip name="answer_medium" label="Answer Medium" onChange={this.handleFieldChange} items={["Web text", "Web table", "PDF", "Image/graphic", "Video", "Audio", "Other"]} tooltip="Describe what medium you found the answer in."/>

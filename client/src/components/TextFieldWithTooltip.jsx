@@ -23,16 +23,21 @@ const QMarkContainer = styled.div`
 `
 
 export default function TextFieldWithTooltip(props){
-    var required_text = ""
-    if (props.required != null){
-        required_text = <FormHelperText>Required</FormHelperText>
-    }
+    var value = (props.value != null)? props.value : "";
+
+    if (props.validator != null){
+        let validation = props.validator(value)
+        var error =  validation.error && !props.valid;
+        var message = validation.message
+      } else{
+        var error = false
+      }
 
     return (
         <ElementContainer>
             <TextFieldContainer>
-                <TextField size="small" {...props}/>
-                {required_text}
+                <TextField size="small" error={error} {...props}/>
+                {error? <FormHelperText error={error}>{message}</FormHelperText> : ""}
             </TextFieldContainer>
             <QMarkContainer>
                 <TooltipQMark title={props.tooltip}/>

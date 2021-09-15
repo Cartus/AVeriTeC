@@ -4,6 +4,15 @@ import ClaimPageView from '../components/ClaimPageView';
 import styled from 'styled-components';
 import SearchField from '../components/SearchField';
 
+const QASearchField = styled(SearchField)`
+    width:39.5%;
+    float:left;
+`
+
+const QAPageView = styled(ClaimPageView)`
+    width:60%;
+    float:left;
+`
 
 class QuestionGeneration extends React.Component {
     constructor(props) {
@@ -23,14 +32,12 @@ class QuestionGeneration extends React.Component {
       }
 
     render() {
-        const pageViewStyle = {width: "60%", float: "left"};
-        const searchFieldStyle = {width: "39.5%", float: "left"};
         return (
             <div>
                 <QuestionGenerationBar claim={this.state.claim}/>
                 <div>
-                <ClaimPageView claim={this.state.claim} style={pageViewStyle}/>
-                <SearchField style={searchFieldStyle}/>
+                <QAPageView claim={this.state.claim}/>
+                <QASearchField/>
                 </div>
             </div>
         );

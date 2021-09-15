@@ -27,36 +27,46 @@ const QMarkContainer = styled.div`
     display:inline;
 `
 
+
 export default function AtLeastOneCheckboxGroup(props) {
   const classes = useStyles();
+
+  var data = (props.data != null)? props.data : [];
 
   const optionDict = {};
   const tooltipDict = {}
   props.items.forEach(option => {
-    optionDict[option["label"]] = false;
+    optionDict[option["label"]] = (props.data != null)? props.data.includes(option["label"]): false;
     tooltipDict[option["label"]] = option["tooltip"];
   });
-  const [state, setState] = React.useState(optionDict);
 
   const handleChange = (event) => {
-    const updState = { ...state, [event.target.name]: event.target.checked};
-    setState(updState);
+    optionDict[event.target.name] = event.target.checked;
 
     // TODO: Ugly hack to mutate data, please fix
     var fakeEvent = new Object();
     fakeEvent.target = {
       name: props.name,
-      value: Object.keys(state).filter(v => updState[v])
+      value: Object.keys(optionDict).filter(v => optionDict[v])
     };
     props.onChange(fakeEvent)
   };
 
-  const error = Object.keys(state).filter(v => state[v]).length === 0;
+  if (props.validator != null){
+    let validation = props.validator(data)
+    var error =  validation.error && !props.valid;
+    var message = validation.message
+  } else{
+    var error = false
+  }
 
-  const items = Object.keys(state).map(v => (
+  //let error = Object.keys(optionDict).filter(v => optionDict[v]).length === 0 
+  //props.validationListener(props.name, !error)
+
+  const items = Object.keys(optionDict).map(v => (
     <div>
         <FormControlLabel
-        control={<Checkbox checked={state[v]} 
+        control={<Checkbox checked={optionDict[v]} 
         onChange={handleChange} 
         name={v} />}
         label={v}
@@ -66,9 +76,8 @@ export default function AtLeastOneCheckboxGroup(props) {
   ));
 
   return (
-    
     <div className={classes.root}>
-      <FormControl required error={error} component="fieldset" className={classes.formControl}>
+      <FormControl required={props.required} error={error} component="fieldset" className={classes.formControl}>
         <div>
           <LabelContainer>
           <FormLabel component="legend">{props.label}</FormLabel>
@@ -80,7 +89,7 @@ export default function AtLeastOneCheckboxGroup(props) {
         <FormGroup>
           {items}
         </FormGroup>
-        <FormHelperText>Pick at least one</FormHelperText>
+        {error? <FormHelperText>{message}</FormHelperText> : ""}
       </FormControl>
     </div>
   );

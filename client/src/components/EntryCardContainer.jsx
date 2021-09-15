@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import Card from '@material-ui/core/Card';
 import IconButton from '@material-ui/core/IconButton';
 import ClearIcon from '@material-ui/icons/Clear';
+import NavBar from '../averitec_components/NavBar';
 
 const EntryCard = styled(Card)`
   margin:10px;
@@ -38,17 +39,47 @@ class EntryCardContainer extends React.Component {
           var initialString = this.props.entryName + "_entry_field_" + i
           id[initialString] = this.newEntryDict()
         }        
+        
 
-        this.state = {
+        if (this.props.headerClass != null){
+          var headerString = this.props.entryName + "_header";
+          var headerElem = this.newEntryDict();
+
+          this.state = {
             entries: id,
-            added_entries: this.props.numInitialEntries
-        };
+            added_entries: this.props.numInitialEntries,
+            valid: true,
+            [headerString]: headerElem
+          };
+        } else{
+          this.state = {
+            entries: id,
+            added_entries: this.props.numInitialEntries,
+            valid: true
+          };
+        }
+
         this.handleFieldChange = this.handleFieldChange.bind(this);
         this.deleteEntry = this.deleteEntry.bind(this);
+        this.doSubmit = this.doSubmit.bind(this);
       }
 
     newEntryDict = () => {
         return {};
+    }
+
+    doSubmit(){
+      if (this.props.validationFunction(this.state)){
+        window.alert(this.props.validationFunction(this.state));
+      } else{
+        this.setState({
+          valid: false
+        });
+      }
+
+      // If valid, submit
+
+      // If not, turn on error display
     }
     
     deleteEntry = (entryId) => {
@@ -75,8 +106,8 @@ class EntryCardContainer extends React.Component {
     handleFieldChange(fieldId, element, value) {
       if (fieldId === this.props.entryName + "_header"){
         this.setState(prevState => ({
-          header: {
-                ...prevState.header,
+          [fieldId]: {
+                ...prevState[fieldId],
                 [element]: value
             }
         }))  
@@ -101,6 +132,8 @@ class EntryCardContainer extends React.Component {
               id={field_id}
               onChange={this.handleFieldChange}
               onDelete={this.deleteEntry}
+              valid={this.state.valid}
+              data={this.state.entries[field_id]}
               removeDelete={field_id === this.props.entryName + "_entry_field_0"}
               {...this.props}
             />
@@ -113,6 +146,8 @@ class EntryCardContainer extends React.Component {
           key={this.props.entryName + "_header"}
           id={this.props.entryName + "_header"}
           onChange={this.handleFieldChange}
+          valid={this.state.valid}
+          data={this.state[this.props.entryName + "_header"]}
           {...this.props}
           />;
         };
@@ -126,10 +161,7 @@ class EntryCardContainer extends React.Component {
                   <AddCircleIcon/>
                 </AddEntryCard>
                 </Tooltip>
-
-                <SubmitButton variant="contained" color="primary" onClick={this.doSubmit}>
-                  Submit
-                </SubmitButton>
+                <NavBar onSubmit={this.doSubmit}/>
                 <div>{JSON.stringify(this.state)}</div>
             </div>
         );

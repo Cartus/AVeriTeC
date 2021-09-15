@@ -34,12 +34,17 @@ const QMarkContainer = styled.div`
 
 export default function SelectWithTooltip(props) {
   const classes = useStyles();
-  const [item, setItem] = React.useState('');
 
-  const handleChange = (event) => {
-    setItem(event.target.value);
-    props.onChange(event)
-  };
+  var value = (props.value != null)? props.value : "";
+
+    
+  if (props.validator != null){
+    let validation = props.validator(value)
+    var error =  validation.error && !props.valid;
+    var message = validation.message
+  } else{
+    var error = false
+  }
 
   const menuItems = props.items.map(item => (
     <MenuItem key={item} value={item}>{item}</MenuItem>
@@ -48,17 +53,17 @@ export default function SelectWithTooltip(props) {
   return (
     <ElementContainer>
       <TextFieldContainer>
-      <FormControl required variant="outlined" size="small" className={classes.formControl}>
+      <FormControl required={props.required} error={error} variant="outlined" size="small" className={classes.formControl}>
         <InputLabel>{props.label}</InputLabel>
         <Select
-          value={item}
-          onChange={handleChange}
+          value={props.value}
+          onChange={props.onChange}
           label={props.label}
           name={props.name}
         >
           {menuItems}
         </Select>
-        <FormHelperText>Required</FormHelperText>
+        {error? <FormHelperText error={error}>{message}</FormHelperText> : ""}
       </FormControl>
       </TextFieldContainer>
       <QMarkContainer>

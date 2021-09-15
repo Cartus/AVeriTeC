@@ -7,16 +7,34 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+import styled from 'styled-components';
+
+const AvatarBox = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 15px 15%;
+  `
+
+const TopSpacing = styled.div`
+    height:15vh;
+    width:100%;
+`
 
 export default function Login() {
   
     return (
       <Container>
         <div>
-          <Avatar>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">Sign in</Typography>
+          <TopSpacing/>
+          <AvatarBox>
+            <Avatar>
+              <LockOutlinedIcon />
+            </Avatar>
+          </AvatarBox>
+          <AvatarBox>
+              <Typography component="h1" variant="h5">Sign in</Typography>
+          </AvatarBox>
           <form noValidate>
             <TextField
               variant="outlined"

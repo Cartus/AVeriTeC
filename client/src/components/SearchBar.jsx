@@ -19,8 +19,14 @@ class SearchBar extends React.Component {
       }
 
     render() {
+        let className = ''
+
+        if(this.props.className !== undefined){
+            className = this.props.className
+        }
+
         return (
-            <div style={{position: 'relative', display: 'inline-block'}}>
+            <div className={className}>
                 <TextField
                 hintText="Search by Name"
                 InputProps={{endAdornment: <SearchButton><SearchIcon/></SearchButton>}}

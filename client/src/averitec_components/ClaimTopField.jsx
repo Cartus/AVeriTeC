@@ -3,6 +3,7 @@ import TextFieldWithTooltip from '../components/TextFieldWithTooltip';
 import SelectWithTooltip from '../components/SelectWithTooltip';
 import Card from '@material-ui/core/Card';
 import styled from 'styled-components';
+import {notEmptyValidator} from '../utils/validation.js'
 
 const EntryCard = styled(Card)`
   margin:10px;
@@ -26,12 +27,21 @@ class ClaimTopField extends React.Component {
     }
 
     render() {
+        let justification = ""
         if (this.props.ask_for_justification){
-            var justification = <TextFieldWithTooltip name='justification' label="Justification" required multiline rows={2} onChange={this.handleFieldChange} tooltip="Please write a short explanation (max 100 words) for how you decided the answer based on the questions."/>
-        } else{
-            var justification = ""
+            justification = <TextFieldWithTooltip 
+            name='justification' 
+            label="Justification" 
+            validator={notEmptyValidator} 
+            valid={this.props.valid} 
+            value={this.props.data["justification"]} 
+            required multiline 
+            rows={2} 
+            inputProps={{ maxLength: 300 }}
+            onChange={this.handleFieldChange} 
+            tooltip="Please write a short explanation (max 300 characters) for how you decided the answer based on the questions."
+            />
         }
-
 
         return (
             <EntryCard>
@@ -39,9 +49,7 @@ class ClaimTopField extends React.Component {
                 <TextFieldWithTooltip name='claim_speaker' label="Claim Speaker" defaultValue={this.props.claim.claim_speaker} InputProps={{readOnly: true}} variant="filled" tooltip="The name of the person or organization who produced the claim"/>
                 <TextFieldWithTooltip name='claim_date' label="Claim Date" defaultValue={this.props.claim.claim_date} InputProps={{readOnly: true}} variant="filled" tooltip="The date the claim was made"/>
                 
-                {this.props.claim.fact_checking_strategy}
-                {this.props.claim.claim_type}
-                <SelectWithTooltip name="label" label="Claim Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Information", "Missing Context"]} tooltip="
+                <SelectWithTooltip name="label" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["label"]} label="Claim Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Information", "Missing Context"]} tooltip="
                 <ul>
                 <li>Supported: The claim is fully supported by the arguments and evidence presented.
                 <li>Refuted: The claim is fully contradicted by the arguments and evidence presented.

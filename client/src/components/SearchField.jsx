@@ -6,23 +6,75 @@ import Pagination from '@material-ui/lab/Pagination';
 
 const SearchItemCard = styled(Card)`
   margin:10px;
+  padding:10px;
 `
 
-function SearchItemContainer(props) {
-    const searchItemCards = props.searchItems.map(item => (
-            <SearchItemCard key={item.url} variant="outlined">                
-                <a target="_blank" rel="noopener noreferrer" href={item.url}>
-                    <cite>{((item.url.startsWith("http"))? item.url.split("/").slice(0,3).join('/'): item.url.split("/")[0])}</cite>
-                    <span>{" > " + item.url.split("/").slice(3).join('/').replace("/", " > ")}</span>
-                    <h4>{item.header}</h4>
-                </a>
-                <div>
-                    {item.abstract}
-                </div>
-            </SearchItemCard>
-          ));
+const CenterSearchBar = styled(SearchBar)`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 45px 15%;
+    width:70%;
+`
+const CenterPagination = styled(Pagination)`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 30px 0px;
+`
 
-        return (
+const SearchItemHeader = styled.h4`
+    margin:9px 0px;
+    text-decoration: underline;
+`
+
+const SearchLink = styled.a`
+    text-decoration: none;
+`
+
+const BreadcrumbSpan = styled.span`
+    text-decoration: none;
+    color: #484848;
+    font-size:small;
+`
+
+function ItemCard(item){
+    if (item.url.match(/^https?:\/\//)){
+        var source_url = item.url.split("/").slice(0,3).join('/')
+        var displayed_url = source_url
+        var breadcrumbs = item.url.split("/").slice(3).join('/').replace("/", " > ")
+    } else{
+        var source_url = "http://" + item.url.split("/")[0]
+        var displayed_url = item.url.split("/")[0]
+        var breadcrumbs = item.url.split("/").slice(1).join('/').replace("/", " > ")
+    }
+    
+    if (breadcrumbs.length > 0){
+        breadcrumbs = " > " + breadcrumbs
+    }
+
+    const allowed_length = 256
+    let abstract = item.abstract.trim()
+    if (abstract.length > allowed_length){
+        abstract = abstract.substring(0, allowed_length) + "..."
+    }
+
+    return (<SearchItemCard key={item.url} variant="outlined">
+        <SearchLink target="_blank" rel="noopener noreferrer" href={source_url}>
+            <BreadcrumbSpan>{displayed_url}</BreadcrumbSpan>
+            <BreadcrumbSpan>{breadcrumbs}</BreadcrumbSpan>
+            <SearchItemHeader>{item.header}</SearchItemHeader>
+        </SearchLink>
+        <div>
+            {abstract}
+        </div>
+        </SearchItemCard>);
+}
+
+function SearchItemContainer(props) {
+    const searchItemCards = props.searchItems.map(item => ItemCard(item));
+
+    return (
             <div>
               {searchItemCards}
             </div>
@@ -40,18 +92,23 @@ class SearchField extends React.Component {
             searchQuery: "",
             searchItems: [
                 {
-                    url: "http://abd.def.com/ahfhue",
+                    url: "https://abd.def.com/ahfhue",
                     header: "ASDF1",
                     abstract: "asdf asdf asdf asdf"
                 },
                 {
                     url: "http://afef.vrgsr.com/rgrs/afee",
                     header: "ASDF2",
-                    abstract: "asdf ahttttaaaeesdf asdf asdf"
+                    abstract: "asdf ahttttaaaeesdf asdf asdf asdf ahttttaaaeesdf asdf asdf asdf ahttttaaaeesdf asdf asdf asdf ahttttaaaeesdf asdf asdf asdf ahttttaaaeesdf asdf asdf asdf ahttttaaaeesdf asdf asdf asdf ahttttaaaeesdf asdf asdf ahttttaaaeesdf asdf asdf ahttttaaaeesdf asdf asdf ahttttaaaeesdf asdf asdf ahttttaaaeesdf asdf asdf"
                 },
                 {
                     url: "afef.vrr.ujucom/rgrs/iii",
                     header: "ASDF3",
+                    abstract: "aaaesdf asdf afeeeaefafsdf asdf"
+                },
+                {
+                    url: "arxiv.org/",
+                    header: "ASDF4",
                     abstract: "aaaesdf asdf afeeeaefafsdf asdf"
                 },
             ]
@@ -65,16 +122,23 @@ class SearchField extends React.Component {
     }
 
     render() {
+        let className = ''
+
+        if(this.props.className !== undefined){
+            className = this.props.className
+        }
+
         return (
-            <div>
-                <SearchBar
+            <div style={this.props.style} className={className}>
+                <CenterSearchBar
                 value={this.state.searchQuery}
                 onChange={(newSearchQuery) => this.setState({ searchQuery: newSearchQuery.target.value })}
                 onRequestSearch={() => this.doSearch(this.state.searchQuery)}
                 label="Search"
+                fullWidth
                 />
                 <SearchItemContainer searchItems={this.state.searchItems}></SearchItemContainer>
-                <Pagination count={10} shape="rounded" />
+                <CenterPagination count={10} shape="rounded" />
             </div>
         );
       }
