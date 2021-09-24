@@ -8,18 +8,18 @@ $servername = "localhost";
 $conn = new mysqli($servername, $db_params['user'], $db_params['password']);
 
 if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
+    die("Connection failed: " . $conn->connect_error);
 }
 
 // Create database
-$sql = "CREATE DATABASE AVDB";
+$sql = "CREATE DATABASE REDB";
 if ($conn->query($sql) === TRUE) {
-  echo "Database created successfully";
+    echo "Database created successfully";
 } else {
-  echo "Error creating database: " . $conn->error;
+    echo "Error creating database: " . $conn->error;
 }
 
 $conn->close();
 
 
- ?>
+?>
