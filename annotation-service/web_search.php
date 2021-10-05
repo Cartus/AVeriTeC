@@ -15,7 +15,7 @@ header('Access-Control-Allow-Headers: Content-Type');
 //    die("Connection Failed: " . $conn->connect_error);
 //}
 
-$pythonpath = "/home/michael/Software/miniconda3/envs/averitec_site/bin/python";
+$pythonpath = "/home/michael/anaconda3/envs/averitec/bin/python";
 $scriptpath = 'averitec_web_search.py';
 
 $rest_json = file_get_contents("php://input");
