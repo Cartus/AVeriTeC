@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import SearchBar from './SearchBar';
 import Card from '@material-ui/core/Card';
 import Pagination from '@material-ui/lab/Pagination';
+import axios from 'axios';
 
 const SearchItemCard = styled(Card)`
   margin:10px;
@@ -90,6 +91,7 @@ class SearchField extends React.Component {
 
         this.state = {
             searchQuery: "",
+            page: 1,
             searchItems: [
                 {
                     url: "https://abd.def.com/ahfhue",
@@ -116,9 +118,36 @@ class SearchField extends React.Component {
 
         
         this.doSearch = this.doSearch.bind(this);
+        this.handlePageChange = this.handlePageChange.bind(this);
       }
 
     doSearch = () => {
+        var query = this.state.searchQuery
+        var claim_date = this.props.claim_date
+        var page = this.state.page
+
+        var request = {
+            method: "get",
+            url: "http://api.averitec.eu/web_search.php",
+            params:{
+                query: query,
+                claim_date:claim_date,
+                page: page
+            }
+        };
+
+        axios(request).then((response) => {
+            window.alert(response['items'])
+            this.setState({
+                searchItems: response.items
+            });
+        }).catch((error) => {window.alert(error)})
+    }
+
+    handlePageChange = (event, newPage) => {
+        this.setState({
+            page: newPage
+          });
     }
 
     render() {
@@ -138,7 +167,11 @@ class SearchField extends React.Component {
                 fullWidth
                 />
                 <SearchItemContainer searchItems={this.state.searchItems}></SearchItemContainer>
-                <CenterPagination count={10} shape="rounded" />
+                <CenterPagination 
+                count={10} 
+                shape="rounded"
+                page={this.state.page}
+                onChange={this.handlePageChange} />
             </div>
         );
       }

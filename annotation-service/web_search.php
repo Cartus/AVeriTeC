@@ -1,6 +1,7 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header('Access-Control-Allow-Headers: Content-Type');
+header('Content-Type: application/json: charset=utf-8');
 
 // Leaving this because we may want to do session validation before search (?)
 
@@ -29,7 +30,7 @@ $command = "{$pythonpath} {$scriptpath} --query \"{$query}\" --page {$page} --cl
 
 $output = shell_exec($command);
 
-echo json_encode($output);
+echo trim($output);
 
 
 // $conn->close();

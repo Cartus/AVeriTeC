@@ -1,5 +1,6 @@
 from googleapiclient.discovery import build
 import argparse
+import json
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--query', default='gay frogs infowars')
@@ -47,4 +48,4 @@ for result in results:
     }
     formatted_results["items"].append(item)
 
-print(formatted_results)
+print(json.dumps(formatted_results))
