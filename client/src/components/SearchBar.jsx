@@ -29,7 +29,7 @@ class SearchBar extends React.Component {
             <div className={className}>
                 <TextField
                 hintText="Search by Name"
-                InputProps={{endAdornment: <SearchButton><SearchIcon/></SearchButton>}}
+                InputProps={{endAdornment: <SearchButton onClick={this.props.onRequestSearch}><SearchIcon/></SearchButton>}}
                 {...this.props}
                 />
             </div>

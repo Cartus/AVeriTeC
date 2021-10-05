@@ -37,7 +37,7 @@ class QuestionGeneration extends React.Component {
                 <QuestionGenerationBar claim={this.state.claim}/>
                 <div>
                 <QAPageView claim={this.state.claim}/>
-                <QASearchField/>
+                <QASearchField claim_date={this.state.claim.claim_date}/>
                 </div>
             </div>
         );

@@ -10,6 +10,7 @@
     "@material-ui/lab": "^5.0.0-alpha.41",
     "@material-ui/styles": "^5.0.0-beta.2",
     "@snekcode/mui-search-bar": "^1.1.0",
+    "axios": "^0.22.0",
     "date-fns": "^2.23.0",
     "iframe-resizer-react": "^1.1.0",
     "react": "^17.0.2",
