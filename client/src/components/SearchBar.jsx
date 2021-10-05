@@ -16,7 +16,14 @@ const SearchButton = styled(IconButton)`
 class SearchBar extends React.Component {
     constructor(props) {
         super(props);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
       }
+
+    handleKeyPress(e){
+        if (e.key === 'Enter'){
+            this.props.onRequestSearch();
+        }
+    }
 
     render() {
         let className = ''
@@ -29,7 +36,8 @@ class SearchBar extends React.Component {
             <div className={className}>
                 <TextField
                 hintText="Search by Name"
-                InputProps={{endAdornment: <SearchButton onClick={this.props.onRequestSearch}><SearchIcon/></SearchButton>}}
+                onKeyUp={this.handleKeyPress}
+                InputProps={{endAdornment: <SearchButton onClick={this.props.onRequestSearch} ><SearchIcon/></SearchButton>}}
                 {...this.props}
                 />
             </div>

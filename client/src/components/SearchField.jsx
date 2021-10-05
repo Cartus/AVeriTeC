@@ -92,27 +92,8 @@ class SearchField extends React.Component {
         this.state = {
             searchQuery: "",
             page: 1,
+            didSearch: false,
             searchItems: [
-                {
-                    url: "https://abd.def.com/ahfhue",
-                    header: "ASDF1",
-                    abstract: "asdf asdf asdf asdf"
-                },
-                {
-                    url: "http://afef.vrgsr.com/rgrs/afee",
-                    header: "ASDF2",
-                    abstract: "asdf ahttttaaaeesdf asdf asdf asdf ahttttaaaeesdf asdf asdf asdf ahttttaaaeesdf asdf asdf asdf ahttttaaaeesdf asdf asdf asdf ahttttaaaeesdf asdf asdf asdf ahttttaaaeesdf asdf asdf asdf ahttttaaaeesdf asdf asdf ahttttaaaeesdf asdf asdf ahttttaaaeesdf asdf asdf ahttttaaaeesdf asdf asdf ahttttaaaeesdf asdf asdf"
-                },
-                {
-                    url: "afef.vrr.ujucom/rgrs/iii",
-                    header: "ASDF3",
-                    abstract: "aaaesdf asdf afeeeaefafsdf asdf"
-                },
-                {
-                    url: "arxiv.org/",
-                    header: "ASDF4",
-                    abstract: "aaaesdf asdf afeeeaefafsdf asdf"
-                },
             ]
         };
 
@@ -126,6 +107,8 @@ class SearchField extends React.Component {
         var claim_date = this.props.claim_date
         var page = this.state.page
 
+        this.setState({didSearch: true});
+
         var request = {
             method: "get",
             url: "http://api.averitec.eu/web_search.php",
@@ -137,9 +120,8 @@ class SearchField extends React.Component {
         };
 
         axios(request).then((response) => {
-            window.alert(response['items'])
             this.setState({
-                searchItems: response.items
+                searchItems: response.data.items
             });
         }).catch((error) => {window.alert(error)})
     }
@@ -147,7 +129,7 @@ class SearchField extends React.Component {
     handlePageChange = (event, newPage) => {
         this.setState({
             page: newPage
-          });
+          }, () => {this.doSearch()});
     }
 
     render() {
@@ -155,6 +137,18 @@ class SearchField extends React.Component {
 
         if(this.props.className !== undefined){
             className = this.props.className
+        }
+
+        var searchResults = ""
+
+        if (this.state.didSearch){
+            searchResults = <div><SearchItemContainer searchItems={this.state.searchItems}></SearchItemContainer>
+            <CenterPagination 
+            count={10} 
+            shape="rounded"
+            page={this.state.page}
+            onChange={this.handlePageChange} />
+            </div>
         }
 
         return (
@@ -166,12 +160,7 @@ class SearchField extends React.Component {
                 label="Search"
                 fullWidth
                 />
-                <SearchItemContainer searchItems={this.state.searchItems}></SearchItemContainer>
-                <CenterPagination 
-                count={10} 
-                shape="rounded"
-                page={this.state.page}
-                onChange={this.handlePageChange} />
+                {searchResults}
             </div>
         );
       }
