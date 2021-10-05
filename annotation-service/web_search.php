@@ -29,7 +29,7 @@ $command = "{$pythonpath} {$scriptpath} --query \"{$query}\" --page {$page} --cl
 
 $output = shell_exec($command);
 
-echo $output;
+echo json_encode($output);
 
 
 // $conn->close();
