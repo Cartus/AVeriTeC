@@ -43,8 +43,8 @@ formatted_results = {
 for result in results:
     item = {
         "url": result["link"],
-        "header": result["htmlTitle"],
-        "abstract": result["htmlSnippet"]
+        "header": result["title"],
+        "abstract": result["snippet"]
     }
     formatted_results["items"].append(item)
 
