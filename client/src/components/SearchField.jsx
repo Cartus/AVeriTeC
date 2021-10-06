@@ -4,6 +4,7 @@ import SearchBar from './SearchBar';
 import Card from '@material-ui/core/Card';
 import Pagination from '@material-ui/lab/Pagination';
 import axios from 'axios';
+import { RepeatOneSharp } from '@material-ui/icons';
 
 const SearchItemCard = styled(Card)`
   margin:10px;
@@ -18,6 +19,13 @@ const CenterSearchBar = styled(SearchBar)`
     width:70%;
 `
 const CenterPagination = styled(Pagination)`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 30px 0px;
+`
+
+const CenterSpan = styled.span`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -41,11 +49,11 @@ const BreadcrumbSpan = styled.span`
 
 function ItemCard(item){
     if (item.url.match(/^https?:\/\//)){
-        var source_url = item.url.split("/").slice(0,3).join('/')
-        var displayed_url = source_url
+        var source_url = item.url
+        var displayed_url = item.url.split("/").slice(0,3).join('/')
         var breadcrumbs = item.url.split("/").slice(3).join('/').replace("/", " > ")
     } else{
-        var source_url = "http://" + item.url.split("/")[0]
+        var source_url = "http://" + item.url
         var displayed_url = item.url.split("/")[0]
         var breadcrumbs = item.url.split("/").slice(1).join('/').replace("/", " > ")
     }
@@ -107,8 +115,6 @@ class SearchField extends React.Component {
         var claim_date = this.props.claim_date
         var page = this.state.page
 
-        this.setState({didSearch: true});
-
         var request = {
             method: "get",
             url: "http://api.averitec.eu/web_search.php",
@@ -120,8 +126,14 @@ class SearchField extends React.Component {
         };
 
         axios(request).then((response) => {
+            var newSearchItems = []
+            if (response.data.items){
+                newSearchItems = response.data.items
+            }
+
             this.setState({
-                searchItems: response.data.items
+                searchItems: newSearchItems,
+                didSearch: true
             });
         }).catch((error) => {window.alert(error)})
     }
@@ -142,12 +154,17 @@ class SearchField extends React.Component {
         var searchResults = ""
 
         if (this.state.didSearch){
-            searchResults = <div><SearchItemContainer searchItems={this.state.searchItems}></SearchItemContainer>
-            <CenterPagination 
-            count={10} 
-            shape="rounded"
-            page={this.state.page}
-            onChange={this.handlePageChange} />
+            var emptyResultString = this.state.page === 1? <CenterSpan>No results were found</CenterSpan> : <CenterSpan>No further results were found</CenterSpan> 
+            var searchResultItems = this.state.searchItems.length > 0? <SearchItemContainer searchItems={this.state.searchItems}></SearchItemContainer> : emptyResultString
+
+            searchResults = <div>
+                {searchResultItems}
+                <CenterPagination 
+                count={10} 
+                shape="rounded"
+                page={this.state.page}
+                onChange={this.handlePageChange} 
+                />
             </div>
         }
 
