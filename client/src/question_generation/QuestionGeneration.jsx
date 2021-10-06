@@ -26,7 +26,7 @@ class QuestionGeneration extends React.Component {
                 claim_type: ["Numerical Claim"],
                 fact_checking_strategy: ["Numerical Comparison", "Consultation"],
                 claim_hyperlink: "https://archive.is/qpiqn",
-                claim_date: "15/06/2021"
+                claim_date: "11/06/2021"
             }
         }
       }
