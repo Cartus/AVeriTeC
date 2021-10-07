@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const ClaimFrame = styled.iframe`
     width: 99.7%;
-    height: 70vh;
+    height:100%;
 `
 
 class ClaimPageView extends React.Component {

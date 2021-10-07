@@ -22,7 +22,7 @@ const ClaimGrid = styled(Grid)`
 `
 
 const ClaimGridElement = styled(Grid)`
-    width: 32%;
+    width: 100%;
 `
 
 class ClaimEntryField extends React.Component {
@@ -45,7 +45,7 @@ class ClaimEntryField extends React.Component {
     render() {
         return (
             <div>
-              <ClaimGrid container direction="row" justifyContent="space-evenly" alignItems="center" spacing={3}>
+              <ClaimGrid container direction="column" justifyContent="space-evenly" alignItems="center" spacing={3}>
                 <ClaimGridElement item xs>
                 <ColumnDiv>
                 <TextFieldWithTooltip name='hyperlink' label="Hyperlink" onChange={this.handleFieldChange} tooltip="A hyperlink to the original claim, if that is provided by the fact checking site. Examples of this include Facebook posts, the original article or blog post being fact checked, and embedded video links. If the original claim has a hyperlink on the fact checking site, but that hyperlink is dead, annotators should leave the field empty."/>
@@ -62,7 +62,7 @@ class ClaimEntryField extends React.Component {
                 <li>Missing Context: The claim is misleading due to missing context, but not explicitly refuted. This includes cherry picking, true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found. Missing context may also be relevant if a situation has changed over time, and the claim fails to mention this.</ul>"
                 />
                 </ColumnDiv>
-                </ClaimGridElement><Divider orientation="vertical" flexItem />
+                </ClaimGridElement><Divider orientation="horizontal" flexItem />
               <ClaimGridElement item xs>
               <ColumnDiv>
                 <AtLeastOneCheckboxGroup 
@@ -86,7 +86,7 @@ class ClaimEntryField extends React.Component {
                 tooltip="The type of the claim itself, independent of the approach taken by the fact checker to verify or refute it."
                 />
               </ColumnDiv>
-              </ClaimGridElement><Divider orientation="vertical" flexItem />
+              </ClaimGridElement><Divider orientation="horizontal" flexItem />
               <ClaimGridElement item xs>
               <ColumnDiv>
                 <AtLeastOneCheckboxGroup 
@@ -132,9 +132,9 @@ function validate(content){
   return valid;
 }
 
-function MetadataEntryBar() {
+function MetadataEntryBar({className}) {
   return(
-    <div>
+    <div className={className}>
       <EntryCardContainer 
       contentClass={ClaimEntryField} 
       entryName="claim" 

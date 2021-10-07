@@ -4,14 +4,16 @@ import ClaimPageView from '../components/ClaimPageView';
 import styled from 'styled-components';
 import SearchField from '../components/SearchField';
 
-const QASearchField = styled(SearchField)`
+const QADataField = styled.div`
     width:39.5%;
     float:left;
 `
 
 const QAPageView = styled(ClaimPageView)`
-    width:60%;
+    width:59%;
     float:left;
+    margin:10px;
+    height:130vh;
 `
 
 class QuestionGeneration extends React.Component {
@@ -34,11 +36,11 @@ class QuestionGeneration extends React.Component {
     render() {
         return (
             <div>
-                <QuestionGenerationBar claim={this.state.claim}/>
-                <div>
                 <QAPageView claim={this.state.claim}/>
-                <QASearchField claim_date={this.state.claim.claim_date}/>
-                </div>
+                <QADataField>
+                    <QuestionGenerationBar claim={this.state.claim}/>
+                    <SearchField claim_date={this.state.claim.claim_date}/>
+                </QADataField>
             </div>
         );
       }

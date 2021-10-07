@@ -1,6 +1,23 @@
 import React from 'react';
 import MetadataEntryBar from './MetadataEntryBar';
 import ClaimPageView from '../components/ClaimPageView';
+import styled from 'styled-components';
+
+const NEntryBar = styled(MetadataEntryBar)`
+    width:39%;
+    float:left;
+`
+
+const NPageView = styled(ClaimPageView)`
+    width:59.5%;
+    float:left;
+    margin:10px;
+    height:130vh;
+`
+
+const PageDiv = styled.div`
+    width: 100%;
+`
 
 class ClaimNormalization extends React.Component {
     constructor(props) {
@@ -15,10 +32,10 @@ class ClaimNormalization extends React.Component {
 
     render() {
         return (
-            <div>
-                <MetadataEntryBar/>
-                <ClaimPageView claim={this.state.claim}/>
-            </div>
+            <PageDiv>
+                <NPageView claim={this.state.claim}/>
+                <NEntryBar/>
+            </PageDiv>
         );
       }
 }
