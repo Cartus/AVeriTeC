@@ -60,14 +60,13 @@ class StaticQuestionEntryField extends React.Component {
                 <Divider orientation="vertical" flexItem />
                 <QAGridElementRight item xs>
                     <ColumnDiv>
-                        <span>Check any you think apply:</span>
                         <AtLeastOneCheckboxGroup 
                         name="question_problems" 
-                        label="Question validation" 
+                        label="Potential problems with the question-answer pair. Check any you think apply:" 
                         data={this.props.question["question_problems"]}
                         items={[
-                            {label: "Unreadable question", tooltip: "tt"},
-                            {label: "Unreadable answer", tooltip: "tt"},
+                            {label: "The question is not understandable/readable", tooltip: "tt"},
+                            {label: "The answer is not understandable/readable", tooltip: "tt"},
                             {label: "Answer seems wrong, but is supported by the source", tooltip: "tt"},
                             {label: "Answer seems wrong, and is not supported by the source", tooltip: "tt"},
                         ]} 

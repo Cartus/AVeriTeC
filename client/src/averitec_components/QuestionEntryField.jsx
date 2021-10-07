@@ -21,9 +21,9 @@ const QAGrid = styled(Grid)`
 `
 
 const QAGridElementLeft = styled(Grid)`
-    width: -webkit-calc(51%)!important;
-    width:    -moz-calc(51%)!important;
-    width:         calc(51%)!important;
+    width: -webkit-calc(49% - 30px)!important;
+    width:    -moz-calc(49% - 30px)!important;
+    width:         calc(49% - 30px)!important;
 `
 
 const PaddingDiv = styled.div`
@@ -31,9 +31,9 @@ const PaddingDiv = styled.div`
 `
 
 const QAGridElementRight = styled(Grid)`
-    width: -webkit-calc(49% - 63px)!important;
-    width:    -moz-calc(49% - 63px)!important;
-    width:         calc(49% - 63px)!important;
+    width: -webkit-calc(49% - 33px)!important;
+    width:    -moz-calc(49% - 33px)!important;
+    width:         calc(49% - 33px)!important;
 `
 
 class QuestionEntryField extends React.Component {

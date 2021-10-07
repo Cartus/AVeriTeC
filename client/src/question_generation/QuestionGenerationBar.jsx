@@ -33,7 +33,7 @@ class QuestionGenerationBar extends React.Component {
             contentClass={QuestionEntryField} 
             entryName="qa_pair" 
             addTooltip="Add another question."
-            numInitialEntries={2}
+            numInitialEntries={1}
             claim={this.props.claim}
             validationFunction={validate}
             />

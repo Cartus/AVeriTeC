@@ -13,7 +13,7 @@ const QAPageView = styled(ClaimPageView)`
     width:59%;
     float:left;
     margin:10px;
-    height:130vh;
+    height:160vh;
 `
 
 class QuestionGeneration extends React.Component {

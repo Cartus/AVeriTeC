@@ -9,6 +9,10 @@ const EntryCard = styled(Card)`
   margin:10px;
 `
 
+const ClaimHeader = styled.h4`
+    margin:10px;
+`
+
 class ClaimTopField extends React.Component {
     constructor(props) {
         super(props);
@@ -45,7 +49,7 @@ class ClaimTopField extends React.Component {
 
         return (
             <EntryCard>
-                <h4>{this.props.claim.claim_text}</h4>
+                <ClaimHeader>{this.props.claim.claim_text}</ClaimHeader>
                 <TextFieldWithTooltip name='claim_speaker' label="Claim Speaker" defaultValue={this.props.claim.claim_speaker} InputProps={{readOnly: true}} variant="filled" tooltip="The name of the person or organization who produced the claim"/>
                 <TextFieldWithTooltip name='claim_date' label="Claim Date" defaultValue={this.props.claim.claim_date} InputProps={{readOnly: true}} variant="filled" tooltip="The date the claim was made"/>
                 
