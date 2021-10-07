@@ -75,6 +75,7 @@ function ItemCard(item){
             <SearchItemHeader>{item.header}</SearchItemHeader>
         </SearchLink>
         <div>
+            {item.problematic? "a" : "b"}
             {abstract}
         </div>
         </SearchItemCard>);
