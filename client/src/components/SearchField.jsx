@@ -4,7 +4,8 @@ import SearchBar from './SearchBar';
 import Card from '@material-ui/core/Card';
 import Pagination from '@material-ui/lab/Pagination';
 import axios from 'axios';
-import { RepeatOneSharp } from '@material-ui/icons';
+import { WarningRounded } from '@material-ui/icons';
+import { Tooltip } from '@material-ui/core';
 
 const SearchItemCard = styled(Card)`
   margin:10px;
@@ -47,6 +48,11 @@ const BreadcrumbSpan = styled.span`
     font-size:small;
 `
 
+const WarningDiv = styled.div`
+    color:#D0342C;
+    float:right;
+`
+
 function ItemCard(item){
     if (item.url.match(/^https?:\/\//)){
         var source_url = item.url
@@ -68,14 +74,23 @@ function ItemCard(item){
         abstract = abstract.substring(0, allowed_length) + "..."
     }
 
+    var problematic = ""
+
+    if (item.problematic){
+        problematic = <WarningDiv>
+            <Tooltip title="This site is a known source of misinformation. Please consider using a different and/or additional source."><WarningRounded/></Tooltip>
+            </WarningDiv>
+    }
+
     return (<SearchItemCard key={item.url} variant="outlined">
+        {problematic}
         <SearchLink target="_blank" rel="noopener noreferrer" href={source_url}>
             <BreadcrumbSpan>{displayed_url}</BreadcrumbSpan>
             <BreadcrumbSpan>{breadcrumbs}</BreadcrumbSpan>
             <SearchItemHeader>{item.header}</SearchItemHeader>
         </SearchLink>
         <div>
-            {item.problematic? "a" : "b"}
+            
             {abstract}
         </div>
         </SearchItemCard>);
