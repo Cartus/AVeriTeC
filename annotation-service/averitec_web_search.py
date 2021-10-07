@@ -69,3 +69,4 @@ for result in results:
     item["problematic"] = domain in misinfo_list
     formatted_results["items"].append(item)
 
+print(json.dumps(formatted_results))
