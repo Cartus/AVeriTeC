@@ -3,23 +3,39 @@ import TextField from '@material-ui/core/TextField';
 import TooltipQMark from './TooltipQMark';
 import styled from 'styled-components';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import { areDayPropsEqual } from '@material-ui/lab/PickersDay/PickersDay';
 
 
 const ElementContainer = styled.div`
-    margin: 10px;
-    width: 260px;
-    height:50px;
+    margin: 6px;
+    width: 280px;
+    height: ${(props) => {
+        var space = 0;
+        if (props.multiline){
+            space += 40 * (~~(props.rows/2) + 1);
+            space += 6 * ~~(props.rows/2);
+        } else{
+            space = 40;
+        }
+        return space + "px";
+    }};
 `
 
 const TextFieldContainer = styled.div`
-    width: 210px;
+    width: -webkit-calc(100% - 47px)!important;
+    width:    -moz-calc(100% - 47px)!important;
+    width:         calc(100% - 47px)!important;
     float:left;
 `
 
 const QMarkContainer = styled.div`
     width:40px;
-    padding-left:220px;
+    float:right;
     padding-top:7px;
+`
+
+const StyledTextField = styled(TextField)`
+    width:100%
 `
 
 export default function TextFieldWithTooltip(props){
@@ -34,10 +50,10 @@ export default function TextFieldWithTooltip(props){
       }
 
     return (
-        <ElementContainer>
+        <ElementContainer multiline={props.rows} rows={props.rows}>
             <TextFieldContainer>
-                <TextField size="small" error={error} {...props}/>
-                {error? <FormHelperText error={error}>{message}</FormHelperText> : ""}
+                <StyledTextField size="small" error={error} {...props}/>
+                {/*error? <FormHelperText error={error}>{message}</FormHelperText> : ""*/}
             </TextFieldContainer>
             <QMarkContainer>
                 <TooltipQMark title={props.tooltip}/>
