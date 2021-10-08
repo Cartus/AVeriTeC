@@ -27,7 +27,7 @@ const ContainerDiv = styled.div`
 `
 
 const SepSpaceDiv = styled.div`
-    padding: 5px 0px 0px 0px;
+    padding: 10px 0px 0px 0px;
 `
 
 const EmptySpaceDiv = styled.div`
@@ -39,37 +39,14 @@ const EmptySpaceDiv = styled.div`
     }
 `
 
-const TextLeftEntryDiv = styled.div`
+const TextEntryDiv = styled.div`
   float:left;
 
-  @media  (max-width: 1674px)  {
-    margin: 20px 0px 0px -webkit-calc(50% - 140px)!important;
-    margin: 20px 0px 0px    -moz-calc(50% - 140px)!important;
-    margin: 20px 0px 0px         calc(50% - 140px)!important;
-  }
-
-  @media (min-width: 1675px)  {
-    margin: 20px 0px 20px -webkit-calc((100% - 586px)/3)!important;
-    margin: 20px 0px 20px    -moz-calc((100% - 586px)/3)!important;
-    margin: 20px 0px 20px         calc((100% - 586px)/3)!important;
-  }
+  padding: 20px 0px 0px -webkit-calc((100% - 890px)/4)!important;
+  padding: 20px 0px 0px    -moz-calc((100% - 890px)/4)!important;
+  padding: 20px 0px 0px         calc((100% - 890px)/4)!important;
 `
 
-const TextRightEntryDiv = styled.div`
-  float:left;
-
-  @media (max-width: 1674px)  {
-    margin: -5px 0px 20px -webkit-calc(50% - 140px)!important;
-    margin: -5px 0px 20px    -moz-calc(50% - 140px)!important;
-    margin: -5px 0px 20px         calc(50% - 140px)!important;
-  }
-
-  @media (min-width: 1675px)  {
-    margin: 20px 0px 20px -webkit-calc((100% - 586px)/3)!important;
-    margin: 20px 0px 20px    -moz-calc((100% - 586px)/3)!important;
-    margin: 20px 0px 20px         calc((100% - 586px)/3)!important;
-  }
-`
 
 class ClaimTopField extends React.Component {
     constructor(props) {
@@ -89,18 +66,34 @@ class ClaimTopField extends React.Component {
     }
 
     render() {
+        let justification = <TextFieldWithTooltip 
+        name='justification' 
+        label="Justification" 
+        validator={notEmptyValidator} 
+        valid={this.props.valid} 
+        value={this.props.data["justification"]} 
+        required multiline 
+        rows={4} 
+        inputProps={{ maxLength: 300 }}
+        onChange={this.handleFieldChange} 
+        tooltip="Please write a short explanation (max 300 characters) for how you decided the answer based on the questions."
+        />
+
         return (
             <EntryCard>
                 <ContainerDiv>
 
                 <ClaimHeader>{this.props.claim.claim_text}</ClaimHeader>
-                <TextLeftEntryDiv>
+                <TextEntryDiv>
                     <TextFieldWithTooltip name='claim_speaker' label="Claim Speaker" defaultValue={this.props.claim.claim_speaker} InputProps={{readOnly: true}} variant="filled" tooltip="The name of the person or organization who produced the claim"/>
                     <SepSpaceDiv/>
                     <TextFieldWithTooltip name='claim_date' label="Claim Date" defaultValue={this.props.claim.claim_date} InputProps={{readOnly: true}} variant="filled" tooltip="The date the claim was made"/>
                     <SepSpaceDiv/>
-                </TextLeftEntryDiv>
-                <TextRightEntryDiv>
+                </TextEntryDiv>
+                <TextEntryDiv>
+                  {justification}
+                </TextEntryDiv>
+                <TextEntryDiv>
                     <EmptySpaceDiv/>
                     <SelectWithTooltip name="label" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["label"]} label="Claim Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Information", "Missing Context"]} tooltip="
                     <ul>
@@ -109,7 +102,7 @@ class ClaimTopField extends React.Component {
                     <li>Not Enough Information: There is not enough information to support or refute the claim. The evidence either directly argues that appropriate evidence cannot be found, or leaves some aspect of the claim neither supported nor refuted.
                     <li>Missing Context: The claim is misleading due to missing context, but not explicitly refuted. This includes cherry picking, true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found. Missing context may also be relevant if a situation has changed over time, and the claim fails to mention this.</ul>"
                     />
-                </TextRightEntryDiv>
+                </TextEntryDiv>
                 </ContainerDiv>
             </EntryCard>
         );

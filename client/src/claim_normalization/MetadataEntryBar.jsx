@@ -26,16 +26,16 @@ const ClaimGridElement = styled(Grid)`
     padding-bottom:24px;
 `
 
-const EntryDiv = styled.div`
+const TextLeftEntryDiv = styled.div`
   float:left;
 
-  @media only screen and (max-width: 1674px)  {
+  @media (max-width: 1674px)  {
     margin: 0px 0px 0px -webkit-calc(50% - 140px)!important;
     margin: 0px 0px 0px    -moz-calc(50% - 140px)!important;
     margin: 0px 0px 0px         calc(50% - 140px)!important;
   }
 
-  @media only screen and (min-width: 1675px)  {
+  @media (min-width: 1675px)  {
     margin: 0px 0px 0px -webkit-calc((100% - 586px)/3)!important;
     margin: 0px 0px 0px    -moz-calc((100% - 586px)/3)!important;
     margin: 0px 0px 0px         calc((100% - 586px)/3)!important;
@@ -45,13 +45,13 @@ const EntryDiv = styled.div`
 const TextRightEntryDiv = styled.div`
   float:left;
 
-  @media only screen and (max-width: 1674px)  {
+  @media (max-width: 1674px)  {
     margin: -5px 0px 0px -webkit-calc(50% - 140px)!important;
     margin: -5px 0px 0px    -moz-calc(50% - 140px)!important;
     margin: -5px 0px 0px         calc(50% - 140px)!important;
   }
 
-  @media only screen and (min-width: 1675px)  {
+  @media (min-width: 1675px)  {
     margin: 0px 0px 0px -webkit-calc((100% - 586px)/3)!important;
     margin: 0px 0px 0px    -moz-calc((100% - 586px)/3)!important;
     margin: 0px 0px 0px         calc((100% - 586px)/3)!important;
@@ -61,13 +61,13 @@ const TextRightEntryDiv = styled.div`
 const CheckboxLeftEntryDiv = styled.div`
   float:left;
 
-  @media only screen and (max-width: 1776px)  {
+  @media (max-width: 1776px)  {
     margin: 0px -webkit-calc(50% - 134px)!important;
     margin: 0px    -moz-calc(50% - 134px)!important;
     margin: 0px         calc(50% - 134px)!important;
   }
 
-  @media only screen and (min-width: 1777px)  {
+  @media (min-width: 1777px)  {
     margin: 0px 0px 0px -webkit-calc(33% - 185px)!important;
     margin: 0px 0px 0px    -moz-calc(33% - 185px)!important;
     margin: 0px 0px 0px         calc(33% - 185px)!important;
@@ -77,13 +77,13 @@ const CheckboxLeftEntryDiv = styled.div`
 const CheckboxRightEntryDiv = styled.div`
   float:left;
 
-  @media only screen and (max-width: 1776px)  {
+  @media (max-width: 1776px)  {
     margin: 24px 0px 0px -webkit-calc(50% - 134px)!important;
     margin: 24px 0px 0px    -moz-calc(50% - 134px)!important;
     margin: 24px 0px 0px         calc(50% - 134px)!important;
   }
 
-  @media only screen and (min-width: 1777px)  {
+  @media (min-width: 1777px)  {
     margin: 0px 0px 0px -webkit-calc(33% - 147px)!important;
     margin: 0px 0px 0px    -moz-calc(33% - 147px)!important;
     margin: 0px 0px 0px         calc(33% - 147px)!important;
@@ -117,7 +117,7 @@ class ClaimEntryField extends React.Component {
               <ClaimGrid container direction="column" justifyContent="center" alignItems="center" spacing={3}>
                 <ClaimGridElement item xs>
                 <ColumnDiv>
-                <EntryDiv>
+                <TextLeftEntryDiv>
                 <TextFieldWithTooltip validator={notEmptyValidator} valid={this.props.valid} required multiline rows={3} value={this.props.data["cleaned_claim"]} name='cleaned_claim' label="Claim" onChange={this.handleFieldChange} tooltip="Please verify that the claim has been copied correctly from the article below, and that it can be understood without the context of the article."/>
                 <DatePickerWithTooltip name="date" label="Claim Date" onChange={this.handleFieldChange} tooltip="The date of the original claim, regardless of whether it is necessary for verifying the claim. This date is often mentioned by the fact checker, but not in a standardized place where we could automatically retrieve it. Note that the date of origin for the original claim and the fact checking article may be different and both stated in text. We specifically need the original claim date, as we intend to filter out results published after that date during search. Furthermore, that date may be necessary for checking the claim."/>
                 <SelectWithTooltip validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["phase_1_label"]} name="phase_1_label" label="Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Information", "Missing Context", "Not A Checkable Claim"]} tooltip="
@@ -128,7 +128,7 @@ class ClaimEntryField extends React.Component {
                 <li>Missing Context: The claim is misleading due to missing context, but not explicitly refuted. This includes cherry picking, true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found. Missing context may also be relevant if a situation has changed over time, and the claim fails to mention this.</ul>"
                 />
 
-                </EntryDiv>
+                </TextLeftEntryDiv>
                 <TextRightEntryDiv>
                 <TextFieldWithTooltip name='hyperlink' label="Hyperlink" onChange={this.handleFieldChange} tooltip="A hyperlink to the original claim, if that is provided by the fact checking site. Examples of this include Facebook posts, the original article or blog post being fact checked, and embedded video links. If the original claim has a hyperlink on the fact checking site, but that hyperlink is dead, annotators should leave the field empty."/>
                 <TextFieldWithTooltip name='speaker' label="Speaker" onChange={this.handleFieldChange} tooltip="The speaker (or source) of the original claim."/>
