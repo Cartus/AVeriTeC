@@ -5,15 +5,31 @@ import styled from 'styled-components';
 import SearchField from '../components/SearchField';
 
 const QADataField = styled.div`
-    width:39.5%;
+    width: -webkit-calc(40% - 10px)!important;
+    width:    -moz-calc(40% - 10px)!important;
+    width:         calc(40% - 10px)!important;
     float:left;
+    overflow:auto;
+    border-style:inset;
+    border-width:2px;
+    height: -webkit-calc(100% - 6px)!important;
+    height:    -moz-calc(100% - 6px)!important;
+    height:         calc(100% - 6px)!important;
 `
 
 const QAPageView = styled(ClaimPageView)`
-    width:59%;
+    width:60%;
     float:left;
-    margin:10px;
-    height:160vh;
+    border-style:inset;
+    border-width:2px;
+    height: -webkit-calc(100% - 6px)!important;
+    height:    -moz-calc(100% - 6px)!important;
+    height:         calc(100% - 6px)!important;
+`
+
+const QAPageDiv = styled.div`
+    width: 100%;
+    height: 100vh;
 `
 
 class QuestionGeneration extends React.Component {
@@ -35,13 +51,13 @@ class QuestionGeneration extends React.Component {
 
     render() {
         return (
-            <div>
+            <QAPageDiv>
                 <QAPageView claim={this.state.claim}/>
                 <QADataField>
                     <QuestionGenerationBar claim={this.state.claim}/>
                     <SearchField claim_date={this.state.claim.claim_date}/>
                 </QADataField>
-            </div>
+            </QAPageDiv>
         );
       }
 }

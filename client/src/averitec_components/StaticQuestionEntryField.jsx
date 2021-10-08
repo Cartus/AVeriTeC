@@ -23,14 +23,31 @@ const QAGridElementLeft = styled(Grid)`
     width:         calc(51%)!important;
 `
 
-const PaddingDiv = styled.div`
-    width:63px;
+const ExtraLeftSpacing = styled.div`
+    padding:10px;
+    float:left;
+`
+
+const SourceSpacingDiv2 = styled.div`
+    width:100%;
+    height:22px;
+`
+
+const SourceSpacingDiv = styled.div`
+    width:100%;
+    height:5px;
 `
 
 const QAGridElementRight = styled(Grid)`
     width: -webkit-calc(49% - 63px)!important;
     width:    -moz-calc(49% - 63px)!important;
     width:         calc(49% - 63px)!important;
+`
+
+const LargeTextField = styled(TextField)`
+width: -webkit-calc(100% - 80px)!important;
+width:    -moz-calc(100% - 80px)!important;
+width:         calc(100% - 80px)!important;
 `
 
 class StaticQuestionEntryField extends React.Component {
@@ -51,12 +68,19 @@ class StaticQuestionEntryField extends React.Component {
               <QAGrid container direction="row" justifyContent="space-evenly" alignItems="center" spacing={3}>
                 <QAGridElementLeft item xs>
                     <ColumnDiv>
-                        <TextField name='question' label="Question" InputProps={{readOnly: true}} variant="filled"  value={this.props.question.text} multiline rows={2}/>
-                        <TextField name='answer' label="Answer" InputProps={{readOnly: true}} variant="filled" value={this.props.question.answer} multiline rows={2}/>
+                        <ExtraLeftSpacing/>
+                        <LargeTextField name='question' label="Question" InputProps={{readOnly: true}} variant="filled"  value={this.props.question.text} multiline rows={3}/>
+                    </ColumnDiv>
+                </QAGridElementLeft>
+                <Divider orientation="vertical" flexItem />
+                <QAGridElementLeft item xs>
+                    <ColumnDiv>
+                        <SourceSpacingDiv2/>
+                        <LargeTextField name='answer' label="Answer" InputProps={{readOnly: true}} variant="filled" value={this.props.question.answer} multiline rows={3}/>
+                        <SourceSpacingDiv/>
                         <span>Source: <a href={this.props.question.url}>{this.props.question.url}</a></span>
                     </ColumnDiv>
                 </QAGridElementLeft>
-                <PaddingDiv/>
                 <Divider orientation="vertical" flexItem />
                 <QAGridElementRight item xs>
                     <ColumnDiv>
