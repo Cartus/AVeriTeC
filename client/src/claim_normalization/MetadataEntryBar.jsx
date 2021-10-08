@@ -29,13 +29,13 @@ const ClaimGridElement = styled(Grid)`
 const EntryDiv = styled.div`
   float:left;
 
-  @media only screen and (max-width: 1121px)  {
+  @media only screen and (max-width: 1674px)  {
     margin: 0px 0px 0px -webkit-calc(50% - 140px)!important;
     margin: 0px 0px 0px    -moz-calc(50% - 140px)!important;
     margin: 0px 0px 0px         calc(50% - 140px)!important;
   }
 
-  @media only screen and (min-width: 1122px)  {
+  @media only screen and (min-width: 1675px)  {
     margin: 0px 0px 0px -webkit-calc((100% - 586px)/3)!important;
     margin: 0px 0px 0px    -moz-calc((100% - 586px)/3)!important;
     margin: 0px 0px 0px         calc((100% - 586px)/3)!important;
@@ -45,13 +45,13 @@ const EntryDiv = styled.div`
 const TextRightEntryDiv = styled.div`
   float:left;
 
-  @media only screen and (max-width: 1121px)  {
+  @media only screen and (max-width: 1674px)  {
     margin: -5px 0px 0px -webkit-calc(50% - 140px)!important;
     margin: -5px 0px 0px    -moz-calc(50% - 140px)!important;
     margin: -5px 0px 0px         calc(50% - 140px)!important;
   }
 
-  @media only screen and (min-width: 1122px)  {
+  @media only screen and (min-width: 1675px)  {
     margin: 0px 0px 0px -webkit-calc((100% - 586px)/3)!important;
     margin: 0px 0px 0px    -moz-calc((100% - 586px)/3)!important;
     margin: 0px 0px 0px         calc((100% - 586px)/3)!important;
@@ -61,13 +61,13 @@ const TextRightEntryDiv = styled.div`
 const CheckboxLeftEntryDiv = styled.div`
   float:left;
 
-  @media only screen and (max-width: 1185px)  {
+  @media only screen and (max-width: 1776px)  {
     margin: 0px -webkit-calc(50% - 134px)!important;
     margin: 0px    -moz-calc(50% - 134px)!important;
     margin: 0px         calc(50% - 134px)!important;
   }
 
-  @media only screen and (min-width: 1186px)  {
+  @media only screen and (min-width: 1777px)  {
     margin: 0px 0px 0px -webkit-calc(33% - 185px)!important;
     margin: 0px 0px 0px    -moz-calc(33% - 185px)!important;
     margin: 0px 0px 0px         calc(33% - 185px)!important;
@@ -77,17 +77,21 @@ const CheckboxLeftEntryDiv = styled.div`
 const CheckboxRightEntryDiv = styled.div`
   float:left;
 
-  @media only screen and (max-width: 1185px)  {
+  @media only screen and (max-width: 1776px)  {
     margin: 24px 0px 0px -webkit-calc(50% - 134px)!important;
     margin: 24px 0px 0px    -moz-calc(50% - 134px)!important;
     margin: 24px 0px 0px         calc(50% - 134px)!important;
   }
 
-  @media only screen and (min-width: 1186px)  {
+  @media only screen and (min-width: 1777px)  {
     margin: 0px 0px 0px -webkit-calc(33% - 147px)!important;
     margin: 0px 0px 0px    -moz-calc(33% - 147px)!important;
     margin: 0px 0px 0px         calc(33% - 147px)!important;
   }
+`
+
+const ProperlySizedDivider = styled(Divider)`
+  margin: 0px -15px 0px 45px!important;
 `
 
 class ClaimEntryField extends React.Component {
@@ -135,7 +139,7 @@ class ClaimEntryField extends React.Component {
                 
                 
                 </ColumnDiv>
-                </ClaimGridElement><Divider orientation="horizontal" flexItem />
+                </ClaimGridElement><ProperlySizedDivider orientation="horizontal" flexItem />
               <ClaimGridElement item xs>
               <ColumnDiv>
                 <CheckboxLeftEntryDiv>
