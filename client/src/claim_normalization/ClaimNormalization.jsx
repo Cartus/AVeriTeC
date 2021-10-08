@@ -4,19 +4,31 @@ import ClaimPageView from '../components/ClaimPageView';
 import styled from 'styled-components';
 
 const NEntryBar = styled(MetadataEntryBar)`
-    width:39%;
+    width: -webkit-calc(40% - 10px)!important;
+    width:    -moz-calc(40% - 10px)!important;
+    width:         calc(40% - 10px)!important;
     float:left;
+    overflow:auto;
+    border-style:inset;
+    border-width:2px;
+    height: -webkit-calc(100% - 6px)!important;
+    height:    -moz-calc(100% - 6px)!important;
+    height:         calc(100% - 6px)!important;
 `
 
 const NPageView = styled(ClaimPageView)`
-    width:59.5%;
+    width:60%;
     float:left;
-    margin:10px;
-    height:130vh;
+    border-style:inset;
+    border-width:2px;
+    height: -webkit-calc(100% - 6px)!important;
+    height:    -moz-calc(100% - 6px)!important;
+    height:         calc(100% - 6px)!important;
 `
 
 const PageDiv = styled.div`
     width: 100%;
+    height: 100vh;
 `
 
 class ClaimNormalization extends React.Component {
