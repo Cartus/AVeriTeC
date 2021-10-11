@@ -12,6 +12,10 @@ const SearchItemCard = styled(Card)`
   padding:10px;
 `
 
+const EntryCard = styled(Card)`
+  margin:10px;
+`
+
 const CenterSearchBar = styled(SearchBar)`
     display: flex;
     justify-content: center;
@@ -186,6 +190,8 @@ class SearchField extends React.Component {
 
         return (
             <div style={this.props.style} className={className}>
+                <EntryCard>
+                <CenterSpan>Web Search (TODO: Update styling of this)</CenterSpan>
                 <CenterSearchBar
                 value={this.state.searchQuery}
                 onChange={(newSearchQuery) => this.setState({ searchQuery: newSearchQuery.target.value })}
@@ -194,6 +200,7 @@ class SearchField extends React.Component {
                 fullWidth
                 />
                 {searchResults}
+                </EntryCard>
             </div>
         );
       }

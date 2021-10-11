@@ -17,19 +17,26 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ElementContainer = styled.div`
-    margin: 10px;
-    width: 260px;
-    height:50px;
+    margin: 5px;
+    width: 280px;
+    height: 40px;
 `
+
 const TextFieldContainer = styled.div`
-    width: 210px;
+    width: -webkit-calc(100% - 47px)!important;
+    width:    -moz-calc(100% - 47px)!important;
+    width:         calc(100% - 47px)!important;
     float:left;
 `
 
 const QMarkContainer = styled.div`
     width:40px;
-    padding-left:220px;
+    float:right;
     padding-top:7px;
+`
+
+const StyledFormControl = styled(FormControl)`
+    width:100%
 `
 
 export default function SelectWithTooltip(props) {
@@ -53,7 +60,7 @@ export default function SelectWithTooltip(props) {
   return (
     <ElementContainer>
       <TextFieldContainer>
-      <FormControl required={props.required} error={error} variant="outlined" size="small" className={classes.formControl}>
+      <StyledFormControl required={props.required} error={error} variant="outlined" size="small" className={classes.formControl}>
         <InputLabel>{props.label}</InputLabel>
         <Select
           value={props.value}
@@ -63,8 +70,8 @@ export default function SelectWithTooltip(props) {
         >
           {menuItems}
         </Select>
-        {error? <FormHelperText error={error}>{message}</FormHelperText> : ""}
-      </FormControl>
+        {/*error? <FormHelperText error={error}>{message}</FormHelperText> : ""*/}
+      </StyledFormControl>
       </TextFieldContainer>
       <QMarkContainer>
       <TooltipQMark title={props.tooltip}/>

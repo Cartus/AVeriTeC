@@ -1,5 +1,5 @@
 import React from 'react';
-import ClaimTopField from '../averitec_components/ClaimTopField';
+import ValidationClaimTopField from '../averitec_components/ValidationClaimTopField';
 import styled from 'styled-components';
 import Card from '@material-ui/core/Card';
 import StaticQuestionEntryField from '../averitec_components/StaticQuestionEntryField';
@@ -113,7 +113,7 @@ class VerdictValidation extends React.Component {
 
         return (
             <div>
-                <ClaimTopField claim={this.state.claim} valid={this.state.valid} data={this.state.annotation} ask_for_justification onChange={this.handleFieldChange} id="annotation"/>
+                <ValidationClaimTopField claim={this.state.claim} valid={this.state.valid} data={this.state.annotation} ask_for_justification onChange={this.handleFieldChange} id="annotation"/>
                 {questionPairs}
                 <NavBar onSubmit={this.doSubmit}/>
                 <div>{JSON.stringify(this.state)}</div>
