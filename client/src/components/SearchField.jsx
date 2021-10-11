@@ -137,7 +137,8 @@ class SearchField extends React.Component {
 
         var request = {
             method: "get",
-            url: "https://api.averitec.eu/web_search.php",
+            baseURL: 'https://api.averitec.eu/',
+            url: "web_search.php",
             params:{
                 query: query,
                 claim_date:claim_date,
