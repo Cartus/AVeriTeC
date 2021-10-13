@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import UserPanel from './UserPanel';
 import AssignmentControl from './AssignmentControl';
+import AdminControl from './AdminControl';
 
 const AssignmentField = styled(AssignmentControl)`
     width:33.333%;
@@ -26,7 +27,8 @@ class AnnotatorControl extends React.Component {
         
         this.state = {
             user : {
-                username: "Michael"
+                username: "Michael",
+                is_admin: true
             },
             assignments:{
                 phase_1: ["claim_123", "claim_234", "claim_345", "claim_456"],
@@ -45,6 +47,9 @@ class AnnotatorControl extends React.Component {
                     {(this.state.assignments.phase_2.length > 0)?<AssignmentField name="Question Generation" page="phase_2" assignments={this.state.assignments.phase_2}/>: ""}
                     {(this.state.assignments.phase_3.length > 0)?<AssignmentField name="Quality Control" page="phase_3" assignments={this.state.assignments.phase_3}/>: ""}
                 </div>
+                {(this.state.user.is_admin)? <div>
+                    <AdminControl name="Users"/>
+                </div> : ""}
             </div>
         );
       }
