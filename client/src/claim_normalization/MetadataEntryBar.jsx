@@ -113,7 +113,7 @@ class ClaimEntryField extends React.Component {
     }
 
     render() {
-      var country_list = countryFlagEmoji.list.map((entry) => {return entry.emoji + " " + entry.name})
+      var country_list = countryFlagEmoji.list.filter((entry) => {return !["European Union", "United Nations"].includes(entry.name)}).map((entry) => {return entry.emoji + " " + entry.name})
         return (
             <div>
               <ClaimGrid container direction="column" justifyContent="center" alignItems="center" spacing={3}>
