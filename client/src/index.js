@@ -7,6 +7,7 @@ import Registration from './login/Registration';
 import QuestionGeneration from './question_generation/QuestionGeneration';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import VerdictValidation from './verdict_validation/VerdictValidation';
+import AnnotatorControl from './control_panels/AnnotatorControl';
 
 const routing = (
   <Router>
@@ -31,6 +32,9 @@ const routing = (
           </Route>
           <Route path="/phase_3">
             <VerdictValidation />
+          </Route>
+          <Route path="/control">
+            <AnnotatorControl />
           </Route>
       </Switch>
   </Router>

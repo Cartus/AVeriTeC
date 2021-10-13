@@ -134,15 +134,17 @@ class SearchField extends React.Component {
         var query = this.state.searchQuery
         var claim_date = this.props.claim_date
         var page = this.state.page
+        var country_code = this.props.country_code
 
         var request = {
             method: "get",
             baseURL: 'https://api.averitec.eu/',
-            url: "web_search.php",
+            url: "/web_search.php",
             params:{
                 query: query,
                 claim_date:claim_date,
-                page: page
+                page: page,
+                country_code : country_code
             }
         };
 

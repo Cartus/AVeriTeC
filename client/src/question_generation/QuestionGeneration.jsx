@@ -44,7 +44,8 @@ class QuestionGeneration extends React.Component {
                 claim_type: ["Numerical Claim"],
                 fact_checking_strategy: ["Numerical Comparison", "Consultation"],
                 claim_hyperlink: "https://archive.is/qpiqn",
-                claim_date: "11/06/2021"
+                claim_date: "11/06/2021",
+                country_code: "gb"
             }
         }
       }
@@ -55,7 +56,7 @@ class QuestionGeneration extends React.Component {
                 <QAPageView claim={this.state.claim}/>
                 <QADataField>
                     <QuestionGenerationBar claim={this.state.claim}/>
-                    <SearchField claim_date={this.state.claim.claim_date}/>
+                    <SearchField claim_date={this.state.claim.claim_date} country_code={this.state.claim.country_code}/>
                 </QADataField>
             </QAPageDiv>
         );

@@ -9,6 +9,7 @@ parser.add_argument('--query', default='alex jones gay frogs infowars')
 parser.add_argument('--page', default=1, type=int)
 parser.add_argument('--results_per_page', default=10, type=int)
 parser.add_argument('--claim_date', default="30/09/2021")
+parser.add_argument('--country_code', default="gb")
 args = parser.parse_args()
 
 api_key = " AIzaSyAzGwvRt9C8KfdxcNtdXIsEGvI0hYTdo2g"
@@ -52,7 +53,8 @@ results = google_search(
     num=args.results_per_page,
     start=start_idx,
     sort="date:r:19000101:"+sort_date,
-    dateRestrict=None
+    dateRestrict=None,
+    gl=args.country_code.upper()
 )
 
 formatted_results = {
