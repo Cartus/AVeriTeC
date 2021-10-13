@@ -9,6 +9,7 @@ import Divider from '@material-ui/core/Divider';
 import EntryCardContainer from '../components/EntryCardContainer';
 import {notEmptyValidator, atLeastOneValidator} from '../utils/validation.js'
 import countryFlagEmoji from "country-flag-emoji";
+import CountryPickerWithTooltip from '../components/CountryPickerWithTooltip';
 
 const ColumnDiv = styled.div`
     width:100%;
@@ -113,7 +114,6 @@ class ClaimEntryField extends React.Component {
     }
 
     render() {
-      var country_list = countryFlagEmoji.list.filter((entry) => {return !["European Union", "United Nations"].includes(entry.name)}).map((entry) => {return entry.emoji + " " + entry.name})
         return (
             <div>
               <ClaimGrid container direction="column" justifyContent="center" alignItems="center" spacing={3}>
@@ -136,7 +136,8 @@ class ClaimEntryField extends React.Component {
                 <TextFieldWithTooltip name='speaker' label="Speaker" onChange={this.handleFieldChange} tooltip="The speaker (or source) of the original claim."/>
                 <TextFieldWithTooltip name='transcription' label="Transcription" onChange={this.handleFieldChange} tooltip="If the original source is an image that contains text (for example, the Facebook meme about Michelle Obama listed above), we ask the annotators to transcribe whatever text occurs in the image as metadata. This is an easy way to add additional training data for anyone wishing to build models without an image processing component, and should not take much extra time for the annotators to gather."/>
                 <TextFieldWithTooltip name='media_source' label="Media Source URLs" onChange={this.handleFieldChange} tooltip="If the claim refers directly to an image, video, or audio file, please paste the link here. If multiple sources are referred to, please add them all, separated by commas."/>
-                <SelectWithTooltip name="location" label="Location" onChange={this.handleFieldChange} items={country_list} tooltip="Please select the location most relevant to the claim."/>
+                <CountryPickerWithTooltip name="location" label="Location" onChange={this.handleFieldChange} tooltip="Please select the location most relevant to the claim."/>
+
 
                 </TextRightEntryDiv>
                 
