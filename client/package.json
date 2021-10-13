@@ -10,6 +10,7 @@
     "@material-ui/lab": "^5.0.0-alpha.41",
     "@material-ui/styles": "^5.0.0-beta.2",
     "@mui/material": "^5.0.3",
+    "@mui/x-data-grid": "^4.0.1",
     "@snekcode/mui-search-bar": "^1.1.0",
     "axios": "^0.22.0",
     "country-flag-emoji": "^1.0.3",
