@@ -25,7 +25,7 @@ $_POST = json_decode($rest_json, true);
 $query = $_GET['query'];
 $page = $_GET['page'];
 $claim_date = $_GET['claim_date'];
-$country_code = $_GET['country_code']
+$country_code = $_GET['country_code'];
 
 $command = "{$pythonpath} {$scriptpath} --query \"{$query}\" --page {$page} --claim_date {$claim_date} --country_code {$country_code} 2>&1";
 
