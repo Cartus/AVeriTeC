@@ -1,15 +1,9 @@
-import React from 'react';
 import Card from '@material-ui/core/Card';
 import styled from 'styled-components';
-
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
+import * as react from "react";
 import { DataGrid } from '@mui/x-data-grid';
 import Button from '@material-ui/core/Button';
-import { isThisSecond } from 'date-fns';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const EntryCard = styled(Card)`
     margin:10px;
@@ -25,6 +19,12 @@ width:200px;
 margin:10px 0px!important;
 `
 
+const JsonButton = styled(Button)`
+float:left;
+width:200px;
+margin:10px!important;
+`
+
 const DeleteButton = styled(Button)`
 float:right;
 width:200px;
@@ -32,21 +32,11 @@ margin:10px 0px!important;
 `
 
 
-class AdminControl extends React.Component {
+class AdminControl extends react.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            header: [
-                {field: "id", headerName: "ID", width:120}, 
-                {field: "Username", editable:true, width: 250}, 
-                {field: "randomNumber", type: "number", editable: true, width: 250}
-            ],
-            table: [
-                {id: 0, Username: "Michael", "randomNumber": 348},
-                {id: 1, Username: "Zhijiang", "randomNumber": 241},
-                {id: 2, Username: "Andreas", "randomNumber": 115},
-            ],
             selected: []
         }
 
@@ -55,6 +45,45 @@ class AdminControl extends React.Component {
         this.makeNewRow = this.makeNewRow.bind(this);
         this.deleteRows = this.deleteRows.bind(this);
         this.setSelectedRows = this.setSelectedRows.bind(this);
+    }
+
+    componentDidMount() {
+        if (this.props.name == "Users"){
+            this.setState({
+                header: [
+                    {field: "id", headerName: "ID", width:120}, 
+                    {field: "Username", editable:true, width: 250}, 
+                    {field: "randomNumber", type: "number", editable: true, width: 250}
+                ],
+                table: [
+                    {id: 0, Username: "Michael", "randomNumber": 348},
+                    {id: 1, Username: "Zhijiang", "randomNumber": 241},
+                    {id: 2, Username: "Andreas", "randomNumber": 115},
+                    {id: 3, Username: "Michael2", "randomNumber": 348},
+                    {id: 4, Username: "Zhijiang2", "randomNumber": 241},
+                    {id: 5, Username: "Andreas2", "randomNumber": 115},
+                    {id: 6, Username: "Michael", "randomNumber": 348},
+                    {id: 7, Username: "Zhijiang", "randomNumber": 241},
+                    {id: 8, Username: "Andreas", "randomNumber": 115},
+                    {id: 9, Username: "Michael2", "randomNumber": 348},
+                    {id: 10, Username: "Zhijiang2", "randomNumber": 241},
+                    {id: 11, Username: "Andreas2", "randomNumber": 115},
+                ]
+            })
+        } else if (this.props.name == "Claims"){
+            this.setState({
+                header: [
+                    {field: "id", headerName: "ID", width:120}, 
+                    {field: "claim_url", editable:true, width: 600}, 
+                    {field: "phase_1_annotation_ids", editable: true, width: 250},
+                    {field: "phase_2_annotation_ids", editable: true, width: 250},
+                    {field: "phase_3_annotation_ids", editable: true, width: 250}
+                ],
+                table: [
+                    {id: 0, claim_url: "https://web.archive.org/web/20210717085246/https://www.factcheck.org/2021/07/cdc-data-thus-far-show-covid-19-vaccination-safe-during-pregnancy/", phase_1_annotation_ids: [23, 1, 7], phase_2_annotation_ids: [3,4], phase_3_annotation_ids: [8]},
+                ]
+            })
+        }
     }
 
     cellEdit(params, event) {
@@ -70,6 +99,10 @@ class AdminControl extends React.Component {
     deleteRows(){
         console.log(`Delete entries by ID: ` + JSON.stringify(this.state.selected))
         // I did not implement code to delete from the state here. We shjould make the API call to edit instead, then reload the entire table. That way, if there is a mistake/lost connection to the server/etc, the state will not falsely update.
+    }
+
+    deleteRows(){
+        console.log(`Get JSON list file from the API containing full JSONs for these: ` + JSON.stringify(this.state.selected))
     }
 
     setSelectedRows(rows){
@@ -93,31 +126,42 @@ class AdminControl extends React.Component {
         if(this.props.className !== undefined){
             className = this.props.className
         }
+
+        let datagrid = ""
+
+        if (this.state.header){
+            datagrid = <DataGrid
+                rows={this.state.table}
+                columns={this.state.header}
+                pageSize={10}
+                rowsPerPageOptions={[10]}
+                checkboxSelection
+                disableSelectionOnClick
+                onCellEditStop={this.cellEdit}
+                onSelectionModelChange={this.setSelectedRows}
+            />
+        }
+
+        var hackedDivHeight = 55 * ((this.state.table)? ((this.state.table.length > 10)? 10 : this.state.table.length) + 2 : 0) + 10
+     
         
         return (
             <div className={className}>
                 <EntryCard>
                     <Header>{this.props.name}</Header>
-                    <div style={{ height: 400, width: '100%' }}>
-                        <DataGrid
-                            rows={this.state.table}
-                            columns={this.state.header}
-                            pageSize={5}
-                            rowsPerPageOptions={[5]}
-                            checkboxSelection
-                            disableSelectionOnClick
-                            onCellEditStop={this.cellEdit}
-                            onSelectionModelChange={this.setSelectedRows}
-                        />
-                        <AddButton variant="contained" color="secondary" onClick={this.addRow}>
+                    <div style={{ height: hackedDivHeight, width: '100%' }}>
+                        {datagrid}                        
+                        <AddButton variant="contained" color="primary" onClick={this.addRow}>
                             Add Row
                         </AddButton>
-                        <DeleteButton variant="contained" color="primary" onClick={this.deleteRows}>
+                        <JsonButton variant="contained" color="primary" onClick={this.downloadJsons}>
+                            Download JSONs
+                        </JsonButton>
+                        <DeleteButton variant="contained" color="error" startIcon={<DeleteIcon />} onClick={this.deleteRows}>
                             Delete Selected
                         </DeleteButton>
                     </div>
                 </EntryCard> 
-                {JSON.stringify(this.state)}
             </div>
         );
     }
