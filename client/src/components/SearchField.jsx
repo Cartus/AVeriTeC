@@ -30,7 +30,7 @@ const CenterPagination = styled(Pagination)`
     margin: 30px 0px;
 `
 
-const CenterSpan = styled.span`
+const CenterSpan = styled.h4`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -194,7 +194,7 @@ class SearchField extends React.Component {
         return (
             <div style={this.props.style} className={className}>
                 <EntryCard>
-                <CenterSpan>Web Search (TODO: Update styling of this)</CenterSpan>
+                <CenterSpan>Web Search</CenterSpan>
                 <CenterSearchBar
                 value={this.state.searchQuery}
                 onChange={(newSearchQuery) => this.setState({ searchQuery: newSearchQuery.target.value })}

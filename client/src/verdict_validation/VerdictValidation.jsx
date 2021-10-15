@@ -6,15 +6,51 @@ import StaticQuestionEntryField from '../averitec_components/StaticQuestionEntry
 import Button from '@material-ui/core/Button';
 import {notEmptyValidator, atLeastOneValidator} from '../utils/validation.js'
 import NavBar from '../averitec_components/NavBar';
+import PhaseControl from '../averitec_components/PhaseControl';
 
 const EntryCard = styled(Card)`
   margin:10px;
 `
 
-const SubmitButton = styled(Button)`
-float:right;
-width:120px;
-margin:10px !important;
+const RightPhaseControl = styled(PhaseControl)`
+@media (max-width: 1290px)  {
+  margin: 10px 10px 0px 10px;
+}
+
+@media (min-width: 1291px)  {
+  height:230px;
+  margin: 10px 10px 10px 0px;
+}
+`
+
+const RightBox = styled.div`
+  @media (max-width: 1290px)  {
+    width:100%;
+  }
+
+  @media (min-width: 1291px)  {
+    width:30%;
+  }
+
+  float: right;
+`
+
+const LeftBox = styled.div`
+  @media (max-width: 1290px)  {
+    width:100%;
+  }
+
+  @media (min-width: 1291px)  {
+    width:70%;
+  }
+
+  float: left;
+`
+
+const QABox = styled.div`
+  width: 100%;
+  float: left;
+  margin: -10px 0px 0px 0px;
 `
 
 function validate(content){
@@ -113,9 +149,16 @@ class VerdictValidation extends React.Component {
 
         return (
             <div>
-                <ValidationClaimTopField claim={this.state.claim} valid={this.state.valid} data={this.state.annotation} ask_for_justification onChange={this.handleFieldChange} id="annotation"/>
-                {questionPairs}
-                <NavBar onSubmit={this.doSubmit}/>
+              <RightBox>
+                <RightPhaseControl phaseName="Verdict Validation" phaseInstructions="Please read the claim and the question-answer pairs. Then, give your verdict on the claim. Do not look at any external information; make your verdict based ONLY on the question-answer pairs. If there are any problems with a question-answer pair, please use the form to report it. Do not use the information in any question-answer pair you report to make your verdict."/>
+              </RightBox>
+                <LeftBox>
+                  <ValidationClaimTopField claim={this.state.claim} valid={this.state.valid} data={this.state.annotation} ask_for_justification onChange={this.handleFieldChange} id="annotation"/>
+                </LeftBox>
+                <QABox>
+                  {questionPairs}
+                  <NavBar onSubmit={this.doSubmit}/>
+                </QABox>
                 <div>{JSON.stringify(this.state)}</div>
             </div>
         );

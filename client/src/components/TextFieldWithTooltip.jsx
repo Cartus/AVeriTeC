@@ -12,8 +12,12 @@ const ElementContainer = styled.div`
     height: ${(props) => {
         var space = 0;
         if (props.multiline){
-            space += 40 * (~~(props.rows/2) + 1);
-            space += 6 * ~~(props.rows/2);
+            if (props.rows == 3){
+                space = 98
+            } else{
+                space += 40 * (~~(props.rows/2) + 1);
+                space += 6 * ~~(props.rows/2);
+            }
         } else{
             space = 40;
         }

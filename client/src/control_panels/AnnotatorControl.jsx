@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import UserPanel from './UserPanel';
 import AssignmentControl from './AssignmentControl';
 import AdminControl from './AdminControl';
-import Button from '@material-ui/core/Button';
 
 const AssignmentField = styled(AssignmentControl)`
     width:33.333%;
