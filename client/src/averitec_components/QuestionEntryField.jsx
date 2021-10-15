@@ -38,9 +38,9 @@ const QAGridElementRight = styled(Grid)`
 const EmptySpaceDiv = styled.div`
     @media (min-width: 1675px)  {
         width:100%;
-        margin: 29px 0px 0px 0px;
-        margin: 29px 0px 0px 0px;
-        margin: 29px 0px 0px 0px;
+        margin: 41.5px 0px 0px 0px;
+        margin: 41.5px 0px 0px 0px;
+        margin: 41.5px 0px 0px 0px;
     }
 `
 

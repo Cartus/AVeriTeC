@@ -7,6 +7,10 @@ import {notEmptyValidator} from '../utils/validation.js'
 
 const EntryCard = styled(Card)`
   margin:10px;
+
+  @media (min-width: 1290px)  {
+    height:230px;
+  }
 `
 
 const ClaimHeader = styled.h4`
@@ -28,15 +32,6 @@ const ContainerDiv = styled.div`
 
 const SepSpaceDiv = styled.div`
     padding: 10px 0px 0px 0px;
-`
-
-const EmptySpaceDiv = styled.div`
-    width:100%;
-    @media (max-width: 1674px)  {
-        padding: 5px 0px 0px 0px;
-        padding: 5px 0px 0px 0px;
-        padding: 5px 0px 0px 0px;
-    }
 `
 
 const TextEntryDiv = styled.div`
@@ -94,7 +89,6 @@ class ClaimTopField extends React.Component {
                   {justification}
                 </TextEntryDiv>
                 <TextEntryDiv>
-                    <EmptySpaceDiv/>
                     <SelectWithTooltip name="label" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["label"]} label="Claim Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Information", "Missing Context"]} tooltip="
                     <ul>
                     <li>Supported: The claim is fully supported by the arguments and evidence presented.

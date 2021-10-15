@@ -8,13 +8,21 @@ const EntryCard = styled(Card)`
 `
 
 const SubmitButton = styled(Button)`
-float:right;
+float:left;
 width:120px;
-margin:10px !important;
+margin: 10px -webkit-calc(50% - 200px)!important;
+margin:    10px -moz-calc(50% - 200px)!important;
+margin:         10px calc(50% - 200px)!important;
 `
 
 const PrevButton = styled(Button)`
 float:left;
+width:120px;
+margin:10px !important;
+`
+
+const NextButton = styled(Button)`
+float:right;
 width:120px;
 margin:10px !important;
 `
@@ -33,6 +41,9 @@ class NavBar extends React.Component {
                 <SubmitButton variant="contained" color="primary" onClick={this.props.onSubmit}>
                   Submit
                 </SubmitButton>
+                <NextButton variant="contained" color="secondary" disabled={!this.props.hasSubmitted} onClick={this.props.onNext}>
+                  Next
+                </NextButton>
             </EntryCard>
         );
     }

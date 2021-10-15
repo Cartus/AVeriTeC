@@ -10,6 +10,7 @@ import EntryCardContainer from '../components/EntryCardContainer';
 import {notEmptyValidator, atLeastOneValidator} from '../utils/validation.js'
 import countryFlagEmoji from "country-flag-emoji";
 import CountryPickerWithTooltip from '../components/CountryPickerWithTooltip';
+import PhaseControl from '../averitec_components/PhaseControl';
 
 const ColumnDiv = styled.div`
     width:100%;
@@ -217,6 +218,7 @@ function validate(content){
 function MetadataEntryBar({className}) {
   return(
     <div className={className}>
+      <PhaseControl phaseName="Claim Normalization" phaseInstructions="Please read the fact checking article to the left, then fill out the information about the discussed claim below. If the article discusses more than one claim, you can add additional entry boxes for each claim."/>
       <EntryCardContainer 
       contentClass={ClaimEntryField} 
       entryName="claim" 
