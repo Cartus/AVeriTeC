@@ -123,7 +123,7 @@ class ClaimEntryField extends React.Component {
                 <TextLeftEntryDiv>
                 <TextFieldWithTooltip validator={notEmptyValidator} valid={this.props.valid} required multiline rows={4} value={this.props.data["cleaned_claim"]} name='cleaned_claim' label="Claim" onChange={this.handleFieldChange} tooltip="Please verify that the claim has been copied correctly from the article below, and that it can be understood without the context of the article."/>
                 <DatePickerWithTooltip name="date" label="Claim Date" onChange={this.handleFieldChange} tooltip="The date of the original claim, regardless of whether it is necessary for verifying the claim. This date is often mentioned by the fact checker, but not in a standardized place where we could automatically retrieve it. Note that the date of origin for the original claim and the fact checking article may be different and both stated in text. We specifically need the original claim date, as we intend to filter out results published after that date during search. Furthermore, that date may be necessary for checking the claim."/>
-                <SelectWithTooltip validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["phase_1_label"]} name="phase_1_label" label="Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Information", "Missing Context", "Not A Checkable Claim"]} tooltip="
+                <SelectWithTooltip validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["phase_1_label"]} name="phase_1_label" label="Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Information", "Missing Context"]} tooltip="
                 <ul>
                 <li>Supported: The claim is fully supported by the arguments and evidence presented.
                 <li>Refuted: The claim is fully contradicted by the arguments and evidence presented.
@@ -157,6 +157,7 @@ class ClaimEntryField extends React.Component {
                 required
                 items={[
                   {label: "Speculative Claim", tooltip: "For example \"the price of crude oil will rise next year.\" The primary task is to assess whether the prediction is plausible or realistic."},
+                  {label: "Causal Claim", tooltip: "For example \"the price of crude oil rose because of the Suez blockage.\" The primary task is to assess whether one thing caused another."},
                   {label: "Numerical Claim", tooltip: "For example \"cannabis should be legalized\". This contrasts with factual claims on the same topic, such as \"legalization of cannabis has helped reduce opioid deaths.\""},
                   {label: "Position Statement", tooltip: "The primary task is to verify whether a numerical fact is true, to verify whether a comparison between several numerical facts hold, or to determine whether a numerical trend or correlation is supported by the evidence."},
                   {label: "Quote Verification", tooltip: "The primary task is to identify whether a quote was actually said by the supposed speaker."},
@@ -172,7 +173,7 @@ class ClaimEntryField extends React.Component {
                 <CheckboxRightEntryDiv>
                 <AtLeastOneCheckboxGroup 
                 name="fact_checker_strategy" 
-                label="Fact Checking Strategy" 
+                label="Fact Checking Strategies" 
                 data={this.props.data["fact_checker_strategy"]}
                 valid={this.props.valid}
                 validator={atLeastOneValidator}
@@ -182,9 +183,9 @@ class ClaimEntryField extends React.Component {
                   {label: "Numerical Comparison", tooltip: "The fact checking process involved numerical comparisons, such as verifying that one number is greater than another."},
                   {label: "Consultation", tooltip: "The fact checkers directly reached out to relevant experts or people involved with the story, reporting new information from such sources as part of the fact checking article."},
                   {label: "Satirical Source Identification", tooltip: "The fact checking process involved identifying the source of the claim as satire, e.g. The Onion. We will discard all claims that were refuted only through satirical source identification."},
+                  {label: "Media Source Discovery", tooltip: "The fact checking process involved finding the original source of a (potentially doctored) image, video, or soundbite."},
                   {label: "Image Analysis", tooltip: "The fact checking process involved image analysis, such as comparing two images."},
-                  {label: "Media Sourcing", tooltip: "The fact checking process involved finding the original source of a (potentially doctored) image, video, or soundbite."},
-                  {label: "Other Media Analysis", tooltip: "The fact checking process involved analysing other media, such as video."}
+                  {label: "Other Non-text Media Analysis", tooltip: "The fact checking process involved analysing other media, such as video."}
                 ]} 
                 onChange={this.handleFieldChange}
                 tooltip="The approach taken by the fact checker, independent of the type of the claim."
@@ -218,7 +219,7 @@ function validate(content){
 function MetadataEntryBar({className}) {
   return(
     <div className={className}>
-      <PhaseControl phaseName="Claim Normalization" phaseInstructions="Please read the fact checking article to the left, then fill out the information about the discussed claim below. If the article discusses more than one claim, you can add additional entry boxes for each claim."/>
+      <PhaseControl phaseName="Claim Normalization" phaseInstructions="Please read the fact checking article to the left, then fill out the information about the discussed claim below. If the article discusses more than one claim, you can add additional entry boxes for each claim." reportButton={true}/>
       <EntryCardContainer 
       contentClass={ClaimEntryField} 
       entryName="claim" 
