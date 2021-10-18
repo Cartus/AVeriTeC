@@ -64,12 +64,23 @@ export default function CountryPickerWithTooltip(props) {
     return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
 });
 
+  const handleChange = (event, values) => {
+    // TODO: Ugly hack to mutate data, please fix
+    var fakeEvent = new Object();
+    fakeEvent.target = {
+      name: props.name,
+      value: values.code
+    };
+    props.onChange(fakeEvent)
+};
+
 
   return (
     <ElementContainer>
       <TextFieldContainer>
         <Autocomplete
             options={country_list}
+            onChange={handleChange}
             autoHighlight
             getOptionLabel={(option) => option.name + " (" + option.code + ")"}
             renderOption={(props, option) => (
@@ -83,7 +94,6 @@ export default function CountryPickerWithTooltip(props) {
           name={props.name}
           size="small" 
           value={props.value}
-          onChange={props.onChange}
           label={props.label}
           inputProps={{
             ...params.inputProps,

@@ -12,6 +12,14 @@ const LogoutBox = styled.div`
     margin: 10px;
 `
 
+const ReportBox = styled.div`
+    width: -webkit-calc(100% - 20px);
+    width:    -moz-calc(100% - 20px);
+    width:         calc(100% - 20px);
+    float:left;
+    padding: 10px 0px 0px 0px;
+`
+
 const PhaseHeader = styled.h4`
     margin: 10px 10px;
     float: left;
@@ -30,11 +38,17 @@ class PhaseControl extends React.Component {
         super(props);
 
         this.onLogout = this.onLogout.bind(this)
+        this.onReport = this.onReport.bind(this)
     }
 
     onLogout(e){
         e.preventDefault();
         console.log('log out');
+    };
+
+    onReport(e){
+        e.preventDefault();
+        console.log('report');
     };
 
     render() {
@@ -52,6 +66,10 @@ class PhaseControl extends React.Component {
                 </LogoutBox>
                 <PhaseDescriptionBox>
                     {this.props.phaseInstructions}
+                    {this.props.reportButton? 
+                    <ReportBox>
+                        If the fact checking article displays a 404 page or another error, please <a href="#" onClick={this.onReport}>let us know</a>.
+                    </ReportBox> : ""}
                 </PhaseDescriptionBox>
             </EntryCard>
         );
