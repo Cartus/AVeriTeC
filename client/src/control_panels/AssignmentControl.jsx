@@ -12,9 +12,15 @@ const Header = styled.h4`
 `
 
 const StartButton = styled(Button)`
-float:left;
+float:right;
 width:120px;
 margin:10px 0px!important;
+`
+
+const CountBox = styled.div`
+float:left;
+width:200px;
+margin:30px 0px 0px 0px!important;
 `
 
 
@@ -30,31 +36,22 @@ class AssignmentControl extends React.Component {
             className = this.props.className
         }
 
-        var assignments = this.props.assignments.map((assignment) => {
-            var link_str = "/" + this.props.page + "?claim_id=" + assignment;
-            return <li><a href={link_str}>{assignment}</a></li>
-        });
+        var assignments = "Finished " + this.props.assignments.done + "/" + this.props.assignments.total + "."
 
-        if (this.props.assignments.length > 0){
-            var firstAssignmentLink = "/" + this.props.page + "?claim_id=" + this.props.assignments[0]
-        }
+        var nextAssignmentLink = "/" + this.props.page
 
         return (
             <div className={className}>
                 <EntryCard>
                     <Header>Assignments: {this.props.name}</Header>
-                    <ul>
-                        {assignments}
-                    </ul>         
-                    {(this.props.assignments.length > 0)?                
+                    <CountBox>{assignments}</CountBox>
+                    
                     <StartButton variant="contained" color="primary" onClick={(e) => {
                         e.preventDefault();
-                        window.location.href=firstAssignmentLink;
+                        window.location.href=nextAssignmentLink;
                         }}>
                         Start Next
                     </StartButton>
-                    : ""
-                    }
                 </EntryCard> 
             </div>
         );

@@ -36,21 +36,31 @@ class AnnotatorControl extends React.Component {
                 is_admin: true
             },
             assignments:{
-                phase_1: ["claim_123", "claim_234", "claim_345", "claim_456"],
-                phase_2: ["claim_123", "claim_234"],
-                phase_3: ["claim_123", "claim_234"]
+                phase_1: {
+                    done: 5,
+                    total: 10
+                },
+                phase_2: {
+                    done: 3,
+                    total: 10
+                },
+                phase_3: {
+                    done: 5,
+                    total: 7
+                }
             }
         }
       }
+
 
     render() {
         return (
             <div>
                 <UserPanel user={this.state.user}/>
                 <div>
-                    {(this.state.assignments.phase_1.length > 0)?<AssignmentField name="Claim Normalization" page="phase_1" assignments={this.state.assignments.phase_1}/>: ""}
-                    {(this.state.assignments.phase_2.length > 0)?<AssignmentField name="Question Generation" page="phase_2" assignments={this.state.assignments.phase_2}/>: ""}
-                    {(this.state.assignments.phase_3.length > 0)?<AssignmentField name="Quality Control" page="phase_3" assignments={this.state.assignments.phase_3}/>: ""}
+                    {(this.state.assignments.phase_1.total - this.state.assignments.phase_1.done > 0)?<AssignmentField name="Claim Normalization" page="phase_1" assignments={this.state.assignments.phase_1}/>: ""}
+                    {(this.state.assignments.phase_2.total - this.state.assignments.phase_2.done > 0)?<AssignmentField name="Question Generation" page="phase_2" assignments={this.state.assignments.phase_2}/>: ""}
+                    {(this.state.assignments.phase_3.total - this.state.assignments.phase_3.done > 0)?<AssignmentField name="Quality Control" page="phase_3" assignments={this.state.assignments.phase_3}/>: ""}
                 </div>
                 {(this.state.user.is_admin)? <AdminPanel>
                     <AdminControl name="Users"/>
