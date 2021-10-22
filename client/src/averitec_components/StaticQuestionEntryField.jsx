@@ -89,10 +89,10 @@ class StaticQuestionEntryField extends React.Component {
                         label="Potential problems with the question-answer pair. Check any you think apply:" 
                         data={this.props.question["question_problems"]}
                         items={[
-                            {label: "The question is not understandable/readable", tooltip: "tt"},
-                            {label: "The answer is not understandable/readable", tooltip: "tt"},
-                            {label: "Answer seems wrong, but is supported by the source", tooltip: "tt"},
-                            {label: "Answer seems wrong, and is not supported by the source", tooltip: "tt"},
+                            {label: "The question is not understandable/readable", tooltip: "Please check this box if the question is empty, gibberish, or ungrammatical to the point where you cannot understand it."},
+                            {label: "The answer is not understandable/readable", tooltip: "Please check this box if the answer is empty, gibberish, or ungrammatical to the point where you cannot understand it."},
+                            {label: "Answer seems wrong, but is supported by the source", tooltip: "Please check this box if you believe the answer might be wrong, but the source supports the answer."},
+                            {label: "Answer seems wrong, and is not supported by the source", tooltip: "Please check this box if you believe the answer might be wrong, and you discover that it contradicts the source."},
                         ]} 
                         onChange={this.handleFieldChange}
                         tooltip="If you believe there are problems with this question, please tick the appropriate boxes here. If you identify problems with a question, please do not use it to support your verdict."

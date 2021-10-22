@@ -30,12 +30,12 @@ class QuestionGenerationBar extends React.Component {
     render() {
         return (
           <div>
-            <PhaseControl phaseName="Question Generation" reportButton={true} phaseInstructions="Please read the claim below, and the fact checking article to the left. Then, construct question-answer pairs using the boxes and the search field below to collect evidence from the internet. You can also use any links in the fact checking article to provide sources for your answers. When you have collected enough evidence to verify the claim independently of the fact checking article, please give your verdict."/>
+            <PhaseControl phaseName="Question Generation" reportButton={true} phaseInstructions="Please read the claim below, and the fact checking article to the left. Then, construct question-answer pairs using the boxes and the search field below to collect evidence from the internet. You can also use any links in the fact checking article to provide sources for your answers. If you cannot find an answer to a question you ask, please label that question &quot;Unanswerable&quot; and ask another question. When you have collected enough evidence to verify the claim independently of the fact checking article, please give your verdict. Please spend no more than N minutes on each claim."/>
             <EntryCardContainer 
             headerClass={ClaimTopField}
             contentClass={QuestionEntryField} 
             entryName="qa_pair" 
-            addTooltip="Add another question."
+            addTooltip="Add another question. Only do so if you think the question-answer pairs you have already collected do not contain sufficient evidence to give a verdict for the claim."
             numInitialEntries={1}
             claim={this.props.claim}
             validationFunction={validate}

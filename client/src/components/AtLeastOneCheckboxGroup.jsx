@@ -19,12 +19,13 @@ const useStyles = makeStyles((theme) => ({
 const LabelContainer = styled.div`
     float:left;
     padding-right:20px;
+    padding-bottom:7px;
 `
 
 const QMarkContainer = styled.div`
     width:40px;
-    padding-top:7px;
-    display:inline;
+    float:left;
+    height:35px;
 `
 
 
