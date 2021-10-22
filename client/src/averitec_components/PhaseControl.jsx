@@ -62,7 +62,7 @@ class PhaseControl extends React.Component {
             <EntryCard className={className}>
                 <PhaseHeader>{this.props.phaseName}</PhaseHeader>
                 <LogoutBox>
-                    <a href="#" onClick={this.onLogout}>Log out</a>
+                    <a href="/control" >Control Panel</a> | <a href="#" onClick={this.onLogout}>Log out</a>
                 </LogoutBox>
                 <PhaseDescriptionBox>
                     {this.props.phaseInstructions}

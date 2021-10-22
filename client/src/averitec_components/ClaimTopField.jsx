@@ -95,19 +95,20 @@ class ClaimTopField extends React.Component {
 
                 <ClaimHeader>{this.props.claim.claim_text}</ClaimHeader>
                 <TextLeftEntryDiv>
-                    <TextFieldWithTooltip name='claim_speaker' label="Claim Speaker" defaultValue={this.props.claim.claim_speaker} InputProps={{readOnly: true}} variant="filled" tooltip="The name of the person or organization who produced the claim"/>
+                    <TextFieldWithTooltip name='claim_speaker' label="Claim Speaker" defaultValue={this.props.claim.claim_speaker} InputProps={{readOnly: true}} variant="filled" tooltip="The speaker (or source) of the original claim."/>
                     <SepSpaceDiv/>
-                    <TextFieldWithTooltip name='claim_date' label="Claim Date" defaultValue={this.props.claim.claim_date} InputProps={{readOnly: true}} variant="filled" tooltip="The date the claim was made"/>
+                    <TextFieldWithTooltip name='claim_date' label="Claim Date" defaultValue={this.props.claim.claim_date} InputProps={{readOnly: true}} variant="filled" tooltip="The date the original claim was made."/>
                     <SepSpaceDiv/>
                 </TextLeftEntryDiv>
                 <TextRightEntryDiv>
                     <EmptySpaceDiv/>
-                    <SelectWithTooltip name="label" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["label"]} label="Claim Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Information", "Missing Context"]} tooltip="
-                    <ul>
-                    <li>Supported: The claim is fully supported by the arguments and evidence presented.
-                    <li>Refuted: The claim is fully contradicted by the arguments and evidence presented.
-                    <li>Not Enough Information: There is not enough information to support or refute the claim. The evidence either directly argues that appropriate evidence cannot be found, or leaves some aspect of the claim neither supported nor refuted.
-                    <li>Missing Context: The claim is misleading due to missing context, but not explicitly refuted. This includes cherry picking, true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found. Missing context may also be relevant if a situation has changed over time, and the claim fails to mention this.</ul>"
+                    <SelectWithTooltip name="label" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["label"]} label="Claim Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Information", "Missing Context"]} tooltip={
+                  <ul>
+                  <li>Supported: The claim is fully supported by the arguments and evidence presented.</li>
+                  <li>Refuted: The claim is fully contradicted by the arguments and evidence presented.</li>
+                  <li>Not Enough Information: There is not enough information to support or refute the claim. The evidence either directly argues that appropriate evidence cannot be found, or leaves some aspect of the claim neither supported nor refuted.</li>
+                  <li>Missing Context: The claim is misleading due to missing context, but not explicitly refuted. This includes cherry picking, true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found.</li>
+                  </ul>}
                     />
                 </TextRightEntryDiv>
                 </ContainerDiv>
