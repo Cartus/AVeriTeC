@@ -192,7 +192,7 @@ class SearchField extends React.Component {
         }
 
         return (
-            <div style={this.props.style} className={className}>
+            <div data-tour="search" style={this.props.style} className={className}>
                 <EntryCard>
                 <CenterSpan>Web Search</CenterSpan>
                 <CenterSearchBar

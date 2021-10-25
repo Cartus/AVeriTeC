@@ -3,6 +3,8 @@ import QuestionGenerationBar from './QuestionGenerationBar';
 import ClaimPageView from '../components/ClaimPageView';
 import styled from 'styled-components';
 import SearchField from '../components/SearchField';
+import { TourProvider } from "@reactour/tour";
+import TourWrapper from '../components/TourWrapper';
 
 const QADataField = styled.div`
     width: -webkit-calc(40% - 10px)!important;
@@ -46,18 +48,65 @@ class QuestionGeneration extends React.Component {
                 claim_hyperlink: "https://archive.is/qpiqn",
                 claim_date: "11/06/2021",
                 country_code: "gb"
-            }
+            },
+            userIsFirstVisiting: true
         }
       }
 
     render() {
+        const steps = [
+            {
+                selector: '[data-tour="claim_text"]',
+                content: "Begin by reading the claim."
+            },
+            {
+              selector: '[data-tour="claim_page_view"]',
+              content: "Carefully read the fact-checking article to see how this claim was verified."
+            },
+            {
+              selector: '[data-tour="report"]',
+              content: "If the fact-checking article shows a 404 page or another error, you can report it to us (although please give it a minute to load - some sites are not very fast)."
+            },
+            {
+              selector: '[data-tour="question_textfield"]',
+              content: "Based on the approach taken by the fact-checkers, formulate a question that will help you determine the truth of the claim."
+            },
+            {
+              selector: '[data-tour="answer_textfield"]',
+              content: "Find an answer to your question. You can use any sources linked to in the fact-checking article..."
+            },
+            {
+              selector: '[data-tour="search"]',
+              content: "... or find new sources using our custom search field."
+            },
+            {
+              selector: '[data-tour="answer_metadata"]',
+              content: "Please let us know on which page you found the answer, what kind of answer it is, and what kind of media (e.g. text, video) you found the answer in."
+            },
+            {
+              selector: '[data-tour="add"]',
+              content: "If one question is not enough to give a verdict for the claim (independent of the fact-checking article), you can add more questions. We expect you will need at least two questions for each claim, often more."
+            },
+            {
+              selector: '[data-tour="verdict"]',
+              content: "Once you have collected enough question-answer pairs to give a verdict, select the most fitting option here (regardless of which verdict the fact-checking article gave). If you have not found enough information to verify or refute the claim after N minutes, please choose 'Not Enough Information' and proceed to the next claim."
+            },
+            {
+              selector: '[data-tour="submit"]',
+              content: "When you have verified the claim, submit your questions and your verdict and proceed to the next article."
+            },
+          ];
+
         return (
             <QAPageDiv>
+                <TourProvider steps={steps}>
                 <QAPageView claim={this.state.claim}/>
                 <QADataField>
                     <QuestionGenerationBar claim={this.state.claim}/>
                     <SearchField claim_date={this.state.claim.claim_date} country_code={this.state.claim.country_code}/>
                 </QADataField>
+                {this.state.userIsFirstVisiting? <TourWrapper/> : ""}
+                </TourProvider>
             </QAPageDiv>
         );
       }

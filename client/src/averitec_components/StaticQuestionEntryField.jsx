@@ -83,7 +83,7 @@ class StaticQuestionEntryField extends React.Component {
                 </QAGridElementLeft>
                 <Divider orientation="vertical" flexItem />
                 <QAGridElementRight item xs>
-                    <ColumnDiv>
+                    <ColumnDiv data-tour="report_qa_problems">
                         <AtLeastOneCheckboxGroup 
                         name="question_problems" 
                         label="Potential problems with the question-answer pair. Check any you think apply:" 

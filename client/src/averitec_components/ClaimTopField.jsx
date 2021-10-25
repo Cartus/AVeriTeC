@@ -93,7 +93,7 @@ class ClaimTopField extends React.Component {
             <EntryCard>
                 <ContainerDiv>
 
-                <ClaimHeader>{this.props.claim.claim_text}</ClaimHeader>
+                <ClaimHeader data-tour="claim_text">{this.props.claim.claim_text}</ClaimHeader>
                 <TextLeftEntryDiv>
                     <TextFieldWithTooltip name='claim_speaker' label="Claim Speaker" defaultValue={this.props.claim.claim_speaker} InputProps={{readOnly: true}} variant="filled" tooltip="The speaker (or source) of the original claim."/>
                     <SepSpaceDiv/>
@@ -102,7 +102,8 @@ class ClaimTopField extends React.Component {
                 </TextLeftEntryDiv>
                 <TextRightEntryDiv>
                     <EmptySpaceDiv/>
-                    <SelectWithTooltip name="label" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["label"]} label="Claim Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Information", "Missing Context"]} tooltip={
+                    <div data-tour="verdict">
+                    <SelectWithTooltip name="label"validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["label"]} label="Claim Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Information", "Missing Context"]} tooltip={
                   <ul>
                   <li>Supported: The claim is fully supported by the arguments and evidence presented.</li>
                   <li>Refuted: The claim is fully contradicted by the arguments and evidence presented.</li>
@@ -110,6 +111,7 @@ class ClaimTopField extends React.Component {
                   <li>Missing Context: The claim is misleading due to missing context, but not explicitly refuted. This includes cherry picking, true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found.</li>
                   </ul>}
                     />
+                    </div>
                 </TextRightEntryDiv>
                 </ContainerDiv>
             </EntryCard>

@@ -97,11 +97,11 @@ class QuestionEntryField extends React.Component {
         return (
             <ContainerDiv>
                 <TextLeftEntryDiv>
-                    <TextFieldWithTooltip validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["question"]} name='question' label="Question" required multiline rows={3} onChange={this.handleFieldChange} tooltip="Please write a question that will help you gather evidence for or against the claim."/>
-                    <TextFieldWithTooltip validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["answer"]} name='answer' label="Answer" required multiline rows={3} onChange={this.handleFieldChange} tooltip="Please write the answer here. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence."/>
+                    <TextFieldWithTooltip data-tour="question_textfield" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["question"]} name='question' label="Question" required multiline rows={3} onChange={this.handleFieldChange} tooltip="Please write a question that will help you gather evidence for or against the claim."/>
+                    <TextFieldWithTooltip data-tour="answer_textfield" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["answer"]} name='answer' label="Answer" required multiline rows={3} onChange={this.handleFieldChange} tooltip="Please write the answer here. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence."/>
                 </TextLeftEntryDiv>
                 
-                <TextRightEntryDiv>
+                <TextRightEntryDiv data-tour="answer_metadata">
                     <TextFieldWithTooltip name='source_url' label="URL" onChange={this.handleFieldChange} tooltip="Please copy-paste the URL where you found the answer here."/>
                     <EmptySpaceDiv/>
                     <SelectWithTooltip name="answer_type" label="Answer Type" onChange={this.handleFieldChange} items={["Extractive", "Abstractive", "Boolean", "Unanswerable"]} tooltip={<ul>
