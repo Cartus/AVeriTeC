@@ -157,7 +157,7 @@ class EntryCardContainer extends React.Component {
               {headerField}
                 {entryFields}
                 <Tooltip title={this.props.addTooltip}>
-                <AddEntryCard onClick={this.addEntry} variant="outlined">
+                <AddEntryCard data-tour="add" onClick={this.addEntry} variant="outlined">
                   <AddCircleIcon/>
                 </AddEntryCard>
                 </Tooltip>
