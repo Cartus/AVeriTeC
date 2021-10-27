@@ -54,7 +54,7 @@ class ClaimNormalization extends React.Component {
             },
             {
               selector: '[data-tour="report"]',
-              content: "If the fact-checking article shows a 404 page or another error, you can report it to us (although please give it a minute to load - some sites are not very fast)."
+              content: "If the fact-checking article shows a 404 page or another error, or if the article is behind a paywall, you can report it to us (although please give it a minute to load - some sites are not very fast)."
             },
             {
               selector: '[data-tour="claim_textfield"]',
