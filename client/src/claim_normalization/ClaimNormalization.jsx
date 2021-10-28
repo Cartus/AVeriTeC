@@ -66,7 +66,11 @@ class ClaimNormalization extends React.Component {
             },
             {
               selector: '[data-tour="metadata_fields"]',
-              content: "Using the fact-checking article, fill in the rest of the data collection fields."
+              content: "Using the fact-checking article, fill in the rest of the data collection fields..."
+            },
+            {
+              selector: '[data-tour="metadata_fields_2"]',
+              content: "... and select a the most appropriate claim types and fact checking strategies."
             },
             {
               selector: '[data-tour="add"]',

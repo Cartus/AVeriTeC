@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import SearchField from '../components/SearchField';
 import { TourProvider } from "@reactour/tour";
 import TourWrapper from '../components/TourWrapper';
+import { WarningRounded } from '@material-ui/icons';
 
 const QADataField = styled.div`
     width: -webkit-calc(40% - 10px)!important;
@@ -34,6 +35,13 @@ const QAPageDiv = styled.div`
     height: 100vh;
 `
 
+const WarningDiv = styled.div`
+    color:#D0342C;
+    display:inline;
+    position:absolute;
+    margin: -5px 0px 0px -2px;
+`
+
 class QuestionGeneration extends React.Component {
     constructor(props) {
         super(props);
@@ -54,6 +62,8 @@ class QuestionGeneration extends React.Component {
       }
 
     render() {
+      var problemSourceText = <div>Searching the internet may return results from untrustworthy sources. We have compiled a list of the most common, and our search engine marks these with <WarningDiv><WarningRounded/></WarningDiv>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;. If possible, please avoid using these.</div>
+
         const steps = [
             {
                 selector: '[data-tour="claim_text"]',
@@ -80,12 +90,24 @@ class QuestionGeneration extends React.Component {
               content: "... or find new sources using our custom search field."
             },
             {
+              selector: '[data-tour="search"]',
+              content: problemSourceText
+            },
+            {
+              selector: '[data-tour="search"]',
+              content: "The search engine may also return results from other fact-checking sites. If possible, please avoid using these as well."
+            },
+            {
               selector: '[data-tour="answer_metadata"]',
-              content: "Please let us know on which page you found the answer, what kind of answer it is, and what kind of media (e.g. text, video) you found the answer in."
+              content: "Please let us know on which page you found the answer, what kind of answer it is, and what kind of media (e.g. text, video) you found the answer in.",
+            },
+            {
+              selector: '[data-tour="answer_type"]',
+              content: "For some questions you might not be able to find an answer. That's fine - just leave the answer blank, select \"unanswerable\" as the type, and ask another question. It may be useful to ask a rephrased version of the question, or a version with more context, as the next question."
             },
             {
               selector: '[data-tour="add"]',
-              content: "If one question is not enough to give a verdict for the claim (independent of the fact-checking article), you can add more questions. We expect you will need at least two questions for each claim, often more."
+              content: "If one question is not enough to give a verdict for the claim (independent of the fact-checking article), you can add more questions. We expect you will need at least two questions for each claim, often more. Please ask all questions necessary to gather the evidence needed for the verdict, including world knowledge that might seem obvious."
             },
             {
               selector: '[data-tour="verdict"]',

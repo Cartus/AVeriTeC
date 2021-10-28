@@ -155,7 +155,7 @@ class VerdictValidation extends React.Component {
         },
         {
           selector: '[data-tour="verdict"]',
-          content: "Based only on question-answer pairs, give your verdict for the claim."
+          content: "Give your verdict for the claim. Do not use prior knowledge you may have, or information from elsewhere on the internet - give your verdict based ONLY on the question-answer pairs."
         },
         {
           selector: '[data-tour="justification"]',
@@ -164,6 +164,10 @@ class VerdictValidation extends React.Component {
         {
           selector: '[data-tour="report_qa_problems"]',
           content: "If there are any problems with a question-answer pair, please report it. If you report a question-answer pair, please DO NOT use the information in it to give your verdict."
+        },
+        {
+          selector: '[data-tour="bias"]',
+          content: "If you think one the sources used may be biased, but the question is otherwise fine, you can still use it to form your answer. If you do so, please let us know by checking here."
         },
         {
           selector: '[data-tour="submit"]',

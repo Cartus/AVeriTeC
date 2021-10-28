@@ -6,7 +6,7 @@ import EntryCardContainer from '../components/EntryCardContainer';
 import TextFieldWithTooltip from '../components/TextFieldWithTooltip';
 import SelectWithTooltip from '../components/SelectWithTooltip';
 import ClaimTopField from '../averitec_components/ClaimTopField';
-import {notEmptyValidator, atLeastOneValidator} from '../utils/validation.js'
+import {notEmptyValidator} from '../utils/validation.js'
 
 const ContainerDiv = styled.div`
     width:100%;
@@ -26,7 +26,8 @@ const QAGridElementLeft = styled(Grid)`
 `
 
 const PaddingDiv = styled.div`
-    width:63px;
+  width:100%;
+  margin: 20px 0px 0px 0px;
 `
 
 const QAGridElementRight = styled(Grid)`
@@ -38,9 +39,9 @@ const QAGridElementRight = styled(Grid)`
 const EmptySpaceDiv = styled.div`
     @media (min-width: 1675px)  {
         width:100%;
-        margin: 41.5px 0px 0px 0px;
-        margin: 41.5px 0px 0px 0px;
-        margin: 41.5px 0px 0px 0px;
+        margin: 5px 0px 0px 0px;
+        margin: 5px 0px 0px 0px;
+        margin: 5px 0px 0px 0px;
     }
 `
 
@@ -76,6 +77,17 @@ const TextRightEntryDiv = styled.div`
   }
 `
 
+const QuestionReminderBox = styled.div`
+  width: 280px;
+
+
+  margin: 0px 0px 21px 0px;
+  
+  @media (max-width: 1674px)  {
+    margin: 15px 0px 5px 0px;
+  }
+`
+
 class QuestionEntryField extends React.Component {
     constructor(props) {
         super(props);
@@ -97,21 +109,34 @@ class QuestionEntryField extends React.Component {
         return (
             <ContainerDiv>
                 <TextLeftEntryDiv>
-                    <TextFieldWithTooltip data-tour="question_textfield" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["question"]} name='question' label="Question" required multiline rows={3} onChange={this.handleFieldChange} tooltip="Please write a question that will help you gather evidence for or against the claim."/>
-                    <TextFieldWithTooltip data-tour="answer_textfield" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["answer"]} name='answer' label="Answer" required multiline rows={3} onChange={this.handleFieldChange} tooltip="Please write the answer here. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence."/>
+                    <TextFieldWithTooltip data-tour="question_textfield" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["question"]} name='question' label="Question" required multiline rows={7} onChange={this.handleFieldChange} tooltip="Please write a question that will help you gather evidence for or against the claim."/>
+                    <PaddingDiv/>
+                    <TextFieldWithTooltip data-tour="answer_textfield" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["answer"]} name='answer' label="Answer" required multiline rows={7} onChange={this.handleFieldChange} tooltip="Please write the answer here. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence."/>
                 </TextLeftEntryDiv>
                 
-                <TextRightEntryDiv data-tour="answer_metadata">
-                    <TextFieldWithTooltip name='source_url' label="URL" onChange={this.handleFieldChange} tooltip="Please copy-paste the URL where you found the answer here."/>
+                <TextRightEntryDiv>
+                  <QuestionReminderBox>
+                    When entering a question, please ensure that it:
+                    <ul>
+                      <li>Is a well-formed sentence, rather than a search-engine query.</li>
+                      <li>Does not refer to named entities that appear only in the fact-checking article, and not in the claim, in metadata, or in previous answers.</li>
+                      <li>Does not directly ask whether the claim holds, e.g. 'is it true that [claim]'.</li>
+                    </ul>
+                  </QuestionReminderBox>
+                  <div data-tour="answer_metadata">
+                    <TextFieldWithTooltip name='source_url' label="Source URL" value={this.props.data["source_url"]} onChange={this.handleFieldChange} tooltip="Please copy-paste the URL where you found the answer here. Try to avoid using other fact-checking articles as sources."/>
                     <EmptySpaceDiv/>
+                    <div data-tour="answer_type">
                     <SelectWithTooltip name="answer_type" label="Answer Type" onChange={this.handleFieldChange} items={["Extractive", "Abstractive", "Boolean", "Unanswerable"]} tooltip={<ul>
                       <li>Extractive: The answer is a phrase copied directly from the source.</li>
                       <li>Abstractive: The answer was rephrased, but is based directly on the source.</li>
                       <li>Boolean: The answer is yes/no, based directly on the source.</li>
                       <li>Unanswerable: No source providing an answer to this question could be found.</li>
                       </ul>}/>
+                    </div>
                     <EmptySpaceDiv/>
                     <SelectWithTooltip name="source_medium" label="Source Medium" onChange={this.handleFieldChange} items={["Web text", "Web table", "PDF", "Image/graphic", "Video", "Audio", "Other"]} tooltip="Please describe what medium you found the answer in."/>
+                    </div>
                 </TextRightEntryDiv>
             </ContainerDiv>
         );
