@@ -54,7 +54,7 @@ class ClaimNormalization extends React.Component {
             },
             {
               selector: '[data-tour="report"]',
-              content: "If the fact-checking article shows a 404 page or another error, you can report it to us (although please give it a minute to load - some sites are not very fast)."
+              content: "If the fact-checking article shows a 404 page or another error, or if the article is behind a paywall, you can report it to us (although please give it a minute to load - some sites are not very fast)."
             },
             {
               selector: '[data-tour="claim_textfield"]',
@@ -66,7 +66,11 @@ class ClaimNormalization extends React.Component {
             },
             {
               selector: '[data-tour="metadata_fields"]',
-              content: "Using the fact-checking article, fill in the rest of the data collection fields."
+              content: "Using the fact-checking article, fill in the rest of the data collection fields..."
+            },
+            {
+              selector: '[data-tour="metadata_fields_2"]',
+              content: "... and select a the most appropriate claim types and fact checking strategies."
             },
             {
               selector: '[data-tour="add"]',

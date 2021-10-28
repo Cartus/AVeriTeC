@@ -4,6 +4,8 @@ import SelectWithTooltip from '../components/SelectWithTooltip';
 import Card from '@material-ui/core/Card';
 import styled from 'styled-components';
 import {notEmptyValidator} from '../utils/validation.js'
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 
 const EntryCard = styled(Card)`
   margin:10px;
@@ -42,12 +44,18 @@ const TextEntryDiv = styled.div`
   padding: 20px 0px 0px         calc((100% - 890px)/4)!important;
 `
 
+const CheckboxBox = styled(FormControlLabel)`
+  width: 300px;
+  margin: 20px 5px;
+`
+
 
 class ClaimTopField extends React.Component {
     constructor(props) {
         super(props);
 
         this.handleFieldChange = this.handleFieldChange.bind(this);
+        this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
         this.handleDelete = this.handleDelete.bind(this)
     }
 
@@ -55,6 +63,10 @@ class ClaimTopField extends React.Component {
         const { name, value } = event.target;
         this.props.onChange(this.props.id, name, value);
     }
+
+    handleCheckboxChange = event => {
+      this.props.onChange(this.props.id, event.target.name, event.target.checked);
+  }
 
     handleDelete = () => {
       this.props.onDelete(this.props.id)
@@ -100,6 +112,9 @@ class ClaimTopField extends React.Component {
                   </ul>}
                     />
                     </div>
+                  
+                  <CheckboxBox data-tour="bias" control={<Checkbox  name="bias" checked={this.props.data["bias"]} onChange={this.handleCheckboxChange} />} label="I believe my verdict may be biased because of the answer sources." />
+                    
                 </TextEntryDiv>
                 </ContainerDiv>
             </EntryCard>

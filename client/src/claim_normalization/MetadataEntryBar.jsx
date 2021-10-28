@@ -38,9 +38,10 @@ const TextLeftEntryDiv = styled.div`
   }
 
   @media (min-width: 1675px)  {
-    margin: 0px 0px 0px -webkit-calc((100% - 586px)/3)!important;
-    margin: 0px 0px 0px    -moz-calc((100% - 586px)/3)!important;
-    margin: 0px 0px 0px         calc((100% - 586px)/3)!important;
+    width: 310px;
+    margin: 0px -webkit-calc((100% - 620px)/3) 0px -webkit-calc((100% - 620px)/3)!important;
+    margin: 0px -moz-calc((100% - 620px)/3) 0px    -moz-calc((100% - 620px)/3)!important;
+    margin: 0px calc((100% - 620px)/3) 0px         calc((100% - 620px)/3)!important;
   }
 `
 
@@ -51,12 +52,6 @@ const TextRightEntryDiv = styled.div`
     margin: -5px 0px 0px -webkit-calc(50% - 140px)!important;
     margin: -5px 0px 0px    -moz-calc(50% - 140px)!important;
     margin: -5px 0px 0px         calc(50% - 140px)!important;
-  }
-
-  @media (min-width: 1675px)  {
-    margin: 0px 0px 0px -webkit-calc((100% - 586px)/3)!important;
-    margin: 0px 0px 0px    -moz-calc((100% - 586px)/3)!important;
-    margin: 0px 0px 0px         calc((100% - 586px)/3)!important;
   }
 `
 
@@ -92,8 +87,40 @@ const CheckboxRightEntryDiv = styled.div`
   }
 `
 
+const ClaimEntryDiv = styled.div`
+  @media (min-width: 1777px)  {
+    width: 310px;
+  }
+  float:left;
+`
+
+const ClaimReminderDiv = styled.div`
+  margin: 5px 0px 0px 0px;
+
+  width:280px;
+
+  @media (max-width: 1674px)  {
+    margin: 15px 0px 0px -webkit-calc(50% - 140px)!important;
+    margin: 15px 0px 0px    -moz-calc(50% - 140px)!important;
+    margin: 15px 0px 0px         calc(50% - 140px)!important;
+  }
+
+  @media (min-width: 1770px)  {
+    width:310px;
+  }
+  float:left;
+`
+
+const FirstProperlySizedDivider = styled(Divider)`
+  margin: -5px -15px -15px 45px!important;
+`
+
 const ProperlySizedDivider = styled(Divider)`
   margin: 0px -15px 0px 45px!important;
+`
+
+const VerdictBoxDiv = styled.div`
+  margin: -10px 0px 0px 0px;
 `
 
 class ClaimEntryField extends React.Component {
@@ -116,13 +143,13 @@ class ClaimEntryField extends React.Component {
     render() {
         return (
             <div>
-              <ClaimGrid  data-tour="metadata_fields" container direction="column" justifyContent="center" alignItems="center" spacing={3}>
+              <ClaimGrid container direction="column" justifyContent="center" alignItems="center" spacing={3}>
                 <ClaimGridElement item xs>
                 <ColumnDiv>
                 <TextLeftEntryDiv>
-                <TextFieldWithTooltip data-tour="claim_textfield" validator={notEmptyValidator} valid={this.props.valid} required multiline rows={4} value={this.props.data["cleaned_claim"]} name='cleaned_claim' label="Claim" onChange={this.handleFieldChange} tooltip="The text of the claim. Please verify that the claim has been copied correctly from the article below, and that it could be understood without reading the article."/>
-                <DatePickerWithTooltip name="date" label="Claim Date" onChange={this.handleFieldChange} tooltip="The date the original claim was made, if mentioned by the fact checking article."/>
-                <div data-tour="verdict">
+                <ClaimEntryDiv>
+                <TextFieldWithTooltip data-tour="claim_textfield" validator={notEmptyValidator} valid={this.props.valid} required multiline rows={6} value={this.props.data["cleaned_claim"]} name='cleaned_claim' label="Claim" onChange={this.handleFieldChange} tooltip="The text of the claim. Please verify that the claim has been copied correctly from the article below, and that it could be understood without reading the article."/>
+                <VerdictBoxDiv data-tour="verdict">
                 <SelectWithTooltip  validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["phase_1_label"]} name="phase_1_label" label="Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Information", "Missing Context"]} tooltip={
                 <ul>
                 <li>Supported: The claim is fully supported by the arguments and evidence presented.</li>
@@ -130,11 +157,28 @@ class ClaimEntryField extends React.Component {
                 <li>Not Enough Information: There is not enough information to support or refute the claim. The evidence either directly argues that appropriate evidence cannot be found, or leaves some aspect of the claim neither supported nor refuted.</li>
                 <li>Missing Context: The claim is misleading due to missing context, but not explicitly refuted. This includes cherry picking, true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found.</li>
                 </ul>}/>
-                </div>
+                </VerdictBoxDiv>
+                </ClaimEntryDiv>
                 </TextLeftEntryDiv>
-                <TextRightEntryDiv>
+                <ClaimReminderDiv>
+                  When entering a claim, please ensure that:
+                  <ul>
+                    <li>Any references to people, places, or organizations can be understood <b>without</b> reading the article.</li>
+                    <li>The claim directly mentions the speaker <b>only if</b> verifying that the speaker actually said the statement is a part of the task.</li>
+                    <li>The claim is phrased as a statement, rather than a question.</li>
+                  </ul>
+                </ClaimReminderDiv>
+                
+                </ColumnDiv>
+                </ClaimGridElement><FirstProperlySizedDivider orientation="horizontal" flexItem />
+                <ClaimGridElement  data-tour="metadata_fields" item xs>
+                <ColumnDiv>
+                <TextLeftEntryDiv>
+                <DatePickerWithTooltip name="date" label="Claim Date" onChange={this.handleFieldChange} tooltip="The date the original claim was made, if mentioned by the fact checking article."/>
                 <TextFieldWithTooltip name='hyperlink' label="Hyperlink" onChange={this.handleFieldChange} tooltip="A hyperlink to the original claim, if that is provided by the fact checking site. If the original claim has a hyperlink on the fact checking site, but that hyperlink is dead, please leave the field empty."/>
                 <TextFieldWithTooltip name='speaker' label="Speaker" onChange={this.handleFieldChange} tooltip="The speaker (or source) of the original claim."/>
+                </TextLeftEntryDiv>
+                <TextRightEntryDiv>                
                 <TextFieldWithTooltip name='transcription' label="Transcription" onChange={this.handleFieldChange} tooltip="If the original source is an image that contains text (for example a meme or image macro), please transcribe whatever text occurs in the image here."/>
                 <TextFieldWithTooltip name='media_source' label="Media Source URLs" onChange={this.handleFieldChange} tooltip="If the claim refers directly to an image, video, or audio file, please paste the link here. If multiple sources are referred to, please add them all, separated by commas."/>
                 <CountryPickerWithTooltip name="location" label="Location" onChange={this.handleFieldChange} tooltip="Please select the location most relevant to the claim."/>
@@ -145,7 +189,7 @@ class ClaimEntryField extends React.Component {
                 
                 </ColumnDiv>
                 </ClaimGridElement><ProperlySizedDivider orientation="horizontal" flexItem />
-              <ClaimGridElement item xs>
+              <ClaimGridElement  data-tour="metadata_fields_2" item xs>
               <ColumnDiv>
                 <CheckboxLeftEntryDiv>
                 <AtLeastOneCheckboxGroup 
