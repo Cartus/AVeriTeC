@@ -6,6 +6,8 @@ import SearchField from '../components/SearchField';
 import { TourProvider } from "@reactour/tour";
 import TourWrapper from '../components/TourWrapper';
 import { WarningRounded } from '@material-ui/icons';
+import axios from "axios";
+import {Redirect} from "react-router-dom";
 
 const QADataField = styled.div`
     width: -webkit-calc(40% - 10px)!important;
@@ -45,24 +47,103 @@ const WarningDiv = styled.div`
 class QuestionGeneration extends React.Component {
     constructor(props) {
         super(props);
-        
+
         this.state = {
             claim : {
-                web_archive: "https://web.archive.org/web/20210717085246/https://www.factcheck.org/2021/07/cdc-data-thus-far-show-covid-19-vaccination-safe-during-pregnancy/",
-                claim_text: "New England Journal of Medicine finds that women who got v4x3d – within 30 days of becoming pregnant and up to 20 weeks pregnant – had a miscarriage rate of 82%",
-                claim_speaker: "Ian Smith",
-                claim_type: ["Numerical Claim"],
-                fact_checking_strategy: ["Numerical Comparison", "Consultation"],
-                claim_hyperlink: "https://archive.is/qpiqn",
-                claim_date: "11/06/2021",
-                country_code: "gb"
+                web_archive: "",
+                claim_text: "",
+                claim_speaker: "",
+                claim_date: ""
             },
-            userIsFirstVisiting: true
+            // entries : {"qa_pair_entry_field_1":{}},
+            entries : {},
+            qa_pair_header: {label: ""},
+            userIsFirstVisiting: false
         }
-      }
+    }
+
+    componentDidMount() {
+        if (localStorage.getItem('login')) {
+            let pc = Number(localStorage.pc);
+            console.log(pc);
+            if (pc !== 0) {
+                axios({
+                    method: 'post',
+                    url: "http://localhost:8081/api/question_answering.php",
+                    headers: {'content-type': 'application/json'},
+                    data: {
+                        user_id: localStorage.getItem('user_id'),
+                        req_type: 'reload-data',
+                        offset: pc - 1
+                    }
+                })
+                    .then(result => {
+                        if (result.data) {
+                            console.log(result.data);
+                            const new_claim = {
+                                web_archive: result.data.web_archive,
+                                claim_text: result.data.cleaned_claim,
+                                claim_speaker: result.data.speaker,
+                                claim_date: result.data.check_date
+                            };
+                            localStorage.claim_norm_id = result.data.claim_norm_id;
+                            this.setState({claim: new_claim});
+
+                            const new_header = {label: result.data.label   };
+                            this.setState({qa_pair_header: new_header})
+
+                            const new_entries = result.data.entries;
+                            this.setState({entries: new_entries});
+
+                        } else {
+                            window.alert("No more claims!");
+                        }
+
+                    })
+                    .catch(error => this.setState({error: error.message}));
+            } else {
+                axios({
+                    method: 'post',
+                    url: "http://localhost:8081/api/question_answering.php",
+                    headers: {'content-type': 'application/json'},
+                    data: {
+                        user_id: localStorage.getItem('user_id'),
+                        req_type: 'next-data'
+                    }
+                })
+                    .then(result => {
+                        if (result.data){
+                            if (Number(localStorage.finished_qa_annotations) === 0) {
+                                this.setState({userIsFirstVisiting: true});
+                            }
+                            console.log(result.data);
+                            const new_claim = {
+                                web_archive: result.data.web_archive,
+                                claim_text: result.data.cleaned_claim,
+                                claim_speaker: result.data.speaker,
+                                claim_date: result.data.check_date
+                            };
+                            localStorage.claim_norm_id = result.data.claim_norm_id;
+                            this.setState({claim: new_claim});
+                            const new_entries = {"qa_pair_entry_field_0":{}};
+                            this.setState({entries: new_entries});
+                            // console.log(this.state.claim);
+                            // console.log(result.data);
+                        } else {
+                            window.alert("No more claims!");
+                        }
+                    })
+                    .catch(error => this.setState({error: error.message}));
+            }
+        }
+    }
 
     render() {
-      var problemSourceText = <div>Searching the internet may return results from untrustworthy sources. We have compiled a list of the most common, and our search engine marks these with <WarningDiv><WarningRounded/></WarningDiv>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;. If possible, please avoid using these.</div>
+        if (!localStorage.getItem('login')) {
+            return <Redirect to='/'/>;
+        }
+
+        var problemSourceText = <div>Searching the internet may return results from untrustworthy sources. We have compiled a list of the most common, and our search engine marks these with <WarningDiv><WarningRounded/></WarningDiv>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;. If possible, please avoid using these.</div>
 
         const steps = [
             {
@@ -124,7 +205,7 @@ class QuestionGeneration extends React.Component {
                 <TourProvider steps={steps}>
                 <QAPageView claim={this.state.claim}/>
                 <QADataField>
-                    <QuestionGenerationBar claim={this.state.claim}/>
+                    <QuestionGenerationBar claim={this.state.claim} entries={this.state.entries} header={this.state.qa_pair_header}/>
                     <SearchField claim_date={this.state.claim.claim_date} country_code={this.state.claim.country_code}/>
                 </QADataField>
                 {this.state.userIsFirstVisiting? <TourWrapper/> : ""}

@@ -174,14 +174,14 @@ class ClaimEntryField extends React.Component {
                 <ClaimGridElement  data-tour="metadata_fields" item xs>
                 <ColumnDiv>
                 <TextLeftEntryDiv>
-                <DatePickerWithTooltip name="date" label="Claim Date" onChange={this.handleFieldChange} tooltip="The date the original claim was made, if mentioned by the fact checking article."/>
-                <TextFieldWithTooltip name='hyperlink' label="Hyperlink" onChange={this.handleFieldChange} tooltip="A hyperlink to the original claim, if that is provided by the fact checking site. If the original claim has a hyperlink on the fact checking site, but that hyperlink is dead, please leave the field empty."/>
-                <TextFieldWithTooltip name='speaker' label="Speaker" onChange={this.handleFieldChange} tooltip="The speaker (or source) of the original claim."/>
+                <DatePickerWithTooltip name="date" label="Claim Date" onChange={this.handleFieldChange} value={this.props.data["date"]} tooltip="The date the original claim was made, if mentioned by the fact checking article."/>
+                <TextFieldWithTooltip name='hyperlink' label="Hyperlink" onChange={this.handleFieldChange} value={this.props.data["hyperlink"]} tooltip="A hyperlink to the original claim, if that is provided by the fact checking site. If the original claim has a hyperlink on the fact checking site, but that hyperlink is dead, please leave the field empty."/>
+                <TextFieldWithTooltip name='speaker' label="Speaker" onChange={this.handleFieldChange} value={this.props.data["speaker"]} tooltip="The speaker (or source) of the original claim."/>
                 </TextLeftEntryDiv>
                 <TextRightEntryDiv>                
-                <TextFieldWithTooltip name='transcription' label="Transcription" onChange={this.handleFieldChange} tooltip="If the original source is an image that contains text (for example a meme or image macro), please transcribe whatever text occurs in the image here."/>
-                <TextFieldWithTooltip name='media_source' label="Media Source URLs" onChange={this.handleFieldChange} tooltip="If the claim refers directly to an image, video, or audio file, please paste the link here. If multiple sources are referred to, please add them all, separated by commas."/>
-                <CountryPickerWithTooltip name="location" label="Location" onChange={this.handleFieldChange} tooltip="Please select the location most relevant to the claim."/>
+                <TextFieldWithTooltip name='transcription' label="Transcription" value={this.props.data["transcription"]} onChange={this.handleFieldChange} tooltip="If the original source is an image that contains text (for example a meme or image macro), please transcribe whatever text occurs in the image here."/>
+                <TextFieldWithTooltip name='media_source' label="Media Source URLs" value={this.props.data["media_source"]} onChange={this.handleFieldChange} tooltip="If the claim refers directly to an image, video, or audio file, please paste the link here. If multiple sources are referred to, please add them all, separated by commas."/>
+                <CountryPickerWithTooltip name="location" label="Location" value={this.props.data["location"]} onChange={this.handleFieldChange} tooltip="Please select the location most relevant to the claim."/>
 
 
                 </TextRightEntryDiv>
@@ -260,19 +260,49 @@ function validate(content){
   return valid;
 }
 
-function MetadataEntryBar({className}) {
-  return(
-    <div className={className}>
-      <PhaseControl phaseName="Claim Normalization" phaseInstructions="Please read the fact checking article to the left, then fill out the information about the discussed claim below. If the article discusses more than one claim, you can add additional entry boxes for each claim. When entering a claim, please make sure that it can be understood without reading the article - if necessary, you can add context to the claim to ensure this." reportButton={true}/>
-      <EntryCardContainer 
-      contentClass={ClaimEntryField} 
-      entryName="claim" 
-      addTooltip="Add another claim. Only do so if the article fact checks more than one claim, or a claim consisting of parts that are checked independently."
-      numInitialEntries={1}
-      validationFunction={validate}
-      />
-    </div>
-  );
-} 
+// function MetadataEntryBar({className}) {
+//   return(
+//     <div className={className}>
+//       <PhaseControl phaseName="Claim Normalization" phaseInstructions="Please read the fact checking article to the left, then fill out the information about the discussed claim below. If the article discusses more than one claim, you can add additional entry boxes for each claim. When entering a claim, please make sure that it can be understood without reading the article - if necessary, you can add context to the claim to ensure this." reportButton={true}/>
+//       <EntryCardContainer
+//       contentClass={ClaimEntryField}
+//       entryName="claim"
+//       addTooltip="Add another claim. Only do so if the article fact checks more than one claim, or a claim consisting of parts that are checked independently."
+//       numInitialEntries={1}
+//       validationFunction={validate}
+//       />
+//     </div>
+//   );
+// }
+//
+// export default MetadataEntryBar;
+
+class MetadataEntryBar extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        let className = ''
+
+        if(this.props.className !== undefined){
+            className = this.props.className
+        }
+
+        return(
+            <div className={className}>
+                <PhaseControl phaseName="Claim Normalization" phaseInstructions="Please read the fact checking article to the left, then fill out the information about the discussed claim below. If the article discusses more than one claim, you can add additional entry boxes for each claim. When entering a claim, please make sure that it can be understood without reading the article - if necessary, you can add context to the claim to ensure this." reportButton={true}/>
+                <EntryCardContainer
+                    contentClass={ClaimEntryField}
+                    entryName="claim"
+                    addTooltip="Add another claim. Only do so if the article fact checks more than one claim, or a claim consisting of parts that are checked independently."
+                    entries={this.props.entries}
+                    numInitialEntries={1}
+                    validationFunction={validate}
+                />
+            </div>
+        );
+    }
+}
 
 export default MetadataEntryBar;

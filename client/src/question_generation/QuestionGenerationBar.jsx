@@ -38,6 +38,8 @@ class QuestionGenerationBar extends React.Component {
             addTooltip="Add another question. Only do so if you think the question-answer pairs you have already collected do not contain sufficient evidence to give a verdict for the claim."
             numInitialEntries={1}
             claim={this.props.claim}
+            entries={this.props.entries}
+            header={this.props.header}
             validationFunction={validate}
             />
           </div>

@@ -4,6 +4,8 @@ import ClaimPageView from '../components/ClaimPageView';
 import styled from 'styled-components';
 import { TourProvider } from "@reactour/tour";
 import TourWrapper from '../components/TourWrapper';
+import axios from "axios";
+import {Redirect} from "react-router-dom";
 
 const NEntryBar = styled(MetadataEntryBar)`
     width: -webkit-calc(40% - 10px)!important;
@@ -36,16 +38,82 @@ const PageDiv = styled.div`
 class ClaimNormalization extends React.Component {
     constructor(props) {
         super(props);
-        
+
         this.state = {
             claim : {
-                web_archive: "https://web.archive.org/web/20210717085246/https://www.factcheck.org/2021/07/cdc-data-thus-far-show-covid-19-vaccination-safe-during-pregnancy/"
+                web_archive: ""
             },
-            userIsFirstVisiting: true
+            // entries : {"claim_entry_field_1":{}},
+            entries : {},
+            userIsFirstVisiting: false
         }
-      }
+    }
+
+    componentDidMount() {
+        if (localStorage.getItem('login')) {
+            let pc = Number(localStorage.pc);
+            console.log(pc);
+            if (pc !== 0) {
+                axios({
+                    method: 'post',
+                    url: "http://localhost:8081/api/claim_norm.php",
+                    headers: {'content-type': 'application/json'},
+                    data: {
+                        user_id: localStorage.getItem('user_id'),
+                        req_type: 'reload-data',
+                        offset: pc - 1
+                    }
+                })
+                    .then(result => {
+                        if (result.data) {
+                            console.log(result.data);
+                            const new_claim = {web_archive: result.data.web_archive};
+                            localStorage.claim_id = result.data.claim_id;
+                            this.setState({claim: new_claim});
+                            const new_entries = result.data.entries;
+                            this.setState({entries: new_entries});
+                            console.log(this.state);
+                        } else {
+                            window.alert("No more claims!");
+                        }
+
+                    })
+                    .catch(error => this.setState({error: error.message}));
+            } else {
+                axios({
+                    method: 'post',
+                    url: "http://localhost:8081/api/claim_norm.php",
+                    headers: {'content-type': 'application/json'},
+                    data: {
+                        user_id: localStorage.getItem('user_id'),
+                        req_type: 'next-data'
+                    }
+                })
+                    .then(result => {
+                        console.log(result.data);
+                        if (result.data) {
+                            if (Number(localStorage.finished_norm_annotations) === 0) {
+                                this.setState({userIsFirstVisiting: true});
+                            }
+                            const new_claim = {web_archive: result.data.web_archive};
+                            localStorage.claim_id = result.data.claim_id;
+                            this.setState({claim: new_claim});
+                            const new_entries = {"claim_entry_field_0":{}};
+                            this.setState({entries: new_entries});
+                        } else {
+                            window.alert("No more claims!");
+                        }
+                    })
+                    .catch(error => this.setState({error: error.message}));
+            }
+        }
+    }
 
     render() {
+
+        if (!localStorage.getItem('login')) {
+            return <Redirect to='/'/>;
+        }
         
         const steps = [
             {
@@ -86,7 +154,7 @@ class ClaimNormalization extends React.Component {
             <PageDiv>
                 <TourProvider steps={steps}>
                     <NPageView claim={this.state.claim}/>
-                    <NEntryBar/>
+                    <NEntryBar entries={this.state.entries}/>
                     {this.state.userIsFirstVisiting? <TourWrapper/> : ""}
                 </TourProvider>
             </PageDiv>

@@ -2,6 +2,8 @@ import React from 'react';
 import Card from '@material-ui/core/Card';
 import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
+import axios from "axios";
+import {Redirect} from "react-router-dom";
 
 const EntryCard = styled(Card)`
   margin:10px;
@@ -36,6 +38,9 @@ const PhaseDescriptionBox = styled.div`
 class PhaseControl extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            login: true
+        }
 
         this.onLogout = this.onLogout.bind(this)
         this.onReport = this.onReport.bind(this)
@@ -43,12 +48,45 @@ class PhaseControl extends React.Component {
 
     onLogout(e){
         e.preventDefault();
-        console.log('log out');
+        localStorage.clear();
+        this.setState({login: false});
     };
 
-    onReport(e){
-        e.preventDefault();
-        console.log('report');
+    async onReport() {
+        let phase = localStorage.getItem('phase');
+        if (phase === 'phase_1') {
+            await axios({
+                method: 'post',
+                url: "http://localhost:8081/api/claim_norm.php",
+                headers: {'content-type': 'application/json'},
+                data: {
+                    user_id: localStorage.getItem('user_id'),
+                    req_type: 'skip-data',
+                    claim_id: localStorage.claim_id
+                }
+            })
+                .then(res => {
+                    console.log(res.data);
+                    window.location.reload(false);
+                })
+                .catch(error => this.setState({error: error.message}));
+        } else if (phase === 'phase_2') {
+            await axios({
+                method: 'post',
+                url: "http://localhost:8081/api/question_answering.php",
+                headers: {'content-type': 'application/json'},
+                data: {
+                    user_id: localStorage.getItem('user_id'),
+                    req_type: 'skip-data',
+                    claim_norm_id: localStorage.claim_norm_id
+                }
+            })
+                .then(res => {
+                    console.log(res.data);
+                    window.location.reload(false);
+                })
+                .catch(error => this.setState({error: error.message}));
+        }
     };
 
     render() {
@@ -56,6 +94,10 @@ class PhaseControl extends React.Component {
 
         if(this.props.className !== undefined){
             className = this.props.className
+        }
+
+        if (!this.state.login) {
+            return <Redirect to='/'/>;
         }
 
         return (

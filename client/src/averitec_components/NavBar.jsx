@@ -33,15 +33,26 @@ class NavBar extends React.Component {
     }
 
     render() {
+        let phase = localStorage.getItem('phase');
+
+        let finished_num = 0;
+        if (phase === 'phase_1') {
+            finished_num = Number(localStorage.finished_norm_annotations);
+        } else if (phase === 'phase_2') {
+            finished_num = Number(localStorage.finished_qa_annotations);
+        } else if (phase === 'phase_3') {
+            finished_num = Number(localStorage.finished_valid_annotations);
+        }
+
         return (
             <EntryCard>
-                <PrevButton variant="contained" color="secondary" onClick={this.props.onPrevious}>
+                <PrevButton variant="contained" color="secondary" disabled={Number(localStorage.pc) === finished_num} onClick={this.props.onPrevious}>
                   Previous
                 </PrevButton>
                 <SubmitButton data-tour="submit" variant="contained" color="primary" onClick={this.props.onSubmit}>
                   Submit
                 </SubmitButton>
-                <NextButton variant="contained" color="secondary" disabled={!this.props.hasSubmitted} onClick={this.props.onNext}>
+                <NextButton variant="contained" color="secondary" disabled={Number(localStorage.pc) === 0}  onClick={this.props.onNext}>
                   Next
                 </NextButton>
             </EntryCard>
