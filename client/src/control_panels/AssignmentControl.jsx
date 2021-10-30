@@ -48,6 +48,7 @@ class AssignmentControl extends React.Component {
                     
                     <StartButton variant="contained" color="primary" onClick={(e) => {
                         e.preventDefault();
+                        localStorage.setItem('phase', this.props.page);
                         window.location.href=nextAssignmentLink;
                         }}>
                         Start Next

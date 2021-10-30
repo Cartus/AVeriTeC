@@ -8,6 +8,7 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import styled from 'styled-components';
+import axios from 'axios';
 
 const AvatarBox = styled.div`
     display: flex;
@@ -21,72 +22,117 @@ const TopSpacing = styled.div`
     width:100%;
 `
 
-export default function Registration() {
-  
+let md5 = require('md5');
+
+class Registration extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: '',
+      password: '',
+      registered: false
+    }
+  }
+
+  handleFormSubmit = e => {
+    e.preventDefault();
+    console.log(this.state)
+    axios({
+      method: 'post',
+      url: "http://localhost:8081/api/registration.php",
+      // url: "http://api.averitec.eu/registration.php",
+      headers: {'content-type': 'application/json'},
+      data: {
+        name: this.state.name,
+        password: this.state.password,
+        password_md5: md5(this.state.password)
+      }
+    })
+        .then(result => {
+          console.log(result.data);
+          this.setState({
+            registered: result.data.registered
+          })
+        })
+        // .then(res => console.log(res.data))
+        .catch(error => this.setState({error: error.message}));
+  };
+
+  render() {
     return (
-      <Container>
-        <div>
-          <TopSpacing/>
-          <AvatarBox>
-            <Avatar>
-              <AssignmentIcon />
-            </Avatar>
-          </AvatarBox>
-          <AvatarBox>
-            <Typography component="h1" variant="h5">Register</Typography>
-          </AvatarBox>
-          
-          <form noValidate>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="repeat_password"
-              label="Repeat Password"
-              type="password"
-              id="repeat_password"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-            >
-              Register
-            </Button>
-            <Grid container>
-              <Grid item xs>
+        <Container>
+          <div>
+            <TopSpacing/>
+            <AvatarBox>
+              <Avatar>
+                <AssignmentIcon />
+              </Avatar>
+            </AvatarBox>
+            <AvatarBox>
+              <Typography component="h1" variant="h5">Register</Typography>
+            </AvatarBox>
+
+            <form noValidate>
+              <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="name"
+                  label="User Name"
+                  name="name"
+                  autoFocus
+                  onChange={e => this.setState({name: e.target.value })}
+              />
+              <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  onChange={e => this.setState({password: e.target.value })}
+              />
+              {/*<TextField*/}
+              {/*    variant="outlined"*/}
+              {/*    margin="normal"*/}
+              {/*    required*/}
+              {/*    fullWidth*/}
+              {/*    name="repeat_password"*/}
+              {/*    label="Repeat Password"*/}
+              {/*    type="password"*/}
+              {/*    id="repeat_password"*/}
+              {/*    onChange={e => this.setState({repeat_password: e.target.value })}*/}
+              {/*/>*/}
+              <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  onClick={e => this.handleFormSubmit(e)}
+              >
+                Register
+              </Button>
+              <Grid container>
+                <Grid item xs>
+                </Grid>
+                <Grid item>
+                  <Link href="/login" variant="body2">
+                    {"Already have an account? Log in"}
+                  </Link>
+                </Grid>
               </Grid>
-              <Grid item>
-                <Link href="/login" variant="body2">
-                  {"Already have an account? Log in"}
-                </Link>
-              </Grid>
-            </Grid>
-          </form>
-        </div>
-      </Container>
+              <div>
+                {this.state.registered &&
+                <div>Thank you for registration.</div>}
+              </div>
+            </form>
+          </div>
+        </Container>
     );
   }
+}
+
+export default Registration;

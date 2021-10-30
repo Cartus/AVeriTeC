@@ -9,6 +9,8 @@ import NavBar from '../averitec_components/NavBar';
 import PhaseControl from '../averitec_components/PhaseControl';
 import { TourProvider } from "@reactour/tour";
 import TourWrapper from '../components/TourWrapper';
+import axios from "axios";
+import {Redirect} from "react-router-dom";
 
 const EntryCard = styled(Card)`
   margin:10px;
@@ -70,42 +72,29 @@ function validate(content){
 class VerdictValidation extends React.Component {
     constructor(props) {
         super(props);
-        
+
         this.state = {
             claim : {
-                web_archive: "https://web.archive.org/web/20210717085246/https://www.factcheck.org/2021/07/cdc-data-thus-far-show-covid-19-vaccination-safe-during-pregnancy/",
-                claim_text: "New England Journal of Medicine finds that women who got v4x3d – within 30 days of becoming pregnant and up to 20 weeks pregnant – had a miscarriage rate of 82%",
-                claim_speaker: "Ian Smith",
-                claim_type: ["Numerical Claim"],
-                fact_checking_strategy: ["Numerical Comparison", "Consultation"],
-                claim_hyperlink: "https://archive.is/qpiqn",
-                claim_date: "15/06/2021",
-                questions: {
-                    "question_1":
-                    {
-                        text: "is this a question?",
-                        answer_type: "Abstractive",
-                        answer: "this is definitely 100% a legit question.",
-                        url: "www.abc.def/ghi"
-                    },
-                    "question_2": {
-                        text: "is this also question?",
-                        answer_type: "Abstractive",
-                        answer: "this is definitely 100% not a legit question.",
-                        url: "www.abc.def/asdfasdf"
-                    }
-                },
+                web_archive: "",
+                claim_text: "",
+                claim_speaker: "",
+                claim_hyperlink: "",
+                claim_date: "",
+                questions: {}
             },
             annotation: {},
             valid: true,
-            userIsFirstVisiting: true
+            submitted: false,
+            userIsFirstVisiting: false
         }
 
         this.handleFieldChange = this.handleFieldChange.bind(this);
-        this.doSubmit = this.doSubmit.bind(this)
-      }
+        this.doSubmit = this.doSubmit.bind(this);
+        this.doPrevious = this.doPrevious.bind(this);
+        this.doNext = this.doNext.bind(this);
+    }
 
-      handleFieldChange(fieldId, element, value) {
+    handleFieldChange(fieldId, element, value) {
         if (fieldId === "annotation"){
           this.setState(prevState => ({
             [fieldId]: {
@@ -127,53 +116,172 @@ class VerdictValidation extends React.Component {
             }
           }))
         }   
-        }
+    }
 
-        doSubmit(){
-            if (validate(this.state)){
-              window.alert(validate(this.state));
-            } else{
-              this.setState({
-                valid: false
-              });
+    componentDidMount() {
+        if (localStorage.getItem('login')) {
+            let pc = Number(localStorage.pc);
+            console.log(pc);
+            if (pc !== 0){
+                axios({
+                    method: 'post',
+                    url: "http://localhost:8081/api/verdict_validate.php",
+                    headers: {'content-type': 'application/json'},
+                    data: {
+                        user_id: localStorage.getItem('user_id'),
+                        req_type: 'reload-data',
+                        offset: pc - 1
+                    }
+                })
+                    .then(result => {
+                        console.log(result.data);
+                        if (result.data) {
+                            const new_claim = {
+                                web_archive: result.data.web_archive,
+                                claim_text: result.data.claim_text,
+                                claim_speaker: result.data.speaker,
+                                claim_hyperlink: result.data.claim_hyperlink,
+                                claim_date: result.data.claim_date,
+                                questions: result.data.questions
+                            };
+                            localStorage.claim_norm_id = result.data.claim_norm_id;
+                            this.setState({claim: new_claim});
+                            this.setState({annotation: result.data.annotation});
+                        } else {
+                            window.alert("No more claims!");
+                        }
+                    })
+                    .catch(error => this.setState({error: error.message}));
+            } else {
+                axios({
+                    method: 'post',
+                    url: "http://localhost:8081/api/verdict_validate.php",
+                    headers: {'content-type': 'application/json'},
+                    data: {
+                        user_id: localStorage.getItem('user_id'),
+                        req_type: 'next-data'
+                    }
+                })
+                    .then(result => {
+                        console.log(result.data);
+                        if (result.data) {
+                            if (Number(localStorage.finished_valid_annotations) === 0) {
+                                this.setState({userIsFirstVisiting: true});
+                            }
+                            const new_claim = {
+                                web_archive: result.data.web_archive,
+                                claim_text: result.data.claim_text,
+                                claim_speaker: result.data.speaker,
+                                claim_hyperlink: result.data.claim_hyperlink,
+                                claim_date: result.data.claim_date,
+                                questions: result.data.questions
+                            };
+                            this.setState({claim: new_claim});
+                            console.log(this.state.claim);
+                        } else {
+                            window.alert("No more claims!");
+                        }
+                    })
+                    .catch(error => this.setState({error: error.message}));
             }
-      
-            // If valid, submit
-      
-            // If not, turn on error display
-          }
+        }
+    }
+
+    async doSubmit() {
+        if (validate(this.state)){
+            let pc = Number(localStorage.pc);
+            if (pc !== 0) {
+                localStorage.pc = Number(localStorage.pc) - 1;
+                await axios({
+                    method: 'post',
+                    url: "http://localhost:8081/api/verdict_validate.php",
+                    headers: {'content-type': 'application/json'},
+                    data: {
+                        user_id: localStorage.getItem('user_id'),
+                        req_type: 'resubmit-data',
+                        annotation: this.state.annotation,
+                        questions: this.state.claim.questions,
+                        claim_norm_id: localStorage.claim_norm_id
+                    }
+                })
+                    .then(res => {
+                        console.log(res.data);
+                        localStorage.claim_norm_id = 0;
+                        window.location.reload(false);
+                    })
+                    .catch(error => this.setState({error: error.message}));
+
+            } else {
+                await axios({
+                    method: 'post',
+                    url: "http://localhost:8081/api/verdict_validate.php",
+                    headers: {'content-type': 'application/json'},
+                    data: {
+                        user_id: localStorage.getItem('user_id'),
+                        req_type: 'submit-data',
+                        annotation: this.state.annotation,
+                        questions: this.state.claim.questions
+                    }
+                })
+                    .then(res => {
+                        console.log(res.data);
+                        localStorage.finished_valid_annotations = Number(localStorage.finished_valid_annotations) + 1;
+                        window.location.reload(false);
+                    })
+                    .catch(error => this.setState({error: error.message}));
+            }
+        } else{
+            this.setState({
+                valid: false
+            });
+        }
+    }
+
+    doPrevious() {
+        localStorage.pc = Number(localStorage.pc) + 1;
+        window.location.reload(false);
+    }
+
+    doNext() {
+        localStorage.pc = Number(localStorage.pc) - 1;
+        window.location.reload(false);
+    }
 
     render() {
-      const steps = [
-        {
+        if (!localStorage.getItem('login')) {
+            return <Redirect to='/'/>;
+        }
+
+        const steps = [
+            {
             selector: '[data-tour="claim_text"]',
             content: "Begin by reading the claim."
-        },
-        {
-          selector: '[data-tour="question_view"]',
-          content: "Read the question-answer pairs supplied by your fellow annotators."
-        },
-        {
-          selector: '[data-tour="verdict"]',
-          content: "Give your verdict for the claim. Do not use prior knowledge you may have, or information from elsewhere on the internet - give your verdict based ONLY on the question-answer pairs."
-        },
-        {
-          selector: '[data-tour="justification"]',
-          content: "Write a short explanation (max 300 characters) explaining how you decided the answer based on the question-answer pairs."
-        },
-        {
-          selector: '[data-tour="report_qa_problems"]',
-          content: "If there are any problems with a question-answer pair, please report it. If you report a question-answer pair, please DO NOT use the information in it to give your verdict."
-        },
-        {
-          selector: '[data-tour="bias"]',
-          content: "If you think one the sources used may be biased, but the question is otherwise fine, you can still use it to form your answer. If you do so, please let us know by checking here."
-        },
-        {
-          selector: '[data-tour="submit"]',
-          content: "When you have verified the claim, submit your verdict and proceed to the next article."
-        },
-      ];
+            },
+            {
+            selector: '[data-tour="question_view"]',
+            content: "Read the question-answer pairs supplied by your fellow annotators."
+            },
+            {
+            selector: '[data-tour="verdict"]',
+            content: "Give your verdict for the claim. Do not use prior knowledge you may have, or information from elsewhere on the internet - give your verdict based ONLY on the question-answer pairs."
+            },
+            {
+            selector: '[data-tour="justification"]',
+            content: "Write a short explanation (max 300 characters) explaining how you decided the answer based on the question-answer pairs."
+            },
+            {
+            selector: '[data-tour="report_qa_problems"]',
+            content: "If there are any problems with a question-answer pair, please report it. If you report a question-answer pair, please DO NOT use the information in it to give your verdict."
+            },
+            {
+            selector: '[data-tour="bias"]',
+            content: "If you think one the sources used may be biased, but the question is otherwise fine, you can still use it to form your answer. If you do so, please let us know by checking here."
+            },
+            {
+            selector: '[data-tour="submit"]',
+            content: "When you have verified the claim, submit your verdict and proceed to the next article."
+            },
+        ];
 
         const questionPairs = Object.keys(this.state.claim.questions).map(question_id => (
             <EntryCard variant="outlined">
@@ -194,8 +302,7 @@ class VerdictValidation extends React.Component {
                   <div data-tour="question_view">
                     {questionPairs}
                   </div>
-                  
-                  <NavBar onSubmit={this.doSubmit}/>
+                    <NavBar onPrevious={this.doPrevious} onSubmit={this.doSubmit} onNext={this.doNext}/>
                 </QABox>
                 <div>{JSON.stringify(this.state)}</div>
                 {this.state.userIsFirstVisiting? <TourWrapper/> : ""}

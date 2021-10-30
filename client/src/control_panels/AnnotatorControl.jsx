@@ -32,21 +32,21 @@ class AnnotatorControl extends React.Component {
         
         this.state = {
             user : {
-                username: "Michael",
-                is_admin: true
+                username: localStorage.getItem('user_name'),
+                is_admin: Number(localStorage.getItem('is_admin'))
             },
             assignments:{
                 phase_1: {
-                    done: 5,
-                    total: 10
+                    done: localStorage.finished_norm_annotations,
+                    total: 20
                 },
                 phase_2: {
-                    done: 3,
-                    total: 10
+                    done: localStorage.finished_qa_annotations,
+                    total: 20
                 },
                 phase_3: {
-                    done: 5,
-                    total: 7
+                    done: localStorage.finished_valid_annotations,
+                    total: 20
                 }
             }
         }
@@ -61,10 +61,9 @@ class AnnotatorControl extends React.Component {
                     {(this.state.assignments.phase_2.total - this.state.assignments.phase_2.done > 0)?<AssignmentField name="Question Generation" page="phase_2" assignments={this.state.assignments.phase_2}/>: ""}
                     {(this.state.assignments.phase_3.total - this.state.assignments.phase_3.done > 0)?<AssignmentField name="Quality Control" page="phase_3" assignments={this.state.assignments.phase_3}/>: ""}
                 </div>
-                {(this.state.user.is_admin)? <AdminPanel>
+                {(this.state.user.is_admin === 1)? <AdminPanel>
                     <AdminControl name="Users"/>
                     <AdminControl name="Claims"/>
-                    <AdminControl name="Potential other table"/>
                 </AdminPanel> : ""}
             </div>
         );
