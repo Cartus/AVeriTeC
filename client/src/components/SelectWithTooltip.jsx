@@ -44,7 +44,6 @@ export default function SelectWithTooltip(props) {
 
   var value = (props.value != null)? props.value : "";
 
-    
   if (props.validator != null){
     let validation = props.validator(value)
     var error =  validation.error && !props.valid;
@@ -63,7 +62,8 @@ export default function SelectWithTooltip(props) {
       <StyledFormControl required={props.required} error={error} variant="outlined" size="small" className={classes.formControl}>
         <InputLabel>{props.label}</InputLabel>
         <Select
-          value={props.value}
+          // value={props.value}
+          value={value}
           onChange={props.onChange}
           label={props.label}
           name={props.name}

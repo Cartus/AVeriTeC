@@ -7,6 +7,7 @@ import Card from '@material-ui/core/Card';
 import IconButton from '@material-ui/core/IconButton';
 import ClearIcon from '@material-ui/icons/Clear';
 import NavBar from '../averitec_components/NavBar';
+import axios from "axios";
 
 const EntryCard = styled(Card)`
   margin:10px;
@@ -62,24 +63,139 @@ class EntryCardContainer extends React.Component {
         this.handleFieldChange = this.handleFieldChange.bind(this);
         this.deleteEntry = this.deleteEntry.bind(this);
         this.doSubmit = this.doSubmit.bind(this);
-      }
+        this.doPrevious = this.doPrevious.bind(this);
+        this.doNext = this.doNext.bind(this);
+    }
+
+    componentWillReceiveProps (props) {
+        // this.setState({entries: props.entries? props.entries : {}});
+        this.setState({entries: props.entries});
+        var headerString = this.props.entryName + "_header";
+        // this.setState({[headerString]: props.header? props.header : {}});
+        this.setState({[headerString]: props.header});
+    }
 
     newEntryDict = () => {
         return {};
     }
 
-    doSubmit(){
-      if (this.props.validationFunction(this.state)){
-        window.alert(this.props.validationFunction(this.state));
-      } else{
-        this.setState({
-          valid: false
-        });
-      }
+    async doSubmit(){
+        // e.preventDefault();
+        if (this.props.validationFunction(this.state)){
+            let phase = localStorage.getItem('phase');
+            if (phase === 'phase_1') {
+                let pc = Number(localStorage.pc);
+                if (pc !== 0) {
+                    localStorage.pc = Number(localStorage.pc) - 1;
+                    await axios({
+                        method: 'post',
+                        url: "http://localhost:8081/api/claim_norm.php",
+                        headers: {'content-type': 'application/json'},
+                        data: {
+                            user_id: localStorage.getItem('user_id'),
+                            req_type: 'resubmit-data',
+                            entries: this.state.entries,
+                            claim_id: localStorage.claim_id
+                        }
+                    })
+                        .then(res => {
+                            console.log(res.data);
+                            localStorage.claim_id = 0;
+                            window.location.reload(false);
+                        })
+                        .catch(error => this.setState({error: error.message}));
 
-      // If valid, submit
+                } else {
+                    console.log(this.state.entries);
+                    await axios({
+                        method: 'post',
+                        url: "http://localhost:8081/api/claim_norm.php",
+                        headers: {'content-type': 'application/json'},
+                        data: {
+                            user_id: localStorage.getItem('user_id'),
+                            req_type: 'submit-data',
+                            entries: this.state.entries
+                        }
+                    })
+                        .then(res => {
+                            localStorage.finished_norm_annotations = Number(localStorage.finished_norm_annotations) + 1;
+                            console.log(res.data);
+                            window.location.reload(false);
+                        })
+                        .catch(error => this.setState({error: error.message}));
+                }
+            } else if (phase === 'phase_2') {
+                let pc = Number(localStorage.pc);
+                console.log(pc);
+                if (pc !== 0) {
+                    localStorage.pc = Number(localStorage.pc) - 1;
+                    await axios({
+                        method: 'post',
+                        url: "http://localhost:8081/api/question_answering.php",
+                        headers: {'content-type': 'application/json'},
+                        data: {
+                            user_id: localStorage.getItem('user_id'),
+                            req_type: 'resubmit-data',
+                            entries: this.state.entries,
+                            added_entries: this.state.added_entries,
+                            qa_pair_header: this.state.qa_pair_header,
+                            claim_norm_id: localStorage.claim_norm_id
+                        }
+                    })
+                        .then(res => {
+                            console.log(res.data);
+                            localStorage.claim_norm_id = 0;
+                            window.location.reload(false);
+                        })
+                        .catch(error => this.setState({error: error.message}));
+                } else {
+                    await axios({
+                        method: 'post',
+                        url: "http://localhost:8081/api/question_answering.php",
+                        headers: {'content-type': 'application/json'},
+                        data: {
+                            user_id: localStorage.getItem('user_id'),
+                            req_type: 'submit-data',
+                            entries: this.state.entries,
+                            added_entries: this.state.added_entries,
+                            qa_pair_header: this.state.qa_pair_header
+                        }
+                    })
+                        .then(res => {
+                            localStorage.finished_qa_annotations = Number(localStorage.finished_qa_annotations) + 1;
+                            console.log(res.data);
+                            window.location.reload(false);
+                        })
+                        .catch(error => this.setState({error: error.message}));
+                }
+            }
+        } else{
+            this.setState({
+                valid: false
+            });
+        }
+    }
 
-      // If not, turn on error display
+    doPrevious(){
+        let phase = localStorage.getItem('phase');
+        if (phase === 'phase_1') {
+            localStorage.pc = Number(localStorage.pc) + 1;
+            window.location.reload(false);
+        } else if (phase === 'phase_2') {
+            localStorage.pc = Number(localStorage.pc) + 1;
+            window.location.reload(false);
+        }
+    }
+
+    doNext() {
+        let phase = localStorage.getItem('phase');
+        if (phase === 'phase_1') {
+            localStorage.pc = Number(localStorage.pc) - 1;
+            window.location.reload(false);
+        } else if (phase === 'phase_2') {
+            localStorage.pc = Number(localStorage.pc) - 1;
+            window.location.reload(false);
+        }
     }
     
     deleteEntry = (entryId) => {
@@ -161,7 +277,7 @@ class EntryCardContainer extends React.Component {
                   <AddCircleIcon/>
                 </AddEntryCard>
                 </Tooltip>
-                <NavBar onSubmit={this.doSubmit}/>
+                <NavBar onPrevious={this.doPrevious} onSubmit={this.doSubmit} onNext={this.doNext}/>
                 <div>{JSON.stringify(this.state)}</div>
             </div>
         );

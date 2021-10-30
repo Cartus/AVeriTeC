@@ -4,6 +4,7 @@ import * as react from "react";
 import { DataGrid } from '@mui/x-data-grid';
 import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
+import axios from "axios";
 
 const EntryCard = styled(Card)`
     margin:10px;
@@ -49,27 +50,28 @@ class AdminControl extends react.Component {
 
     componentDidMount() {
         if (this.props.name == "Users"){
-            this.setState({
-                header: [
-                    {field: "id", headerName: "ID", width:120}, 
-                    {field: "Username", editable:true, width: 250}, 
-                    {field: "randomNumber", type: "number", editable: true, width: 250}
-                ],
-                table: [
-                    {id: 0, Username: "Michael", "randomNumber": 348},
-                    {id: 1, Username: "Zhijiang", "randomNumber": 241},
-                    {id: 2, Username: "Andreas", "randomNumber": 115},
-                    {id: 3, Username: "Michael2", "randomNumber": 348},
-                    {id: 4, Username: "Zhijiang2", "randomNumber": 241},
-                    {id: 5, Username: "Andreas2", "randomNumber": 115},
-                    {id: 6, Username: "Michael", "randomNumber": 348},
-                    {id: 7, Username: "Zhijiang", "randomNumber": 241},
-                    {id: 8, Username: "Andreas", "randomNumber": 115},
-                    {id: 9, Username: "Michael2", "randomNumber": 348},
-                    {id: 10, Username: "Zhijiang2", "randomNumber": 241},
-                    {id: 11, Username: "Andreas2", "randomNumber": 115},
-                ]
+            axios({
+                method: 'post',
+                url: "http://localhost:8081/api/admin_control.php",
+                headers: {'content-type': 'application/json'},
+                data: {
+                    user_id: localStorage.getItem('user_id'),
+                    req_type: 'get-user'
+                }
             })
+                .then(result => {
+                    this.setState({
+                        header: [
+                            {field: "id", headerName: "ID", width:120},
+                            {field: "user_name", headerName: "Name", editable:true, width: 250},
+                            {field: "finished_norm_annotations", headerName: "Phase1 Finished", type: "number", editable: true, width: 250},
+                            {field: "finished_qa_annotations", headerName: "Phase2 Finished", type: "number", editable: true, width: 250},
+                            {field: "finished_valid_annotations", headerName: "Phase3 Finished", type: "number", editable: true, width: 250},
+                        ],
+                        table: result.data
+                    })
+                })
+                .catch(error => this.setState({error: error.message}));
         } else if (this.props.name == "Claims"){
             this.setState({
                 header: [
@@ -143,8 +145,7 @@ class AdminControl extends react.Component {
         }
 
         var hackedDivHeight = 55 * ((this.state.table)? ((this.state.table.length > 10)? 10 : this.state.table.length) + 2 : 0) + 10
-     
-        
+
         return (
             <div className={className}>
                 <EntryCard>

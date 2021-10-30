@@ -127,7 +127,7 @@ class QuestionEntryField extends React.Component {
                     <TextFieldWithTooltip name='source_url' label="Source URL" value={this.props.data["source_url"]} onChange={this.handleFieldChange} tooltip="Please copy-paste the URL where you found the answer here. Try to avoid using other fact-checking articles as sources."/>
                     <EmptySpaceDiv/>
                     <div data-tour="answer_type">
-                    <SelectWithTooltip name="answer_type" label="Answer Type" onChange={this.handleFieldChange} items={["Extractive", "Abstractive", "Boolean", "Unanswerable"]} tooltip={<ul>
+                    <SelectWithTooltip name="answer_type" label="Answer Type" value={this.props.data["answer_type"]} onChange={this.handleFieldChange} items={["Extractive", "Abstractive", "Boolean", "Unanswerable"]} tooltip={<ul>
                       <li>Extractive: The answer is a phrase copied directly from the source.</li>
                       <li>Abstractive: The answer was rephrased, but is based directly on the source.</li>
                       <li>Boolean: The answer is yes/no, based directly on the source.</li>
@@ -135,7 +135,7 @@ class QuestionEntryField extends React.Component {
                       </ul>}/>
                     </div>
                     <EmptySpaceDiv/>
-                    <SelectWithTooltip name="source_medium" label="Source Medium" onChange={this.handleFieldChange} items={["Web text", "Web table", "PDF", "Image/graphic", "Video", "Audio", "Other"]} tooltip="Please describe what medium you found the answer in."/>
+                    <SelectWithTooltip name="source_medium" label="Source Medium" value={this.props.data["source_medium"]} onChange={this.handleFieldChange} items={["Web text", "Web table", "PDF", "Image/graphic", "Video", "Audio", "Other"]} tooltip="Please describe what medium you found the answer in."/>
                     </div>
                 </TextRightEntryDiv>
             </ContainerDiv>
@@ -143,4 +143,4 @@ class QuestionEntryField extends React.Component {
       }
 }
 
-export default QuestionEntryField
+export default QuestionEntryField;

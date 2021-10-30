@@ -1,6 +1,7 @@
 import React from 'react';
 import Card from '@material-ui/core/Card';
 import styled from 'styled-components';
+import {Redirect} from "react-router-dom";
 
 const EntryCard = styled(Card)`
     margin:10px;
@@ -20,15 +21,26 @@ const LogoutBox = styled.div`
 class UserPanel extends React.Component {
     constructor(props) {
         super(props);
-    }
+        this.state = {
+            login: true
+        }
 
+        this.onLogout = this.onLogout.bind(this)
+    }
 
     onLogout(e){
         e.preventDefault();
-        console.log('log out');
+        localStorage.clear();
+        this.setState({login: false});
     };
 
     render() {
+        if (!this.state.login) {
+            return <Redirect to='/'/>;
+        }
+
+        localStorage.pc = 0;
+
         return (
             <EntryCard>
                 <Header>Welcome, {this.props.user.username}!</Header>

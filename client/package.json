@@ -17,6 +17,7 @@
     "country-flag-emoji": "^1.0.3",
     "date-fns": "^2.23.0",
     "iframe-resizer-react": "^1.1.0",
+    "md5": "^2.3.0",
     "react": "^17.0.2",
     "react-document-meta": "^3.0.0-beta.2",
     "react-dom": "^17.0.2",
