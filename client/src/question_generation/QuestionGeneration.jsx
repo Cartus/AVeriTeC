@@ -8,6 +8,7 @@ import TourWrapper from '../components/TourWrapper';
 import { WarningRounded } from '@material-ui/icons';
 import axios from "axios";
 import {Redirect} from "react-router-dom";
+import config from "../config.json"
 
 const QADataField = styled.div`
     width: -webkit-calc(40% - 10px)!important;
@@ -69,7 +70,7 @@ class QuestionGeneration extends React.Component {
             if (pc !== 0) {
 		var request = {
                     method: "post",
-                    baseURL: 'https://api.averitec.eu/',
+                    baseURL: config.api_url,
                     url: "/question_answering.php",
                     data:{
                         user_id: localStorage.getItem('user_id'),
@@ -102,7 +103,7 @@ class QuestionGeneration extends React.Component {
             } else {
 		var request = {
                     method: "post",
-                    baseURL: 'https://api.averitec.eu/',
+                    baseURL: config.api_url,
                     url: "/question_answering.php",
                     data:{
                         user_id: localStorage.getItem('user_id'),

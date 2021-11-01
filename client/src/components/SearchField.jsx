@@ -6,6 +6,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import axios from 'axios';
 import { WarningRounded } from '@material-ui/icons';
 import { Tooltip } from '@material-ui/core';
+import config from "../config.json"
 
 const SearchItemCard = styled(Card)`
   margin:10px;
@@ -138,7 +139,7 @@ class SearchField extends React.Component {
 
         var request = {
             method: "get",
-            baseURL: 'https://api.averitec.eu/',
+            baseURL: config.search_api_url,
             url: "/web_search.php",
             params:{
                 query: query,

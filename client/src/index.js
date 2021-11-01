@@ -8,6 +8,7 @@ import QuestionGeneration from './question_generation/QuestionGeneration';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import VerdictValidation from './verdict_validation/VerdictValidation';
 import AnnotatorControl from './control_panels/AnnotatorControl';
+import ChangePassword from './login/ChangePassword';
 
 const routing = (
   <Router>
@@ -23,6 +24,9 @@ const routing = (
           </Route>
           <Route path="/register">
             <Registration />
+          </Route>
+          <Route path="/change_password">
+            <ChangePassword/>
           </Route>
           <Route path="/phase_1">
             <ClaimNormalization />

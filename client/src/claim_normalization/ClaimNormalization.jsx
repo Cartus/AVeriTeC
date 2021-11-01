@@ -6,6 +6,7 @@ import { TourProvider } from "@reactour/tour";
 import TourWrapper from '../components/TourWrapper';
 import axios from "axios";
 import {Redirect} from "react-router-dom";
+import config from "../config.json"
 
 const NEntryBar = styled(MetadataEntryBar)`
     width: -webkit-calc(40% - 10px)!important;
@@ -56,7 +57,7 @@ class ClaimNormalization extends React.Component {
             if (pc !== 0) {
 		var request = {
                     method: "post",
-                    baseURL: 'https://api.averitec.eu/',
+                    baseURL: config.api_url,
                     url: "/claim_norm.php",
                     data: {
                         user_id: localStorage.getItem('user_id'),
@@ -83,7 +84,7 @@ class ClaimNormalization extends React.Component {
             } else {
 		var request = {
                     method: "post",
-                    baseURL: 'https://api.averitec.eu/',
+                    baseURL: config.api_url,
                     url: "/claim_norm.php",
                     data: {
                         user_id: localStorage.getItem('user_id'),
@@ -145,7 +146,7 @@ class ClaimNormalization extends React.Component {
             },
             {
               selector: '[data-tour="add"]',
-              content: "If the fact-checking article covers more than one claim, you can add additional claims."
+              content: "If the fact-checking article covers more than one claim, you can add additional claims. Some claims consist of multiple, easily separable, independent parts (e.g. \"The productivity rate in Scotland rose in 2017, and similarly productivity rose in Wales that year.\"). Please split these claims into their parts."
             },
             {
               selector: '[data-tour="submit"]',

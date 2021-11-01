@@ -45,7 +45,7 @@ class UserPanel extends React.Component {
             <EntryCard>
                 <Header>Welcome, {this.props.user.username}!</Header>
                 <LogoutBox>
-                    <a href="#" onClick={this.onLogout}>Log out</a>
+                    <a href="/change_password">Change Password</a> | <a href="#" onClick={this.onLogout}>Log out</a>
                 </LogoutBox>
             </EntryCard>
         );

@@ -10,6 +10,8 @@ import Container from '@material-ui/core/Container';
 import styled from 'styled-components';
 import axios from 'axios';
 import {Redirect} from "react-router-dom";
+import md5 from "md5";
+import config from "../config.json"
 
 const AvatarBox = styled.div`
     display: flex;
@@ -22,8 +24,6 @@ const TopSpacing = styled.div`
     height:15vh;
     width:100%;
 `
-
-let md5 = require('md5');
 
 class Login extends React.Component{
   constructor(props) {
@@ -39,7 +39,7 @@ class Login extends React.Component{
     e.preventDefault();
     var request = {
           method: "post",
-          baseURL: 'https://api.averitec.eu/',
+          baseURL: config.api_url,
           url: "/login.php",
           data:{
               name: this.state.name,

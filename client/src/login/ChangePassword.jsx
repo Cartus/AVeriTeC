@@ -25,13 +25,13 @@ const TopSpacing = styled.div`
 
 let md5 = require('md5');
 
-class Registration extends React.Component {
+class ChangePassword extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       name: '',
       password: '',
-      registered: false
+      new_password: ''
     }
   }
 
@@ -39,19 +39,25 @@ class Registration extends React.Component {
     e.preventDefault();
     var request = {
       method: "post",
-      baseURL: config.api,
-      url: "/registration.php",
+      baseURL: config.api_url,
+      url: "/change_password.php",
       data:{
         name: this.state.name,
         password: this.state.password,
-        password_md5: md5(this.state.password)
+        password_md5: md5(this.state.password),
+        new_password: this.state.new_password,
+        new_password_md5: md5(this.state.new_password)
       }
     };
     console.log(this.state);
     axios(request).then((response) => {
       console.log(response.data);
+      if (response.data.successful){
+        window.alert("Your password has been changed.")
+      }
+
       this.setState({
-        registered: response.data.registered
+        successful: response.data.successful
       });
     }).catch((error) => {window.alert(error)})	
   }
@@ -67,7 +73,7 @@ class Registration extends React.Component {
               </Avatar>
             </AvatarBox>
             <AvatarBox>
-              <Typography component="h1" variant="h5">Register</Typography>
+              <Typography component="h1" variant="h5">Change Password</Typography>
             </AvatarBox>
 
             <form noValidate>
@@ -88,10 +94,21 @@ class Registration extends React.Component {
                   required
                   fullWidth
                   name="password"
-                  label="Password"
+                  label="Current Password"
                   type="password"
                   id="password"
                   onChange={e => this.setState({password: e.target.value })}
+              />
+              <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="new_password"
+                  label="New Password"
+                  type="password"
+                  id="new_password"
+                  onChange={e => this.setState({new_password: e.target.value })}
               />
               {/*<TextField*/}
               {/*    variant="outlined"*/}
@@ -111,7 +128,7 @@ class Registration extends React.Component {
                   color="primary"
                   onClick={e => this.handleFormSubmit(e)}
               >
-                Register
+                Request Password Change
               </Button>
               <Grid container>
                 <Grid item xs>
@@ -124,7 +141,7 @@ class Registration extends React.Component {
               </Grid>
               <div>
                 {this.state.registered &&
-                <div>Thank you for registration.</div>}
+                <div>Your password was successfully changed.</div>}
               </div>
             </form>
           </div>
@@ -133,4 +150,4 @@ class Registration extends React.Component {
   }
 }
 
-export default Registration;
+export default ChangePassword;

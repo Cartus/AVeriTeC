@@ -5,6 +5,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
 import axios from "axios";
+import config from "../config.json"
 
 const EntryCard = styled(Card)`
     margin:10px;
@@ -52,7 +53,7 @@ class AdminControl extends react.Component {
         if (this.props.name == "Users"){
 	    var request = {
                 method: "post",
-                baseURL: 'https://api.averitec.eu/',
+                baseURL: config.api_url,
                 url: "/admin_control.php",
                 data:{
                     user_id: localStorage.getItem('user_id'),
