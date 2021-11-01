@@ -18,8 +18,6 @@ $db_params = parse_ini_file( dirname(__FILE__).'/db_params.ini', false);
 $json_result = file_get_contents("php://input");
 $_POST = json_decode($json_result, true);
 
-// if (empty($user_id) && empty($req_type)) die();
-
 $user_id = $_POST['user_id'];
 $req_type = $_POST['req_type'];
 

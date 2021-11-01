@@ -50,28 +50,28 @@ class AdminControl extends react.Component {
 
     componentDidMount() {
         if (this.props.name == "Users"){
-            axios({
-                method: 'post',
-                url: "http://localhost:8081/api/admin_control.php",
-                headers: {'content-type': 'application/json'},
-                data: {
+	    var request = {
+                method: "post",
+                baseURL: 'https://api.averitec.eu/',
+                url: "/admin_control.php",
+                data:{
                     user_id: localStorage.getItem('user_id'),
                     req_type: 'get-user'
                 }
-            })
-                .then(result => {
-                    this.setState({
-                        header: [
-                            {field: "id", headerName: "ID", width:120},
-                            {field: "user_name", headerName: "Name", editable:true, width: 250},
-                            {field: "finished_norm_annotations", headerName: "Phase1 Finished", type: "number", editable: true, width: 250},
-                            {field: "finished_qa_annotations", headerName: "Phase2 Finished", type: "number", editable: true, width: 250},
-                            {field: "finished_valid_annotations", headerName: "Phase3 Finished", type: "number", editable: true, width: 250},
-                        ],
-                        table: result.data
-                    })
+            };
+
+            axios(request).then((response) => {
+                this.setState({
+                    header: [
+                        {field: "id", headerName: "ID", width:120},
+                        {field: "user_name", headerName: "Name", editable:true, width: 250},
+                        {field: "finished_norm_annotations", headerName: "Phase1 Finished", type: "number", editable: true, width: 250},
+                        {field: "finished_qa_annotations", headerName: "Phase2 Finished", type: "number", editable: true, width: 250},
+                        {field: "finished_valid_annotations", headerName: "Phase3 Finished", type: "number", editable: true, width: 250},
+                    ],
+                    table: response.data
                 })
-                .catch(error => this.setState({error: error.message}));
+            }).catch((error) => {window.alert(error)})	
         } else if (this.props.name == "Claims"){
             this.setState({
                 header: [

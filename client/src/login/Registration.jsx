@@ -36,27 +36,24 @@ class Registration extends React.Component {
 
   handleFormSubmit = e => {
     e.preventDefault();
-    console.log(this.state)
-    axios({
-      method: 'post',
-      url: "http://localhost:8081/api/registration.php",
-      // url: "http://api.averitec.eu/registration.php",
-      headers: {'content-type': 'application/json'},
-      data: {
+    var request = {
+      method: "post",
+      baseURL: 'https://api.averitec.eu/',
+      url: "/registration.php",
+      data:{
         name: this.state.name,
         password: this.state.password,
         password_md5: md5(this.state.password)
       }
-    })
-        .then(result => {
-          console.log(result.data);
-          this.setState({
-            registered: result.data.registered
-          })
-        })
-        // .then(res => console.log(res.data))
-        .catch(error => this.setState({error: error.message}));
-  };
+    };
+    console.log(this.state);
+    axios(request).then((response) => {
+      console.log(response.data);
+      this.setState({
+        registered: response.data.registered
+      });
+    }).catch((error) => {window.alert(error)})	
+  }
 
   render() {
     return (

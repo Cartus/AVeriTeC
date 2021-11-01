@@ -12,32 +12,19 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$claim_id = 100;
-$web_archive = 'sss';
-$taken_flag = 0;
-$skipped = 1;
+$name = "zhijiang";
+$password = "admin";
+$password_md5 = "admin";
 
-$stmt = $conn->prepare("INSERT INTO Norm_Claims (claim_id, web_archive, taken_flag, skipped) VALUES (?, ?, ?, ?)");
-$stmt->bind_param("isii", $claim_id, $web_archive, $taken_flag, $skipped);
- 
-// 设置参数并执行
-$stmt->execute();
- 
-echo "新记录插入成功";
- 
-$stmt->close();
+$sql = "INSERT INTO Annotators (user_name, password_cleartext, password_md5, is_admin, number_logins,
+finished_norm_annotations, finished_qa_annotations, finished_valid_annotations) VALUES('$name', '$password', '$password_md5', 1, 0, 0, 0, 0)";
+
+if ($conn->query($sql) === TRUE) {
+    echo json_encode(array("registered" => true));
+} else {
+    echo json_encode(["registered" => false, "message" => "Something went wrong"]);
+}
+
 $conn->close();
-
-// $sql = "INSERT INTO Norm_Claims (claim_id, web_archive, taken_flag, skipped) 
-//     VALUES(1, 'sss', 0, 0)";
-
-// if ($conn->query($sql) === TRUE) {
-//     echo "Inserted successfully";
-//     echo "<br>";
-// } else {
-//     echo "Error creating table: " . $conn->error;
-//     echo "<br>";
-// }
-
 
 ?>

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import UserPanel from './UserPanel';
 import AssignmentControl from './AssignmentControl';
 import AdminControl from './AdminControl';
+import {Redirect} from "react-router-dom";
 
 const AssignmentField = styled(AssignmentControl)`
     width:33.333%;
@@ -38,21 +39,25 @@ class AnnotatorControl extends React.Component {
             assignments:{
                 phase_1: {
                     done: localStorage.finished_norm_annotations,
-                    total: 20
+                    total: 10
                 },
                 phase_2: {
                     done: localStorage.finished_qa_annotations,
-                    total: 20
+                    total: 10
                 },
                 phase_3: {
                     done: localStorage.finished_valid_annotations,
-                    total: 20
+                    total: 10
                 }
             }
         }
       }
 
     render() {
+	if (!localStorage.getItem('login')) {
+            return <Redirect to='/'/>;
+        } 
+
         return (
             <div>
                 <UserPanel user={this.state.user}/>
@@ -63,7 +68,6 @@ class AnnotatorControl extends React.Component {
                 </div>
                 {(this.state.user.is_admin === 1)? <AdminPanel>
                     <AdminControl name="Users"/>
-                    <AdminControl name="Claims"/>
                 </AdminPanel> : ""}
             </div>
         );

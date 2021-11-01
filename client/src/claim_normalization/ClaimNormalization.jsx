@@ -54,57 +54,60 @@ class ClaimNormalization extends React.Component {
             let pc = Number(localStorage.pc);
             console.log(pc);
             if (pc !== 0) {
-                axios({
-                    method: 'post',
-                    url: "http://localhost:8081/api/claim_norm.php",
-                    headers: {'content-type': 'application/json'},
+		var request = {
+                    method: "post",
+                    baseURL: 'https://api.averitec.eu/',
+                    url: "/claim_norm.php",
                     data: {
                         user_id: localStorage.getItem('user_id'),
                         req_type: 'reload-data',
                         offset: pc - 1
                     }
-                })
-                    .then(result => {
-                        if (result.data) {
-                            console.log(result.data);
-                            const new_claim = {web_archive: result.data.web_archive};
-                            localStorage.claim_id = result.data.claim_id;
-                            this.setState({claim: new_claim});
-                            const new_entries = result.data.entries;
-                            this.setState({entries: new_entries});
-                            console.log(this.state);
-                        } else {
-                            window.alert("No more claims!");
-                        }
+                };
 
-                    })
-                    .catch(error => this.setState({error: error.message}));
+                axios(request).then((response) => {
+                    if (response.data) {
+                        console.log(response.data);
+                        const new_claim = {web_archive: response.data.web_archive};
+                        localStorage.claim_id = response.data.claim_id;
+                        this.setState({claim: new_claim});
+                        const new_entries = response.data.entries;
+                        this.setState({entries: new_entries});
+                        console.log(this.state);
+                    } else {
+                        window.alert("No more claims!");
+                    }
+                }).catch((error) => {
+                    window.alert(error)
+                })    
             } else {
-                axios({
-                    method: 'post',
-                    url: "http://localhost:8081/api/claim_norm.php",
-                    headers: {'content-type': 'application/json'},
+		var request = {
+                    method: "post",
+                    baseURL: 'https://api.averitec.eu/',
+                    url: "/claim_norm.php",
                     data: {
                         user_id: localStorage.getItem('user_id'),
                         req_type: 'next-data'
                     }
-                })
-                    .then(result => {
-                        console.log(result.data);
-                        if (result.data) {
-                            if (Number(localStorage.finished_norm_annotations) === 0) {
-                                this.setState({userIsFirstVisiting: true});
-                            }
-                            const new_claim = {web_archive: result.data.web_archive};
-                            localStorage.claim_id = result.data.claim_id;
-                            this.setState({claim: new_claim});
-                            const new_entries = {"claim_entry_field_0":{}};
-                            this.setState({entries: new_entries});
-                        } else {
-                            window.alert("No more claims!");
+                };
+
+                axios(request).then((response) => {
+		    console.log(response.data);	
+                    if (response.data) {
+                        if (Number(localStorage.finished_norm_annotations) === 0) {
+                            this.setState({userIsFirstVisiting: true});
                         }
-                    })
-                    .catch(error => this.setState({error: error.message}));
+                        const new_claim = {web_archive: response.data.web_archive};
+                        localStorage.claim_id = response.data.claim_id;
+                        this.setState({claim: new_claim});
+                        const new_entries = {"claim_entry_field_0": {}};
+                        this.setState({entries: new_entries});
+                    } else {
+                        window.alert("No more claims!");
+                    }
+                }).catch((error) => {
+                    window.alert(error)
+                })    
             }
         }
     }

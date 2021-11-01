@@ -123,66 +123,66 @@ class VerdictValidation extends React.Component {
             let pc = Number(localStorage.pc);
             console.log(pc);
             if (pc !== 0){
-                axios({
-                    method: 'post',
-                    url: "http://localhost:8081/api/verdict_validate.php",
-                    headers: {'content-type': 'application/json'},
-                    data: {
+		var request = {
+                    method: "post",
+                    baseURL: 'https://api.averitec.eu/',
+                    url: "/verdict_validate.php",
+                    data:{
                         user_id: localStorage.getItem('user_id'),
                         req_type: 'reload-data',
                         offset: pc - 1
                     }
-                })
-                    .then(result => {
-                        console.log(result.data);
-                        if (result.data) {
-                            const new_claim = {
-                                web_archive: result.data.web_archive,
-                                claim_text: result.data.claim_text,
-                                claim_speaker: result.data.speaker,
-                                claim_hyperlink: result.data.claim_hyperlink,
-                                claim_date: result.data.claim_date,
-                                questions: result.data.questions
-                            };
-                            localStorage.claim_norm_id = result.data.claim_norm_id;
-                            this.setState({claim: new_claim});
-                            this.setState({annotation: result.data.annotation});
-                        } else {
-                            window.alert("No more claims!");
-                        }
-                    })
-                    .catch(error => this.setState({error: error.message}));
+                };
+
+                axios(request).then((response) => {
+                    if (response.data) {
+                        console.log(response.data);
+                        const new_claim = {
+                            web_archive: response.data.web_archive,
+                            claim_text: response.data.claim_text,
+                            claim_speaker: response.data.speaker,
+                            claim_hyperlink: response.data.claim_hyperlink,
+                            claim_date: response.data.claim_date,
+                            questions: response.data.questions
+                        };
+                        localStorage.claim_norm_id = response.data.claim_norm_id;
+                        this.setState({claim: new_claim});
+                        this.setState({annotation: response.data.annotation});
+                    } else {
+                        window.alert("No more claims!");
+                    }
+                }).catch((error) => {window.alert(error)})    
             } else {
-                axios({
-                    method: 'post',
-                    url: "http://localhost:8081/api/verdict_validate.php",
-                    headers: {'content-type': 'application/json'},
-                    data: {
+		var request = {
+                    method: "post",
+                    baseURL: 'https://api.averitec.eu/',
+                    url: "/verdict_validate.php",
+                    data:{
                         user_id: localStorage.getItem('user_id'),
                         req_type: 'next-data'
                     }
-                })
-                    .then(result => {
-                        console.log(result.data);
-                        if (result.data) {
-                            if (Number(localStorage.finished_valid_annotations) === 0) {
-                                this.setState({userIsFirstVisiting: true});
-                            }
-                            const new_claim = {
-                                web_archive: result.data.web_archive,
-                                claim_text: result.data.claim_text,
-                                claim_speaker: result.data.speaker,
-                                claim_hyperlink: result.data.claim_hyperlink,
-                                claim_date: result.data.claim_date,
-                                questions: result.data.questions
-                            };
-                            this.setState({claim: new_claim});
-                            console.log(this.state.claim);
-                        } else {
-                            window.alert("No more claims!");
+                };
+
+                axios(request).then((response) => {
+                    if (response.data) {
+                        console.log(response.data);
+                        if (Number(localStorage.finished_valid_annotations) === 0) {
+                            this.setState({userIsFirstVisiting: true});
                         }
-                    })
-                    .catch(error => this.setState({error: error.message}));
+                        const new_claim = {
+                            web_archive: response.data.web_archive,
+                            claim_text: response.data.claim_text,
+                            claim_speaker: response.data.speaker,
+                            claim_hyperlink: response.data.claim_hyperlink,
+                            claim_date: response.data.claim_date,
+                            questions: response.data.questions
+                        };
+                        this.setState({claim: new_claim});
+                        console.log(this.state.claim);
+                    } else {
+                        window.alert("No more claims!");
+                    }
+                }).catch((error) => {window.alert(error)})    
             }
         }
     }
@@ -192,43 +192,42 @@ class VerdictValidation extends React.Component {
             let pc = Number(localStorage.pc);
             if (pc !== 0) {
                 localStorage.pc = Number(localStorage.pc) - 1;
-                await axios({
-                    method: 'post',
-                    url: "http://localhost:8081/api/verdict_validate.php",
-                    headers: {'content-type': 'application/json'},
-                    data: {
+		var request = {
+                    method: "post",
+                    baseURL: 'https://api.averitec.eu/',
+                    url: "/verdict_validate.php",
+                    data:{
                         user_id: localStorage.getItem('user_id'),
                         req_type: 'resubmit-data',
                         annotation: this.state.annotation,
                         questions: this.state.claim.questions,
                         claim_norm_id: localStorage.claim_norm_id
                     }
-                })
-                    .then(res => {
-                        console.log(res.data);
-                        localStorage.claim_norm_id = 0;
-                        window.location.reload(false);
-                    })
-                    .catch(error => this.setState({error: error.message}));
+                };
 
+                await axios(request).then((response) => {
+                    console.log(response.data);
+                    localStorage.claim_norm_id = 0;
+                    window.location.reload(false);
+                }).catch((error) => {window.alert(error)})
             } else {
-                await axios({
-                    method: 'post',
-                    url: "http://localhost:8081/api/verdict_validate.php",
-                    headers: {'content-type': 'application/json'},
-                    data: {
+		var request = {
+                    method: "post",
+                    baseURL: 'https://api.averitec.eu/',
+                    url: "/verdict_validate.php",
+                    data:{
                         user_id: localStorage.getItem('user_id'),
                         req_type: 'submit-data',
                         annotation: this.state.annotation,
                         questions: this.state.claim.questions
                     }
-                })
-                    .then(res => {
-                        console.log(res.data);
-                        localStorage.finished_valid_annotations = Number(localStorage.finished_valid_annotations) + 1;
-                        window.location.reload(false);
-                    })
-                    .catch(error => this.setState({error: error.message}));
+                };
+
+                await axios(request).then((response) => {
+                    console.log(response.data);
+                    localStorage.finished_valid_annotations = Number(localStorage.finished_valid_annotations) + 1;
+                    window.location.reload(false);
+                }).catch((error) => {window.alert(error)})    
             }
         } else{
             this.setState({

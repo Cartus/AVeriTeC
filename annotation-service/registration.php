@@ -20,8 +20,8 @@ $password_md5 = $_POST['password_md5'];
 
 if (empty($_POST['name']) || empty($_POST['password'])) die();
 
-$sql = "INSERT INTO annotators (user_name, password_cleartext, password_md5, is_admin, number_logins,
-finished_norm_annotations, finished_qa_annotations, finished_valid_annotations) VALUES('$name', '$password', '$password_md5', 1, 0, 0, 0, 0)";
+$sql = "INSERT INTO Annotators (user_name, password_cleartext, password_md5, is_admin, number_logins,
+finished_norm_annotations, finished_qa_annotations, finished_valid_annotations) VALUES('$name', '$password', '$password_md5', 0, 0, 0, 0, 0)";
 
 
 if ($conn->query($sql) === TRUE) {

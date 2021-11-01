@@ -72,7 +72,6 @@ if ($req_type == "next-data"){
     $conn->close();
 
 } else if ($req_type == "submit-data") {
-
     $conn = new mysqli($db_params['servername'], $db_params['user'], $db_params['password'], $db_params['database']);
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
@@ -97,7 +96,7 @@ if ($req_type == "next-data"){
 
     $conn->begin_transaction();
     try {
-        foreach($_POST['entries'] as $item) {
+	foreach($_POST['entries'] as $item) {
             $cleaned_claim = $item['cleaned_claim'];
             
             if (array_key_exists('speaker', $item)){
@@ -141,7 +140,7 @@ if ($req_type == "next-data"){
             $phase_1_label = $item['phase_1_label'];
 
             $claim_types = implode(" [SEP] ", $claim_types);
-            $fact_checker_strategy = implode(" [SEP] ", $fact_checker_strategy);
+	    $fact_checker_strategy = implode(" [SEP] ", $fact_checker_strategy);
 
             update_table($conn, "INSERT INTO Norm_Claims (claim_id, web_archive, user_id_norm, cleaned_claim, speaker, hyperlink, transcription, media_source,
             check_date, claim_types, fact_checker_strategy, phase_1_label, qa_annotators_num, qa_taken_flag, qa_skipped, valid_annotators_num, valid_taken_flag, 

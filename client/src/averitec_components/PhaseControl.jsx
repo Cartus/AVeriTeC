@@ -38,9 +38,6 @@ const PhaseDescriptionBox = styled.div`
 class PhaseControl extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            login: true
-        }
 
         this.onLogout = this.onLogout.bind(this)
         this.onReport = this.onReport.bind(this)
@@ -49,55 +46,54 @@ class PhaseControl extends React.Component {
     onLogout(e){
         e.preventDefault();
         localStorage.clear();
-        this.setState({login: false});
     };
 
     async onReport() {
         let phase = localStorage.getItem('phase');
         if (phase === 'phase_1') {
-            await axios({
-                method: 'post',
-                url: "http://localhost:8081/api/claim_norm.php",
-                headers: {'content-type': 'application/json'},
-                data: {
+	     var request = {
+                method: "post",
+                baseURL: 'https://api.averitec.eu/',
+                url: "/claim_norm.php",
+                data:{
                     user_id: localStorage.getItem('user_id'),
                     req_type: 'skip-data',
                     claim_id: localStorage.claim_id
                 }
-            })
-                .then(res => {
-                    console.log(res.data);
-                    window.location.reload(false);
-                })
-                .catch(error => this.setState({error: error.message}));
+            };
+
+            await axios(request).then((response) => {
+                console.log(response.data);
+                window.location.reload(false);
+            }).catch((error) => {window.alert(error)})	
         } else if (phase === 'phase_2') {
-            await axios({
-                method: 'post',
-                url: "http://localhost:8081/api/question_answering.php",
-                headers: {'content-type': 'application/json'},
-                data: {
+	    var request = {
+                method: "post",
+                baseURL: 'https://api.averitec.eu/',
+                url: "/question_answering.php",
+                data:{
                     user_id: localStorage.getItem('user_id'),
                     req_type: 'skip-data',
-                    claim_norm_id: localStorage.claim_norm_id
+                    claim_id: localStorage.claim_id
                 }
-            })
-                .then(res => {
-                    console.log(res.data);
-                    window.location.reload(false);
-                })
-                .catch(error => this.setState({error: error.message}));
+            };
+
+            await axios(request).then((response) => {
+                console.log(response.data);
+                window.location.reload(false);
+            }).catch((error) => {window.alert(error)})	
         }
     };
 
     render() {
+        if (!localStorage.getItem('login')) {
+            return <Redirect to='/'/>;
+        }
+
         let className = ''
 
         if(this.props.className !== undefined){
             className = this.props.className
-        }
-
-        if (!this.state.login) {
-            return <Redirect to='/'/>;
         }
 
         return (

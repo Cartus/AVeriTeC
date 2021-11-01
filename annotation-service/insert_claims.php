@@ -1,6 +1,6 @@
 <?php
 
-$json_string = file_get_contents('all.json');
+$json_string = file_get_contents('sample.json');
 $data = json_decode($json_string, true);
 
 // print_r($data);

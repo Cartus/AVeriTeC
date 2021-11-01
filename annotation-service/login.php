@@ -25,7 +25,6 @@ if (empty($_POST['name']) && empty($_POST['password_md5'])) die();
 
 $name = $_POST['name'];
 $pw_md5 = $_POST['password_md5'];
-// $phase = $_POST['phase'];
 
 $sql = "SELECT user_id, is_admin, finished_norm_annotations, finished_qa_annotations, finished_valid_annotations FROM Annotators WHERE password_md5 = ? AND user_name = ?";
 $stmt= $conn->prepare($sql);

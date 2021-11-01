@@ -67,73 +67,69 @@ class QuestionGeneration extends React.Component {
             let pc = Number(localStorage.pc);
             console.log(pc);
             if (pc !== 0) {
-                axios({
-                    method: 'post',
-                    url: "http://localhost:8081/api/question_answering.php",
-                    headers: {'content-type': 'application/json'},
-                    data: {
+		var request = {
+                    method: "post",
+                    baseURL: 'https://api.averitec.eu/',
+                    url: "/question_answering.php",
+                    data:{
                         user_id: localStorage.getItem('user_id'),
                         req_type: 'reload-data',
                         offset: pc - 1
                     }
-                })
-                    .then(result => {
-                        if (result.data) {
-                            console.log(result.data);
-                            const new_claim = {
-                                web_archive: result.data.web_archive,
-                                claim_text: result.data.cleaned_claim,
-                                claim_speaker: result.data.speaker,
-                                claim_date: result.data.check_date
-                            };
-                            localStorage.claim_norm_id = result.data.claim_norm_id;
-                            this.setState({claim: new_claim});
+                };
 
-                            const new_header = {label: result.data.label   };
-                            this.setState({qa_pair_header: new_header})
+                axios(request).then((response) => {
+                    if (response.data) {
+                        console.log(response.data);
+                        const new_claim = {
+                            web_archive: response.data.web_archive,
+                            claim_text: response.data.cleaned_claim,
+                            claim_speaker: response.data.speaker,
+                            claim_date: response.data.check_date
+                        };
+                        localStorage.claim_norm_id = response.data.claim_norm_id;
+                        this.setState({claim: new_claim});
 
-                            const new_entries = result.data.entries;
-                            this.setState({entries: new_entries});
+                        const new_header = {label: response.data.label   };
+                        this.setState({qa_pair_header: new_header})
 
-                        } else {
-                            window.alert("No more claims!");
-                        }
-
-                    })
-                    .catch(error => this.setState({error: error.message}));
+                        const new_entries = response.data.entries;
+                        this.setState({entries: new_entries});
+                    } else {
+                        window.alert("No more claims!");
+                    }
+                }).catch((error) => {window.alert(error)})	    
             } else {
-                axios({
-                    method: 'post',
-                    url: "http://localhost:8081/api/question_answering.php",
-                    headers: {'content-type': 'application/json'},
-                    data: {
+		var request = {
+                    method: "post",
+                    baseURL: 'https://api.averitec.eu/',
+                    url: "/question_answering.php",
+                    data:{
                         user_id: localStorage.getItem('user_id'),
                         req_type: 'next-data'
                     }
-                })
-                    .then(result => {
-                        if (result.data){
-                            if (Number(localStorage.finished_qa_annotations) === 0) {
-                                this.setState({userIsFirstVisiting: true});
-                            }
-                            console.log(result.data);
-                            const new_claim = {
-                                web_archive: result.data.web_archive,
-                                claim_text: result.data.cleaned_claim,
-                                claim_speaker: result.data.speaker,
-                                claim_date: result.data.check_date
-                            };
-                            localStorage.claim_norm_id = result.data.claim_norm_id;
-                            this.setState({claim: new_claim});
-                            const new_entries = {"qa_pair_entry_field_0":{}};
-                            this.setState({entries: new_entries});
-                            // console.log(this.state.claim);
-                            // console.log(result.data);
-                        } else {
-                            window.alert("No more claims!");
+                };
+
+                axios(request).then((response) => {
+                    if (response.data) {
+                        if (Number(localStorage.finished_qa_annotations) === 0) {
+                            this.setState({userIsFirstVisiting: true});
                         }
-                    })
-                    .catch(error => this.setState({error: error.message}));
+                        console.log(response.data);
+                        const new_claim = {
+                            web_archive: response.data.web_archive,
+                            claim_text: response.data.cleaned_claim,
+                            claim_speaker: response.data.speaker,
+                            claim_date: response.data.check_date
+                        };
+                        localStorage.claim_norm_id = response.data.claim_norm_id;
+                        this.setState({claim: new_claim});
+                        const new_entries = {"qa_pair_entry_field_0":{}};
+                        this.setState({entries: new_entries});
+                    } else {
+                        window.alert("No more claims!");
+                    }
+                }).catch((error) => {window.alert(error)})    
             }
         }
     }

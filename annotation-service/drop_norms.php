@@ -9,10 +9,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-//$sql = "DROP TABLE Annotators";
-$sql = "DROP TABLE Claims";
-// $sql = "DROP TABLE Norm_Claims";
-//$sql = "DROP TABLE Qapair";
+$sql = "DROP TABLE Norm_Claims";
  
 if ($conn->query($sql) === TRUE) {
     echo "Table dropped successfully";

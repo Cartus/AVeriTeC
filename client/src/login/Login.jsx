@@ -37,34 +37,34 @@ class Login extends React.Component{
 
   handleFormSubmit = e => {
     e.preventDefault();
-    // console.log(this.state);
-    axios({
-      method: 'post',
-      url: "http://localhost:8081/api/login.php",
-      // url: "http://api.averitec.eu/login.php",
-      headers: {'content-type': 'application/json'},
-      data: {
-        name: this.state.name,
-        password_md5: md5(this.state.password)
-      }
-    })
-        .then(result => {
-          localStorage.setItem('user_id', result.data.user_id);
-          localStorage.setItem('user_name', result.data.user_name);
-          localStorage.setItem('login', result.data.login);
-          localStorage.setItem('is_admin', result.data.is_admin);
-          localStorage.finished_norm_annotations = result.data.finished_norm_annotations;
-          localStorage.finished_qa_annotations = result.data.finished_qa_annotations;
-          localStorage.finished_valid_annotations = result.data.finished_valid_annotations;
+    var request = {
+          method: "post",
+          baseURL: 'https://api.averitec.eu/',
+          url: "/login.php",
+          data:{
+              name: this.state.name,
+              password_md5: md5(this.state.password)
+          }
+      };
+
+      console.log(this.state);
+      axios(request).then((response) => {
+          console.log(response.data);
+          localStorage.setItem('user_id', response.data.user_id);
+          localStorage.setItem('user_name', response.data.user_name);
+          localStorage.setItem('login', response.data.login);
+          localStorage.setItem('is_admin', response.data.is_admin);
+          localStorage.finished_norm_annotations = response.data.finished_norm_annotations;
+          localStorage.finished_qa_annotations = response.data.finished_qa_annotations;
+          localStorage.finished_valid_annotations = response.data.finished_valid_annotations;
           localStorage.pc = 0;
           localStorage.claim_id = 0;
           localStorage.claim_norm_id = 0;
-          this.setState({login: result.data.login})
+          this.setState({login: response.data.login})
           console.log(this.state);
           console.log(localStorage.getItem('login'));
-        })
-        .catch(error => this.setState({error: error.message}));
-  };
+      }).catch((error) => {window.alert(error)})	
+  }
 
   render() {
     if (this.state.login) {
