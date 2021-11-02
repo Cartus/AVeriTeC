@@ -55,7 +55,8 @@ class QuestionGeneration extends React.Component {
                 web_archive: "",
                 claim_text: "",
                 claim_speaker: "",
-                claim_date: ""
+                claim_date: "",
+		country_code: ""    
             },
             // entries : {"qa_pair_entry_field_1":{}},
             entries : {},
@@ -87,7 +88,8 @@ class QuestionGeneration extends React.Component {
                             web_archive: response.data.web_archive,
                             claim_text: response.data.cleaned_claim,
                             claim_speaker: response.data.speaker,
-                            claim_date: response.data.check_date
+                            claim_date: response.data.check_date,
+			    country_code: response.data.country_code	
                         };
                         
                         if (new_claim.claim_date){
@@ -128,7 +130,8 @@ class QuestionGeneration extends React.Component {
                             web_archive: response.data.web_archive,
                             claim_text: response.data.cleaned_claim,
                             claim_speaker: response.data.speaker,
-                            claim_date: response.data.check_date
+                            claim_date: response.data.check_date,
+			    country_code: response.data.country_code	
                         };
 
                         if (new_claim.claim_date){

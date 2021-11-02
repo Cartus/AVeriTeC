@@ -137,6 +137,8 @@ class SearchField extends React.Component {
         var page = this.state.page
         var country_code = this.props.country_code
 
+	console.log(country_code);
+
         var request = {
             method: "get",
             baseURL: config.search_api_url,

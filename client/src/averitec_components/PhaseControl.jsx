@@ -38,7 +38,10 @@ const PhaseDescriptionBox = styled.div`
 class PhaseControl extends React.Component {
     constructor(props) {
         super(props);
-
+	
+	this.state = {
+            login: true
+        }    
         this.onLogout = this.onLogout.bind(this)
         this.onReport = this.onReport.bind(this)
     }
@@ -46,6 +49,7 @@ class PhaseControl extends React.Component {
     onLogout(e){
         e.preventDefault();
         localStorage.clear();
+	this.setState({login: false});
     };
 
     async onReport() {
@@ -86,7 +90,7 @@ class PhaseControl extends React.Component {
     };
 
     render() {
-        if (!localStorage.getItem('login')) {
+	if (!this.state.login) {
             return <Redirect to='/'/>;
         }
 
