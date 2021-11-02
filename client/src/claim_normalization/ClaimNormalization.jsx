@@ -70,10 +70,20 @@ class ClaimNormalization extends React.Component {
                     if (response.data) {
                         console.log(response.data);
                         const new_claim = {web_archive: response.data.web_archive};
+
                         localStorage.claim_id = response.data.claim_id;
                         this.setState({claim: new_claim});
-                        const new_entries = response.data.entries;
+                        
+                        var new_entries = response.data.entries;
+                        
+                        for (var key in new_entries){
+                            var entry = new_entries[key];
+                            if (entry.date){
+                                entry.date = new Date(entry.date + "Z");
+                            }
+                        }
                         this.setState({entries: new_entries});
+
                         console.log(this.state);
                     } else {
                         window.alert("No more claims!");

@@ -9,6 +9,7 @@ import { WarningRounded } from '@material-ui/icons';
 import axios from "axios";
 import {Redirect} from "react-router-dom";
 import config from "../config.json"
+import moment from "moment";
 
 const QADataField = styled.div`
     width: -webkit-calc(40% - 10px)!important;
@@ -88,6 +89,12 @@ class QuestionGeneration extends React.Component {
                             claim_speaker: response.data.speaker,
                             claim_date: response.data.check_date
                         };
+                        
+                        if (new_claim.claim_date){
+                            var claim_date = new Date(new_claim.claim_date + "Z");
+                            new_claim.claim_date = moment(claim_date).format('DD/MM/YYYY');
+                        }
+                        
                         localStorage.claim_norm_id = response.data.claim_norm_id;
                         this.setState({claim: new_claim});
 
@@ -123,6 +130,12 @@ class QuestionGeneration extends React.Component {
                             claim_speaker: response.data.speaker,
                             claim_date: response.data.check_date
                         };
+
+                        if (new_claim.claim_date){
+                            var claim_date = new Date(new_claim.claim_date + "Z");
+                            new_claim.claim_date = moment(claim_date).format('DD/MM/YYYY');
+                        }
+
                         localStorage.claim_norm_id = response.data.claim_norm_id;
                         this.setState({claim: new_claim});
                         const new_entries = {"qa_pair_entry_field_0":{}};

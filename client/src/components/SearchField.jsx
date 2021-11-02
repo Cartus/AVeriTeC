@@ -143,11 +143,15 @@ class SearchField extends React.Component {
             url: "/web_search.php",
             params:{
                 query: query,
-                claim_date:claim_date,
+                claim_date: claim_date,
                 page: page,
-                country_code : country_code
+                country_code : country_code? country_code : "gb" // If no country code is given, use gb
             }
         };
+
+        if (!country_code){
+            console.log("WARNING: No country code was given. Using GB for localization.")
+        }
 
         axios(request).then((response) => {
             var newSearchItems = []

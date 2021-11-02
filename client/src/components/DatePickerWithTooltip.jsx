@@ -29,26 +29,42 @@ const StyledTextField = styled(TextField)`
     width:100%
 `
 
-export default function DatePickerWithTooltip(props) {
-    const [value, setValue] = React.useState(null);
-  
+function shiftPickerDateToUTCDate(pickerDate) {
+    const timestamp = Date.UTC(
+        pickerDate.getFullYear(),
+        pickerDate.getMonth(),
+        pickerDate.getDate()
+      );
+    
+    return new Date(timestamp);
+}
+
+function shiftFromUTCDate(systemDate) {
+    return new Date(
+        systemDate.getUTCFullYear(),
+        systemDate.getUTCMonth(),
+        systemDate.getUTCDate()
+      );
+}
+
+
+export default function DatePickerWithTooltip(props) {  
     return (
         <ElementContainer>
             <TextFieldContainer>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DatePicker
                 label={props.label}
-                value={value}
+                value={props.value? shiftFromUTCDate(props.value) : null}
                 inputFormat="dd/MM/yyyy"
-                onChange={(newValue) => {
-                    setValue(newValue);
-            
+                onChange={(newValue) => {            
                     // Essentially a massive hack to make datepicker play nice with our onchange function
                     var fakeEvent = new Object();
                     fakeEvent.target = {
                         name: props.name,
-                        value: newValue
+                        value: shiftPickerDateToUTCDate(newValue)
                     };
+                    
                     props.onChange(fakeEvent)
                 }}
                 renderInput={(params) => <StyledTextField size="small" {...params} />}

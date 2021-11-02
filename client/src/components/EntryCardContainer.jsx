@@ -70,6 +70,7 @@ class EntryCardContainer extends React.Component {
     componentWillReceiveProps (props) {
         // this.setState({entries: props.entries? props.entries : {}});
         this.setState({entries: props.entries});
+        this.setState({added_entries: Object.keys(props.entries).length})
         var headerString = this.props.entryName + "_header";
         // this.setState({[headerString]: props.header? props.header : {}});
         this.setState({[headerString]: props.header});
