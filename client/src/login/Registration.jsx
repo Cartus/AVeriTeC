@@ -39,7 +39,7 @@ class Registration extends React.Component {
     e.preventDefault();
     var request = {
       method: "post",
-      baseURL: config.api,
+      baseURL: config.api_url,
       url: "/registration.php",
       data:{
         name: this.state.name,

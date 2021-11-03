@@ -18,6 +18,9 @@ $name = $_POST['name'];
 $password = $_POST['password'];
 $password_md5 = $_POST['password_md5'];
 
+echo $name;
+echo $password;
+
 if (empty($_POST['name']) || empty($_POST['password'])) die();
 
 $sql = "INSERT INTO Annotators (user_name, password_cleartext, password_md5, is_admin, number_logins,
