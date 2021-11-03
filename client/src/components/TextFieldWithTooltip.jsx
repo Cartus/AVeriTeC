@@ -56,7 +56,7 @@ export default function TextFieldWithTooltip(props){
     return (
         <ElementContainer multiline={props.rows} rows={props.rows}>
             <TextFieldContainer>
-                <StyledTextField size="small" error={error} {...props}/>
+                <StyledTextField size="small" error={error} {...props} value={value}/>
                 {/*error? <FormHelperText error={error}>{message}</FormHelperText> : ""*/}
             </TextFieldContainer>
             <QMarkContainer>

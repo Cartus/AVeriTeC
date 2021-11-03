@@ -80,7 +80,8 @@ class ClaimTopField extends React.Component {
         validator={notEmptyValidator} 
         valid={this.props.valid} 
         value={this.props.data["justification"]} 
-        required multiline 
+        required 
+        multiline 
         rows={4} 
         inputProps={{ maxLength: 300 }}
         onChange={this.handleFieldChange} 

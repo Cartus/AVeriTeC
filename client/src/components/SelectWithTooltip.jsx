@@ -59,7 +59,7 @@ export default function SelectWithTooltip(props) {
   return (
     <ElementContainer>
       <TextFieldContainer>
-      <StyledFormControl required={props.required} error={error} variant="outlined" size="small" className={classes.formControl}>
+      <StyledFormControl disabled={props.disabled} required={props.required} error={error} variant="outlined" size="small" className={classes.formControl}>
         <InputLabel>{props.label}</InputLabel>
         <Select
           // value={props.value}

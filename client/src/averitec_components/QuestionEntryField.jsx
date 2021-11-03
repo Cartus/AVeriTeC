@@ -92,12 +92,7 @@ class QuestionEntryField extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-          unanswerable: false
-        };
-
         this.handleFieldChange = this.handleFieldChange.bind(this);
-        this.handleAnswerTypeFieldChange = this.handleAnswerTypeFieldChange.bind(this);
         this.handleDelete = this.handleDelete.bind(this)
     }
 
@@ -110,10 +105,9 @@ class QuestionEntryField extends React.Component {
       const { name, value } = event.target;
 
       if (value == "Unanswerable"){
-        this.setState({unanswerable: true});
         this.props.onChange(this.props.id, "source_url", "");
-      }else{
-        this.setState({unanswerable: false});
+        this.props.onChange(this.props.id, "source_medium", "");
+        this.props.onChange(this.props.id, "answer", "No answer could be found.");
       }
 
       this.props.onChange(this.props.id, name, value);
@@ -124,12 +118,19 @@ class QuestionEntryField extends React.Component {
     }
 
     render() {
+      var unanswerable = this.props.data["answer_type"] == "Unanswerable"
+
+
         return (
             <ContainerDiv>
                 <TextLeftEntryDiv>
                     <TextFieldWithTooltip data-tour="question_textfield" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["question"]} name='question' label="Question" required multiline rows={7} onChange={this.handleFieldChange} tooltip="Please write a question that will help you gather evidence for or against the claim."/>
                     <PaddingDiv/>
-                    <TextFieldWithTooltip data-tour="answer_textfield" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["answer"]} name='answer' label="Answer" required multiline rows={7} onChange={this.handleFieldChange} tooltip="Please write the answer here. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence."/>
+                    {unanswerable? 
+                    <TextFieldWithTooltip data-tour="answer_textfield" disabled value={this.props.data["answer"]} name='answer' label="Answer" multiline rows={7} onChange={this.handleFieldChange} tooltip="Please write the answer here. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence."/>
+                    :
+                    <TextFieldWithTooltip data-tour="answer_textfield" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["answer"]} name='answer' label="Answer" multiline rows={7} onChange={this.handleFieldChange} tooltip="Please write the answer here. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence."/>
+                  }
                 </TextLeftEntryDiv>
                 
                 <TextRightEntryDiv>
@@ -152,14 +153,18 @@ class QuestionEntryField extends React.Component {
                     </div>
                     <EmptySpaceDiv/>
                     
-                    {this.state.unanswerable? 
+                    {unanswerable? 
                     <TextFieldWithTooltip name='source_url' label="Source URL" disabled value={this.props.data["source_url"]} onChange={this.handleFieldChange} tooltip="Please copy-paste the URL where you found the answer here. Try to avoid using other fact-checking articles as sources."/> : 
                     <TextFieldWithTooltip name='source_url' label="Source URL" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["question"]} value={this.props.data["source_url"]} onChange={this.handleFieldChange} tooltip="Please copy-paste the URL where you found the answer here. Try to avoid using other fact-checking articles as sources."/>
                     }
                     
                     <EmptySpaceDiv/>
                     
+                    {unanswerable? 
+                    <SelectWithTooltip name="source_medium" label="Source Medium" disabled value={this.props.data["source_medium"]} onChange={this.handleFieldChange} items={["Web text", "Web table", "PDF", "Image/graphic", "Video", "Audio", "Other"]} tooltip="Please describe what medium you found the answer in."/>
+                    :
                     <SelectWithTooltip name="source_medium" label="Source Medium" value={this.props.data["source_medium"]} onChange={this.handleFieldChange} items={["Web text", "Web table", "PDF", "Image/graphic", "Video", "Audio", "Other"]} tooltip="Please describe what medium you found the answer in."/>
+                    }
                     </div>
                 </TextRightEntryDiv>
             </ContainerDiv>

@@ -18,7 +18,15 @@ function validate(content){
           if(!("question" in entry) || notEmptyValidator(entry["question"]).error){
             valid = false;
           } else if(!("answer" in entry) || notEmptyValidator(entry["answer"]).error){
+            if (!("answer_type" in entry) || entry["answer_type"] != "Unanswerable"){
+              valid = false;
+            }
+          } else if(!("answer_type" in entry) || notEmptyValidator(entry["answer_type"]).error){
             valid = false;
+          } else if(!("source_url" in entry) || notEmptyValidator(entry["source_url"]).error){
+            if (!("answer_type" in entry) || entry["answer_type"] != "Unanswerable"){
+              valid = false;
+            }
           }
         });
   
