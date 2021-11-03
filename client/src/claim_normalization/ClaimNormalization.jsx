@@ -79,7 +79,7 @@ class ClaimNormalization extends React.Component {
                         for (var key in new_entries){
                             var entry = new_entries[key];
                             if (entry.date){
-                                entry.date = new Date(entry.date + "Z");
+                                entry.date = new Date(entry.date + "T00:00:00.0Z");
                             }
                         }
                         this.setState({entries: new_entries});

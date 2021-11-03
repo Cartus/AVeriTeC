@@ -93,7 +93,7 @@ class QuestionGeneration extends React.Component {
                         };
                         
                         if (new_claim.claim_date){
-                            var claim_date = new Date(new_claim.claim_date + "Z");
+                            var claim_date = new Date(new_claim.claim_date + "T00:00:00.0Z");
                             new_claim.claim_date = moment(claim_date).format('DD/MM/YYYY');
                         }
                         
@@ -135,7 +135,7 @@ class QuestionGeneration extends React.Component {
                         };
 
                         if (new_claim.claim_date){
-                            var claim_date = new Date(new_claim.claim_date + "Z");
+                            var claim_date = new Date(new_claim.claim_date + "T00:00:00.0Z");
                             new_claim.claim_date = moment(claim_date).format('DD/MM/YYYY');
                         }
 

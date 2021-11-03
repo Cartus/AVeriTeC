@@ -64,6 +64,9 @@ export default function CountryPickerWithTooltip(props) {
     return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
 });
 
+  var country_by_code_dict = country_list.reduce((a,x) => ({...a, [x.code]: x}), {})
+  console.log(country_by_code_dict[props.value])
+
   const handleChange = (event, values) => {
     // TODO: Ugly hack to mutate data, please fix
     var fakeEvent = new Object();
@@ -79,6 +82,7 @@ export default function CountryPickerWithTooltip(props) {
     <ElementContainer>
       <TextFieldContainer>
         <Autocomplete
+            value={country_by_code_dict[props.value]}
             options={country_list}
             onChange={handleChange}
             autoHighlight
@@ -93,7 +97,6 @@ export default function CountryPickerWithTooltip(props) {
           {...params}
           name={props.name}
           size="small" 
-          value={props.value}
           label={props.label}
           inputProps={{
             ...params.inputProps,

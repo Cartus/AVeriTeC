@@ -92,7 +92,12 @@ class QuestionEntryField extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+          unanswerable: false
+        };
+
         this.handleFieldChange = this.handleFieldChange.bind(this);
+        this.handleAnswerTypeFieldChange = this.handleAnswerTypeFieldChange.bind(this);
         this.handleDelete = this.handleDelete.bind(this)
     }
 
@@ -100,6 +105,19 @@ class QuestionEntryField extends React.Component {
         const { name, value } = event.target;
         this.props.onChange(this.props.id, name, value);
     }
+
+    handleAnswerTypeFieldChange = event => {
+      const { name, value } = event.target;
+
+      if (value == "Unanswerable"){
+        this.setState({unanswerable: true});
+        this.props.onChange(this.props.id, "source_url", "");
+      }else{
+        this.setState({unanswerable: false});
+      }
+
+      this.props.onChange(this.props.id, name, value);
+    }    
 
     handleDelete = () => {
       this.props.onDelete(this.props.id)
@@ -124,10 +142,8 @@ class QuestionEntryField extends React.Component {
                     </ul>
                   </QuestionReminderBox>
                   <div data-tour="answer_metadata">
-                    <TextFieldWithTooltip name='source_url' label="Source URL" value={this.props.data["source_url"]} onChange={this.handleFieldChange} tooltip="Please copy-paste the URL where you found the answer here. Try to avoid using other fact-checking articles as sources."/>
-                    <EmptySpaceDiv/>
-                    <div data-tour="answer_type">
-                    <SelectWithTooltip name="answer_type" label="Answer Type" value={this.props.data["answer_type"]} onChange={this.handleFieldChange} items={["Extractive", "Abstractive", "Boolean", "Unanswerable"]} tooltip={<ul>
+                  <div data-tour="answer_type">
+                    <SelectWithTooltip name="answer_type" label="Answer Type" validator={notEmptyValidator} valid={this.props.valid} required  value={this.props.data["answer_type"]} onChange={this.handleAnswerTypeFieldChange} items={["Extractive", "Abstractive", "Boolean", "Unanswerable"]} tooltip={<ul>
                       <li>Extractive: The answer is a phrase copied directly from the source.</li>
                       <li>Abstractive: The answer was rephrased, but is based directly on the source.</li>
                       <li>Boolean: The answer is yes/no, based directly on the source.</li>
@@ -135,6 +151,14 @@ class QuestionEntryField extends React.Component {
                       </ul>}/>
                     </div>
                     <EmptySpaceDiv/>
+                    
+                    {this.state.unanswerable? 
+                    <TextFieldWithTooltip name='source_url' label="Source URL" disabled value={this.props.data["source_url"]} onChange={this.handleFieldChange} tooltip="Please copy-paste the URL where you found the answer here. Try to avoid using other fact-checking articles as sources."/> : 
+                    <TextFieldWithTooltip name='source_url' label="Source URL" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["question"]} value={this.props.data["source_url"]} onChange={this.handleFieldChange} tooltip="Please copy-paste the URL where you found the answer here. Try to avoid using other fact-checking articles as sources."/>
+                    }
+                    
+                    <EmptySpaceDiv/>
+                    
                     <SelectWithTooltip name="source_medium" label="Source Medium" value={this.props.data["source_medium"]} onChange={this.handleFieldChange} items={["Web text", "Web table", "PDF", "Image/graphic", "Video", "Audio", "Other"]} tooltip="Please describe what medium you found the answer in."/>
                     </div>
                 </TextRightEntryDiv>
