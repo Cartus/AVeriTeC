@@ -310,7 +310,7 @@ if ($req_type == "next-data"){
     $conn->begin_transaction();
     try {
         update_table($conn, "UPDATE Claims SET norm_skipped=1, norm_skipped_by=? WHERE claim_id=?",'ii', $user_id, $claim_id);
-        update_table($conn, "UPDATE Annotators SET current_norm_task=0 WHERE user_id=?",'i', $user_id);
+        update_table($conn, "UPDATE Annotators SET current_norm_task=0, finished_norm_annotations=finished_norm_annotations+1 WHERE user_id=?",'i', $user_id);
         $conn->commit();
         echo "Skip Successfully!";
     }catch (mysqli_sql_exception $exception) {

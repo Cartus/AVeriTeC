@@ -223,7 +223,8 @@ if ($req_type == "next-data"){
             $question_array = array();
             $question_array['text'] = $row_qa['question'];
             $question_array['answer'] = $row_qa['answer'];
-            $question_array['url'] = $row_qa['source_url'];
+	    $question_array['url'] = $row_qa['source_url'];
+	    $question_array['question_problems'] = explode(" [SEP] ", $row_qa['question_problems']);
             $questions[$count_string] = $question_array;
         }
         $annotation = array();

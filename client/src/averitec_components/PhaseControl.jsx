@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import axios from "axios";
 import {Redirect} from "react-router-dom";
+import config from "../config.json";
 
 const EntryCard = styled(Card)`
   margin:10px;
@@ -57,7 +58,7 @@ class PhaseControl extends React.Component {
         if (phase === 'phase_1') {
 	     var request = {
                 method: "post",
-                baseURL: 'https://api.averitec.eu/',
+                baseURL: config.api_url,
                 url: "/claim_norm.php",
                 data:{
                     user_id: localStorage.getItem('user_id'),
@@ -68,12 +69,13 @@ class PhaseControl extends React.Component {
 
             await axios(request).then((response) => {
                 console.log(response.data);
+		localStorage.finished_norm_annotations = Number(localStorage.finished_norm_annotations) + 1;    
                 window.location.reload(false);
             }).catch((error) => {window.alert(error)})	
         } else if (phase === 'phase_2') {
 	    var request = {
                 method: "post",
-                baseURL: 'https://api.averitec.eu/',
+                baseURL: config.api_url,
                 url: "/question_answering.php",
                 data:{
                     user_id: localStorage.getItem('user_id'),
@@ -84,6 +86,7 @@ class PhaseControl extends React.Component {
 
             await axios(request).then((response) => {
                 console.log(response.data);
+		localStorage.finished_qa_annotations = Number(localStorage.finished_qa_annotations) + 1;    
                 window.location.reload(false);
             }).catch((error) => {window.alert(error)})	
         }

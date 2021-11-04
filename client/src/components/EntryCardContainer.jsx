@@ -8,6 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 import ClearIcon from '@material-ui/icons/Clear';
 import NavBar from '../averitec_components/NavBar';
 import axios from "axios";
+import config from "../config.json";
 
 const EntryCard = styled(Card)`
   margin:10px;
@@ -90,7 +91,7 @@ class EntryCardContainer extends React.Component {
                     localStorage.pc = Number(localStorage.pc) - 1;
 		    var request = {
                         method: "post",
-                        baseURL: 'https://api.averitec.eu/',
+                        baseURL: config.api_url,
                         url: "/claim_norm.php",
                         data:{
                             user_id: localStorage.getItem('user_id'),
@@ -108,7 +109,7 @@ class EntryCardContainer extends React.Component {
                 } else {
 		    var request = {
                         method: "post",
-                        baseURL: 'https://api.averitec.eu/',
+                        baseURL: config.api_url,
                         url: "/claim_norm.php",
                         data:{
                             user_id: localStorage.getItem('user_id'),
@@ -130,7 +131,7 @@ class EntryCardContainer extends React.Component {
                     localStorage.pc = Number(localStorage.pc) - 1;
 		    var request = {
                         method: "post",
-                        baseURL: 'https://api.averitec.eu/',
+                        baseURL: config.api_url,
                         url: "/question_answering.php",
                         data:{
                             user_id: localStorage.getItem('user_id'),
@@ -150,7 +151,7 @@ class EntryCardContainer extends React.Component {
                 } else {
 		    var request = {
                         method: "post",
-                        baseURL: 'https://api.averitec.eu/',
+                        baseURL: config.api_url,
                         url: "/question_answering.php",
                         data:{
                             user_id: localStorage.getItem('user_id'),
