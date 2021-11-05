@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "averitec",
+  "private_key_id": "a4c4d8a92874a4f2ca581821a6cafa0e931e8bb4",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC1dY3Ir9WBumZF\nfHXvggtaObECUrxfOD4LnlSYXSz9qFYplW/tSKZZoQ2Lhv/vDcyLjPc3rFg9wMoj\nfGM7YA3MWjD9O7W5DiLlpvhvkbCJZKQsbgGFpVNFVHckW9QaJsLmxp2tsOi8IEcH\nB3fgBy/EF2gup19eDL/ychkPcI7gGoYIV3G9LpYRsnM75Qp+OWZPJD7/HNa2ZhIP\ndIlfEKCVDUHc8pw7yxR9Q/qBxr6RleFTUNvwDlZw+qhpvIRwr9IK1Oa5ChDVk+ef\nV1BCqD2oiNjXLMqHiQoPl6hC67TiYogwtJ3l6matsr4ypivuPTrZLjqTgH46t+X+\noNglNUtJAgMBAAECggEAAO2lzZ4BRFfPDa7M5PTBrw+02GRFtvt9zSrdavoHQKt0\nXsoj/58W5pLvBuF7jI5B12dscHL/ykR8Zdk6FTvnY8RrQOP/fAYNKk1aWUP4Q7Ws\nxaNQ7u1fkainvOGa4jQQ6T16h+C4yhVksG3XehRzVQg1H4/HFz81TRQls5+YHYZt\nZyrw0sQhE+ys4FC+n3k+s/oV/2zVoAMdmV3JwAoizI1xLw7UMPUkPNqDd1wTMoGH\nyw+8lQBNSeqqWWyQktg9bzs9klbx01tgvMOpNvrnyMZjlksLMtOeuHAOsrr3Cvfw\nL3hWJA8acP+7L2gafWfXNV1ivfIzEolVr9HmlyI+UQKBgQDkXrbQmkhfJBnJ9Ptr\ns/mTk4Z9rsUje2m5FTFOU1KPXymvbMqfZTHWm80S9PUR3Fovz2Yo6ZcQSDTdQEL+\npek4S+xJ6iGp7mJjOxM0izJbt/pyZorIwrzqDSYL18sz07Nv22zhw361eX7KbC4b\nDjL/n2uP74drfLUoq6CeauVG0QKBgQDLaeAp8MoLScr6kHIiG2uclJGnMSB53wD/\nI+yX0L/jrGYmYFdKVICe6bDXzZz3EskL8fXGmb+SMeTWwcYIRqbaSapJBgYckfCt\nREsmIHjBBsbk0k5KLRWegVMs1auumMSMQMze+ZgcjsMXnT7vjuiHYsSDVNs5KN1J\n5AJMXstK+QKBgBjnh1JKcPgHLNTMZZrCPsZsQS91nsQW0lm/yOe8yHUgMKCT4aju\nVTgNN5kIo6019ZPfL0no53N8HF/AgU3Z9AwSo4sQAGnSuGIP8DE7uNstvh85tYrd\nSdLQakTCXMOjI59gM4iPVEMgI8aZc5G5w7ACx60jtwXuzKbJyLNd/vDxAoGAYL4F\nB81mOkIpUEvcjE4gOwMJ1sttl6iw76dlQbrdWGnI112ghlB0L6ATJD+89GExzwWP\nj5nV27DxFhZomc0IU+8PFtXPmEzse2tslkCBTcRsWa2P4IVar9zv8vXYRhyP9ehn\nx3BLoOFg9d0qboK4IpOdxJxZ+vBtdlQDp9C5vPkCgYEA0JnhyqKTAJ7CHiXz4IYG\n9kXcFi4r4KnAf9QMiXd3htvpJpj+jsItRvExgZU0uV5XEUrO2BPvMTuE7UGJSPb+\nNH3Oyf0fsQw2+NXW1XvIsr3tvcSrL6FVVUREsZUo4On/a6R9VpyJrt9LBWXp2Cm/\nh4ktBl5GY7nZOnll4LnCwDo=\n-----END PRIVATE KEY-----\n",
+  "client_email": "inverse-image-search@averitec.iam.gserviceaccount.com",
+  "client_id": "111510037060330706052",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/inverse-image-search%40averitec.iam.gserviceaccount.com"
+}

@@ -11,6 +11,7 @@ import { TourProvider } from "@reactour/tour";
 import TourWrapper from '../components/TourWrapper';
 import axios from "axios";
 import {Redirect} from "react-router-dom";
+import config from "../config.json";
 
 const EntryCard = styled(Card)`
   margin:10px;
@@ -123,9 +124,9 @@ class VerdictValidation extends React.Component {
             let pc = Number(localStorage.pc);
             console.log(pc);
             if (pc !== 0){
-		var request = {
+		        var request = {
                     method: "post",
-                    baseURL: 'https://api.averitec.eu/',
+                    baseURL: config.api_url,
                     url: "/verdict_validate.php",
                     data:{
                         user_id: localStorage.getItem('user_id'),
@@ -153,9 +154,9 @@ class VerdictValidation extends React.Component {
                     }
                 }).catch((error) => {window.alert(error)})    
             } else {
-		var request = {
+                var request = {
                     method: "post",
-                    baseURL: 'https://api.averitec.eu/',
+                    baseURL: config.api_url,
                     url: "/verdict_validate.php",
                     data:{
                         user_id: localStorage.getItem('user_id'),
@@ -192,9 +193,9 @@ class VerdictValidation extends React.Component {
             let pc = Number(localStorage.pc);
             if (pc !== 0) {
                 localStorage.pc = Number(localStorage.pc) - 1;
-		var request = {
+		        var request = {
                     method: "post",
-                    baseURL: 'https://api.averitec.eu/',
+                    baseURL:  config.api_url,
                     url: "/verdict_validate.php",
                     data:{
                         user_id: localStorage.getItem('user_id'),
@@ -211,9 +212,9 @@ class VerdictValidation extends React.Component {
                     window.location.reload(false);
                 }).catch((error) => {window.alert(error)})
             } else {
-		var request = {
+		        var request = {
                     method: "post",
-                    baseURL: 'https://api.averitec.eu/',
+                    baseURL:  config.api_url,
                     url: "/verdict_validate.php",
                     data:{
                         user_id: localStorage.getItem('user_id'),

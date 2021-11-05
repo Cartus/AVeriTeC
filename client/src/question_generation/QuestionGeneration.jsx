@@ -70,7 +70,7 @@ class QuestionGeneration extends React.Component {
             let pc = Number(localStorage.pc);
             console.log(pc);
             if (pc !== 0) {
-		var request = {
+		        var request = {
                     method: "post",
                     baseURL: config.api_url,
                     url: "/question_answering.php",
@@ -110,7 +110,7 @@ class QuestionGeneration extends React.Component {
                     }
                 }).catch((error) => {window.alert(error)})	    
             } else {
-		var request = {
+		        var request = {
                     method: "post",
                     baseURL: config.api_url,
                     url: "/question_answering.php",

@@ -18,8 +18,6 @@ $db_params = parse_ini_file( dirname(__FILE__).'/db_params.ini', false);
 $json_result = file_get_contents("php://input");
 $_POST = json_decode($json_result, true);
 
-// if (empty($user_id) && empty($req_type)) die();
-
 $user_id = $_POST['user_id'];
 $req_type = $_POST['req_type'];
 
@@ -30,7 +28,7 @@ if ($req_type == "next-data"){
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $sql = "SELECT user_id, annotation_phase, current_qa_task, finished_qa_annotations FROM Annotators WHERE user_id = ?";
+    $sql = "SELECT user_id, annotation_phase, current_qa_task FROM Annotators WHERE user_id = ?";
     $stmt= $conn->prepare($sql);
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
@@ -45,31 +43,24 @@ if ($req_type == "next-data"){
             $stmt->bind_param("i", $row['current_qa_task']);
             $stmt->execute();
             $result = $stmt->get_result();
-            $row = $result->fetch_assoc();
-            $output = (["web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'],
+            $row = $result->fetch_assoc(); 
+            $output = (["web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], 
             "check_date" => $row['check_date'], "country_code" => $row['claim_loc'], "claim_norm_id" => $row['claim_norm_id']]);
             echo(json_encode($output));
         } else {
-            $sql = "SELECT claim_norm_id, web_archive, cleaned_claim, speaker, check_date, claim_loc, user_id_norm FROM Norm_Claims
-            WHERE qa_annotators_num = 0 AND qa_taken_flag=0 AND qa_skipped=0 AND user_id_norm = ? ORDER BY RAND() LIMIT 1";
+            $sql = "SELECT claim_norm_id, web_archive, cleaned_claim, speaker, check_date, claim_loc FROM Norm_Claims 
+            WHERE qa_annotators_num = 0 AND qa_taken_flag=0 AND qa_skipped=0 AND user_id_norm != ? ORDER BY RAND() LIMIT 1";
             $stmt= $conn->prepare($sql);
-
-            if ($user_id == 3) {
-                $user_id_norm = 1;
-            } else {
-                $user_id_norm = $user_id + 1;
-            }
-
-            $stmt->bind_param("i", $user_id_norm);
+            $stmt->bind_param("i", $user_id);
             $stmt->execute();
             $result = $stmt->get_result();
-
+            
             $conn->begin_transaction();
             try {
                 if(mysqli_num_rows($result) > 0) {
                     $row = $result->fetch_assoc();
-                    $output = (["web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'],
-                    "check_date" => $row['check_date'], "country_code" => $row['claim_loc'], "claim_norm_id" => $row['claim_norm_id'], "user_id_norm" => $row['user_id_norm']]);
+                    $output = (["web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], 
+                    "check_date" => $row['check_date'], "country_code" => $row['claim_loc'], "claim_norm_id" => $row['claim_norm_id']]);
                     echo(json_encode($output));
                     update_table($conn, "UPDATE Norm_Claims SET qa_taken_flag=1, user_id_qa=? WHERE claim_norm_id=?", 'ii', $user_id, $row['claim_norm_id']);
                     update_table($conn, "UPDATE Annotators SET current_qa_task=? WHERE user_id=?", 'ii', $row['claim_norm_id'], $user_id);
@@ -124,11 +115,11 @@ if ($req_type == "next-data"){
                 $source_medium = NULL;
             }
 
-            update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium)
+            update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium) 
             VALUES (?, ?, ?, ?, ?, ?, ?)", 'iisssss', $row['claim_norm_id'], $user_id, $question, $answer,
             $source_url, $answer_type, $source_medium);
         }
-
+        
         update_table($conn, "UPDATE Norm_Claims SET qa_taken_flag=0, has_qapairs=1, qa_annotators_num = qa_annotators_num+1, phase_2_label=?, num_qapairs=?, date_made_qa=?
         WHERE claim_norm_id=?",'sisi', $phase_2_label, $num_qapairs, $date, $row['claim_norm_id']);
         update_table($conn, "UPDATE Annotators SET current_qa_task=0, finished_qa_annotations=finished_qa_annotations+1  WHERE user_id=?",'i', $user_id);
@@ -153,7 +144,7 @@ if ($req_type == "next-data"){
     $stmt->bind_param("ii", $user_id, $offset);
     $stmt->execute();
     $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
+    $row = $result->fetch_assoc(); 
 
     $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=? AND user_id_qa=?";;
     $stmt = $conn->prepare($sql_qa);
@@ -179,7 +170,7 @@ if ($req_type == "next-data"){
             $entries[$count_string] = $field_array;
         }
 
-        $output = (["claim_norm_id" => $row['claim_norm_id'], "web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'],
+        $output = (["claim_norm_id" => $row['claim_norm_id'], "web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], 
         "check_date" => $row['check_date'], "hyperlink" => $row['hyperlink'], "entries" => $entries, "label" => $row['phase_2_label'], "country_code" => $row['claim_loc']]);
         echo(json_encode($output));
     } else {
@@ -204,7 +195,7 @@ if ($req_type == "next-data"){
     $stmt->bind_param("i", $claim_norm_id);
     $stmt->execute();
     $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
+    $row = $result->fetch_assoc(); 
 
     $phase_2_label = $_POST["qa_pair_header"]["label"];
     $num_qapairs = $_POST["added_entries"];
@@ -233,11 +224,11 @@ if ($req_type == "next-data"){
                 $source_medium = NULL;
             }
 
-            update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium)
+            update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium) 
             VALUES (?, ?, ?, ?, ?, ?, ?)", 'iisssss', $claim_norm_id, $user_id, $question, $answer,
             $source_url, $answer_type, $source_medium);
         }
-
+        
         update_table($conn, "UPDATE Norm_Claims SET qa_annotators_num = qa_annotators_num+1, phase_2_label=?, num_qapairs=?, date_modified_qa=?
         WHERE claim_norm_id=?",'sisi', $phase_2_label, $num_qapairs, $date, $claim_norm_id);
         $conn->commit();

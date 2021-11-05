@@ -31,7 +31,8 @@ class Registration extends React.Component {
     this.state = {
       name: '',
       password: '',
-      registered: false
+      registered: false,
+      duplicated: false
     }
   }
 
@@ -50,9 +51,11 @@ class Registration extends React.Component {
     console.log(this.state);
     axios(request).then((response) => {
       console.log(response.data);
-      this.setState({
-        registered: response.data.registered
-      });
+      if (response.data.duplicated) {
+        this.setState({duplicated: response.data.duplicated});
+      } else {
+        this.setState({registered: response.data.registered});
+      }
     }).catch((error) => {window.alert(error)})	
   }
 
@@ -125,6 +128,8 @@ class Registration extends React.Component {
               <div>
                 {this.state.registered &&
                 <div>Thank you for registration.</div>}
+                {this.state.duplicated &&
+                <div>User name has been used.</div>}
               </div>
             </form>
           </div>

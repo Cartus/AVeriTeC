@@ -20,15 +20,41 @@ $password_md5 = $_POST['password_md5'];
 
 if (empty($_POST['name']) || empty($_POST['password'])) die();
 
-$sql = "INSERT INTO Annotators (user_name, password_cleartext, password_md5, is_admin, number_logins,
-finished_norm_annotations, finished_qa_annotations, finished_valid_annotations) VALUES('$name', '$password', '$password_md5', 1, 0, 0, 0, 0)";
+$query = "SELECT * FROM Annotators";
+$result = mysqli_query($conn, $query);
 
+// see if any rows were returned
+if (mysqli_num_rows($result) > 0) {
+    $sql = "SELECT * FROM Annotators WHERE user_name = ?";
+    $stmt= $conn->prepare($sql);
+    $stmt->bind_param("s", $name);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-if ($conn->query($sql) === TRUE) {
-    echo json_encode(array("registered" => true));
-} else {
-    echo json_encode(["registered" => false, "message" => "Something went wrong"]);
+    if(mysqli_num_rows($result) > 0) {
+        echo json_encode(["duplicated" => true]);
+    } else {
+        $sql = "INSERT INTO Annotators (user_name, password_cleartext, password_md5, is_admin, number_logins,
+        finished_norm_annotations, finished_qa_annotations, finished_valid_annotations) VALUES('$name', '$password', '$password_md5', 1, 0, 0, 0, 0)";
+
+        if ($conn->query($sql) === TRUE) {
+            echo json_encode(["duplicated" => false, "registered" => true]);
+        } else {
+            echo json_encode(["duplicated" => false, "registered" => false, "message" => "Something went wrong"]);
+        }
+    }
 }
- 
+else {
+    $sql2 = "INSERT INTO Annotators (user_name, password_cleartext, password_md5, is_admin, number_logins,
+    finished_norm_annotations, finished_qa_annotations, finished_valid_annotations) VALUES('$name', '$password', '$password_md5', 1, 0, 0, 0, 0)";
+
+    if ($conn->query($sql2) === TRUE) {
+        echo json_encode(["duplicated" => false, "registered" => true]);
+    } else {
+        echo json_encode(["duplicated" => false, "registered" => false, "message" => "Something went wrong"]);
+    }
+}
+
+
 $conn->close();
 ?>
