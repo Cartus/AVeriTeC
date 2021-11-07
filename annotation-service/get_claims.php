@@ -17,6 +17,7 @@ if ($result->num_rows > 0) {
         echo "claim_id: " . $row["claim_id"]. "<br>";
         echo "claim_text: " . $row["claim_text"]. "<br>";
         echo "web_archive: " . $row["web_archive"]. "<br>";
+        echo "claim_date: " . $row["claim_date"]. "<br>";
         echo "norm_annotators_num: " . $row["norm_annotators_num"]. "<br>";
         echo "user_id_norm : " . $row["user_id_norm"]. "<br>";
         echo "norm_taken_flag : " . $row["norm_taken_flag"]. "<br>";

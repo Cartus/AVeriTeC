@@ -69,7 +69,7 @@ class PhaseControl extends React.Component {
 
             await axios(request).then((response) => {
                 console.log(response.data);
-		localStorage.finished_norm_annotations = Number(localStorage.finished_norm_annotations) + 1;    
+		        // localStorage.finished_norm_annotations = Number(localStorage.finished_norm_annotations) + 1;
                 window.location.reload(false);
             }).catch((error) => {window.alert(error)})	
         } else if (phase === 'phase_2') {
@@ -86,7 +86,7 @@ class PhaseControl extends React.Component {
 
             await axios(request).then((response) => {
                 console.log(response.data);
-		localStorage.finished_qa_annotations = Number(localStorage.finished_qa_annotations) + 1;    
+		        // localStorage.finished_qa_annotations = Number(localStorage.finished_qa_annotations) + 1;
                 window.location.reload(false);
             }).catch((error) => {window.alert(error)})	
         }

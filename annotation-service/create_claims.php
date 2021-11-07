@@ -16,6 +16,7 @@ $sql = "CREATE TABLE Claims (
 claim_id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 claim_text VARCHAR(500) NOT NULL,
 web_archive VARCHAR(500) NOT NULL,
+claim_date VARCHAR(50),
 norm_annotators_num INT(6) NOT NULL,
 user_id_norm INT(6),
 norm_taken_flag INT(6) NOT NULL,

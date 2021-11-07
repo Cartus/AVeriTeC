@@ -138,6 +138,7 @@ class SearchField extends React.Component {
         var country_code = this.props.country_code
 
 	console.log(country_code);
+    console.log(claim_date);
 
         var request = {
             method: "get",

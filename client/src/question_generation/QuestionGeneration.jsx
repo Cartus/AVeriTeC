@@ -89,7 +89,7 @@ class QuestionGeneration extends React.Component {
                             claim_text: response.data.cleaned_claim,
                             claim_speaker: response.data.speaker,
                             claim_date: response.data.check_date,
-			    country_code: response.data.country_code	
+			                country_code: response.data.country_code
                         };
                         
                         if (new_claim.claim_date){
@@ -131,7 +131,7 @@ class QuestionGeneration extends React.Component {
                             claim_text: response.data.cleaned_claim,
                             claim_speaker: response.data.speaker,
                             claim_date: response.data.check_date,
-			    country_code: response.data.country_code	
+			                country_code: response.data.country_code
                         };
 
                         if (new_claim.claim_date){

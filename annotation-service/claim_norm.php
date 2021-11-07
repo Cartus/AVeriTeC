@@ -80,7 +80,7 @@ if ($req_type == "next-data"){
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $sql = "SELECT claim_id, web_archive FROM Claims WHERE (claim_id = (SELECT current_norm_task FROM Annotators WHERE user_id=?))";
+    $sql = "SELECT claim_id, web_archive, claim_date FROM Claims WHERE (claim_id = (SELECT current_norm_task FROM Annotators WHERE user_id=?))";
     $stmt= $conn->prepare($sql);
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
@@ -130,13 +130,17 @@ if ($req_type == "next-data"){
             if (array_key_exists('date', $item)){
                 $check_date = substr($item['date'], 0, 10);
             }else{
-                $check_date= NULL;
+                if (!empty($row['claim_date'])) {
+                    $check_date = $row['claim_date'];
+                } else {
+                    $check_date = substr($date, 0, 10);
+                }
             }
 
             if (array_key_exists('location', $item)){
                 $claim_loc = $item['location'];
             }else{
-                $claim_loc= NULL;
+                $claim_loc = NULL;
             }
 
             $claim_types = $item['claim_types'];
@@ -171,7 +175,7 @@ if ($req_type == "next-data"){
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $sql = "SELECT claim_id FROM Claim_Map WHERE user_id = ? ORDER BY date_made DESC LIMIT 1 OFFSET ?";
+    $sql = "SELECT claim_id FROM Claim_Map WHERE user_id = ? AND skipped != 1 ORDER BY date_made DESC LIMIT 1 OFFSET ?";
     $stmt= $conn->prepare($sql);
     $stmt->bind_param("ii", $user_id, $offset);
     $stmt->execute();
@@ -224,7 +228,7 @@ if ($req_type == "next-data"){
     $stmt->bind_param("ii", $claim_id, $user_id);
     $stmt->execute();
 
-    $sql = "SELECT web_archive FROM Claims WHERE claim_id = ?";
+    $sql = "SELECT web_archive, claim_date FROM Claims WHERE claim_id = ?";
     $stmt= $conn->prepare($sql);
     $stmt->bind_param("i", $claim_id);
     $stmt->execute();
@@ -273,7 +277,11 @@ if ($req_type == "next-data"){
             if (array_key_exists('date', $item)){
                 $check_date = substr($item['date'], 0, 10);
             }else{
-                $check_date= NULL;
+                if (!empty($row['claim_date'])) {
+                    $check_date = $row['claim_date'];
+                } else {
+                    $check_date = substr($date, 0, 10);
+                }
             }
 
             if (array_key_exists('location', $item)){
@@ -316,7 +324,7 @@ if ($req_type == "next-data"){
     $conn->begin_transaction();
     try {
         update_table($conn, "INSERT INTO Claim_Map (user_id, claim_id, skipped, date_made) VALUES (?, ?, ?, ?)", 'iiis', $user_id, $claim_id, $skipped, $date);
-        update_table($conn, "UPDATE Annotators SET current_norm_task=0, finished_norm_annotations=finished_norm_annotations+1  WHERE user_id=?",'i', $user_id);
+        update_table($conn, "UPDATE Annotators SET current_norm_task=0  WHERE user_id=?",'i', $user_id);
         $conn->commit();
         echo "Skip Successfully!";
     }catch (mysqli_sql_exception $exception) {
