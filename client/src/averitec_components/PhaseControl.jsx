@@ -113,7 +113,7 @@ class PhaseControl extends React.Component {
                     {this.props.phaseInstructions}
                     {this.props.reportButton? 
                     <ReportBox>
-                        If the fact checking article displays a 404 page or another error, please <a href="#" data-tour="report" onClick={this.onReport}>let us know</a>.
+                        If the fact checking article displays a 404 page or another error, or if it takes more than one minute to load, please <a href="#" data-tour="report" onClick={this.onReport}>let us know</a>.
                     </ReportBox> : ""}
                 </PhaseDescriptionBox>
             </EntryCard>

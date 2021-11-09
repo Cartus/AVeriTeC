@@ -192,6 +192,10 @@ class QuestionGeneration extends React.Component {
               content: "The search engine may also return results from other fact-checking sites. If possible, please avoid using these as well."
             },
             {
+              selector: '[data-tour="claim_page_view"]',
+              content: "WARNING: For persistence, we have stored all fact-checking articles on archive.org Fact-checking articles may feature \"double-archived\" links using both archive.org and archive.is, e.g. \"https://web.archive.org/web/20201229212702/https://archive.md/28fMd\". Archive.org returns a 404 page for these. To view such a link, please just copy-paste the archive.is part (e.g. \"https://archive.md/28fMd\") into your browser."
+            },
+            {
               selector: '[data-tour="answer_metadata"]',
               content: "Please let us know on which page you found the answer, what kind of answer it is, and what kind of media (e.g. text, video) you found the answer in.",
             },

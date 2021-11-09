@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import LoadingIFrame from './LoadingIFrame';
 
-const ClaimFrame = styled.iframe`
+const ClaimFrame = styled(LoadingIFrame)`
     width: 99.7%;
     height:100%;
     border:none;
