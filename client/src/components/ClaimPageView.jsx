@@ -22,8 +22,8 @@ class ClaimPageView extends React.Component {
         }
 
         return (
-            <div style={this.props.style} className={className}>
-                <ClaimFrame data-tour="claim_page_view" src={this.props.claim.web_archive}/>
+            <div data-tour="claim_page_view" style={this.props.style} className={className}>
+                <ClaimFrame src={this.props.claim.web_archive}/>
             </div>
             
         );

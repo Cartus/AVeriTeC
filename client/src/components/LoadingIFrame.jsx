@@ -15,8 +15,8 @@ const StyledSpinner = styled(Spinner)`
     display: block;
 
     margin: -webkit-calc(50vh - 60px) 0px 0px -webkit-calc(50% - 40px)!important;
-    margin: -webkit-calc(50vh - 60px) 0px 0px -webkit-calc(50% - 40px)!important;
-    margin: -webkit-calc(50vh - 60px) 0px 0px -webkit-calc(50% - 40px)!important;
+    margin: -moz-calc(50vh - 60px) 0px 0px -moz-calc(50% - 40px)!important;
+    margin: calc(50vh - 60px) 0px 0px calc(50% - 40px)!important;
 `
 
 class LoadingIFrame extends React.Component {
