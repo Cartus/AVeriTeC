@@ -46,28 +46,30 @@ def google_search(search_term, api_key, cse_id, **kwargs):
     res = service.cse().list(q=search_term, cx=cse_id, **kwargs).execute()
     return res['items']
 
-try:
-    results = google_search(
-        args.query,
-        api_key,
-        search_engine_id,
-        num=args.results_per_page,
-        start=start_idx,
-        sort="date:r:19000101:"+sort_date,
-        dateRestrict=None,
-        gl=args.country_code.upper()
-    )
+results = google_search(
+    args.query,
+    api_key,
+    search_engine_id,
+    num=args.results_per_page,
+    start=start_idx,
+    sort="date:r:19000101:"+sort_date,
+    dateRestrict=None,
+    gl=args.country_code.upper()
+)
 
-    for result in results:
-        final_string = ""
-        final_string += str(result["link"])
-        final_string += "~"
-        final_string += str(result["title"])
-        final_string += "~"
-        final_string += str(result["snippet"])
-        final_string += "~"
-        domain = get_domain_name(result["link"])
-        final_string += str(domain in misinfo_list)
-        print(final_string)
-except:
-    print("No")
+formatted_results = {
+    "items": []
+}
+
+for result in results:
+    item = {
+        "url": result["link"],
+        "header": result["title"],
+        "abstract": result["snippet"]
+    }
+    domain = get_domain_name(result["link"])
+    item["problematic"] = domain in misinfo_list
+    formatted_results["items"].append(item)
+
+# print(json.dumps(formatted_results))
+print(formatted_results)

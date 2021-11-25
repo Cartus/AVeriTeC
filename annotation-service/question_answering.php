@@ -154,8 +154,8 @@ if ($req_type == "next-data"){
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
-
-    $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=? AND user_id_qa=?";;
+    
+    $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=? AND user_id_qa=?";
     $stmt = $conn->prepare($sql_qa);
     $stmt->bind_param("ii", $row['claim_norm_id'], $user_id);
     $stmt->execute();

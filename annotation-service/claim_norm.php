@@ -297,7 +297,7 @@ if ($req_type == "next-data"){
             $claim_types = implode(" [SEP] ", $claim_types);
             $fact_checker_strategy = implode(" [SEP] ", $fact_checker_strategy);
 
-            update_table($conn, "INSERT INTO Norm_Claims (claim_id, web_archive, user_id_norm, cleaned_claim, speaker, hyperlink, transcription, media_source,
+            update_table($conn, "INSERT INTO Norm_Claims (claim_id, web_archive, user_id_norm, cleaned_claim, hyperlink, speaker, transcription, media_source,
             check_date, claim_types, fact_checker_strategy, phase_1_label, qa_annotators_num, qa_taken_flag, qa_skipped, valid_annotators_num, valid_taken_flag,
             has_qapairs, date_made_norm, claim_loc)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'isisssssssssiiiiiiss', $claim_id, $row['web_archive'], $user_id, $cleaned_claim, $hyperlink,

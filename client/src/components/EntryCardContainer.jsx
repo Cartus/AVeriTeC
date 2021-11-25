@@ -278,7 +278,6 @@ class EntryCardContainer extends React.Component {
                 </AddEntryCard>
                 </Tooltip>
                 <NavBar onPrevious={this.doPrevious} onSubmit={this.doSubmit} onNext={this.doNext}/>
-                <div>{JSON.stringify(this.state)}</div>
             </div>
         );
       }

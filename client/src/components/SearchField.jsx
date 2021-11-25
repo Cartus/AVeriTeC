@@ -138,18 +138,23 @@ class SearchField extends React.Component {
         var country_code = this.props.country_code
 
 	console.log(country_code);
-    console.log(claim_date);
+        console.log(claim_date);
+        console.log(query);
+	console.log(localStorage.getItem('user_id'));
+        console.log(localStorage.getItem('claim_norm_id'));
 
         var request = {
-            method: "get",
+            method: "post",
             baseURL: config.search_api_url,
             url: "/web_search.php",
-            params:{
+            data:{
                 query: query,
                 claim_date: claim_date,
                 page: page,
-                country_code : country_code? country_code : "gb" // If no country code is given, use gb
-            }
+                country_code : country_code? country_code : "gb", // If no country code is given, use gb
+            	user_id: localStorage.getItem('user_id'),
+                claim_norm_id: localStorage.claim_norm_id
+	    }
         };
 
         if (!country_code){
@@ -158,8 +163,9 @@ class SearchField extends React.Component {
 
         axios(request).then((response) => {
             var newSearchItems = []
-            if (response.data.items){
-                newSearchItems = response.data.items
+	    console.log(response.data);
+            if (response.data){
+                newSearchItems = response.data;
             }
 
             this.setState({

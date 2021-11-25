@@ -14,9 +14,9 @@ $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
-        echo "id: " . $row["user_id"]. "<br>"; 
-        echo "Name: " . $row["user_name"]. "<br>"; 
-        echo "Admin: " . $row["is_admin"]. "<br>"; 
+        echo "user_id: " . $row["user_id"]. "<br>"; 
+        echo "user_name: " . $row["user_name"]. "<br>"; 
+        echo "is_admin: " . $row["is_admin"]. "<br>"; 
         echo "Password: " . $row["password_cleartext"]. "<br>"; 
         echo "current_norm_task: " . $row["current_norm_task"]. "<br>"; 
         echo "current_qa_task: " . $row["current_qa_task"]. "<br>"; 

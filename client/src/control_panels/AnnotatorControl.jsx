@@ -43,11 +43,11 @@ class AnnotatorControl extends React.Component {
                 },
                 phase_2: {
                     done: localStorage.finished_qa_annotations,
-                    total: 10
+                    total: 20
                 },
                 phase_3: {
                     done: localStorage.finished_valid_annotations,
-                    total: 10
+                    total: 20
                 }
             }
         }
