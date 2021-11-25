@@ -23,7 +23,7 @@ const RightPhaseControl = styled(PhaseControl)`
 }
 
 @media (min-width: 1291px)  {
-  height:230px;
+  height:260px;
   margin: 10px 10px 10px 0px;
 }
 `
@@ -283,17 +283,24 @@ class VerdictValidation extends React.Component {
             },
         ];
 
+        console.log(this.state.claim)
+        console.log(localStorage.pc)
+
         const questionPairs = Object.keys(this.state.claim.questions).map(question_id => (
             <EntryCard variant="outlined">
                 <StaticQuestionEntryField id={question_id} question={this.state.claim.questions[question_id]} onChange={this.handleFieldChange}/>
             </EntryCard>
           ));
 
+
+        var current_idx = 15-Number(localStorage.pc);
+        var final_idx = 15;
+
         return (
             <div>
               <TourProvider steps={steps}>
               <RightBox>
-                <RightPhaseControl phaseName="Verdict Validation" phaseInstructions="Please read the claim and the question-answer pairs. Then, give your verdict on the claim. Do not look at any external information; make your verdict based ONLY on the question-answer pairs. If there are any problems with a question-answer pair, please use the form to report it. Do not use the information in any question-answer pair you report to make your verdict."/>
+                <RightPhaseControl current_idx={current_idx} final_idx={final_idx} phaseName="Verdict Validation" phaseInstructions="Please read the claim and the question-answer pairs. Then, give your verdict on the claim. Do not look at any external information; make your verdict based ONLY on the question-answer pairs. If there are any problems with a question-answer pair, please use the form to report it. Do not use the information in any question-answer pair you report to make your verdict."/>
               </RightBox>
                 <LeftBox>
                   <ValidationClaimTopField claim={this.state.claim} valid={this.state.valid} data={this.state.annotation} ask_for_justification onChange={this.handleFieldChange} id="annotation"/>

@@ -243,6 +243,7 @@ class EntryCardContainer extends React.Component {
     render() {
         const entryFields = Object.keys(this.state.entries).map(field_id => (
             <EntryCard variant="outlined">
+            {field_id === this.props.entryName + "_entry_field_0"? "": <DeleteButton onClick={()=> this.deleteEntry(field_id)}><ClearIcon /></DeleteButton>}
             <this.props.contentClass
               key={field_id}
               id={field_id}
@@ -253,7 +254,6 @@ class EntryCardContainer extends React.Component {
               removeDelete={field_id === this.props.entryName + "_entry_field_0"}
               {...this.props}
             />
-            {field_id === this.props.entryName + "_entry_field_0"? "": <DeleteButton onClick={()=> this.deleteEntry(field_id)}><ClearIcon /></DeleteButton>}
             </EntryCard>
           ));
 
@@ -267,6 +267,17 @@ class EntryCardContainer extends React.Component {
           {...this.props}
           />;
         };
+
+        if (this.props.footerClass != null){
+            var footerField = <this.props.footerClass
+            key={this.props.entryName + "_header"}
+            id={this.props.entryName + "_footer"}
+            onChange={this.handleFieldChange}
+            valid={this.state.valid}
+            data={this.state[this.props.entryName + "_header"]}
+            {...this.props}
+            />;
+        }
         
         return (
             <div>
@@ -277,6 +288,7 @@ class EntryCardContainer extends React.Component {
                   <AddCircleIcon/>
                 </AddEntryCard>
                 </Tooltip>
+                {footerField}
                 <NavBar onPrevious={this.doPrevious} onSubmit={this.doSubmit} onNext={this.doNext}/>
             </div>
         );
