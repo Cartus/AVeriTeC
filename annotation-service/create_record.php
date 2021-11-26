@@ -29,6 +29,7 @@ abstract VARCHAR(500) NOT NULL,
 header VARCHAR(100) NOT NULL,
 problematic VARCHAR(100) NOT NULL,
 result_url VARCHAR(500) NOT NULL,
+country_code VARCHAR(10) NOT NULL,
 date_query DATETIME NOT NULL
 )";
 

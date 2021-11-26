@@ -59,9 +59,9 @@ try {
 	$problematic = $split[3];
 
         update_table($conn, "INSERT INTO Search_Record (claim_norm_id, user_id_qa, query, abstract, header, 
-        problematic, result_url, date_query) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", 'iissssss', 
-        $claim_norm_id, $user_id, $query, $abstract, $header, $problematic, $url, $date);
-        
+        problematic, result_url, country_code, date_query) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssss', 
+	$claim_norm_id, $user_id, $query, $abstract, $header, $problematic, $url, $country_code, $date);
+
         if($problematic == 'False'){
             $problematic = NULL;
 	} 

@@ -22,7 +22,8 @@ if ($result->num_rows > 0) {
         echo "header: " . $row["header"]. "<br>";
         echo "problematic: " . $row["problematic"]. "<br>";
         echo "result_url: " . $row["result_url"]. "<br>";
-        echo "date_query: " . $row["date_query"]. "<br>";
+	echo "country_code: " . $row["country_code"]. "<br>";
+	echo "date_query: " . $row["date_query"]. "<br>";
     }
 } else {
     echo "0 Results";
