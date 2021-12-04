@@ -6,12 +6,13 @@ import styled from 'styled-components';
 import {notEmptyValidator} from '../utils/validation.js'
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import countryFlagEmoji from "country-flag-emoji";
 
 const EntryCard = styled(Card)`
   margin:10px;
 
   @media (min-width: 1290px)  {
-    height:230px;
+    height:260px;
   }
 `
 
@@ -89,18 +90,35 @@ class ClaimTopField extends React.Component {
         tooltip="Please write a short explanation (max 300 characters) for how you decided the answer based on the questions."
         />
 
+        
+      var location = ""
+      if (this.props.claim.location){
+        var country_list = countryFlagEmoji.list.filter((entry) => {return !["European Union", "United Nations"].includes(entry.name)}).sort( (a,b) => {
+          var textA = a.name.toUpperCase();
+          var textB = b.name.toUpperCase();
+          return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+        });
+      
+        var country_by_code_dict = country_list.reduce((a,x) => ({...a, [x.code]: x}), {})
+        location = country_by_code_dict[this.props.claim.location].name + " (" + country_by_code_dict[this.props.claim.location].code + ")"
+      }
+
         return (
             <EntryCard>
                 <ContainerDiv>
 
                 <ClaimHeader data-tour="claim_text">{this.props.claim.claim_text}</ClaimHeader>
                 <TextEntryDiv>
-                    <TextFieldWithTooltip name='claim_speaker' label="Claim Speaker" value={this.props.claim.claim_speaker} InputProps={{readOnly: true}} variant="filled" tooltip="The speaker (or source) of the original claim."/>
+                    <TextFieldWithTooltip name='claim_speaker' label="Claim Speaker" value={this.props.claim.claim_speaker} defaultValue={this.props.claim.claim_speaker} InputProps={{readOnly: true}} variant="filled" tooltip="The person or organization that said or wrote the original claim."/>
+                    <SepSpaceDiv/>
+                    <TextFieldWithTooltip name='claim_source' label="Claim Source" value={this.props.claim.claim_speaker} defaultValue={this.props.claim.claim_speaker} InputProps={{readOnly: true}} variant="filled" tooltip="The source that published the original claim."/>
                     <SepSpaceDiv/>
                     <TextFieldWithTooltip name='claim_date' label="Claim Date" value={this.props.claim.claim_date} InputProps={{readOnly: true}} variant="filled" tooltip="The date the original claim was made."/>
                     <SepSpaceDiv/>
                 </TextEntryDiv>
                 <TextEntryDiv >
+                  <TextFieldWithTooltip name='claim_location' label="Location" value={location} defaultValue={location} InputProps={{readOnly: true}} variant="filled" tooltip="The location most relevant to the claim."/>
+                    <SepSpaceDiv/>
                   {justification}
                 </TextEntryDiv>
                 <TextEntryDiv>

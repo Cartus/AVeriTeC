@@ -173,7 +173,7 @@ class QuestionGeneration extends React.Component {
             },
             {
               selector: '[data-tour="question_textfield"]',
-              content: "Based on the approach taken by the fact-checkers, formulate a question that will help you determine the truth of the claim."
+              content: "Based on the approach taken by the fact-checkers, formulate a question that will help you determine the truth of the claim. This should be a real question rather than a search engine query, e.g. \"Who is the prime minister of Britain?\" rather than \"prime minister Britain\"."
             },
             {
               selector: '[data-tour="answer_textfield"]',
@@ -181,7 +181,7 @@ class QuestionGeneration extends React.Component {
             },
             {
               selector: '[data-tour="search"]',
-              content: "... or find new sources using our custom search field."
+              content: "... or if those do not give you the answers you need, find new sources using our custom search field."
             },
             {
               selector: '[data-tour="search"]',
@@ -192,8 +192,16 @@ class QuestionGeneration extends React.Component {
               content: "The search engine may also return results from other fact-checking sites. If possible, please avoid using these as well."
             },
             {
+              selector: '[data-tour="search"]',
+              content: "Similarly, if possible please avoid using results directly originating from the source or the speaker of the claim."
+            },
+            {
               selector: '[data-tour="claim_page_view"]',
               content: "WARNING: For persistence, we have stored all fact-checking articles on archive.org Fact-checking articles may feature \"double-archived\" links using both archive.org and archive.is, e.g. \"https://web.archive.org/web/20201229212702/https://archive.md/28fMd\". Archive.org returns a 404 page for these. To view such a link, please just copy-paste the archive.is part (e.g. \"https://archive.md/28fMd\") into your browser."
+            },
+            {
+              selector: '[data-tour="claim_page_view"]',
+              content: "Links to archive.org allow you to select an archival date. Try to rely only on evidence that has appeared on the internet before the claim; e.g. with archive.org, if possible choose a date from before the claim was made."
             },
             {
               selector: '[data-tour="answer_metadata"]',
@@ -204,12 +212,16 @@ class QuestionGeneration extends React.Component {
               content: "For some questions you might not be able to find an answer. That's fine - just leave the answer blank, select \"unanswerable\" as the type, and ask another question. It may be useful to ask a rephrased version of the question, or a version with more context, as the next question."
             },
             {
+              selector: '[data-tour="answer_type"]',
+              content: "When possible, we prefer extractive answers."
+            },
+            {
               selector: '[data-tour="add"]',
               content: "If one question is not enough to give a verdict for the claim (independent of the fact-checking article), you can add more questions. We expect you will need at least two questions for each claim, often more. Please ask all questions necessary to gather the evidence needed for the verdict, including world knowledge that might seem obvious."
             },
             {
               selector: '[data-tour="verdict"]',
-              content: "Once you have collected enough question-answer pairs to give a verdict, select the most fitting option here (regardless of which verdict the fact-checking article gave). If you have not found enough information to verify or refute the claim after N minutes, please choose 'Not Enough Information' and proceed to the next claim."
+              content: "Once you have collected enough question-answer pairs to give a verdict, select the most fitting option here (regardless of which verdict the fact-checking article gave). If you have not found enough information to verify or refute the claim after N minutes, please choose 'Not Enough Information' and proceed to the next claim. If the verdict relies on approximations, use your own judgment to decide if you find the claim misleading."
             },
             {
               selector: '[data-tour="submit"]',
@@ -217,12 +229,15 @@ class QuestionGeneration extends React.Component {
             },
           ];
 
+        var current_idx = 15-Number(localStorage.pc);
+        var final_idx = 15;
+
         return (
             <QAPageDiv>
                 <TourProvider steps={steps}>
                 <QAPageView claim={this.state.claim}/>
                 <QADataField>
-                    <QuestionGenerationBar claim={this.state.claim} entries={this.state.entries} header={this.state.qa_pair_header}/>
+                    <QuestionGenerationBar current_idx={current_idx} final_idx={final_idx} claim={this.state.claim} entries={this.state.entries} header={this.state.qa_pair_header}/>
                     <SearchField claim_date={this.state.claim.claim_date} country_code={this.state.claim.country_code}/>
                 </QADataField>
                 {this.state.userIsFirstVisiting? <TourWrapper/> : ""}

@@ -7,6 +7,7 @@ import axios from 'axios';
 import { WarningRounded } from '@material-ui/icons';
 import { Tooltip } from '@material-ui/core';
 import config from "../config.json"
+import CountryPickerWithTooltip from './CountryPickerWithTooltip';
 
 const SearchItemCard = styled(Card)`
   margin:10px;
@@ -56,6 +57,15 @@ const BreadcrumbSpan = styled.span`
 const WarningDiv = styled.div`
     color:#D0342C;
     float:right;
+`
+
+const CountryBox = styled.div`
+    margin:10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 45px 20%;
+    width:60%;
 `
 
 function ItemCard(item){
@@ -123,19 +133,28 @@ class SearchField extends React.Component {
             page: 1,
             didSearch: false,
             searchItems: [
-            ]
+            ],
+            countryCode: "GB"
         };
 
         
         this.doSearch = this.doSearch.bind(this);
         this.handlePageChange = this.handlePageChange.bind(this);
+        this.changeCountryCode = this.changeCountryCode.bind(this);
       }
+
+    
+    componentWillReceiveProps (props) {
+        if (props.country_code){
+            this.setState({countryCode: props.country_code});
+        }
+    }
 
     doSearch = () => {
         var query = this.state.searchQuery
         var claim_date = this.props.claim_date
         var page = this.state.page
-        var country_code = this.props.country_code
+        var country_code = this.state.countryCode;
 
 	console.log(country_code);
         console.log(claim_date);
@@ -181,6 +200,11 @@ class SearchField extends React.Component {
           }, () => {this.doSearch()});
     }
 
+    changeCountryCode = event => {
+        const { name, value } = event.target;
+        this.setState({countryCode: value});
+    }
+
     render() {
         let className = ''
 
@@ -216,6 +240,9 @@ class SearchField extends React.Component {
                 label="Search"
                 fullWidth
                 />
+                <CountryBox>
+                    <CountryPickerWithTooltip name="localization" label="Localization" value={this.state.countryCode} onChange={this.changeCountryCode} tooltip="Here you can change the search engine localization setting if necessary."/>
+                </CountryBox>
                 {searchResults}
                 </EntryCard>
             </div>

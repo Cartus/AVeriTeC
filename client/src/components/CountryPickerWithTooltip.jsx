@@ -47,7 +47,6 @@ export default function CountryPickerWithTooltip(props) {
   const classes = useStyles();
 
   var value = (props.value != null)? props.value : "";
-
     
   if (props.validator != null){
     let validation = props.validator(value)

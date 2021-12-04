@@ -125,6 +125,9 @@ class ClaimNormalization extends React.Component {
 
     render() {
 
+        var current_idx = 15-Number(localStorage.pc);
+        var final_idx = 15;
+
         if (!localStorage.getItem('login')) {
             return <Redirect to='/'/>;
         }
@@ -140,11 +143,11 @@ class ClaimNormalization extends React.Component {
             },
             {
               selector: '[data-tour="claim_textfield"]',
-              content: "Fill in the text of the main claim the article is dealing with."
+              content: "Fill in the text of the main claim the article is dealing with. Please edit the claim according to the instructions, but otherwise change it as little as possible."
             },
             {
               selector: '[data-tour="verdict"]',
-              content: "Select the closest verdict to the one chosen by the fact-checking article."
+              content: "Select the closest verdict to the one chosen by the fact-checking article. Please mirror their verdict as well as you can, even if you disagree with it."
             },
             {
               selector: '[data-tour="metadata_fields"]',
@@ -168,7 +171,7 @@ class ClaimNormalization extends React.Component {
             <PageDiv>
                 <TourProvider steps={steps}>
                     <NPageView claim={this.state.claim}/>
-                    <NEntryBar entries={this.state.entries}/>
+                    <NEntryBar current_idx={current_idx} final_idx={final_idx} entries={this.state.entries}/>
                     {this.state.userIsFirstVisiting? <TourWrapper/> : ""}
                 </TourProvider>
             </PageDiv>

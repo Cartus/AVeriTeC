@@ -8,6 +8,7 @@ import SelectWithTooltip from '../components/SelectWithTooltip';
 import ClaimTopField from '../averitec_components/ClaimTopField';
 import {notEmptyValidator} from '../utils/validation.js'
 import Slider from '@mui/material/Slider';
+import Card from '@material-ui/core/Card';
 
 const ContainerDiv = styled.div`
     width:100%;
@@ -113,6 +114,77 @@ const QuestionReminderBox = styled.div`
   }
 `
 
+const EntryCard = styled(Card)`
+  margin:10px;
+  float:left;
+  width: -webkit-calc(100% - 20px)!important;
+  width:    -moz-calc(100% - 20px)!important;
+  width:         calc(100% - 20px)!important;
+`
+
+class AnswerCard extends React.Component{
+  constructor(props){
+    super(props);
+  }
+
+  render(){
+    var unanswerable = this.props.data["answer_type"] == "Unanswerable"
+      var boolean = this.props.data["answer_type"] == "Boolean"
+
+      var answer_field = <div>
+                        <TextFieldWithTooltip data-tour="answer_textfield" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["answer"]} name='answer' label="Answer" multiline rows={7} onChange={this.props.handleFieldChange} tooltip="Please write the answer here. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence."/>
+                        <PaddingDiv/>
+                        </div>
+      if (unanswerable){
+        answer_field = <div>
+          <TextFieldWithTooltip data-tour="answer_textfield" disabled value={this.props.data["answer"]} name='answer' label="Answer" multiline rows={7} onChange={this.props.handleFieldChange} tooltip="Please write the answer here. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence."/>
+          <PaddingDiv/>
+          </div>
+          }
+
+      if (boolean){
+        answer_field = <div data-tour="answer_textfield">
+          <SelectWithTooltip name="answer" label="Answer" validator={notEmptyValidator} valid={this.props.valid} required  value={this.props.data["answer"]} onChange={this.props.handleFieldChange} items={["Yes", "No"]} tooltip="Please write the answer here. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence."/>
+          <TextFieldWithTooltip name='bool_explanation' label="Explanation" value={this.props.data["bool_explanation"]} multiline rows={5} onChange={this.props.handleFieldChange} tooltip="Please write a short explanation for your yes/no answer here."/> : 
+                    
+        </div>
+      }
+
+    return <EntryCard>
+              <TextLeftEntryDiv>
+                    {answer_field}
+                </TextLeftEntryDiv>
+                
+                <TextRightEntryDiv>
+                  <div data-tour="answer_metadata">
+                  <div data-tour="answer_type">
+                    <SelectWithTooltip name="answer_type" label="Answer Type" validator={notEmptyValidator} valid={this.props.valid} required  value={this.props.data["answer_type"]} onChange={this.props.handleAnswerTypeFieldChange} items={["Extractive", "Abstractive", "Boolean", "Unanswerable"]} tooltip={<ul>
+                      <li>Extractive: The answer is a phrase copied directly from the source.</li>
+                      <li>Abstractive: The answer was rephrased, but is based directly on the source.</li>
+                      <li>Boolean: The answer is yes/no, based directly on the source.</li>
+                      <li>Unanswerable: No source providing an answer to this question could be found.</li>
+                      </ul>}/>
+                    </div>
+                    <EmptySpaceDiv/>
+                    
+                    {unanswerable? 
+                    <TextFieldWithTooltip name='source_url' label="Source URL" disabled value={this.props.data["source_url"]} onChange={this.props.handleFieldChange} tooltip="Please copy-paste the URL where you found the answer here. Try to avoid using other fact-checking articles as sources."/> : 
+                    <TextFieldWithTooltip name='source_url' label="Source URL" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["question"]} value={this.props.data["source_url"]} onChange={this.props.handleFieldChange} tooltip="Please copy-paste the URL where you found the answer here. Try to avoid using other fact-checking articles as sources."/>
+                    }
+                    
+                    <EmptySpaceDiv/>
+                    
+                    {unanswerable? 
+                    <SelectWithTooltip name="source_medium" label="Source Medium" disabled value={this.props.data["source_medium"]} onChange={this.props.handleFieldChange} items={["Web text", "Web table", "PDF", "Image/graphic", "Video", "Audio", "Other"]} tooltip="Please describe what medium you found the answer in."/>
+                    :
+                    <SelectWithTooltip name="source_medium" label="Source Medium" value={this.props.data["source_medium"]} onChange={this.props.handleFieldChange} items={["Web text", "Web table", "PDF", "Image/graphic", "Video", "Audio", "Other"]} tooltip="Please describe what medium you found the answer in."/>
+                    }
+                    </div>
+                </TextRightEntryDiv>
+    </EntryCard>
+  }
+}
+
 class QuestionEntryField extends React.Component {
     constructor(props) {
         super(props);
@@ -174,12 +246,8 @@ class QuestionEntryField extends React.Component {
                 <TextLeftEntryDiv>
                     <TextFieldWithTooltip data-tour="question_textfield" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["question"]} name='question' label="Question" required multiline rows={7} onChange={this.handleFieldChange} tooltip="Please write a question that will help you gather evidence for or against the claim."/>
                     <PaddingDiv/>
-                    {answer_field}
+                    {false? {answer_field} : ""}
                 </TextLeftEntryDiv>
-
-                <div>
-                  If you find multiple answers to your question, you can add additional answers here. Please try to rephrase the question to yield a single answer BEFORE you add additional answers.
-                </div>
                 
                 <TextRightEntryDiv>
                   <QuestionReminderBox>
@@ -190,6 +258,7 @@ class QuestionEntryField extends React.Component {
                       <li>Does not directly ask whether the claim holds, e.g. 'is it true that [claim]'.</li>
                     </ul>
                   </QuestionReminderBox>
+                  {false? 
                   <div data-tour="answer_metadata">
                   <div data-tour="answer_type">
                     <SelectWithTooltip name="answer_type" label="Answer Type" validator={notEmptyValidator} valid={this.props.valid} required  value={this.props.data["answer_type"]} onChange={this.handleAnswerTypeFieldChange} items={["Extractive", "Abstractive", "Boolean", "Unanswerable"]} tooltip={<ul>
@@ -213,8 +282,13 @@ class QuestionEntryField extends React.Component {
                     :
                     <SelectWithTooltip name="source_medium" label="Source Medium" value={this.props.data["source_medium"]} onChange={this.handleFieldChange} items={["Web text", "Web table", "PDF", "Image/graphic", "Video", "Audio", "Other"]} tooltip="Please describe what medium you found the answer in."/>
                     }
-                    </div>
+                    </div>:""}
                 </TextRightEntryDiv>
+
+                <div>
+                  If you find multiple answers to your question, you can add additional answers here. Please try to rephrase the question to yield a single answer BEFORE you add additional answers.
+                </div>
+                <AnswerCard data={this.props.data} valid={this.props.valid} handleFieldChange={this.props.handleFieldChange} handleAnswerTypeFieldChange={this.props.handleAnswerTypeFieldChange}/>
             </ContainerDiv>
         );
       }

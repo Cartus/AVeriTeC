@@ -10,6 +10,7 @@ import EntryCardContainer from '../components/EntryCardContainer';
 import {notEmptyValidator, atLeastOneValidator} from '../utils/validation.js'
 import CountryPickerWithTooltip from '../components/CountryPickerWithTooltip';
 import PhaseControl from '../averitec_components/PhaseControl';
+import ReportBar from '../averitec_components/ReportBar';
 
 const ColumnDiv = styled.div`
     width:100%;
@@ -164,6 +165,7 @@ class ClaimEntryField extends React.Component {
                   When entering a claim, please ensure that:
                   <ul>
                     <li>Any references to people, places, or organizations can be understood <b>without</b> reading the article.</li>
+                    <li>The claim can be understood <b>without</b> knowing who the speaker and the source are.</li>
                     <li>The claim directly mentions the speaker <b>only if</b> verifying that the speaker actually said the statement is a part of the task.</li>
                     <li>The claim is phrased as a statement, rather than a question.</li>
                   </ul>
@@ -174,13 +176,14 @@ class ClaimEntryField extends React.Component {
                 <ClaimGridElement  data-tour="metadata_fields" item xs>
                 <ColumnDiv>
                 <TextLeftEntryDiv>
-                <DatePickerWithTooltip name="date" label="Claim Date" onChange={this.handleFieldChange} value={this.props.data["date"]} tooltip="The date the original claim was made, if mentioned by the fact checking article."/>
+                <DatePickerWithTooltip name="date" label="Claim Date" onChange={this.handleFieldChange} value={this.props.data["date"]} tooltip="The date the original claim was made, if mentioned by the fact checking article. If no exact date is mentioned, please leave the field empty."/>
                 <TextFieldWithTooltip name='hyperlink' label="Hyperlink" onChange={this.handleFieldChange} value={this.props.data["hyperlink"]} tooltip="A hyperlink to the original claim, if that is provided by the fact checking site. If the original claim has a hyperlink on the fact checking site, but that hyperlink is dead, please leave the field empty."/>
-                <TextFieldWithTooltip name='speaker' label="Speaker" onChange={this.handleFieldChange} value={this.props.data["speaker"]} tooltip="The speaker (or source) of the original claim."/>
+                <TextFieldWithTooltip name='speaker' label="Speaker" onChange={this.handleFieldChange} value={this.props.data["speaker"]} tooltip="The person or organization that said or wrote the original claim, if mentioned."/>
+                <TextFieldWithTooltip name='source' label="Source" onChange={this.handleFieldChange} value={this.props.data["source"]} tooltip="The source that published the original claim, if mentioned."/>
                 </TextLeftEntryDiv>
                 <TextRightEntryDiv>                
                 <TextFieldWithTooltip name='transcription' label="Transcription" value={this.props.data["transcription"]} onChange={this.handleFieldChange} tooltip="If the original source is an image that contains text (for example a meme or image macro), please transcribe whatever text occurs in the image here."/>
-                <TextFieldWithTooltip name='media_source' label="Media Source URLs" value={this.props.data["media_source"]} onChange={this.handleFieldChange} tooltip="If the claim refers directly to an image, video, or audio file, please paste the link here. If multiple sources are referred to, please add them all, separated by commas."/>
+                <TextFieldWithTooltip name='media_source' label="Media Source URLs" value={this.props.data["media_source"]} onChange={this.handleFieldChange} tooltip="If the claim refers directly to an image, video, or audio file, please paste a link here. If multiple sources are referred to, please add them all, separated by commas. Please try to provide direct links to images, videos, and so on, rather than links to pages containing them."/>
                 <CountryPickerWithTooltip name="location" label="Location" value={this.props.data["location"]} onChange={this.handleFieldChange} tooltip="Please select the location most relevant to the claim."/>
 
 
@@ -229,7 +232,7 @@ class ClaimEntryField extends React.Component {
                   {label: "Satirical Source Identification", tooltip: "The fact checking process involved identifying the source of the claim as satire, e.g. The Onion. We will discard all claims that were refuted only through satirical source identification."},
                   {label: "Media Source Discovery", tooltip: "The fact checking process involved finding the original source of a (potentially doctored) image, video, or soundbite."},
                   {label: "Image Analysis", tooltip: "The fact checking process involved image analysis other than finding the original source of an image, such as comparing two images."},
-                  {label: "Other Non-text Media Analysis", tooltip: "The fact checking process involved analysing other media, such as video or audio."}
+                  {label: "Other Non-text Media Analysis", tooltip: "The fact checking process involved analysing other media, such as video or audio. Transcription does NOT count as media analysis."}
                 ]} 
                 onChange={this.handleFieldChange}
                 tooltip="Please determine the approach taken by the fact checker, independent of the type of the claim. Check any that apply."
@@ -291,7 +294,8 @@ class MetadataEntryBar extends React.Component {
 
         return(
             <div className={className}>
-                <PhaseControl phaseName="Claim Normalization" phaseInstructions="Please read the fact checking article to the left, then fill out the information about the discussed claim below. If the article discusses more than one claim, you can add additional entry boxes for each claim. Some claims consist of multiple, easily separable, independent parts (e.g. &quot;The productivity rate in Scotland rose in 2017, and similarly productivity rose in Wales that year.&quot;). Please split these claims into their parts. When entering a claim, please make sure that it can be understood without reading the article - if necessary, you can add context to the claim to ensure this." reportButton={true}/>
+                <PhaseControl current_idx={this.props.current_idx} final_idx={this.props.final_idx} phaseName="Claim Normalization" phaseInstructions="Please read the fact checking article to the left, then fill out the information about the discussed claim below. If the article discusses more than one claim, you can add additional entry boxes for each claim. Some claims consist of multiple, easily separable, independent parts (e.g. &quot;The productivity rate in Scotland rose in 2017, and similarly productivity rose in Wales that year.&quot;). Please split these claims into their parts. When entering a claim, please make sure that it can be understood without reading the article - if necessary, you can add context to the claim to ensure this."/>
+                <ReportBar/>
                 <EntryCardContainer
                     contentClass={ClaimEntryField}
                     entryName="claim"
