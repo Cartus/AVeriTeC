@@ -66,6 +66,7 @@ class ClaimTopField extends React.Component {
 
     handleCheckboxChange = event => {
       this.props.onChange(this.props.id, event.target.name, event.target.checked);
+      this.props.onChange(this.props.id, "label", "");
   }
 
     handleDelete = () => {
@@ -104,7 +105,9 @@ class ClaimTopField extends React.Component {
                 </TextEntryDiv>
                 <TextEntryDiv>
                   <div data-tour="verdict">
-                    <SelectWithTooltip name="label" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["label"]} label="Claim Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Information", "Missing Context"]} tooltip={
+                    {this.props.data["unreadable"]?
+
+                    <SelectWithTooltip name="label" disabled value={this.props.data["label"]} label="Claim Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Information", "Missing Context"]} tooltip={
                   <ul>
                   <li>Supported: The claim is fully supported by the arguments and evidence presented.</li>
                   <li>Refuted: The claim is fully contradicted by the arguments and evidence presented.</li>
@@ -112,9 +115,22 @@ class ClaimTopField extends React.Component {
                   <li>Missing Context: The claim is misleading due to missing context, but not explicitly refuted. This includes cherry picking, true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found.</li>
                   </ul>}
                     />
+                    
+                    :
+
+                    <SelectWithTooltip name="label" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["label"]} label="Claim Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Information", "Missing Context"]} tooltip={
+                      <ul>
+                      <li>Supported: The claim is fully supported by the arguments and evidence presented.</li>
+                      <li>Refuted: The claim is fully contradicted by the arguments and evidence presented.</li>
+                      <li>Not Enough Information: There is not enough information to support or refute the claim. The evidence either directly argues that appropriate evidence cannot be found, or leaves some aspect of the claim neither supported nor refuted.</li>
+                      <li>Missing Context: The claim is misleading due to missing context, but not explicitly refuted. This includes cherry picking, true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found.</li>
+                      </ul>}
+                        />
+                  
+                    }
                     </div>
                   
-                  <CheckboxBox data-tour="bias" control={<Checkbox  name="bias" checked={this.props.data["bias"]} onChange={this.handleCheckboxChange} />} label="I believe my verdict may be biased because of the answer sources." />
+                  <CheckboxBox data-tour="unreadable" control={<Checkbox  name="unreadable" checked={this.props.data["unreadable"]} onChange={this.handleCheckboxChange} />} label="The claim lacks context or is otherwise impossible to understand." />
                     
                 </TextEntryDiv>
                 </ContainerDiv>

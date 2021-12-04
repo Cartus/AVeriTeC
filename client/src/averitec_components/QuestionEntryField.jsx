@@ -7,6 +7,7 @@ import TextFieldWithTooltip from '../components/TextFieldWithTooltip';
 import SelectWithTooltip from '../components/SelectWithTooltip';
 import ClaimTopField from '../averitec_components/ClaimTopField';
 import {notEmptyValidator} from '../utils/validation.js'
+import Slider from '@mui/material/Slider';
 
 const ContainerDiv = styled.div`
     width:100%;
@@ -35,6 +36,30 @@ const QAGridElementRight = styled(Grid)`
     width:    -moz-calc(49% - 33px)!important;
     width:         calc(49% - 33px)!important;
 `
+
+
+const marks = [
+  {
+    value: 0,
+    label: 'No extra answers',
+  },
+  {
+    value: 1,
+    label: '1 extra answer',
+  },
+  {
+    value: 2,
+    label: '2 extra answers',
+  },
+];
+
+function valuetext(value) {
+  return `${value}`;
+}
+
+function valueLabelFormat(value) {
+  return marks.findIndex((mark) => mark.value === value) + 1;
+}
 
 const EmptySpaceDiv = styled.div`
     @media (min-width: 1675px)  {
@@ -110,6 +135,14 @@ class QuestionEntryField extends React.Component {
         this.props.onChange(this.props.id, "answer", "No answer could be found.");
       }
 
+      if (value == "Boolean"){
+        if (this.props.data["answer"] != "Yes" && this.props.data["answer"] != "No"){
+          this.props.onChange(this.props.id, "answer", "");
+        }
+      } else if (this.props.data["answer_type"] == "Boolean"){
+        this.props.onChange(this.props.id, "bool_explanation", "");
+      }
+
       this.props.onChange(this.props.id, name, value);
     }    
 
@@ -119,6 +152,21 @@ class QuestionEntryField extends React.Component {
 
     render() {
       var unanswerable = this.props.data["answer_type"] == "Unanswerable"
+      var boolean = this.props.data["answer_type"] == "Boolean"
+
+      var answer_field = <TextFieldWithTooltip data-tour="answer_textfield" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["answer"]} name='answer' label="Answer" multiline rows={7} onChange={this.handleFieldChange} tooltip="Please write the answer here. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence."/>
+
+      if (unanswerable){
+        answer_field = <TextFieldWithTooltip data-tour="answer_textfield" disabled value={this.props.data["answer"]} name='answer' label="Answer" multiline rows={7} onChange={this.handleFieldChange} tooltip="Please write the answer here. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence."/>
+      }
+
+      if (boolean){
+        answer_field = <div data-tour="answer_textfield">
+          <SelectWithTooltip name="answer" label="Answer" validator={notEmptyValidator} valid={this.props.valid} required  value={this.props.data["answer"]} onChange={this.handleFieldChange} items={["Yes", "No"]} tooltip="Please write the answer here. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence."/>
+          <TextFieldWithTooltip name='bool_explanation' label="Explanation" value={this.props.data["bool_explanation"]} multiline rows={5} onChange={this.handleFieldChange} tooltip="Please write a short explanation for your yes/no answer here."/> : 
+                    
+        </div>
+      }
 
 
         return (
@@ -126,12 +174,12 @@ class QuestionEntryField extends React.Component {
                 <TextLeftEntryDiv>
                     <TextFieldWithTooltip data-tour="question_textfield" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["question"]} name='question' label="Question" required multiline rows={7} onChange={this.handleFieldChange} tooltip="Please write a question that will help you gather evidence for or against the claim."/>
                     <PaddingDiv/>
-                    {unanswerable? 
-                    <TextFieldWithTooltip data-tour="answer_textfield" disabled value={this.props.data["answer"]} name='answer' label="Answer" multiline rows={7} onChange={this.handleFieldChange} tooltip="Please write the answer here. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence."/>
-                    :
-                    <TextFieldWithTooltip data-tour="answer_textfield" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["answer"]} name='answer' label="Answer" multiline rows={7} onChange={this.handleFieldChange} tooltip="Please write the answer here. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence."/>
-                  }
+                    {answer_field}
                 </TextLeftEntryDiv>
+
+                <div>
+                  If you find multiple answers to your question, you can add additional answers here. Please try to rephrase the question to yield a single answer BEFORE you add additional answers.
+                </div>
                 
                 <TextRightEntryDiv>
                   <QuestionReminderBox>

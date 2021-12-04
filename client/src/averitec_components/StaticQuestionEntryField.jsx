@@ -35,7 +35,7 @@ const SourceSpacingDiv2 = styled.div`
 
 const SourceSpacingDiv = styled.div`
     width:100%;
-    height:5px;
+    height:10px;
 `
 
 const QAGridElementRight = styled(Grid)`
@@ -77,8 +77,14 @@ class StaticQuestionEntryField extends React.Component {
                     <ColumnDiv>
                         <SourceSpacingDiv2/>
                         <LargeTextField name='answer' label="Answer" InputProps={{readOnly: true}} variant="filled" value={this.props.question.answer} multiline rows={3}/>
+                        {this.props.question.url? 
+                        <div>
                         <SourceSpacingDiv/>
-                        <span>Source: <a href={this.props.question.url}>{this.props.question.url}</a></span>
+                        <span><a href={this.props.question.url}>View source</a></span>
+                        </div>
+                        :
+                        ""
+                        }
                     </ColumnDiv>
                 </QAGridElementLeft>
                 <Divider orientation="vertical" flexItem />
@@ -93,6 +99,7 @@ class StaticQuestionEntryField extends React.Component {
                             {label: "The answer is not understandable/readable", tooltip: "Please check this box if the answer is empty, gibberish, or ungrammatical to the point where you cannot understand it."},
                             {label: "Answer seems wrong, but is supported by the source", tooltip: "Please check this box if you believe the answer might be wrong, but the source supports the answer."},
                             {label: "Answer seems wrong, and is not supported by the source", tooltip: "Please check this box if you believe the answer might be wrong, and you discover that it contradicts the source."},
+                            {label: "I believe the source may be biased", tooltip: "Please check this box if you believe the source is a heavily biased website."},
                         ]} 
                         onChange={this.handleFieldChange}
                         tooltip="If you believe there are problems with this question, please tick the appropriate boxes here. If you identify problems with a question, please do not use it to support your verdict."

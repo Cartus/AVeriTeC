@@ -45,7 +45,8 @@ class AssignmentControl extends React.Component {
                 <EntryCard>
                     <Header>Assignments: {this.props.name}</Header>
                     <CountBox>{assignments}</CountBox>
-                    
+
+                    {this.props.assignments.done != this.props.assignments.total?
                     <StartButton variant="contained" color="primary" onClick={(e) => {
                         e.preventDefault();
                         localStorage.setItem('phase', this.props.page);
@@ -53,6 +54,11 @@ class AssignmentControl extends React.Component {
                         }}>
                         Start Next
                     </StartButton>
+                    :
+                    <StartButton variant="contained" color="primary" disabled>
+                        Start Next
+                    </StartButton>                    
+                    }
                 </EntryCard> 
             </div>
         );

@@ -62,9 +62,9 @@ class AnnotatorControl extends React.Component {
             <div>
                 <UserPanel user={this.state.user}/>
                 <div>
-                    {(this.state.assignments.phase_1.total - this.state.assignments.phase_1.done > 0)?<AssignmentField name="Claim Normalization" page="phase_1" assignments={this.state.assignments.phase_1}/>: ""}
-                    {(this.state.assignments.phase_2.total - this.state.assignments.phase_2.done > 0)?<AssignmentField name="Question Generation" page="phase_2" assignments={this.state.assignments.phase_2}/>: ""}
-                    {(this.state.assignments.phase_3.total - this.state.assignments.phase_3.done > 0)?<AssignmentField name="Quality Control" page="phase_3" assignments={this.state.assignments.phase_3}/>: ""}
+                    {(this.state.assignments.phase_1.total > 0)?<AssignmentField name="Claim Normalization" page="phase_1" assignments={this.state.assignments.phase_1}/>: ""}
+                    {(this.state.assignments.phase_2.total > 0)?<AssignmentField name="Question Generation" page="phase_2" assignments={this.state.assignments.phase_2}/>: ""}
+                    {(this.state.assignments.phase_3.total > 0)?<AssignmentField name="Quality Control" page="phase_3" assignments={this.state.assignments.phase_3}/>: ""}
                 </div>
                 {(this.state.user.is_admin === 1)? <AdminPanel>
                     <AdminControl name="Users"/>

@@ -62,7 +62,7 @@ function validate(content){
     var valid = true
 
     if(!("label" in content["annotation"]) || notEmptyValidator(content["annotation"]["label"]).error){
-        valid = false;
+        valid = content["annotation"]["unreadable"];
     } else if(!("justification" in content["annotation"]) || notEmptyValidator(content["annotation"]["justification"]).error){
         valid = false;
     }
