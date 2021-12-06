@@ -288,7 +288,7 @@ class VerdictValidation extends React.Component {
 
         const questionPairs = Object.keys(this.state.claim.questions).map(question_id => (
             <EntryCard variant="outlined">
-                <StaticQuestionEntryField id={question_id} question={this.state.claim.questions[question_id]} onChange={this.handleFieldChange}/>
+                <StaticQuestionEntryField id={question_id} data={{"answers": [{}, {}]}} question={this.state.claim.questions[question_id]} onChange={this.handleFieldChange}/>
             </EntryCard>
           ));
 

@@ -211,7 +211,7 @@ class ClaimEntryField extends React.Component {
                   {label: "Quote Verification", tooltip: "The primary task is to identify whether a quote was actually said by the supposed speaker."},
                   {label: "Event/Property Claim", tooltip: "The primary task is to determine the veracity of a narrative about a particular event or series of events, or to identify whether a certain non-numerical property is true, e.g. a person attending a particular university."},
                   {label: "Media Matching Claim", tooltip: "The primary task is to determine whether an image, video, or soundbite is presented in the right context. This includes doctored media as well as media taken out of context. This also includes HTML-doctoring of social media posts."},
-                  {label: "Complex Media Claim", tooltip: "The primary task is to perform complex reasoning about pieces of media, distinct from doctoring. This could for example be geolocating an image, or analysing audio."}
+                  {label: "Complex Media Claim", tooltip: "The primary task is to perform complex reasoning about pieces of media, distinct from doctoring. This could for example be geolocating an image, or identifying whether a voice in an audio clip belongs to a certain person."}
                 ]} 
                 onChange={this.handleFieldChange}
                 tooltip="Please determine the type of the claim itself, independent of the approach taken by the fact checker to verify or refute it. Check any that apply."
@@ -232,7 +232,8 @@ class ClaimEntryField extends React.Component {
                   {label: "Satirical Source Identification", tooltip: "The fact checking process involved identifying the source of the claim as satire, e.g. The Onion. We will discard all claims that were refuted only through satirical source identification."},
                   {label: "Media Source Discovery", tooltip: "The fact checking process involved finding the original source of a (potentially doctored) image, video, or soundbite."},
                   {label: "Image Analysis", tooltip: "The fact checking process involved image analysis other than finding the original source of an image, such as comparing two images."},
-                  {label: "Other Non-text Media Analysis", tooltip: "The fact checking process involved analysing other media, such as video or audio. Transcription does NOT count as media analysis."}
+                  {label: "Other Non-text Media Analysis", tooltip: "The fact checking process involved analysing other media, such as video or audio. Transcription does NOT count as media analysis."},
+                  {label: "Fact-checker Reference", tooltip: "The fact checking process involved referencing another fact-checking article to show that the claim has previously been checked."}
                 ]} 
                 onChange={this.handleFieldChange}
                 tooltip="Please determine the approach taken by the fact checker, independent of the type of the claim. Check any that apply."

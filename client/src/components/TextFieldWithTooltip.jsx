@@ -53,14 +53,23 @@ export default function TextFieldWithTooltip(props){
         var error = false
       }
 
+    var maxCharacters = props.maxCharacters? props.maxCharacters : (props.rows && props.rows > 1? 2500: 500);
+    var tooltip = props.tooltip
+
+    if (tooltip.endsWith(".")){
+        tooltip = tooltip.slice(0, -1); 
+    }
+
+    tooltip += " (max " + maxCharacters + " characters)."
+
     return (
         <ElementContainer multiline={props.rows} rows={props.rows}>
             <TextFieldContainer>
-                <StyledTextField size="small" error={error} {...props} value={value}/>
+                <StyledTextField size="small" error={error} inputProps={{ maxLength: maxCharacters }} {...props} value={value}/>
                 {/*error? <FormHelperText error={error}>{message}</FormHelperText> : ""*/}
             </TextFieldContainer>
             <QMarkContainer>
-                <TooltipQMark title={props.tooltip}/>
+                <TooltipQMark title={tooltip}/>
             </QMarkContainer>
         </ElementContainer>
     );

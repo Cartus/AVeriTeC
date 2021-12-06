@@ -34,6 +34,28 @@ function validate(content){
               valid = false;
             }
           }
+
+          if (!"answers" in entry){
+            valid = false;
+          } else{
+            entry["answers"].forEach(answer => {
+              if(!("answer_type" in answer) || notEmptyValidator(answer["answer_type"]).error){
+                valid = false;
+              }
+
+              if(!("source_url" in answer) || notEmptyValidator(answer["source_url"]).error){
+                if (!("answer_type" in answer) || answer["answer_type"] != "Unanswerable"){
+                  valid = false;
+                }
+              }
+
+              if (answer["answer_type"] == "Boolean"){
+                if (!("bool_explanation" in answer) ||  notEmptyValidator(answer["bool_explanation"]).error){
+                  valid = false;
+                }
+              }
+            });
+          }
         });
   
     return valid;

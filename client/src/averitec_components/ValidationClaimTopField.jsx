@@ -10,7 +10,6 @@ import countryFlagEmoji from "country-flag-emoji";
 
 const EntryCard = styled(Card)`
   margin:10px;
-
   @media (min-width: 1290px)  {
     height:260px;
   }
@@ -23,7 +22,6 @@ const ClaimHeader = styled.h4`
     margin: 10px    -moz-calc(50% - 130px)!important;
     margin: 10px         calc(50% - 130px)!important;
   }
-
   @media (min-width: 881px)  {
     margin: 10px!important;
   }
@@ -39,7 +37,6 @@ const SepSpaceDiv = styled.div`
 
 const TextEntryDiv = styled.div`
   float:left;
-
   padding: 20px 0px 0px -webkit-calc((100% - 890px)/4)!important;
   padding: 20px 0px 0px    -moz-calc((100% - 890px)/4)!important;
   padding: 20px 0px 0px         calc((100% - 890px)/4)!important;
@@ -85,9 +82,8 @@ class ClaimTopField extends React.Component {
         required 
         multiline 
         rows={4} 
-        inputProps={{ maxLength: 300 }}
         onChange={this.handleFieldChange} 
-        tooltip="Please write a short explanation (max 300 characters) for how you decided the answer based on the questions."
+        tooltip="Please write a short explanation for how you decided the answer based on the questions."
         />
 
         
