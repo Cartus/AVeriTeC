@@ -216,12 +216,16 @@ class QuestionGeneration extends React.Component {
               content: "When possible, we prefer extractive answers."
             },
             {
+              selector: '[data-tour="add_answers"]',
+              content: "If you find multiple different answers to a question (e.g. because you find disagreeing sources), you can write in additional answers. Please only add additional answers if you cannot rephrase the question so it yields a single answer."
+            },
+            {
               selector: '[data-tour="add"]',
               content: "If one question is not enough to give a verdict for the claim (independent of the fact-checking article), you can add more questions. We expect you will need at least two questions for each claim, often more. Please ask all questions necessary to gather the evidence needed for the verdict, including world knowledge that might seem obvious."
             },
             {
               selector: '[data-tour="verdict"]',
-              content: "Once you have collected enough question-answer pairs to give a verdict, select the most fitting option here (regardless of which verdict the fact-checking article gave). If you have not found enough information to verify or refute the claim after N minutes, please choose 'Not Enough Information' and proceed to the next claim. If the verdict relies on approximations, use your own judgment to decide if you find the claim misleading."
+              content: "Once you have collected enough question-answer pairs to give a verdict, select the most fitting option here (regardless of which verdict the fact-checking article gave). If you have not found enough information to verify or refute the claim after five minutes, please choose 'Not Enough Information' and proceed to the next claim. If the verdict relies on approximations, use your own judgment to decide if you find the claim misleading."
             },
             {
               selector: '[data-tour="submit"]',

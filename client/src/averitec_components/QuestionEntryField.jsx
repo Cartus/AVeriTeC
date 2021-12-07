@@ -292,7 +292,7 @@ class QuestionEntryField extends React.Component {
                   </QuestionReminderBox>
                 </TextRightEntryDiv>
 
-                <MidDiv>
+                <MidDiv data-tour="add_answers">
                 <div>
                   If you find multiple answers to your question, you can add additional answers here. Please try to rephrase the question to yield a single answer BEFORE you add additional answers.
                 </div>

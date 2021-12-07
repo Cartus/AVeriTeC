@@ -267,15 +267,19 @@ class VerdictValidation extends React.Component {
             },
             {
             selector: '[data-tour="justification"]',
-            content: "Write a short explanation (max 300 characters) explaining how you decided the answer based on the question-answer pairs."
+            content: "Write a short explanation explaining how you decided the answer based on the question-answer pairs."
             },
             {
-            selector: '[data-tour="report_qa_problems"]',
-            content: "If there are any problems with a question-answer pair, please report it. If you report a question-answer pair, please DO NOT use the information in it to give your verdict."
+            selector: '[data-tour="unreadable"]',
+            content: "If the claim lacks context or is otherwise not understandable, please report it rather than giving a label. If you do so, please use the justification field to explain why the question cannot be understood."
             },
             {
-            selector: '[data-tour="bias"]',
-            content: "If you think one the sources used may be biased, but the question is otherwise fine, you can still use it to form your answer. If you do so, please let us know by checking here."
+            selector: '[data-tour="report_question_problems"]',
+            content: "If there are any problems with a question, please report it. If you report a question, please DO NOT use the information in that question-answer pair to give your verdict."
+            },
+            {
+            selector: '[data-tour="report_answer_problems"]',
+            content: "Similarly, if there are any problems with an answer, please report it. If you report an answer, please DO NOT use the information in that answer to give your verdict. You can still use any other answers provided for the question."
             },
             {
             selector: '[data-tour="submit"]',
@@ -288,7 +292,7 @@ class VerdictValidation extends React.Component {
 
         const questionPairs = Object.keys(this.state.claim.questions).map(question_id => (
             <EntryCard variant="outlined">
-                <StaticQuestionEntryField id={question_id} data={{"answers": [{}, {}]}} question={this.state.claim.questions[question_id]} onChange={this.handleFieldChange}/>
+                <StaticQuestionEntryField id={question_id} data={{"answers": [{}, ]}} question={this.state.claim.questions[question_id]} onChange={this.handleFieldChange}/>
             </EntryCard>
           ));
 
@@ -311,7 +315,7 @@ class VerdictValidation extends React.Component {
                   </div>
                     <NavBar onPrevious={this.doPrevious} onSubmit={this.doSubmit} onNext={this.doNext}/>
                 </QABox>
-                {this.state.userIsFirstVisiting? <TourWrapper/> : ""}
+                {this.state.userIsFirstVisiting || true? <TourWrapper/> : ""}
                 </TourProvider>
             </div>
         );

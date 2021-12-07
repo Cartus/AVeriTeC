@@ -89,7 +89,7 @@ class StaticQuestionEntryField extends React.Component {
                 ""
                 }
             </ColumnDiv>
-            <ColumnDiv>
+            <ColumnDiv data-tour="report_answer_problems">
                 <SourceSpacingDiv/>
                 <AtLeastOneCheckboxGroup 
                     name="answer_problems" 
@@ -116,10 +116,10 @@ class StaticQuestionEntryField extends React.Component {
                         <ExtraLeftSpacing/>
                         <LargeTextField name='question' label="Question" InputProps={{readOnly: true}} variant="filled"  value={this.props.question.text} multiline rows={3}/>
                     </ColumnDiv>
-                    <ColumnDiv>
+                    <ColumnDiv data-tour="report_question_problems">
                         <ExtraLeftSpacing/>
                         <AtLeastOneCheckboxGroup 
-                        name="question_problems" 
+                        name="question_problems"                         
                         label="Potential problems with this question. Check any you think apply:" 
                         data={this.props.question["question_problems"]}
                         items={[
