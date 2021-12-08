@@ -312,8 +312,7 @@ class QuestionEntryField extends React.Component {
 
                 {answerFields}
 
-                <AnswerCard data={this.props.data} valid={this.props.valid} handleFieldChange={this.handleFieldChange} handleAnswerTypeFieldChange={this.handleAnswerTypeFieldChange}/>
-            </ContainerDiv>
+              </ContainerDiv>
         );
       }
 }

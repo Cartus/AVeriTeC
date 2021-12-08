@@ -315,7 +315,7 @@ class VerdictValidation extends React.Component {
                   </div>
                     <NavBar onPrevious={this.doPrevious} onSubmit={this.doSubmit} onNext={this.doNext}/>
                 </QABox>
-                {this.state.userIsFirstVisiting || true? <TourWrapper/> : ""}
+                {this.state.userIsFirstVisiting? <TourWrapper/> : ""}
                 </TourProvider>
             </div>
         );
