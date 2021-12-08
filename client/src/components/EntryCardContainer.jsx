@@ -42,18 +42,40 @@ class EntryCardContainer extends React.Component {
           id[initialString] = this.newEntryDict()
         }        
         
-
-        if (this.props.headerClass != null){
-          var headerString = this.props.entryName + "_header";
-          var headerElem = this.newEntryDict();
-
-          this.state = {
-            entries: id,
-            added_entries: this.props.numInitialEntries,
-            valid: true,
-            [headerString]: headerElem
-          };
-        } else{
+        if (this.props.headerClass != null && this.props.footerClass != null){
+            var headerString = this.props.entryName + "_header";
+            var headerElem = this.newEntryDict();
+            var footerString = this.props.entryName + "_footer";
+            var footerElem = this.newEntryDict();
+  
+            this.state = {
+              entries: id,
+              added_entries: this.props.numInitialEntries,
+              valid: true,
+              [headerString]: headerElem,
+              [footerString]: footerElem
+            };
+          } else if (this.props.headerClass != null){
+            var headerString = this.props.entryName + "_header";
+            var headerElem = this.newEntryDict();
+  
+            this.state = {
+              entries: id,
+              added_entries: this.props.numInitialEntries,
+              valid: true,
+              [headerString]: headerElem
+            };
+          }else if (this.props.footerClass != null){
+            var footerString = this.props.entryName + "_footer";
+            var footerElem = this.newEntryDict();
+  
+            this.state = {
+              entries: id,
+              added_entries: this.props.numInitialEntries,
+              valid: true,
+              [footerString]: footerElem
+            };
+          } else {
           this.state = {
             entries: id,
             added_entries: this.props.numInitialEntries,
@@ -75,6 +97,9 @@ class EntryCardContainer extends React.Component {
         var headerString = this.props.entryName + "_header";
         // this.setState({[headerString]: props.header? props.header : {}});
         this.setState({[headerString]: props.header});
+
+        var footerString = this.props.entryName + "_footer";
+        this.setState({[footerString]: props.footer});
     }
 
     newEntryDict = () => {
@@ -220,6 +245,7 @@ class EntryCardContainer extends React.Component {
     }
 
     handleFieldChange(fieldId, element, value) {
+        console.log(fieldId)
       if (fieldId === this.props.entryName + "_header"){
         this.setState(prevState => ({
           [fieldId]: {
@@ -227,7 +253,14 @@ class EntryCardContainer extends React.Component {
                 [element]: value
             }
         }))  
-      } else{
+      } else if (fieldId === this.props.entryName + "_footer"){
+        this.setState(prevState => ({
+          [fieldId]: {
+                ...prevState[fieldId],
+                [element]: value
+            }
+        }))  
+      }else{
         this.setState(prevState => ({
           entries: {
                 ...prevState.entries,
@@ -270,11 +303,11 @@ class EntryCardContainer extends React.Component {
 
         if (this.props.footerClass != null){
             var footerField = <this.props.footerClass
-            key={this.props.entryName + "_header"}
+            key={this.props.entryName + "_footer"}
             id={this.props.entryName + "_footer"}
             onChange={this.handleFieldChange}
             valid={this.state.valid}
-            data={this.state[this.props.entryName + "_header"]}
+            data={this.state[this.props.entryName + "_footer"]}
             {...this.props}
             />;
         }

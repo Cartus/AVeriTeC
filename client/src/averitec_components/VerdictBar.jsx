@@ -20,13 +20,20 @@ const VerdictDiv = styled.div`
 class VerdictBar extends React.Component {
     constructor(props) {
         super(props);
+        
+        this.handleFieldChange = this.handleFieldChange.bind(this);
     }
+
+    handleFieldChange = event => {
+      const { name, value } = event.target;
+      this.props.onChange(this.props.id, name, value);
+  }
 
     render() {
         return (
             <EntryCard>
               <VerdictDiv data-tour="verdict">
-                    <SelectWithTooltip name="label" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["label"]} label="Claim Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Information", "Missing Context"]} tooltip={
+                    <SelectWithTooltip name="label" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data? this.props.data["label"] : ""} label="Claim Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Information", "Missing Context"]} tooltip={
                   <ul>
                   <li>Supported: The claim is fully supported by the arguments and evidence presented.</li>
                   <li>Refuted: The claim is fully contradicted by the arguments and evidence presented.</li>
