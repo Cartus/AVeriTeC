@@ -40,18 +40,18 @@ if ($req_type == "next-data"){
 
     if($result->num_rows > 0){
         if ($row['current_qa_task'] != 0) {
-            $sql = "SELECT claim_norm_id, web_archive, cleaned_claim, speaker, check_date, claim_loc FROM Norm_Claims WHERE claim_norm_id = ?";
+            $sql = "SELECT claim_norm_id, web_archive, cleaned_claim, speaker, source, check_date, claim_loc FROM Norm_Claims WHERE claim_norm_id = ?";
             $stmt= $conn->prepare($sql);
             $stmt->bind_param("i", $row['current_qa_task']);
             $stmt->execute();
             $result = $stmt->get_result();
             $row = $result->fetch_assoc();
-            $output = (["web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'],
+            $output = (["web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
             "check_date" => $row['check_date'], "country_code" => $row['claim_loc'], "claim_norm_id" => $row['claim_norm_id']]);
             echo(json_encode($output));
         } else {
-            $sql = "SELECT claim_norm_id, web_archive, cleaned_claim, speaker, check_date, claim_loc, user_id_norm FROM Norm_Claims
-            WHERE qa_annotators_num = 0 AND qa_taken_flag=0 AND qa_skipped=0 AND user_id_norm = ? ORDER BY RAND() LIMIT 1";
+            $sql = "SELECT claim_norm_id, web_archive, cleaned_claim, speaker, source, check_date, claim_loc, user_id_norm FROM Norm_Claims
+            WHERE qa_annotators_num = 0 AND qa_taken_flag=0 AND qa_skipped=0 AND latest=1 AND user_id_norm = ? ORDER BY RAND() LIMIT 1";
             $stmt= $conn->prepare($sql);
 
             if ($user_id == 3) {
@@ -68,7 +68,7 @@ if ($req_type == "next-data"){
             try {
                 if(mysqli_num_rows($result) > 0) {
                     $row = $result->fetch_assoc();
-                    $output = (["web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'],
+                    $output = (["web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
                     "check_date" => $row['check_date'], "country_code" => $row['claim_loc'], "claim_norm_id" => $row['claim_norm_id'], "user_id_norm" => $row['user_id_norm']]);
                     echo(json_encode($output));
                     update_table($conn, "UPDATE Norm_Claims SET qa_taken_flag=1, user_id_qa=? WHERE claim_norm_id=?", 'ii', $user_id, $row['claim_norm_id']);
@@ -84,6 +84,7 @@ if ($req_type == "next-data"){
     $conn->close();
 
 } else if ($req_type == "submit-data") {
+    print_r($_POST);
 
     $conn = new mysqli($db_params['servername'], $db_params['user'], $db_params['password'], $db_params['database']);
     if ($conn->connect_error) {
@@ -97,40 +98,111 @@ if ($req_type == "next-data"){
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
 
-    $phase_2_label = $_POST["qa_pair_header"]["label"];
+    $phase_2_label = $_POST["qa_pair_footer"]["label"];
     $num_qapairs = $_POST["added_entries"];
+
+    if (array_key_exists('qa_pair_header', $_POST)){
+        if (array_key_exists('claim_correction', $_POST['qa_pair_header'])){
+            $correction_claim = $_POST['qa_pair_header']['claim_correction'];
+        }else{
+            $correction_claim = NULL;
+        }
+    }else{
+        $correction_claim = NULL;
+    }
 
     $conn->begin_transaction();
     try {
         foreach($_POST['entries'] as $item) {
+            // print_r($item);
             $question = $item['question'];
-            $answer = $item['answer'];
+            $answers = $item['answers'];
 
-            if (array_key_exists('source_url', $item)){
-                $source_url = $item['source_url'];
+            $answer = $answers[0]['answer'];
+
+            if (array_key_exists('source_url', $answers[0])){
+                $source_url = $answers[0]['source_url'];
             }else{
                 $source_url = NULL;
             }
 
-            if (array_key_exists('answer_type', $item)){
-                $answer_type = $item['answer_type'];
+            if (array_key_exists('answer_type', $answers[0])){
+                $answer_type = $answers[0]['answer_type'];
             }else{
                 $answer_type = NULL;
             }
 
-            if (array_key_exists('source_medium', $item)){
-                $source_medium = $item['source_medium'];
+            if (array_key_exists('source_medium', $answers[0])){
+                $source_medium = $answers[0]['source_medium'];
             }else{
                 $source_medium = NULL;
             }
 
-            update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium)
-            VALUES (?, ?, ?, ?, ?, ?, ?)", 'iisssss', $row['claim_norm_id'], $user_id, $question, $answer,
-            $source_url, $answer_type, $source_medium);
+            if (array_key_exists(1, $answers)){
+                $answer_second = $answers[1]['answer'];
+
+                if (array_key_exists('source_url', $answers[1])){
+                    $source_url_second = $answers[1]['source_url'];
+                }else{
+                    $source_url_second = NULL;
+                }
+
+                if (array_key_exists('answer_type', $answers[1])){
+                    $answer_type_second = $answers[1]['answer_type'];
+                }else{
+                    $answer_type_second = NULL;
+                }
+
+                if (array_key_exists('source_medium', $answers[1])){
+                    $source_medium_second = $answers[1]['source_medium'];
+                }else{
+                    $source_medium_second = NULL;
+                }
+            }else{
+                $answer_second = NULL;
+                $source_url_second = NULL;
+                $answer_type_second = NULL;
+                $source_medium_second = NULL;
+            }
+
+            if (array_key_exists(2, $answers)){
+                $answer_third = $answers[2]['answer'];
+
+                if (array_key_exists('source_url', $answers[2])){
+                    $source_url_third = $answers[2]['source_url'];
+                }else{
+                    $source_url_third = NULL;
+                }
+
+                if (array_key_exists('answer_type', $answers[2])){
+                    $answer_type_third = $answers[2]['answer_type'];
+                }else{
+                    $answer_type_third = NULL;
+                }
+
+                if (array_key_exists('source_medium', $answers[2])){
+                    $source_medium_third = $answers[2]['source_medium'];
+                }else{
+                    $source_medium_third = NULL;
+                }
+            }else{
+                $answer_third = NULL;
+                $source_url_third = NULL;
+                $answer_type_third = NULL;
+                $source_medium_third = NULL;
+            }
+
+            $qa_latest = 1;
+
+            update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium, qa_latest,
+            answer_second, source_url_second, answer_type_second, source_medium_second, answer_third, source_url_third, answer_type_third, source_medium_third)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssissssssss', $row['claim_norm_id'], $user_id, $question, $answer,
+            $source_url, $answer_type, $source_medium, $qa_latest, $answer_second, $source_url_second, $answer_type_second, $source_medium_second,
+            $answer_third, $source_url_third, $answer_type_third, $source_medium_third);
         }
 
-        update_table($conn, "UPDATE Norm_Claims SET qa_taken_flag=0, has_qapairs=1, qa_annotators_num = qa_annotators_num+1, phase_2_label=?, num_qapairs=?, date_made_qa=?
-        WHERE claim_norm_id=?",'sisi', $phase_2_label, $num_qapairs, $date, $row['claim_norm_id']);
+        update_table($conn, "UPDATE Norm_Claims SET qa_taken_flag=0, has_qapairs=1, qa_annotators_num = qa_annotators_num+1, phase_2_label=?, num_qapairs=?, date_made_qa=?, correction_claim=?
+        WHERE claim_norm_id=?",'sissi', $phase_2_label, $num_qapairs, $date, $correction_claim, $row['claim_norm_id']);
         update_table($conn, "UPDATE Annotators SET current_qa_task=0, finished_qa_annotations=finished_qa_annotations+1  WHERE user_id=?",'i', $user_id);
         $conn->commit();
         echo "Submit Successfully!";
@@ -147,17 +219,18 @@ if ($req_type == "next-data"){
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $sql = "SELECT claim_norm_id, web_archive, cleaned_claim, speaker, check_date, hyperlink, phase_2_label, claim_loc
+    $sql = "SELECT claim_norm_id, web_archive, cleaned_claim, source, speaker, check_date, hyperlink, phase_2_label, claim_loc, correction_claim
      FROM Norm_Claims WHERE user_id_qa = ? ORDER BY date_made_qa DESC LIMIT 1 OFFSET ?";
     $stmt= $conn->prepare($sql);
     $stmt->bind_param("ii", $user_id, $offset);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
-    
-    $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=? AND user_id_qa=?";
+
+    $qa_latest = 1;
+    $sql_qa = "SELECT * FROM Qapair WHERE qa_latest=? AND claim_norm_id=? AND user_id_qa=?";
     $stmt = $conn->prepare($sql_qa);
-    $stmt->bind_param("ii", $row['claim_norm_id'], $user_id);
+    $stmt->bind_param("iii", $qa_latest, $row['claim_norm_id'], $user_id);
     $stmt->execute();
     $result_qa = $stmt->get_result();
 
@@ -171,16 +244,54 @@ if ($req_type == "next-data"){
             $count_string = "qa_pair_entry_field_" . (string)$counter;
             $counter = $counter + 1;
             $field_array = array();
-            $field_array['answer_type'] = $row_qa['answer_type'];
-            $field_array['source_medium'] = $row_qa['source_medium'];
-            $field_array['source_url'] = $row_qa['source_url'];
             $field_array['question'] = $row_qa['question'];
-            $field_array['answer'] = $row_qa['answer'];
+
+            $answers = array();
+            $answers[0]['answer'] = $row_qa['answer'];
+            $answers[0]['source_url'] = $row_qa['source_url'];
+            $answers[0]['answer_type'] = $row_qa['answer_type'];
+            $answers[0]['source_medium'] = $row_qa['source_medium'];
+
+            if (!is_null($row_qa['answer_second'])){
+                $answers[1]['answer'] = $row_qa['answer_second'];
+            }
+            if (!is_null($row_qa['source_url_second'])){
+                $answers[1]['source_url'] = $row_qa['source_url_second'];
+            }
+            if (!is_null($row_qa['answer_type_second'])){
+                $answers[1]['answer_type'] = $row_qa['answer_type_second'];
+            }
+            if (!is_null($row_qa['source_medium_second'])){
+                $answers[1]['source_medium'] = $row_qa['source_medium_second'];
+            }
+
+            if (!is_null($row_qa['answer_third'])){
+                $answers[2]['answer'] = $row_qa['answer_third'];
+            }
+            if (!is_null($row_qa['source_url_third'])){
+                $answers[2]['source_url'] = $row_qa['source_url_third'];
+            }
+            if (!is_null($row_qa['answer_type_third'])){
+                $answers[2]['answer_type'] = $row_qa['answer_type_third'];
+            }
+            if (!is_null($row_qa['source_medium_third'])){
+                $answers[2]['source_medium'] = $row_qa['source_medium_third'];
+            }
+
+            $field_array['answers'] = $answers;
+
             $entries[$count_string] = $field_array;
         }
 
-        $output = (["claim_norm_id" => $row['claim_norm_id'], "web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'],
-        "check_date" => $row['check_date'], "hyperlink" => $row['hyperlink'], "entries" => $entries, "label" => $row['phase_2_label'], "country_code" => $row['claim_loc']]);
+        if (!is_null($row['correction_claim'])){
+            $should_correct = 1;
+        } else {
+            $should_correct = 0;
+        }
+
+        $output = (["claim_norm_id" => $row['claim_norm_id'], "web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
+        "check_date" => $row['check_date'], "hyperlink" => $row['hyperlink'], "entries" => $entries, "label" => $row['phase_2_label'], "country_code" => $row['claim_loc'],
+        "claim_correction" => $row['correction_claim'], "should_correct" => $should_correct]);
         echo(json_encode($output));
     } else {
         echo "0 Results";
@@ -194,9 +305,10 @@ if ($req_type == "next-data"){
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $sql_del = "DELETE FROM Qapair WHERE claim_norm_id=? AND user_id_qa=?";
-    $stmt= $conn->prepare($sql_del);
-    $stmt->bind_param("ii", $claim_norm_id, $user_id);
+    $qa_latest = 0;
+    $sql_update = "UPDATE Qapair SET qa_latest=? WHERE claim_norm_id=? AND user_id_qa=?";
+    $stmt= $conn->prepare($sql_update);
+    $stmt->bind_param("iii", $qa_latest, $claim_norm_id, $user_id);
     $stmt->execute();
 
     $sql = "SELECT web_archive FROM Norm_Claims WHERE claim_norm_id = ?";
@@ -206,40 +318,108 @@ if ($req_type == "next-data"){
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
 
-    $phase_2_label = $_POST["qa_pair_header"]["label"];
+    $phase_2_label = $_POST["qa_pair_footer"]["label"];
     $num_qapairs = $_POST["added_entries"];
+
+    if (array_key_exists('qa_pair_header', $_POST)){
+        if (array_key_exists('claim_correction', $_POST['qa_pair_header'])){
+            $correction_claim = $_POST['qa_pair_header']['claim_correction'];
+        }else{
+            $correction_claim = NULL;
+        }
+    }else{
+        $correction_claim = NULL;
+    }
 
     $conn->begin_transaction();
     try {
         foreach($_POST['entries'] as $item) {
             $question = $item['question'];
-            $answer = $item['answer'];
+            $answers = $item['answers'];
 
-            if (array_key_exists('source_url', $item)){
-                $source_url = $item['source_url'];
+            if (array_key_exists('source_url', $answers[0])){
+                $source_url = $answers[0]['source_url'];
             }else{
                 $source_url = NULL;
             }
 
-            if (array_key_exists('answer_type', $item)){
-                $answer_type = $item['answer_type'];
+            if (array_key_exists('answer_type', $answers[0])){
+                $answer_type = $answers[0]['answer_type'];
             }else{
                 $answer_type = NULL;
             }
 
-            if (array_key_exists('source_medium', $item)){
-                $source_medium = $item['source_medium'];
+            if (array_key_exists('source_medium', $answers[0])){
+                $source_medium = $answers[0]['source_medium'];
             }else{
                 $source_medium = NULL;
             }
 
-            update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium)
-            VALUES (?, ?, ?, ?, ?, ?, ?)", 'iisssss', $claim_norm_id, $user_id, $question, $answer,
-            $source_url, $answer_type, $source_medium);
+            if (array_key_exists(1, $answers)){
+                $answer_second = $answers[1]['answer'];
+
+                if (array_key_exists('source_url', $answers[1])){
+                    $source_url_second = $answers[1]['source_url'];
+                }else{
+                    $source_url_second = NULL;
+                }
+
+                if (array_key_exists('answer_type', $answers[1])){
+                    $answer_type_second = $answers[1]['answer_type'];
+                }else{
+                    $answer_type_second = NULL;
+                }
+
+                if (array_key_exists('source_medium', $answers[1])){
+                    $source_medium_second = $answers[1]['source_medium'];
+                }else{
+                    $source_medium_second = NULL;
+                }
+            }else{
+                $answer_second = NULL;
+                $source_url_second = NULL;
+                $answer_type_second = NULL;
+                $source_medium_second = NULL;
+            }
+
+            if (array_key_exists(2, $answers)){
+                $answer_third = $answers[2]['answer'];
+
+                if (array_key_exists('source_url', $answers[2])){
+                    $source_url_third = $answers[2]['source_url'];
+                }else{
+                    $source_url_third = NULL;
+                }
+
+                if (array_key_exists('answer_type', $answers[2])){
+                    $answer_type_third = $answers[2]['answer_type'];
+                }else{
+                    $answer_type_third = NULL;
+                }
+
+                if (array_key_exists('source_medium', $answers[2])){
+                    $source_medium_third = $answers[2]['source_medium'];
+                }else{
+                    $source_medium_third = NULL;
+                }
+            }else{
+                $answer_third = NULL;
+                $source_url_third = NULL;
+                $answer_type_third = NULL;
+                $source_medium_third = NULL;
+            }
+
+            $qa_latest = 1;
+
+            update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium, qa_latest,
+            answer_second, source_url_second, answer_type_second, source_medium_second, answer_third, source_url_third, answer_type_third, source_medium_third)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssissssssss', $claim_norm_id, $user_id, $question, $answer,
+            $source_url, $answer_type, $source_medium, $qa_latest, $answer_second, $source_url_second, $answer_type_second, $source_medium_second,
+            $answer_third, $source_url_third, $answer_type_third, $source_medium_third);
         }
 
-        update_table($conn, "UPDATE Norm_Claims SET qa_annotators_num = qa_annotators_num+1, phase_2_label=?, num_qapairs=?, date_modified_qa=?
-        WHERE claim_norm_id=?",'sisi', $phase_2_label, $num_qapairs, $date, $claim_norm_id);
+        update_table($conn, "UPDATE Norm_Claims SET qa_annotators_num = qa_annotators_num+1, phase_2_label=?, num_qapairs=?, date_modified_qa=?, correction_claim=?
+        WHERE claim_norm_id=?",'sisi', $phase_2_label, $num_qapairs, $date, $correction_claim, $claim_norm_id);
         $conn->commit();
         echo "Resubmit Successfully!";
     }catch (mysqli_sql_exception $exception) {

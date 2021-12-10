@@ -56,11 +56,11 @@ class QuestionGeneration extends React.Component {
                 claim_text: "",
                 claim_speaker: "",
                 claim_date: "",
-		country_code: ""    
+		        country_code: ""
             },
-            // entries : {"qa_pair_entry_field_1":{}},
             entries : {},
-            qa_pair_header: {label: ""},
+            qa_pair_header: {},
+            qa_pair_footer: {},
             userIsFirstVisiting: false
         }
     }
@@ -89,7 +89,8 @@ class QuestionGeneration extends React.Component {
                             claim_text: response.data.cleaned_claim,
                             claim_speaker: response.data.speaker,
                             claim_date: response.data.check_date,
-			                country_code: response.data.country_code
+			                country_code: response.data.country_code,
+                            claim_source: response.data.claim_source
                         };
                         
                         if (new_claim.claim_date){
@@ -100,8 +101,13 @@ class QuestionGeneration extends React.Component {
                         localStorage.claim_norm_id = response.data.claim_norm_id;
                         this.setState({claim: new_claim});
 
-                        const new_header = {label: response.data.label   };
+                        const new_header = {claim_correction: response.data.claim_correction, should_correct:response.data.should_correct};
                         this.setState({qa_pair_header: new_header})
+                        console.log(this.state.qa_pair_header);
+
+                        const new_footer = {label: response.data.label};
+                        this.setState({qa_pair_footer: new_footer})
+
 
                         const new_entries = response.data.entries;
                         this.setState({entries: new_entries});
@@ -131,7 +137,8 @@ class QuestionGeneration extends React.Component {
                             claim_text: response.data.cleaned_claim,
                             claim_speaker: response.data.speaker,
                             claim_date: response.data.check_date,
-			                country_code: response.data.country_code
+			                country_code: response.data.country_code,
+                            claim_source: response.data.claim_source
                         };
 
                         if (new_claim.claim_date){
@@ -233,7 +240,7 @@ class QuestionGeneration extends React.Component {
             },
           ];
 
-        var current_idx = 15-Number(localStorage.pc);
+        var current_idx = Number(localStorage.finished_qa_annotations)+1 - Number(localStorage.pc);
         var final_idx = 15;
 
         return (
@@ -241,7 +248,7 @@ class QuestionGeneration extends React.Component {
                 <TourProvider steps={steps}>
                 <QAPageView claim={this.state.claim}/>
                 <QADataField>
-                    <QuestionGenerationBar current_idx={current_idx} final_idx={final_idx} claim={this.state.claim} entries={this.state.entries} header={this.state.qa_pair_header}/>
+                    <QuestionGenerationBar current_idx={current_idx} final_idx={final_idx} claim={this.state.claim} entries={this.state.entries} header={this.state.qa_pair_header} footer={this.state.qa_pair_footer}/>
                     <SearchField claim_date={this.state.claim.claim_date} country_code={this.state.claim.country_code}/>
                 </QADataField>
                 {this.state.userIsFirstVisiting? <TourWrapper/> : ""}

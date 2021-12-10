@@ -122,7 +122,6 @@ class VerdictValidation extends React.Component {
     componentDidMount() {
         if (localStorage.getItem('login')) {
             let pc = Number(localStorage.pc);
-            console.log(pc);
             if (pc !== 0){
 		        var request = {
                     method: "post",
@@ -141,10 +140,12 @@ class VerdictValidation extends React.Component {
                         const new_claim = {
                             web_archive: response.data.web_archive,
                             claim_text: response.data.claim_text,
-                            claim_speaker: response.data.speaker,
+                            claim_speaker: response.data.claim_speaker,
+                            claim_source: response.data.claim_source,
                             claim_hyperlink: response.data.claim_hyperlink,
                             claim_date: response.data.claim_date,
-                            questions: response.data.questions
+                            questions: response.data.questions,
+                            country_code: response.data.country_code
                         };
                         localStorage.claim_norm_id = response.data.claim_norm_id;
                         this.setState({claim: new_claim});
@@ -173,10 +174,12 @@ class VerdictValidation extends React.Component {
                         const new_claim = {
                             web_archive: response.data.web_archive,
                             claim_text: response.data.claim_text,
-                            claim_speaker: response.data.speaker,
+                            claim_speaker: response.data.claim_speaker,
+                            claim_source: response.data.claim_source,
                             claim_hyperlink: response.data.claim_hyperlink,
                             claim_date: response.data.claim_date,
-                            questions: response.data.questions
+                            questions: response.data.questions,
+                            country_code: response.data.country_code,
                         };
                         this.setState({claim: new_claim});
                         console.log(this.state.claim);
@@ -287,17 +290,13 @@ class VerdictValidation extends React.Component {
             },
         ];
 
-        console.log(this.state.claim)
-        console.log(localStorage.pc)
-
         const questionPairs = Object.keys(this.state.claim.questions).map(question_id => (
             <EntryCard variant="outlined">
-                <StaticQuestionEntryField id={question_id} data={{"answers": [{}, ]}} question={this.state.claim.questions[question_id]} onChange={this.handleFieldChange}/>
+                <StaticQuestionEntryField id={question_id} data={this.state.claim.questions[question_id]} onChange={this.handleFieldChange}/>
             </EntryCard>
           ));
 
-
-        var current_idx = 15-Number(localStorage.pc);
+        var current_idx = Number(localStorage.finished_valid_annotations)+1 - Number(localStorage.pc);
         var final_idx = 15;
 
         return (
@@ -316,6 +315,7 @@ class VerdictValidation extends React.Component {
                     <NavBar onPrevious={this.doPrevious} onSubmit={this.doSubmit} onNext={this.doNext}/>
                 </QABox>
                 {this.state.userIsFirstVisiting? <TourWrapper/> : ""}
+                  {JSON.stringify(this.state)}
                 </TourProvider>
             </div>
         );

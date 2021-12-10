@@ -100,6 +100,7 @@ class EntryCardContainer extends React.Component {
 
         var footerString = this.props.entryName + "_footer";
         this.setState({[footerString]: props.footer});
+        console.log(props.footer);
     }
 
     newEntryDict = () => {
@@ -108,13 +109,14 @@ class EntryCardContainer extends React.Component {
 
     async doSubmit(){
         // e.preventDefault();
+        console.log(this.props.validationFunction(this.state));
         if (this.props.validationFunction(this.state)){
             let phase = localStorage.getItem('phase');
             if (phase === 'phase_1') {
                 let pc = Number(localStorage.pc);
                 if (pc !== 0) {
                     localStorage.pc = Number(localStorage.pc) - 1;
-		    var request = {
+		            var request = {
                         method: "post",
                         baseURL: config.api_url,
                         url: "/claim_norm.php",
@@ -132,7 +134,7 @@ class EntryCardContainer extends React.Component {
                         window.location.reload(false);
                     }).catch((error) => {window.alert(error)})	
                 } else {
-		    var request = {
+		            var request = {
                         method: "post",
                         baseURL: config.api_url,
                         url: "/claim_norm.php",
@@ -154,7 +156,7 @@ class EntryCardContainer extends React.Component {
                 console.log(pc);
                 if (pc !== 0) {
                     localStorage.pc = Number(localStorage.pc) - 1;
-		    var request = {
+		            var request = {
                         method: "post",
                         baseURL: config.api_url,
                         url: "/question_answering.php",
@@ -164,6 +166,7 @@ class EntryCardContainer extends React.Component {
                             entries: this.state.entries,
                             added_entries: this.state.added_entries,
                             qa_pair_header: this.state.qa_pair_header,
+                            qa_pair_footer: this.state.qa_pair_footer,
                             claim_norm_id: localStorage.claim_norm_id
                         }
                     };
@@ -174,7 +177,8 @@ class EntryCardContainer extends React.Component {
                         window.location.reload(false);
                     }).catch((error) => {window.alert(error)})	
                 } else {
-		    var request = {
+                    console.log(this.state.added_entries);
+		            var request = {
                         method: "post",
                         baseURL: config.api_url,
                         url: "/question_answering.php",
@@ -183,7 +187,8 @@ class EntryCardContainer extends React.Component {
                             req_type: 'submit-data',
                             entries: this.state.entries,
                             added_entries: this.state.added_entries,
-                            qa_pair_header: this.state.qa_pair_header
+                            qa_pair_header: this.state.qa_pair_header,
+                            qa_pair_footer: this.state.qa_pair_footer
                         }
                     };
 
@@ -322,6 +327,7 @@ class EntryCardContainer extends React.Component {
                 </AddEntryCard>
                 </Tooltip>
                 {footerField}
+                {/*{JSON.stringify(this.state)}*/}
                 <NavBar onPrevious={this.doPrevious} onSubmit={this.doSubmit} onNext={this.doNext}/>
             </div>
         );

@@ -14,11 +14,8 @@ $date = date("Y-m-d H:i:s");
 
 $db_params = parse_ini_file( dirname(__FILE__).'/db_params.ini', false);
 
-
 $json_result = file_get_contents("php://input");
 $_POST = json_decode($json_result, true);
-
-// if (empty($user_id) && empty($req_type)) die();
 
 $user_id = $_POST['user_id'];
 $req_type = $_POST['req_type'];
@@ -115,6 +112,12 @@ if ($req_type == "next-data"){
                 $hyperlink = NULL;
             }
 
+            if (array_key_exists('source', $item)){
+                $source = $item['source'];
+            }else{
+                $source = NULL;
+            }
+
             if (array_key_exists('transcription', $item)){
                 $transcription = $item['transcription'];
             }else{
@@ -149,13 +152,14 @@ if ($req_type == "next-data"){
 
             $claim_types = implode(" [SEP] ", $claim_types);
             $fact_checker_strategy = implode(" [SEP] ", $fact_checker_strategy);
+            $latest = 1;
 
             update_table($conn, "INSERT INTO Norm_Claims (claim_id, web_archive, user_id_norm, cleaned_claim, speaker, hyperlink, transcription, media_source,
             check_date, claim_types, fact_checker_strategy, phase_1_label, qa_annotators_num, qa_taken_flag, qa_skipped, valid_annotators_num, valid_taken_flag,
-            has_qapairs, date_made_norm, claim_loc)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'isisssssssssiiiiiiss', $row['claim_id'], $row['web_archive'], $user_id, $cleaned_claim, $speaker,
+            has_qapairs, date_made_norm, claim_loc, latest, source)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'isisssssssssiiiiiissis', $row['claim_id'], $row['web_archive'], $user_id, $cleaned_claim, $speaker,
             $hyperlink, $transcription, $media_source, $check_date, $claim_types, $fact_checker_strategy, $phase_1_label, $qa_annotators_num, $qa_taken_flag, $qa_skipped,
-            $valid_annotators_num, $valid_taken_flag, $has_qapairs, $date, $claim_loc);
+            $valid_annotators_num, $valid_taken_flag, $has_qapairs, $date, $claim_loc, $latest, $source);
         }
 
         update_table($conn, "INSERT INTO Claim_Map (user_id, claim_id, skipped, date_made) VALUES (?, ?, ?, ?)", 'iiis', $user_id, $row['claim_id'], $skipped, $date);
@@ -182,9 +186,10 @@ if ($req_type == "next-data"){
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
 
-    $sql_norm = "SELECT * FROM Norm_Claims WHERE claim_id=? AND user_id_norm=?";;
+    $latest = 1;
+    $sql_norm = "SELECT * FROM Norm_Claims WHERE latest=? AND claim_id=? AND user_id_norm=?";
     $stmt = $conn->prepare($sql_norm);
-    $stmt->bind_param("ii", $row['claim_id'], $user_id);
+    $stmt->bind_param("iii", $latest, $row['claim_id'], $user_id);
     $stmt->execute();
     $result_norm = $stmt->get_result();
 
@@ -201,6 +206,7 @@ if ($req_type == "next-data"){
             $norm_array['phase_1_label'] = $row_norm['phase_1_label'];
             $norm_array['speaker'] = $row_norm['speaker'];
             $norm_array['hyperlink'] = $row_norm['hyperlink'];
+            $norm_array['source'] = $row_norm['source'];
             $norm_array['transcription'] = $row_norm['transcription'];
             $norm_array['media_source'] = $row_norm['media_source'];
             $norm_array['date'] = $row_norm['check_date'];
@@ -223,9 +229,10 @@ if ($req_type == "next-data"){
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $sql_del = "DELETE FROM Norm_Claims WHERE claim_id=? AND user_id_norm=?";
-    $stmt= $conn->prepare($sql_del);
-    $stmt->bind_param("ii", $claim_id, $user_id);
+    $latest = 0;
+    $sql_update = "UPDATE Norm_Claims SET latest=? WHERE claim_id=? AND user_id_norm=?";
+    $stmt= $conn->prepare($sql_update);
+    $stmt->bind_param("iii", $latest, $claim_id, $user_id);
     $stmt->execute();
 
     $sql = "SELECT web_archive, claim_date FROM Claims WHERE claim_id = ?";
@@ -248,6 +255,7 @@ if ($req_type == "next-data"){
     $conn->begin_transaction();
     try {
         foreach($_POST['entries'] as $item) {
+            print_r($item);
             $cleaned_claim = $item['cleaned_claim'];
 
             if (array_key_exists('speaker', $item)){
@@ -260,6 +268,12 @@ if ($req_type == "next-data"){
                 $hyperlink = $item['hyperlink'];
             }else{
                 $hyperlink = NULL;
+            }
+
+            if (array_key_exists('source', $item)){
+                $source = $item['source'];
+            }else{
+                $source = NULL;
             }
 
             if (array_key_exists('transcription', $item)){
@@ -296,13 +310,15 @@ if ($req_type == "next-data"){
 
             $claim_types = implode(" [SEP] ", $claim_types);
             $fact_checker_strategy = implode(" [SEP] ", $fact_checker_strategy);
+            $latest = 1;
 
-            update_table($conn, "INSERT INTO Norm_Claims (claim_id, web_archive, user_id_norm, cleaned_claim, hyperlink, speaker, transcription, media_source,
+            update_table($conn, "INSERT INTO Norm_Claims (claim_id, web_archive, user_id_norm, cleaned_claim, speaker, hyperlink, transcription, media_source,
             check_date, claim_types, fact_checker_strategy, phase_1_label, qa_annotators_num, qa_taken_flag, qa_skipped, valid_annotators_num, valid_taken_flag,
-            has_qapairs, date_made_norm, claim_loc)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'isisssssssssiiiiiiss', $claim_id, $row['web_archive'], $user_id, $cleaned_claim, $hyperlink,
-            $speaker, $transcription, $media_source, $check_date, $claim_types, $fact_checker_strategy, $phase_1_label, $qa_annotators_num, $qa_taken_flag, $qa_skipped,
-            $valid_annotators_num, $valid_taken_flag, $has_qapairs, $date, $claim_loc);
+            has_qapairs, date_modified_norm, claim_loc, latest, source)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'isisssssssssiiiiiissis', $claim_id, $row['web_archive'], $user_id, $cleaned_claim, $speaker,
+            $hyperlink, $transcription, $media_source, $check_date, $claim_types, $fact_checker_strategy, $phase_1_label, $qa_annotators_num, $qa_taken_flag, $qa_skipped,
+            $valid_annotators_num, $valid_taken_flag, $has_qapairs, $date, $claim_loc, $latest, $source);
+
         }
         $conn->commit();
         echo "Resubmit Successfully!";
@@ -324,7 +340,7 @@ if ($req_type == "next-data"){
     $conn->begin_transaction();
     try {
         update_table($conn, "INSERT INTO Claim_Map (user_id, claim_id, skipped, date_made) VALUES (?, ?, ?, ?)", 'iiis', $user_id, $claim_id, $skipped, $date);
-        update_table($conn, "UPDATE Annotators SET current_norm_task=0  WHERE user_id=?",'i', $user_id);
+        update_table($conn, "UPDATE Annotators SET current_norm_task=0, skipped_norm_data=skipped_norm_data+1 WHERE user_id=?",'i', $user_id);
         $conn->commit();
         echo "Skip Successfully!";
     }catch (mysqli_sql_exception $exception) {
@@ -333,7 +349,5 @@ if ($req_type == "next-data"){
     }
     $conn->close();
 }
-
-
 
 ?>

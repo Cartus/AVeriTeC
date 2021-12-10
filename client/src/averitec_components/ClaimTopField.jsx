@@ -147,10 +147,10 @@ class ClaimTopField extends React.Component {
                     <EmptySpaceDiv/>
                     <TextFieldWithTooltip name='claim_date' label="Claim Date" value={this.props.claim.claim_date} defaultValue={this.props.claim.claim_date} InputProps={{readOnly: true}} variant="filled" tooltip="The date the original claim was made."/>
                     <SepSpaceDiv/>
-                    <TextFieldWithTooltip name='claim_location' label="Location" value={location} defaultValue={location} InputProps={{readOnly: true}} variant="filled" tooltip="The location most relevant to the claim."/>
+                    <TextFieldWithTooltip name='claim_location' label="Location" value={this.props.claim.country_code} defaultValue={this.props.claim.country_code} InputProps={{readOnly: true}} variant="filled" tooltip="The location most relevant to the claim."/>
                 </TextLeftEntryDiv>
                 <TextRightEntryDiv>
-                <CheckboxBox data-tour="should_correct" control={<Checkbox  name="should_correct" checked={this.props.data["should_correct"]} onChange={this.handleCheckboxChange} />} label="I think the claim has been formatted wrong. It should be:" />
+                <CheckboxBox data-tour="should_correct" control={<Checkbox  name="should_correct" checked={this.props.data["should_correct"]? this.props.data["should_correct"] : false} onChange={this.handleCheckboxChange} />} label="I think the claim has been formatted wrong. It should be:" />
                 {
                   this.props.data["should_correct"]?
                   <TextFieldWithTooltip name='claim_correction' label="Correction" multiline rows={3} value={this.props.data["claim_correction"]} validator={notEmptyValidator} valid={this.props.valid} onChange={this.handleFieldChange} required tooltip="A correction for the claim next, if you think it is necessary"/>

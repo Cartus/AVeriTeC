@@ -23,8 +23,10 @@ if ($result->num_rows > 0) {
         echo "qa_annotators_num: " . $row["qa_annotators_num"]. "<br>";
         echo "valid_annotators_num: " . $row["valid_annotators_num"]. "<br>";
         echo "cleaned_claim: " . $row["cleaned_claim"]. "<br>";
+        echo "correction_claim: " . $row["correction_claim"]. "<br>";
         echo "speaker: " . $row["speaker"]. "<br>";
         echo "hyperlink: " . $row["hyperlink"]. "<br>";
+        echo "source: " . $row["source"]. "<br>";
         echo "transcription: " . $row["transcription"]. "<br>";
         echo "media_source: " . $row["media_source"]. "<br>";
         echo "check_date: " . $row["check_date"]. "<br>";
@@ -34,12 +36,13 @@ if ($result->num_rows > 0) {
         echo "phase_1_label: " . $row["phase_1_label"]. "<br>";
         echo "phase_2_label: " . $row["phase_2_label"]. "<br>";
         echo "phase_3_label: " . $row["phase_3_label"]. "<br>";
-	echo "justification: " . $row["justification"]. "<br>";
-	echo "bias: " . $row["bias"]. "<br>";
+	    echo "justification: " . $row["justification"]. "<br>";
+	    echo "bias: " . $row["bias"]. "<br>";
         echo "qa_taken_flag: " . $row["qa_taken_flag"]. "<br>";
         echo "qa_skipped: " . $row["qa_skipped"]. "<br>";
         echo "valid_taken_flag: " . $row["valid_taken_flag"]. "<br>";
         echo "has_qapairs: " . $row["has_qapairs"]. "<br>";
+        echo "lastest: " . $row["latest"]. "<br>";
         echo "date_made_norm: " . $row["date_made_norm"]. "<br>";
         echo "date_made_qa: " . $row["date_made_qa"]. "<br>";
         echo "date_made_valid: " . $row["date_made_valid"]. "<br>";

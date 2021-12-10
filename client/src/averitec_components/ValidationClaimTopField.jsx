@@ -107,13 +107,13 @@ class ClaimTopField extends React.Component {
                 <TextEntryDiv>
                     <TextFieldWithTooltip name='claim_speaker' label="Claim Speaker" value={this.props.claim.claim_speaker} defaultValue={this.props.claim.claim_speaker} InputProps={{readOnly: true}} variant="filled" tooltip="The person or organization that said or wrote the original claim."/>
                     <SepSpaceDiv/>
-                    <TextFieldWithTooltip name='claim_source' label="Claim Source" value={this.props.claim.claim_speaker} defaultValue={this.props.claim.claim_speaker} InputProps={{readOnly: true}} variant="filled" tooltip="The source that published the original claim."/>
+                    <TextFieldWithTooltip name='claim_source' label="Claim Source" value={this.props.claim.claim_source} defaultValue={this.props.claim.claim_source} InputProps={{readOnly: true}} variant="filled" tooltip="The source that published the original claim."/>
                     <SepSpaceDiv/>
                     <TextFieldWithTooltip name='claim_date' label="Claim Date" value={this.props.claim.claim_date} InputProps={{readOnly: true}} variant="filled" tooltip="The date the original claim was made."/>
                     <SepSpaceDiv/>
                 </TextEntryDiv>
                 <TextEntryDiv >
-                  <TextFieldWithTooltip name='claim_location' label="Location" value={location} defaultValue={location} InputProps={{readOnly: true}} variant="filled" tooltip="The location most relevant to the claim."/>
+                  <TextFieldWithTooltip name='claim_location' label="Location" value={this.props.claim.country_code} defaultValue={this.props.claim.country_code} InputProps={{readOnly: true}} variant="filled" tooltip="The location most relevant to the claim."/>
                     <SepSpaceDiv/>
                   {justification}
                 </TextEntryDiv>

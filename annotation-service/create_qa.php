@@ -11,6 +11,15 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+$sql = "DROP TABLE Qapair";
+
+if ($conn->query($sql) === TRUE) {
+    echo "Table dropped successfully";
+} else {
+    echo "Error creating table: " . $conn->error;
+}
+
+
 // sql to create table
 $sql = "CREATE TABLE Qapair (
 qa_id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -18,10 +27,22 @@ claim_norm_id INT(6) NOT NULL,
 user_id_qa INT(6) NOT NULL,
 question VARCHAR(500) NOT NULL,
 answer VARCHAR(2500) NOT NULL,
-source_url VARCHAR(100),
+source_url VARCHAR(500),
 answer_type VARCHAR(100),
-source_medium VARCHAR(100),
+source_medium VARCHAR(500),
+answer_problems VARCHAR(500),
+answer_second VARCHAR(2500),
+source_url_second VARCHAR(500),
+answer_type_second VARCHAR(100),
+source_medium_second VARCHAR(500),
+answer_problems_second VARCHAR(500),
+answer_third VARCHAR(2500),
+source_url_third VARCHAR(500),
+answer_type_third VARCHAR(100),
+source_medium_third VARCHAR(500),
+answer_problems_third VARCHAR(500),
 question_problems VARCHAR(200),
+qa_latest INT(6) NOT NULL,
 date_made DATETIME,
 date_modified DATETIME
 )";

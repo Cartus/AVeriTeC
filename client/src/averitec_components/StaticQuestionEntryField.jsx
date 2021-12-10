@@ -67,7 +67,7 @@ class StaticQuestionEntryField extends React.Component {
         const { name, value } = event.target;
         this.props.data["answers"][index][name] = value
         
-        this.props.onChange(this.props.id, "answers", this.props.answers);
+        this.props.onChange(this.props.id, "answers", this.props.data["answers"]);
     }
 
     render() {
@@ -114,14 +114,14 @@ class StaticQuestionEntryField extends React.Component {
                 <QAGridElementLeft item xs>
                     <ColumnDiv>
                         <ExtraLeftSpacing/>
-                        <LargeTextField name='question' label="Question" InputProps={{readOnly: true}} variant="filled"  value={this.props.question.text} multiline rows={3}/>
+                        <LargeTextField name='question' label="Question" InputProps={{readOnly: true}} variant="filled"  value={this.props.data.text} multiline rows={3}/>
                     </ColumnDiv>
                     <ColumnDiv data-tour="report_question_problems">
                         <ExtraLeftSpacing/>
                         <AtLeastOneCheckboxGroup 
                         name="question_problems"                         
                         label="Potential problems with this question. Check any you think apply:" 
-                        data={this.props.question["question_problems"]}
+                        data={this.props.data["question_problems"]}
                         items={[
                             {label: "The question is not understandable/readable", tooltip: "Please check this box if the question is empty, gibberish, or ungrammatical to the point where you cannot understand it."},
                             {label: "The question is unrelated to the claim", tooltip: "Please check this box if the question does not seem relevant to verifying the claim."},

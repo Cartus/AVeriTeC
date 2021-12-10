@@ -11,31 +11,21 @@ import ReportBar from '../averitec_components/ReportBar';
 function validate(content){
     var valid = true
 
-    if(!("label" in content["qa_pair_header"]) || notEmptyValidator(content["qa_pair_header"]["label"]).error){
+    if(!("label" in content["qa_pair_footer"]) || notEmptyValidator(content["qa_pair_footer"]["label"]).error){
+        console.log("no label");
         valid = false;
     }
 
     if("should_correct" in content["qa_pair_header"] && (!("claim_correction" in content["qa_pair_header"]) || notEmptyValidator(content["qa_pair_header"]["claim_correction"]).error)){
-      valid = false;
-  }
+        console.log("no correction");
+        valid = false;
+    }
 
     Object.values(content["entries"]).forEach(entry =>
         {
-          if(!("question" in entry) || notEmptyValidator(entry["question"]).error){
-            valid = false;
-          } else if(!("answer" in entry) || notEmptyValidator(entry["answer"]).error){
-            if (!("answer_type" in entry) || entry["answer_type"] != "Unanswerable"){
+          if(!("question" in entry) || notEmptyValidator(entry["question"]).error) {
               valid = false;
-            }
-          } else if(!("answer_type" in entry) || notEmptyValidator(entry["answer_type"]).error){
-            valid = false;
-          } else if(!("source_url" in entry) || notEmptyValidator(entry["source_url"]).error){
-            if (!("answer_type" in entry) || entry["answer_type"] != "Unanswerable"){
-              valid = false;
-            }
-          }
-
-          if (!"answers" in entry){
+          } else if (!"answers" in entry){
             valid = false;
           } else{
             entry["answers"].forEach(answer => {
@@ -64,6 +54,7 @@ function validate(content){
 class QuestionGenerationBar extends React.Component {
 
     render() {
+        console.log(this.props.footer);
         return (
           <div>
             <PhaseControl current_idx={this.props.current_idx} final_idx={this.props.final_idx} phaseName="Question Generation" phaseInstructions="Please read the claim below, and the fact checking article to the left. Then, construct question-answer pairs. You can use any links in the fact checking article to provide sources for your answers. If the links in the fact-checking article are not sufficient, you can also use our custom search field below; please do not use any other search field. If you cannot find an answer to a question you ask, please label that question &quot;Unanswerable&quot; and ask another question. When you have collected enough evidence to verify the claim independently of the fact checking article, please give your verdict. Please spend no more than N minutes on each claim."/>
@@ -78,6 +69,7 @@ class QuestionGenerationBar extends React.Component {
             claim={this.props.claim}
             entries={this.props.entries}
             header={this.props.header}
+            footer={this.props.footer}
             validationFunction={validate}
             />
           </div>

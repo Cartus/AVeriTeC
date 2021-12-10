@@ -55,7 +55,7 @@ class ClaimNormalization extends React.Component {
             let pc = Number(localStorage.pc);
             console.log(pc);
             if (pc !== 0) {
-		var request = {
+		        var request = {
                     method: "post",
                     baseURL: config.api_url,
                     url: "/claim_norm.php",
@@ -92,7 +92,7 @@ class ClaimNormalization extends React.Component {
                     window.alert(error)
                 })    
             } else {
-		var request = {
+		        var request = {
                     method: "post",
                     baseURL: config.api_url,
                     url: "/claim_norm.php",
@@ -103,7 +103,7 @@ class ClaimNormalization extends React.Component {
                 };
 
                 axios(request).then((response) => {
-		    console.log(response.data);	
+		        console.log(response.data);
                     if (response.data) {
                         if (Number(localStorage.finished_norm_annotations) === 0) {
                             this.setState({userIsFirstVisiting: true});
@@ -125,7 +125,7 @@ class ClaimNormalization extends React.Component {
 
     render() {
 
-        var current_idx = 15-Number(localStorage.pc);
+        var current_idx = Number(localStorage.finished_norm_annotations)+1 - Number(localStorage.pc);;
         var final_idx = 15;
 
         if (!localStorage.getItem('login')) {

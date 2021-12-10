@@ -40,15 +40,12 @@ if ($req_type == "next-data"){
 
     if($result->num_rows > 0){
         if ($row['current_valid_task'] != 0) {
-            $sql = "SELECT claim_norm_id, user_id_qa, web_archive, cleaned_claim, speaker, check_date, claim_types, fact_checker_strategy, hyperlink FROM Norm_Claims WHERE claim_norm_id = ?";
+            $sql = "SELECT claim_norm_id, user_id_qa, web_archive, cleaned_claim, speaker, source, check_date, hyperlink, claim_loc FROM Norm_Claims WHERE claim_norm_id = ?";
             $stmt= $conn->prepare($sql);
             $stmt->bind_param("i", $row['current_valid_task']);
             $stmt->execute();
             $result = $stmt->get_result();
             $row = $result->fetch_assoc();
-
-            // $claim_type = explode(" [SEP] ", $row['claim_types']);
-            // $fact_checker_strategy = explode(" [SEP] ", $row['fact_checker_strategy']);
 
             $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=? AND user_id_qa=?";;
             $stmt = $conn->prepare($sql_qa);
@@ -65,23 +62,52 @@ if ($req_type == "next-data"){
                     $count_string = "question_" . (string)$counter;
                     $question_array = array();
                     $question_array['text'] = $row_qa['question'];
-                    $question_array['answer_type'] = $row_qa['question'];
-                    $question_array['answer'] = $row_qa['answer'];
-                    $question_array['url'] = $row_qa['source_url'];
+
+                    $answers = array();
+                    $answers[0]['answer'] = $row_qa['answer'];
+                    $answers[0]['source_url'] = $row_qa['source_url'];
+                    $answers[0]['answer_type'] = $row_qa['answer_type'];
+                    $answers[0]['source_medium'] = $row_qa['source_medium'];
+
+                    if (!is_null($row_qa['answer_second'])){
+                        $answers[1]['answer'] = $row_qa['answer_second'];
+                    }
+                    if (!is_null($row_qa['source_url_second'])){
+                        $answers[1]['source_url'] = $row_qa['source_url_second'];
+                    }
+                    if (!is_null($row_qa['answer_type_second'])){
+                        $answers[1]['answer_type'] = $row_qa['answer_type_second'];
+                    }
+                    if (!is_null($row_qa['source_medium_second'])){
+                        $answers[1]['source_medium'] = $row_qa['source_medium_second'];
+                    }
+
+                    if (!is_null($row_qa['answer_third'])){
+                        $answers[2]['answer'] = $row_qa['answer_third'];
+                    }
+                    if (!is_null($row_qa['source_url_third'])){
+                        $answers[2]['source_url'] = $row_qa['source_url_third'];
+                    }
+                    if (!is_null($row_qa['answer_type_third'])){
+                        $answers[2]['answer_type'] = $row_qa['answer_type_third'];
+                    }
+                    if (!is_null($row_qa['source_medium_third'])){
+                        $answers[2]['source_medium'] = $row_qa['source_medium_third'];
+                    }
+
+                    $question_array['answers'] = $answers;
                     $questions[$count_string] = $question_array;
                 }
             } else {
                 echo "0 Results";
             }
 
-            // $output = (["web_archive" => $row['web_archive'], "claim_text" => $row['cleaned_claim'], "claim_speaker" => $row['speaker'], "check_date" => $row['check_date'],
-            // "claim_type" => $claim_type, "fact_checking_strategy" => $fact_checker_strategy, "claim_hyperlink" => $row['hyperlink'], "questions" => $questions]);
-            $output = (["web_archive" => $row['web_archive'], "claim_text" => $row['cleaned_claim'], "claim_speaker" => $row['speaker'], "claim_date" => $row['check_date'],
-            "claim_hyperlink" => $row['hyperlink'], "questions" => $questions]);
+            $output = (["web_archive" => $row['web_archive'], "claim_text" => $row['cleaned_claim'], "claim_speaker" => $row['speaker'], "claim_source" => $row['source'],
+            "claim_date" => $row['check_date'], "claim_hyperlink" => $row['hyperlink'], "questions" => $questions, "country_code" => $row['claim_loc']]);
             echo(json_encode($output));
         } else {
             $sql = "SELECT claim_norm_id, user_id_qa, web_archive, cleaned_claim, speaker, check_date, claim_types, fact_checker_strategy, hyperlink FROM Norm_Claims
-            WHERE valid_annotators_num = 0 AND valid_taken_flag=0 AND has_qapairs=1 AND user_id_norm = ? AND user_id_qa = ? ORDER BY RAND() LIMIT 1";
+            WHERE valid_annotators_num = 0 AND valid_taken_flag=0 AND has_qapairs=1 AND latest=1 AND user_id_norm=? AND user_id_qa=? ORDER BY RAND() LIMIT 1";
             $stmt= $conn->prepare($sql);
 
             if ($user_id == 3) {
@@ -102,12 +128,10 @@ if ($req_type == "next-data"){
             if(mysqli_num_rows($result) > 0) {
                 $row = $result->fetch_assoc();
 
-                // $claim_type = explode(" [SEP] ", $row['claim_types']);
-                // $fact_checker_strategy = explode(" [SEP] ", $row['fact_checker_strategy']);
-
-                $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=? AND user_id_qa=?";;
+                $qa_latest = 1;
+                $sql_qa = "SELECT * FROM Qapair WHERE qa_latest=? AND claim_norm_id=? AND user_id_qa=?";;
                 $stmt =  $conn->prepare($sql_qa);
-                $stmt->bind_param("ii", $row['claim_norm_id'], $row['user_id_qa']);
+                $stmt->bind_param("iii", $qa_latest, $row['claim_norm_id'], $row['user_id_qa']);
                 $stmt->execute();
                 $result_qa = $stmt->get_result();
 
@@ -148,6 +172,7 @@ if ($req_type == "next-data"){
     $conn->close();
 
 } else if ($req_type == "submit-data") {
+    print_r($_POST["questions"]);
 
     $conn = new mysqli($db_params['servername'], $db_params['user'], $db_params['password'], $db_params['database']);
     if ($conn->connect_error) {
@@ -164,8 +189,8 @@ if ($req_type == "next-data"){
     $phase_3_label = $_POST["annotation"]["label"];
     $justification = $_POST["annotation"]["justification"];
 
-    if (array_key_exists("bias", $_POST["annotation"])) {
-        if ($_POST["annotation"]["bias"] == "1") {
+    if (array_key_exists("unreadable", $_POST["annotation"])) {
+        if ($_POST["annotation"]["unreadable"] == "1") {
             $bias = 1;
         } else {
             $bias = 0;
@@ -174,7 +199,7 @@ if ($req_type == "next-data"){
         $bias = 0;
     }
 
-    $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=?";;
+    $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=?";
     $stmt = $conn->prepare($sql_qa);
     $stmt->bind_param("i", $row['claim_norm_id']);
     $stmt->execute();
@@ -194,7 +219,36 @@ if ($req_type == "next-data"){
                     $question_problems = implode(" [SEP] ", $_POST["questions"][$count_string]["question_problems"]);
                 }
 
-                update_table($conn, "UPDATE Qapair SET question_problems=? WHERE qa_id=?",'si', $question_problems, $row_qa['qa_id']);
+                $answers = $_POST["questions"][$count_string]["answers"];
+                print_r($_POST["questions"][$count_string]);
+                if (array_key_exists('answer_problems', $answers[0])){
+                    $answer_problems = implode(" [SEP] ", $answers[0]["answer_problems"]);
+                }else{
+                    $answer_problems = NULL;
+                }
+
+                if (array_key_exists(1, $answers)){
+                    if (array_key_exists('answer_problems', $answers[1])){
+                        $answer_problems_second = implode(" [SEP] ", $answers[1]["answer_problems"]);
+                    }else{
+                        $answer_problems_second = NULL;
+                    }
+                } else {
+                    $answer_problems_second = NULL;
+                }
+
+                if (array_key_exists(2, $answers)){
+                    if (array_key_exists('answer_problems', $answers[2])){
+                        $answer_problems_third = implode(" [SEP] ", $answers[2]["answer_problems"]);
+                    }else{
+                        $answer_problems_third = NULL;
+                    }
+                } else {
+                    $answer_problems_third = NULL;
+                }
+
+                update_table($conn, "UPDATE Qapair SET question_problems=?, answer_problems=?, answer_problems_second=?,
+                answer_problems_third=? WHERE qa_id=?",'ssssi', $question_problems, $answer_problems, $answer_problems_second, $answer_problems_third, $row_qa['qa_id']);
             }
         }else {
             echo "0 Results";
@@ -218,7 +272,7 @@ if ($req_type == "next-data"){
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $sql = "SELECT claim_norm_id, user_id_qa, web_archive, cleaned_claim, speaker, check_date, hyperlink, phase_3_label, justification
+    $sql = "SELECT claim_norm_id, user_id_qa, web_archive, cleaned_claim, speaker, source, claim_loc, check_date, hyperlink, phase_3_label, justification
      FROM Norm_Claims WHERE user_id_valid = ? ORDER BY date_made_valid DESC LIMIT 1 OFFSET ?";
     $stmt= $conn->prepare($sql);
     $stmt->bind_param("ii", $user_id, $offset);
@@ -226,9 +280,10 @@ if ($req_type == "next-data"){
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
 
-    $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=? AND user_id_qa=?";;
+    $qa_latest = 1;
+    $sql_qa = "SELECT * FROM Qapair WHERE qa_latest=? AND claim_norm_id=? AND user_id_qa=?";;
     $stmt = $conn->prepare($sql_qa);
-    $stmt->bind_param("ii", $row['claim_norm_id'], $row['user_id_qa']);
+    $stmt->bind_param("iii", $qa_latest, $row['claim_norm_id'], $row['user_id_qa']);
     $stmt->execute();
     $result_qa = $stmt->get_result();
 
@@ -239,24 +294,71 @@ if ($req_type == "next-data"){
             $counter = $counter + 1;
             $count_string = "question_" . (string)$counter;
             $question_array = array();
-            $question_array['text'] = $row_qa['question'];
-            $question_array['answer'] = $row_qa['answer'];
-            $question_array['url'] = $row_qa['source_url'];
+
             $question_array['question_problems'] = explode(" [SEP] ", $row_qa['question_problems']);
+
+            $answers = array();
+            $answers[0]['answer'] = $row_qa['answer'];
+            $answers[0]['source_url'] = $row_qa['source_url'];
+            $answers[0]['answer_type'] = $row_qa['answer_type'];
+            $answers[0]['source_medium'] = $row_qa['source_medium'];
+
+            if (!is_null($row_qa['answer_problems'])){
+                $answers[0]['answer_problems'] = explode(" [SEP] ", $row_qa['answer_problems']);
+            }
+
+            if (!is_null($row_qa['answer_second'])){
+                $answers[1]['answer'] = $row_qa['answer_second'];
+            }
+            if (!is_null($row_qa['source_url_second'])){
+                $answers[1]['source_url'] = $row_qa['source_url_second'];
+            }
+            if (!is_null($row_qa['answer_type_second'])){
+                $answers[1]['answer_type'] = $row_qa['answer_type_second'];
+            }
+            if (!is_null($row_qa['source_medium_second'])){
+                $answers[1]['source_medium'] = $row_qa['source_medium_second'];
+            }
+
+            if (!is_null($row_qa['answer_problems_second'])){
+                $answers[1]['answer_problems'] = explode(" [SEP] ", $row_qa['answer_problems_second']);
+            }
+
+            if (!is_null($row_qa['answer_third'])){
+                $answers[2]['answer'] = $row_qa['answer_third'];
+            }
+            if (!is_null($row_qa['source_url_third'])){
+                $answers[2]['source_url'] = $row_qa['source_url_third'];
+            }
+            if (!is_null($row_qa['answer_type_third'])){
+                $answers[2]['answer_type'] = $row_qa['answer_type_third'];
+            }
+            if (!is_null($row_qa['source_medium_third'])){
+                $answers[2]['source_medium'] = $row_qa['source_medium_third'];
+            }
+
+            if (!is_null($row_qa['answer_problems_third'])){
+                $answers[2]['answer_problems'] = explode(" [SEP] ", $row_qa['answer_problems_third']);
+            }
+
+            $question_array['answers'] = $answers;
+
             $questions[$count_string] = $question_array;
         }
         $annotation = array();
         $annotation['justification'] = $row['justification'];
         $annotation['label'] = $row['phase_3_label'];
         // $annotation['bias'] = $row['bias'];
-        $output = (["claim_norm_id" => $row['claim_norm_id'], "web_archive" => $row['web_archive'], "claim_text" => $row['cleaned_claim'], "speaker" => $row['speaker'],
-        "claim_date" => $row['check_date'], "hyperlink" => $row['hyperlink'],  "questions" => $questions, "annotation" => $annotation]);
+        $output = (["claim_norm_id" => $row['claim_norm_id'], "web_archive" => $row['web_archive'], "claim_text" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
+        "claim_date" => $row['check_date'], "hyperlink" => $row['hyperlink'],  "questions" => $questions, "annotation" => $annotation, "country_code" => $row['claim_loc']]);
         echo(json_encode($output));
     } else {
         echo "0 Results";
     }
     $conn->close();
 } else if ($req_type == "resubmit-data") {
+
+    // print_r($_POST["questions"]);
 
     $claim_norm_id = $_POST['claim_norm_id'];
 
@@ -276,7 +378,6 @@ if ($req_type == "next-data"){
     } else {
         $bias = 0;
     }
-    echo $bias;
 
     $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=?";
     $stmt = $conn->prepare($sql_qa);
@@ -296,7 +397,41 @@ if ($req_type == "next-data"){
                 }else{
                     $question_problems = implode(" [SEP] ", $_POST["questions"][$count_string]["question_problems"]);
                 }
-                update_table($conn, "UPDATE Qapair SET question_problems=? WHERE qa_id=?",'si', $question_problems, $row_qa['qa_id']);
+
+                $answers = $_POST["questions"][$count_string]["answers"];
+                print_r($_POST["questions"][$count_string]);
+                if (array_key_exists('answer_problems', $answers[0])){
+                    $answer_problems = implode(" [SEP] ", $answers[0]["answer_problems"]);
+                }else{
+                    $answer_problems = NULL;
+                }
+
+                if (array_key_exists(1, $answers)){
+                    if (array_key_exists('answer_problems', $answers[1])){
+                        $answer_problems_second = implode(" [SEP] ", $answers[1]["answer_problems"]);
+                    }else{
+                        $answer_problems_second = NULL;
+                    }
+                } else {
+                    $answer_problems_second = NULL;
+                }
+
+                if (array_key_exists(2, $answers)){
+                    if (array_key_exists('answer_problems', $answers[2])){
+                        $answer_problems_third = implode(" [SEP] ", $answers[2]["answer_problems"]);
+                    }else{
+                        $answer_problems_third = NULL;
+                    }
+                } else {
+                    $answer_problems_third = NULL;
+                }
+
+                // echo $answer_problems;
+                // echo $answer_problems_second;
+                // echo $answer_problems_third;
+
+                update_table($conn, "UPDATE Qapair SET question_problems=?, answer_problems=?, answer_problems_second=?,
+                answer_problems_third=? WHERE qa_id=?",'ssssi', $question_problems, $answer_problems, $answer_problems_second, $answer_problems_third, $row_qa['qa_id']);
             }
         }else {
             echo "0 Results";
