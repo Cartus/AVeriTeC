@@ -23,30 +23,38 @@ function validate(content){
 
     Object.values(content["entries"]).forEach(entry =>
         {
-          if(!("question" in entry) || notEmptyValidator(entry["question"]).error) {
-              valid = false;
-          } else if (!"answers" in entry){
+          if(!("question" in entry) || notEmptyValidator(entry["question"]).error){
+            console.log("no question");
+            valid = false;
+          } 
+          else if (!"answers" in entry){
+            console.log("no answers");
             valid = false;
           } else{
             entry["answers"].forEach(answer => {
               if(!("answer_type" in answer) || notEmptyValidator(answer["answer_type"]).error){
+                console.log("no answer type");
                 valid = false;
               }
 
               if(!("source_url" in answer) || notEmptyValidator(answer["source_url"]).error){
                 if (!("answer_type" in answer) || answer["answer_type"] != "Unanswerable"){
+                  console.log("no source url and not unanswerable");
                   valid = false;
                 }
               }
 
               if (answer["answer_type"] == "Boolean"){
                 if (!("bool_explanation" in answer) ||  notEmptyValidator(answer["bool_explanation"]).error){
+                  console.log("boolean and no expl");
                   valid = false;
                 }
               }
             });
           }
         });
+
+    console.log(valid);
   
     return valid;
   }
@@ -54,7 +62,6 @@ function validate(content){
 class QuestionGenerationBar extends React.Component {
 
     render() {
-        console.log(this.props.footer);
         return (
           <div>
             <PhaseControl current_idx={this.props.current_idx} final_idx={this.props.final_idx} phaseName="Question Generation" phaseInstructions="Please read the claim below, and the fact checking article to the left. Then, construct question-answer pairs. You can use any links in the fact checking article to provide sources for your answers. If the links in the fact-checking article are not sufficient, you can also use our custom search field below; please do not use any other search field. If you cannot find an answer to a question you ask, please label that question &quot;Unanswerable&quot; and ask another question. When you have collected enough evidence to verify the claim independently of the fact checking article, please give your verdict. Please spend no more than N minutes on each claim."/>
@@ -69,7 +76,6 @@ class QuestionGenerationBar extends React.Component {
             claim={this.props.claim}
             entries={this.props.entries}
             header={this.props.header}
-            footer={this.props.footer}
             validationFunction={validate}
             />
           </div>
