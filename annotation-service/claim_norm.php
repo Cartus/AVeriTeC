@@ -350,4 +350,6 @@ if ($req_type == "next-data"){
     $conn->close();
 }
 
+
+
 ?>

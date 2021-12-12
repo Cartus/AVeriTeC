@@ -9,6 +9,15 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+$sql = "DROP TABLE Annotators";
+ 
+if ($conn->query($sql) === TRUE) {
+    echo "Table dropped successfully";
+} else {
+    echo "Error creating table: " . $conn->error;
+}
+ 
+
 // sql to create table
 $sql = "CREATE TABLE Annotators (
 user_id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -25,13 +34,9 @@ finished_norm_annotations INT(6) NOT NULL,
 finished_qa_annotations INT(6) NOT NULL,
 finished_valid_annotations INT(6) NOT NULL,
 annotation_norm_time INT(6),
-skipped_norm_data INT(6),
-reported_norm_claims INT(6),
-skipped_qa_data INT(6),
-reported_qa_claims INT(6),
-skipped_valid_data INT(6),
-reported_valid_claims INT(6),
-active INT(6)                         
+skipped_norm_data INT(6) NOT NULL,
+skipped_qa_data INT(6) NOT NULL,
+skipped_valid_data INT(6)                  
 )";
 
 if ($conn->query($sql) === TRUE) {

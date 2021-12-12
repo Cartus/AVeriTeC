@@ -1,4 +1,3 @@
-
 import React from 'react';
 import EntryCardContainer from '../components/EntryCardContainer';
 import ClaimTopField from '../averitec_components/ClaimTopField';
@@ -16,7 +15,13 @@ function validate(content){
         valid = false;
     }
 
-    if("should_correct" in content["qa_pair_header"] && (!("claim_correction" in content["qa_pair_header"]) || notEmptyValidator(content["qa_pair_header"]["claim_correction"]).error)){
+    // if("should_correct" in content["qa_pair_header"] && (!("claim_correction" in content["qa_pair_header"]) || notEmptyValidator(content["qa_pair_header"]["claim_correction"]).error)){
+    // if(content["qa_pair_header"]["should_correct"] === 1 && (!("claim_correction" in content["qa_pair_header"]) || notEmptyValidator(content["qa_pair_header"]["claim_correction"]).error)){
+    //     console.log("no correction");
+    //     valid = false;
+    // }
+
+    if("should_correct" in content["qa_pair_header"] && content["qa_pair_header"]["should_correct"] == true &&(!("claim_correction" in content["qa_pair_header"]) || notEmptyValidator(content["qa_pair_header"]["claim_correction"]).error)){
         console.log("no correction");
         valid = false;
     }
@@ -76,6 +81,7 @@ class QuestionGenerationBar extends React.Component {
             claim={this.props.claim}
             entries={this.props.entries}
             header={this.props.header}
+            footer={this.props.footer}
             validationFunction={validate}
             />
           </div>

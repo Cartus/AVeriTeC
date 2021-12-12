@@ -24,6 +24,9 @@ if ($result->num_rows > 0) {
         echo "finished_norm_annotations: " . $row["finished_norm_annotations"]. "<br>"; 
         echo "finished_qa_annotations: " . $row["finished_qa_annotations"]. "<br>";  
         echo "finished_valid_annotations: " . $row["finished_valid_annotations"]. "<br>"; 
+        echo "skipped_norm_data: " . $row["skipped_norm_data"]. "<br>"; 
+        echo "skipped_qa_data: " . $row["skipped_qa_data"]. "<br>"; 
+        echo "skipped_valid_data: " . $row["skipped_valid_data"]. "<br>"; 
         echo "Phase: " . $row["annotation_phase"]. "<br>"; 
         echo "number_logins: " . $row["number_logins"]. "<br>"; 
         echo "<br>"; 

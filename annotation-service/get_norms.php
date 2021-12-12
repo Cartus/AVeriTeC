@@ -37,7 +37,7 @@ if ($result->num_rows > 0) {
         echo "phase_2_label: " . $row["phase_2_label"]. "<br>";
         echo "phase_3_label: " . $row["phase_3_label"]. "<br>";
 	    echo "justification: " . $row["justification"]. "<br>";
-	    echo "bias: " . $row["bias"]. "<br>";
+	    echo "unreadable: " . $row["unreadable"]. "<br>";
         echo "qa_taken_flag: " . $row["qa_taken_flag"]. "<br>";
         echo "qa_skipped: " . $row["qa_skipped"]. "<br>";
         echo "valid_taken_flag: " . $row["valid_taken_flag"]. "<br>";

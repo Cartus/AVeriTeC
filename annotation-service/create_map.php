@@ -11,6 +11,14 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+$sql = "DROP TABLE Claim_Map";
+
+if ($conn->query($sql) === TRUE) {
+    echo "Table dropped successfully";
+} else {
+    echo "Error creating table: " . $conn->error;
+}
+
 // sql to create table
 $sql = "CREATE TABLE Claim_Map (
 map_id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,

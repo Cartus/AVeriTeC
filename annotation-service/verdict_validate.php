@@ -68,7 +68,7 @@ if ($req_type == "next-data"){
                     $answers[0]['source_url'] = $row_qa['source_url'];
                     $answers[0]['answer_type'] = $row_qa['answer_type'];
                     $answers[0]['source_medium'] = $row_qa['source_medium'];
-
+        
                     if (!is_null($row_qa['answer_second'])){
                         $answers[1]['answer'] = $row_qa['answer_second'];
                     }
@@ -81,7 +81,7 @@ if ($req_type == "next-data"){
                     if (!is_null($row_qa['source_medium_second'])){
                         $answers[1]['source_medium'] = $row_qa['source_medium_second'];
                     }
-
+        
                     if (!is_null($row_qa['answer_third'])){
                         $answers[2]['answer'] = $row_qa['answer_third'];
                     }
@@ -94,7 +94,7 @@ if ($req_type == "next-data"){
                     if (!is_null($row_qa['source_medium_third'])){
                         $answers[2]['source_medium'] = $row_qa['source_medium_third'];
                     }
-
+        
                     $question_array['answers'] = $answers;
                     $questions[$count_string] = $question_array;
                 }
@@ -127,7 +127,7 @@ if ($req_type == "next-data"){
 
             if(mysqli_num_rows($result) > 0) {
                 $row = $result->fetch_assoc();
-
+                
                 $qa_latest = 1;
                 $sql_qa = "SELECT * FROM Qapair WHERE qa_latest=? AND claim_norm_id=? AND user_id_qa=?";;
                 $stmt =  $conn->prepare($sql_qa);
@@ -143,16 +143,62 @@ if ($req_type == "next-data"){
                         $counter = $counter + 1;
                         $count_string = "question_" . (string)$counter;
                         $question_array = array();
-                        $question_array['text'] = $row_qa['question'];
-                        $question_array['answer'] = $row_qa['answer'];
-                        $question_array['url'] = $row_qa['source_url'];
+
+                        $question_array['question_problems'] = explode(" [SEP] ", $row_qa['question_problems']);
+            
+                        $answers = array();
+                        $answers[0]['answer'] = $row_qa['answer'];
+                        $answers[0]['source_url'] = $row_qa['source_url'];
+                        $answers[0]['answer_type'] = $row_qa['answer_type'];
+                        $answers[0]['source_medium'] = $row_qa['source_medium'];
+            
+                        if (!is_null($row_qa['answer_problems'])){
+                            $answers[0]['answer_problems'] = explode(" [SEP] ", $row_qa['answer_problems']);
+                        }
+            
+                        if (!is_null($row_qa['answer_second'])){
+                            $answers[1]['answer'] = $row_qa['answer_second'];
+                        }
+                        if (!is_null($row_qa['source_url_second'])){
+                            $answers[1]['source_url'] = $row_qa['source_url_second'];
+                        }
+                        if (!is_null($row_qa['answer_type_second'])){
+                            $answers[1]['answer_type'] = $row_qa['answer_type_second'];
+                        }
+                        if (!is_null($row_qa['source_medium_second'])){
+                            $answers[1]['source_medium'] = $row_qa['source_medium_second'];
+                        }
+            
+                        if (!is_null($row_qa['answer_problems_second'])){
+                            $answers[1]['answer_problems'] = explode(" [SEP] ", $row_qa['answer_problems_second']);
+                        }
+            
+                        if (!is_null($row_qa['answer_third'])){
+                            $answers[2]['answer'] = $row_qa['answer_third'];
+                        }
+                        if (!is_null($row_qa['source_url_third'])){
+                            $answers[2]['source_url'] = $row_qa['source_url_third'];
+                        }
+                        if (!is_null($row_qa['answer_type_third'])){
+                            $answers[2]['answer_type'] = $row_qa['answer_type_third'];
+                        }
+                        if (!is_null($row_qa['source_medium_third'])){
+                            $answers[2]['source_medium'] = $row_qa['source_medium_third'];
+                        }
+            
+                        if (!is_null($row_qa['answer_problems_third'])){
+                            $answers[2]['answer_problems'] = explode(" [SEP] ", $row_qa['answer_problems_third']);
+                        }
+            
+                        $question_array['answers'] = $answers;
+                        
                         $questions[$count_string] = $question_array;
                     }
                 } else {
                     echo "0 Results";
                 }
-                $output = (["web_archive" => $row['web_archive'], "claim_text" => $row['cleaned_claim'], "claim_speaker" => $row['speaker'], "claim_date" => $row['check_date'],
-                "claim_hyperlink" => $row['hyperlink'], "questions" => $questions]);
+                $output = (["web_archive" => $row['web_archive'], "claim_text" => $row['cleaned_claim'], "claim_speaker" => $row['speaker'], "claim_date" => $row['check_date'], "claim_source" => $row['source'],
+                "claim_hyperlink" => $row['hyperlink'], "questions" => $questions, "country_code" => $row['claim_loc']]);
                 echo(json_encode($output));
 
                 $conn->begin_transaction();
@@ -172,8 +218,6 @@ if ($req_type == "next-data"){
     $conn->close();
 
 } else if ($req_type == "submit-data") {
-    print_r($_POST["questions"]);
-
     $conn = new mysqli($db_params['servername'], $db_params['user'], $db_params['password'], $db_params['database']);
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
@@ -191,12 +235,12 @@ if ($req_type == "next-data"){
 
     if (array_key_exists("unreadable", $_POST["annotation"])) {
         if ($_POST["annotation"]["unreadable"] == "1") {
-            $bias = 1;
+            $unreadable = 1;
         } else {
-            $bias = 0;
+            $unreadable = 0;
         }
     } else {
-        $bias = 0;
+        $unreadable = 0;
     }
 
     $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=?";
@@ -247,14 +291,14 @@ if ($req_type == "next-data"){
                     $answer_problems_third = NULL;
                 }
 
-                update_table($conn, "UPDATE Qapair SET question_problems=?, answer_problems=?, answer_problems_second=?,
+                update_table($conn, "UPDATE Qapair SET question_problems=?, answer_problems=?, answer_problems_second=?, 
                 answer_problems_third=? WHERE qa_id=?",'ssssi', $question_problems, $answer_problems, $answer_problems_second, $answer_problems_third, $row_qa['qa_id']);
             }
         }else {
             echo "0 Results";
         }
-        update_table($conn, "UPDATE Norm_Claims SET valid_taken_flag=0, valid_annotators_num = valid_annotators_num+1, phase_3_label=?, justification=?, date_made_valid=?, bias=?
-        WHERE claim_norm_id=?",'sssii', $phase_3_label, $justification, $date, $bias, $row['claim_norm_id']);
+        update_table($conn, "UPDATE Norm_Claims SET valid_taken_flag=0, valid_annotators_num = valid_annotators_num+1, phase_3_label=?, justification=?, date_made_valid=?, unreadable=?
+        WHERE claim_norm_id=?",'sssii', $phase_3_label, $justification, $date, $unreadable, $row['claim_norm_id']);
         update_table($conn, "UPDATE Annotators SET current_valid_task=0, finished_valid_annotations=finished_valid_annotations+1 WHERE user_id=?",'i', $user_id);
         $conn->commit();
         echo "Submit Successfully!";
@@ -272,7 +316,7 @@ if ($req_type == "next-data"){
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $sql = "SELECT claim_norm_id, user_id_qa, web_archive, cleaned_claim, speaker, source, claim_loc, check_date, hyperlink, phase_3_label, justification
+    $sql = "SELECT claim_norm_id, user_id_qa, web_archive, cleaned_claim, speaker, source, claim_loc, check_date, hyperlink, phase_3_label, justification, unreadable
      FROM Norm_Claims WHERE user_id_valid = ? ORDER BY date_made_valid DESC LIMIT 1 OFFSET ?";
     $stmt= $conn->prepare($sql);
     $stmt->bind_param("ii", $user_id, $offset);
@@ -294,9 +338,9 @@ if ($req_type == "next-data"){
             $counter = $counter + 1;
             $count_string = "question_" . (string)$counter;
             $question_array = array();
-
+            
             $question_array['question_problems'] = explode(" [SEP] ", $row_qa['question_problems']);
-
+            
             $answers = array();
             $answers[0]['answer'] = $row_qa['answer'];
             $answers[0]['source_url'] = $row_qa['source_url'];
@@ -342,13 +386,13 @@ if ($req_type == "next-data"){
             }
 
             $question_array['answers'] = $answers;
-
+            
             $questions[$count_string] = $question_array;
         }
         $annotation = array();
         $annotation['justification'] = $row['justification'];
         $annotation['label'] = $row['phase_3_label'];
-        // $annotation['bias'] = $row['bias'];
+        $annotation['unreadable'] = $row['unreadable'];
         $output = (["claim_norm_id" => $row['claim_norm_id'], "web_archive" => $row['web_archive'], "claim_text" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
         "claim_date" => $row['check_date'], "hyperlink" => $row['hyperlink'],  "questions" => $questions, "annotation" => $annotation, "country_code" => $row['claim_loc']]);
         echo(json_encode($output));
@@ -369,14 +413,14 @@ if ($req_type == "next-data"){
 
     $phase_3_label = $_POST["annotation"]["label"];
     $justification = $_POST["annotation"]["justification"];
-    if (array_key_exists("bias", $_POST["annotation"])) {
-        if ($_POST["annotation"]["bias"] == "1") {
-            $bias = 1;
+    if (array_key_exists("unreadable", $_POST["annotation"])) {
+        if ($_POST["annotation"]["unreadable"] == "1") {
+            $unreadable = 1;
         } else {
-            $bias = 0;
+            $unreadable = 0;
         }
     } else {
-        $bias = 0;
+        $unreadable = 0;
     }
 
     $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=?";
@@ -425,20 +469,20 @@ if ($req_type == "next-data"){
                 } else {
                     $answer_problems_third = NULL;
                 }
-
+                
                 // echo $answer_problems;
                 // echo $answer_problems_second;
                 // echo $answer_problems_third;
 
-                update_table($conn, "UPDATE Qapair SET question_problems=?, answer_problems=?, answer_problems_second=?,
+                update_table($conn, "UPDATE Qapair SET question_problems=?, answer_problems=?, answer_problems_second=?, 
                 answer_problems_third=? WHERE qa_id=?",'ssssi', $question_problems, $answer_problems, $answer_problems_second, $answer_problems_third, $row_qa['qa_id']);
             }
         }else {
             echo "0 Results";
         }
 
-        update_table($conn, "UPDATE Norm_Claims SET valid_annotators_num = valid_annotators_num+1, phase_3_label=?, justification=?, date_modified_valid=?, bias=?
-        WHERE claim_norm_id=?",'sssii', $phase_3_label, $justification, $date, $bias, $claim_norm_id);
+        update_table($conn, "UPDATE Norm_Claims SET valid_annotators_num = valid_annotators_num+1, phase_3_label=?, justification=?, date_modified_valid=?, unreadable=?
+        WHERE claim_norm_id=?",'sssii', $phase_3_label, $justification, $date, $unreadable, $claim_norm_id);
         $conn->commit();
         echo "Resubmit Successfully!";
     }catch (mysqli_sql_exception $exception) {

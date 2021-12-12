@@ -68,7 +68,6 @@ class QuestionGeneration extends React.Component {
     componentDidMount() {
         if (localStorage.getItem('login')) {
             let pc = Number(localStorage.pc);
-            console.log(pc);
             if (pc !== 0) {
 		        var request = {
                     method: "post",

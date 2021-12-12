@@ -12,13 +12,13 @@ if ($conn->connect_error) {
 }
 
 $sql = "DROP TABLE Qapair";
-
+ 
 if ($conn->query($sql) === TRUE) {
     echo "Table dropped successfully";
 } else {
     echo "Error creating table: " . $conn->error;
 }
-
+ 
 
 // sql to create table
 $sql = "CREATE TABLE Qapair (

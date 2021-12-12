@@ -117,7 +117,7 @@ if ($req_type == "next-data"){
             // print_r($item);
             $question = $item['question'];
             $answers = $item['answers'];
-
+            
             $answer = $answers[0]['answer'];
 
             if (array_key_exists('source_url', $answers[0])){
@@ -125,13 +125,13 @@ if ($req_type == "next-data"){
             }else{
                 $source_url = NULL;
             }
-
+    
             if (array_key_exists('answer_type', $answers[0])){
                 $answer_type = $answers[0]['answer_type'];
             }else{
                 $answer_type = NULL;
             }
-
+    
             if (array_key_exists('source_medium', $answers[0])){
                 $source_medium = $answers[0]['source_medium'];
             }else{
@@ -146,13 +146,13 @@ if ($req_type == "next-data"){
                 }else{
                     $source_url_second = NULL;
                 }
-
+    
                 if (array_key_exists('answer_type', $answers[1])){
                     $answer_type_second = $answers[1]['answer_type'];
                 }else{
                     $answer_type_second = NULL;
                 }
-
+    
                 if (array_key_exists('source_medium', $answers[1])){
                     $source_medium_second = $answers[1]['source_medium'];
                 }else{
@@ -173,13 +173,13 @@ if ($req_type == "next-data"){
                 }else{
                     $source_url_third = NULL;
                 }
-
+    
                 if (array_key_exists('answer_type', $answers[2])){
                     $answer_type_third = $answers[2]['answer_type'];
                 }else{
                     $answer_type_third = NULL;
                 }
-
+    
                 if (array_key_exists('source_medium', $answers[2])){
                     $source_medium_third = $answers[2]['source_medium'];
                 }else{
@@ -226,7 +226,7 @@ if ($req_type == "next-data"){
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
-
+    
     $qa_latest = 1;
     $sql_qa = "SELECT * FROM Qapair WHERE qa_latest=? AND claim_norm_id=? AND user_id_qa=?";
     $stmt = $conn->prepare($sql_qa);
@@ -238,7 +238,6 @@ if ($req_type == "next-data"){
     $counter = 0;
 
     $entries = array();
-    // {"entries":{"qa_pair_entry_field_0":{"answer_type":"Extractive","source_medium":"Image/graphic","source_url":"u","question":"question","answer":"answer"}},"added_entries":1,"valid":true,"qa_pair_header":{"label":"Supported"}}
     if ($result_qa->num_rows > 0) {
         while($row_qa = $result_qa->fetch_assoc()) {
             $count_string = "qa_pair_entry_field_" . (string)$counter;
@@ -283,14 +282,15 @@ if ($req_type == "next-data"){
             $entries[$count_string] = $field_array;
         }
 
-        if (!is_null($row['correction_claim'])){
-            $should_correct = 1;
-        } else {
+        // $should_correct = 0;
+        if (empty($row['correction_claim'])){
             $should_correct = 0;
+        } else {
+            $should_correct = 1;
         }
 
         $output = (["claim_norm_id" => $row['claim_norm_id'], "web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
-        "check_date" => $row['check_date'], "hyperlink" => $row['hyperlink'], "entries" => $entries, "label" => $row['phase_2_label'], "country_code" => $row['claim_loc'],
+        "check_date" => $row['check_date'], "hyperlink" => $row['hyperlink'], "entries" => $entries, "label" => $row['phase_2_label'], "country_code" => $row['claim_loc'], 
         "claim_correction" => $row['correction_claim'], "should_correct" => $should_correct]);
         echo(json_encode($output));
     } else {
@@ -304,7 +304,7 @@ if ($req_type == "next-data"){
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
-
+    
     $qa_latest = 0;
     $sql_update = "UPDATE Qapair SET qa_latest=? WHERE claim_norm_id=? AND user_id_qa=?";
     $stmt= $conn->prepare($sql_update);
@@ -337,18 +337,20 @@ if ($req_type == "next-data"){
             $question = $item['question'];
             $answers = $item['answers'];
 
+            $answer = $answers[0]['answer'];
+
             if (array_key_exists('source_url', $answers[0])){
                 $source_url = $answers[0]['source_url'];
             }else{
                 $source_url = NULL;
             }
-
+    
             if (array_key_exists('answer_type', $answers[0])){
                 $answer_type = $answers[0]['answer_type'];
             }else{
                 $answer_type = NULL;
             }
-
+    
             if (array_key_exists('source_medium', $answers[0])){
                 $source_medium = $answers[0]['source_medium'];
             }else{
@@ -363,13 +365,13 @@ if ($req_type == "next-data"){
                 }else{
                     $source_url_second = NULL;
                 }
-
+    
                 if (array_key_exists('answer_type', $answers[1])){
                     $answer_type_second = $answers[1]['answer_type'];
                 }else{
                     $answer_type_second = NULL;
                 }
-
+    
                 if (array_key_exists('source_medium', $answers[1])){
                     $source_medium_second = $answers[1]['source_medium'];
                 }else{
@@ -390,13 +392,13 @@ if ($req_type == "next-data"){
                 }else{
                     $source_url_third = NULL;
                 }
-
+    
                 if (array_key_exists('answer_type', $answers[2])){
                     $answer_type_third = $answers[2]['answer_type'];
                 }else{
                     $answer_type_third = NULL;
                 }
-
+    
                 if (array_key_exists('source_medium', $answers[2])){
                     $source_medium_third = $answers[2]['source_medium'];
                 }else{
@@ -419,7 +421,7 @@ if ($req_type == "next-data"){
         }
 
         update_table($conn, "UPDATE Norm_Claims SET qa_annotators_num = qa_annotators_num+1, phase_2_label=?, num_qapairs=?, date_modified_qa=?, correction_claim=?
-        WHERE claim_norm_id=?",'sisi', $phase_2_label, $num_qapairs, $date, $correction_claim, $claim_norm_id);
+        WHERE claim_norm_id=?",'sissi', $phase_2_label, $num_qapairs, $date, $correction_claim, $claim_norm_id);
         $conn->commit();
         echo "Resubmit Successfully!";
     }catch (mysqli_sql_exception $exception) {

@@ -56,7 +56,6 @@ export default function CountryPickerWithTooltip(props) {
     var error = false
   }
 
-
   var country_list = countryFlagEmoji.list.filter((entry) => {return !["European Union", "United Nations"].includes(entry.name)}).sort( (a,b) => {
     var textA = a.name.toUpperCase();
     var textB = b.name.toUpperCase();
@@ -64,7 +63,7 @@ export default function CountryPickerWithTooltip(props) {
 });
 
   var country_by_code_dict = country_list.reduce((a,x) => ({...a, [x.code]: x}), {})
-  console.log(country_by_code_dict[props.value])
+  // console.log(country_by_code_dict[props.value])
 
   const handleChange = (event, values) => {
     // TODO: Ugly hack to mutate data, please fix

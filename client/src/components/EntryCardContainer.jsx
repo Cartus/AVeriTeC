@@ -100,7 +100,7 @@ class EntryCardContainer extends React.Component {
 
         var footerString = this.props.entryName + "_footer";
         this.setState({[footerString]: props.footer});
-        console.log(props.footer);
+        // console.log(props.footer);
     }
 
     newEntryDict = () => {
@@ -327,7 +327,7 @@ class EntryCardContainer extends React.Component {
                 </AddEntryCard>
                 </Tooltip>
                 {footerField}
-                {/*{JSON.stringify(this.state)}*/}
+                {JSON.stringify(this.state)}
                 <NavBar onPrevious={this.doPrevious} onSubmit={this.doSubmit} onNext={this.doNext}/>
             </div>
         );
