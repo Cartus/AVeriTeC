@@ -246,7 +246,7 @@ class QuestionEntryField extends React.Component {
       }
 
       if (value == "Boolean"){
-        if (this.props.data["answer"] != "Yes" && this.props.data["answer"] != "No"){
+        if (this.props.data["answers"][index]["answer"] != "Yes" &&  this.props.data["answers"][index]["answer"] != "No"){
           this.props.data["answers"][index]["answer"] = ""
         }
       } else if (this.props.data["answer_type"] == "Boolean"){
