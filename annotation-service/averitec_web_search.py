@@ -61,11 +61,11 @@ try:
     for result in results:
         final_string = ""
         final_string += str(result["link"])
-        final_string += "~"
+        final_string += "<"
         final_string += str(result["title"])
-        final_string += "~"
+        final_string += "<"
         final_string += str(result["snippet"])
-        final_string += "~"
+        final_string += "<"
         domain = get_domain_name(result["link"])
         final_string += str(domain in misinfo_list)
         print(final_string)

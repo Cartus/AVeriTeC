@@ -50,7 +50,7 @@ $conn->begin_transaction();
 try {
     foreach($output as $item) {
 	$sub = array();    
-	$split = explode("~", $item);
+	$split = explode("<", $item);
 	//print_r($split);
 
 	$url = $split[0];

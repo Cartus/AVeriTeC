@@ -106,7 +106,7 @@ if ($req_type == "next-data"){
             "claim_date" => $row['check_date'], "claim_hyperlink" => $row['hyperlink'], "questions" => $questions, "country_code" => $row['claim_loc']]);
             echo(json_encode($output));
         } else {
-            $sql = "SELECT claim_norm_id, user_id_qa, web_archive, cleaned_claim, speaker, check_date, claim_types, fact_checker_strategy, hyperlink FROM Norm_Claims
+            $sql = "SELECT claim_norm_id, user_id_qa, web_archive, cleaned_claim, speaker, source, heck_date, claim_types, fact_checker_strategy, hyperlink, claim_loc FROM Norm_Claims
             WHERE valid_annotators_num = 0 AND valid_taken_flag=0 AND has_qapairs=1 AND latest=1 AND user_id_norm=? AND user_id_qa=? ORDER BY RAND() LIMIT 1";
             $stmt= $conn->prepare($sql);
 
@@ -338,7 +338,8 @@ if ($req_type == "next-data"){
             $counter = $counter + 1;
             $count_string = "question_" . (string)$counter;
             $question_array = array();
-            
+            $question_array['text'] = $row_qa['question'];
+
             $question_array['question_problems'] = explode(" [SEP] ", $row_qa['question_problems']);
             
             $answers = array();
