@@ -140,6 +140,7 @@ class SearchField extends React.Component {
         
         this.doSearch = this.doSearch.bind(this);
         this.handlePageChange = this.handlePageChange.bind(this);
+        this.resetPageAndSearch = this.resetPageAndSearch.bind(this);
         this.changeCountryCode = this.changeCountryCode.bind(this);
       }
 
@@ -182,7 +183,7 @@ class SearchField extends React.Component {
 
         axios(request).then((response) => {
             var newSearchItems = []
-	    console.log(response.data);
+	        console.log(response.data);
             if (response.data){
                 newSearchItems = response.data;
             }
@@ -192,6 +193,12 @@ class SearchField extends React.Component {
                 didSearch: true
             });
         }).catch((error) => {window.alert(error)})
+    }
+
+    resetPageAndSearch = () => {
+        this.setState({
+            page: 1
+          }, () => {this.doSearch()});
     }
 
     handlePageChange = (event, newPage) => {
@@ -236,7 +243,7 @@ class SearchField extends React.Component {
                 <CenterSearchBar
                 value={this.state.searchQuery}
                 onChange={(newSearchQuery) => this.setState({ searchQuery: newSearchQuery.target.value })}
-                onRequestSearch={() => this.doSearch(this.state.searchQuery)}
+                onRequestSearch={this.resetPageAndSearch}
                 label="Search"
                 fullWidth
                 />

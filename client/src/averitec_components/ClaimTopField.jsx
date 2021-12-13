@@ -122,7 +122,7 @@ class ClaimTopField extends React.Component {
 
     render() {
       var location = ""
-      if (this.props.claim.location){
+      if (this.props.claim.country_code){
         var country_list = countryFlagEmoji.list.filter((entry) => {return !["European Union", "United Nations"].includes(entry.name)}).sort( (a,b) => {
           var textA = a.name.toUpperCase();
           var textB = b.name.toUpperCase();
@@ -130,7 +130,7 @@ class ClaimTopField extends React.Component {
         });
       
         var country_by_code_dict = country_list.reduce((a,x) => ({...a, [x.code]: x}), {})
-        location = country_by_code_dict[this.props.claim.location].name + " (" + country_by_code_dict[this.props.claim.location].code + ")"
+        location = country_by_code_dict[this.props.claim.country_code].name + " (" + country_by_code_dict[this.props.claim.country_code].code + ")"
       }
       
 
@@ -147,7 +147,7 @@ class ClaimTopField extends React.Component {
                     <EmptySpaceDiv/>
                     <TextFieldWithTooltip name='claim_date' label="Claim Date" value={this.props.claim.claim_date} defaultValue={this.props.claim.claim_date} InputProps={{readOnly: true}} variant="filled" tooltip="The date the original claim was made."/>
                     <SepSpaceDiv/>
-                    <TextFieldWithTooltip name='claim_location' label="Location" value={this.props.claim.country_code} defaultValue={this.props.claim.country_code} InputProps={{readOnly: true}} variant="filled" tooltip="The location most relevant to the claim."/>
+                    <TextFieldWithTooltip name='claim_location' label="Location" value={location} defaultValue={location} InputProps={{readOnly: true}} variant="filled" tooltip="The location most relevant to the claim."/>
                 </TextLeftEntryDiv>
                 <TextRightEntryDiv>
                 <CheckboxBox data-tour="should_correct" control={<Checkbox  name="should_correct" checked={this.props.data["should_correct"]? this.props.data["should_correct"] : false} onChange={this.handleCheckboxChange} />} label="I think the claim has been formatted wrong. It should be:" />
