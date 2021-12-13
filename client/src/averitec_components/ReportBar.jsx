@@ -42,7 +42,7 @@ class ReportBar extends React.Component {
     async onReport() {
       let phase = localStorage.getItem('phase');
       if (phase === 'phase_1') {
-     var request = {
+            var request = {
               method: "post",
               baseURL: config.api_url,
               url: "/claim_norm.php",
@@ -55,24 +55,24 @@ class ReportBar extends React.Component {
 
           await axios(request).then((response) => {
               console.log(response.data);
-          // localStorage.finished_norm_annotations = Number(localStorage.finished_norm_annotations) + 1;
+              localStorage.finished_norm_annotations = Number(localStorage.finished_norm_annotations) + 1;
               window.location.reload(false);
           }).catch((error) => {window.alert(error)})	
       } else if (phase === 'phase_2') {
-    var request = {
+            var request = {
               method: "post",
               baseURL: config.api_url,
               url: "/question_answering.php",
               data:{
                   user_id: localStorage.getItem('user_id'),
                   req_type: 'skip-data',
-                  claim_id: localStorage.claim_id
+                  claim_norm_id: localStorage.claim_norm_id
               }
           };
 
           await axios(request).then((response) => {
               console.log(response.data);
-          // localStorage.finished_qa_annotations = Number(localStorage.finished_qa_annotations) + 1;
+              localStorage.finished_qa_annotations = Number(localStorage.finished_qa_annotations) + 1;
               window.location.reload(false);
           }).catch((error) => {window.alert(error)})	
       }

@@ -109,7 +109,7 @@ class EntryCardContainer extends React.Component {
 
     async doSubmit(){
         // e.preventDefault();
-        console.log(this.props.validationFunction(this.state));
+        // console.log(this.props.validationFunction(this.state));
         if (this.props.validationFunction(this.state)){
             let phase = localStorage.getItem('phase');
             if (phase === 'phase_1') {
@@ -153,7 +153,7 @@ class EntryCardContainer extends React.Component {
                 }
             } else if (phase === 'phase_2') {
                 let pc = Number(localStorage.pc);
-                console.log(pc);
+                // console.log(pc);
                 if (pc !== 0) {
                     localStorage.pc = Number(localStorage.pc) - 1;
 		            var request = {
@@ -177,7 +177,7 @@ class EntryCardContainer extends React.Component {
                         window.location.reload(false);
                     }).catch((error) => {window.alert(error)})	
                 } else {
-                    console.log(this.state.added_entries);
+                    // console.log(this.state.added_entries);
 		            var request = {
                         method: "post",
                         baseURL: config.api_url,
@@ -250,7 +250,7 @@ class EntryCardContainer extends React.Component {
     }
 
     handleFieldChange(fieldId, element, value) {
-        console.log(fieldId)
+        // console.log(fieldId)
       if (fieldId === this.props.entryName + "_header"){
         this.setState(prevState => ({
           [fieldId]: {
