@@ -279,9 +279,10 @@ class EntryCardContainer extends React.Component {
       }
 
     render() {
+      console.log("Rendering " + this.state.added_entries + " entries.")
         const entryFields = Object.keys(this.state.entries).map(field_id => (
             <EntryCard variant="outlined">
-            {field_id === this.props.entryName + "_entry_field_0"? "": <DeleteButton onClick={()=> this.deleteEntry(field_id)}><ClearIcon /></DeleteButton>}
+            {this.state.added_entries > 1? <DeleteButton onClick={()=> this.deleteEntry(field_id)}><ClearIcon /></DeleteButton> : ""}
             <this.props.contentClass
               key={field_id}
               id={field_id}
