@@ -144,7 +144,7 @@ class ClaimTopField extends React.Component {
                     }
                     </div>
                   
-                  <CheckboxBox data-tour="unreadable" control={<Checkbox  name="unreadable" checked={this.props.data["unreadable"]} onChange={this.handleCheckboxChange} />} label="The claim lacks context or is otherwise impossible to understand." />
+                  <CheckboxBox data-tour="unreadable" control={<Checkbox  name="unreadable" checked={this.props.data["unreadable"]? this.props.data["unreadable"] : false} onChange={this.handleCheckboxChange} />} label="The claim lacks context or is otherwise impossible to understand." />
                     
                 </TextEntryDiv>
                 </ContainerDiv>
