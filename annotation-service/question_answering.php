@@ -507,7 +507,7 @@ if ($req_type == "next-data"){
 
     $conn->begin_transaction();
     try {
-        update_table($conn, "UPDATE Norm_Claims SET qa_skipped=1, qa_skipped_by=? WHERE claim_norm_id=?",'ii', $user_id, $claim_norm_id);
+	update_table($conn, "UPDATE Norm_Claims SET qa_skipped=1, qa_skipped_by=?, date_made_qa=? WHERE claim_norm_id=?",'isi', $user_id, $date, $claim_norm_id);    
         update_table($conn, "UPDATE Annotators SET current_qa_task=0, skipped_qa_data=skipped_qa_data+1, finished_qa_annotations=finished_qa_annotations+1 WHERE user_id=?",'i', $user_id);
         $conn->commit();
         echo "Skip Successfully!";

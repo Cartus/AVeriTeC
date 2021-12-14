@@ -106,7 +106,7 @@ if ($req_type == "next-data"){
             "claim_date" => $row['check_date'], "claim_hyperlink" => $row['hyperlink'], "questions" => $questions, "country_code" => $row['claim_loc']]);
             echo(json_encode($output));
         } else {
-            $sql = "SELECT claim_norm_id, user_id_qa, web_archive, cleaned_claim, speaker, source, heck_date, claim_types, fact_checker_strategy, hyperlink, claim_loc FROM Norm_Claims
+            $sql = "SELECT claim_norm_id, user_id_qa, web_archive, cleaned_claim, speaker, source, check_date, claim_types, fact_checker_strategy, hyperlink, claim_loc FROM Norm_Claims
             WHERE valid_annotators_num = 0 AND valid_taken_flag=0 AND has_qapairs=1 AND latest=1 AND user_id_norm=? AND user_id_qa=? ORDER BY RAND() LIMIT 1";
             $stmt= $conn->prepare($sql);
 
