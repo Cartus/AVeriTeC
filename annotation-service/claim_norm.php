@@ -131,14 +131,22 @@ if ($req_type == "next-data"){
             }
 
             if (array_key_exists('date', $item)){
-                $check_date = substr($item['date'], 0, 10);
+                if (!empty($item['date'])){
+                    $check_date = substr($item['date'], 0, 10);
+                } else {
+                    if (!empty($row['claim_date'])) {
+                        $check_date = $row['claim_date'];
+                    } else {
+                        $check_date = substr($date, 0, 10);
+                    }
+                }
             }else{
                 if (!empty($row['claim_date'])) {
                     $check_date = $row['claim_date'];
                 } else {
                     $check_date = substr($date, 0, 10);
                 }
-            }
+	    }
 
             if (array_key_exists('location', $item)){
                 $claim_loc = $item['location'];
