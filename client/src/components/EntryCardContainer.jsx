@@ -130,8 +130,8 @@ class EntryCardContainer extends React.Component {
 
                     await axios(request).then((response) => {
                         console.log(response.data);
-                        localStorage.claim_id = 0;
-                        window.location.reload(false);
+                        // localStorage.claim_id = 0;
+                        // window.location.reload(false);
                     }).catch((error) => {window.alert(error)})	
                 } else {
 		            var request = {
@@ -328,7 +328,7 @@ class EntryCardContainer extends React.Component {
                 </AddEntryCard>
                 </Tooltip>
                 {footerField}
-                {JSON.stringify(this.state)}
+                {/*{JSON.stringify(this.state)}*/}
                 <NavBar onPrevious={this.doPrevious} onSubmit={this.doSubmit} onNext={this.doNext}/>
             </div>
         );

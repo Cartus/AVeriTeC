@@ -18,8 +18,6 @@ $db_params = parse_ini_file( dirname(__FILE__).'/db_params.ini', false);
 $json_result = file_get_contents("php://input");
 $_POST = json_decode($json_result, true);
 
-// if (empty($user_id) && empty($req_type)) die();
-
 $user_id = $_POST['user_id'];
 $req_type = $_POST['req_type'];
 
@@ -106,22 +104,12 @@ if ($req_type == "next-data"){
             "claim_date" => $row['check_date'], "claim_hyperlink" => $row['hyperlink'], "questions" => $questions, "country_code" => $row['claim_loc']]);
             echo(json_encode($output));
         } else {
-            $sql = "SELECT claim_norm_id, user_id_qa, web_archive, cleaned_claim, speaker, source, check_date, claim_types, fact_checker_strategy, hyperlink, claim_loc FROM Norm_Claims
-            WHERE valid_annotators_num = 0 AND valid_taken_flag=0 AND has_qapairs=1 AND latest=1 AND user_id_norm=? AND user_id_qa=? ORDER BY RAND() LIMIT 1";
+            $user_id2 = $_POST['user_id'];
+            $sql = "SELECT claim_norm_id, user_id_qa, web_archive, cleaned_claim, speaker, source, check_date, claim_types, fact_checker_strategy, hyperlink, claim_loc FROM Norm_Claims 
+            WHERE valid_annotators_num = 0 AND valid_taken_flag=0 AND has_qapairs=1 AND latest=1 AND user_id_norm != ? AND user_id_qa != ? ORDER BY RAND() LIMIT 1";
             $stmt= $conn->prepare($sql);
 
-            if ($user_id == 3) {
-                $user_id2 = 1;
-                $user_id1 = 2;
-            } else if ($user_id == 2) {
-                $user_id2 = 3;
-                $user_id1 = 1;
-            } else if ($user_id == 1) {
-                $user_id2 = 2;
-                $user_id1 = 3;
-            }
-
-            $stmt->bind_param("ii", $user_id1, $user_id2);
+            $stmt->bind_param("ii", $user_id, $user_id2);
             $stmt->execute();
             $result = $stmt->get_result();
 
@@ -143,6 +131,8 @@ if ($req_type == "next-data"){
                         $counter = $counter + 1;
                         $count_string = "question_" . (string)$counter;
                         $question_array = array();
+
+                        $question_array['text'] = $row_qa['question'];
 
                         $question_array['question_problems'] = explode(" [SEP] ", $row_qa['question_problems']);
             
@@ -470,10 +460,6 @@ if ($req_type == "next-data"){
                 } else {
                     $answer_problems_third = NULL;
                 }
-                
-                // echo $answer_problems;
-                // echo $answer_problems_second;
-                // echo $answer_problems_third;
 
                 update_table($conn, "UPDATE Qapair SET question_problems=?, answer_problems=?, answer_problems_second=?, 
                 answer_problems_third=? WHERE qa_id=?",'ssssi', $question_problems, $answer_problems, $answer_problems_second, $answer_problems_third, $row_qa['qa_id']);
