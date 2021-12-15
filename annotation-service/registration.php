@@ -35,7 +35,7 @@ if (mysqli_num_rows($result) > 0) {
         echo json_encode(["duplicated" => true]);
     } else {
         $sql = "INSERT INTO Annotators (user_name, password_cleartext, password_md5, is_admin, number_logins,
-        finished_norm_annotations, finished_qa_annotations, finished_valid_annotations, skipped_norm_data, skipped_qa_data) VALUES('$name', '$password', '$password_md5', 1, 0, 0, 0, 0, 0, 0)";
+        finished_norm_annotations, finished_qa_annotations, finished_valid_annotations, skipped_norm_data, skipped_qa_data) VALUES('$name', '$password', '$password_md5', 0, 0, 0, 0, 0, 0, 0)";
 
         // $sql = "INSERT INTO Annotators (user_name, password_cleartext, password_md5, is_admin, number_logins,
         // finished_norm_annotations, finished_qa_annotations, finished_valid_annotations) VALUES('$name', '$password', '$password_md5', 0, 0, 0, 0, 0)";
@@ -49,7 +49,7 @@ if (mysqli_num_rows($result) > 0) {
 }
 else {
     $sql2 = "INSERT INTO Annotators (user_name, password_cleartext, password_md5, is_admin, number_logins,
-    finished_norm_annotations, finished_qa_annotations, finished_valid_annotations, skipped_norm_data, skipped_qa_data) VALUES('$name', '$password', '$password_md5', 1, 0, 0, 0, 0, 0, 0)";
+    finished_norm_annotations, finished_qa_annotations, finished_valid_annotations, skipped_norm_data, skipped_qa_data) VALUES('$name', '$password', '$password_md5', 0, 0, 0, 0, 0, 0, 0)";
 
     // $sql2 = "INSERT INTO Annotators (user_name, password_cleartext, password_md5, is_admin, number_logins,
     // finished_norm_annotations, finished_qa_annotations, finished_valid_annotations) VALUES('$name', '$password', '$password_md5', 0, 0, 0, 0, 0)";

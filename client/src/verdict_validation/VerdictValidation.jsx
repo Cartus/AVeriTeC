@@ -297,7 +297,7 @@ class VerdictValidation extends React.Component {
           ));
 
         var current_idx = Number(localStorage.finished_valid_annotations)+1 - Number(localStorage.pc);
-        var final_idx = 15;
+        var final_idx = 20;
 
         return (
             <div>

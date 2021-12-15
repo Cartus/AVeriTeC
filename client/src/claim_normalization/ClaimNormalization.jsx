@@ -126,7 +126,7 @@ class ClaimNormalization extends React.Component {
     render() {
 
         var current_idx = Number(localStorage.finished_norm_annotations)+1 - Number(localStorage.pc);;
-        var final_idx = 15;
+        var final_idx = 10;
 
         if (!localStorage.getItem('login')) {
             return <Redirect to='/'/>;
