@@ -110,15 +110,21 @@ if ($req_type == "next-data"){
             WHERE valid_annotators_num = 0 AND valid_taken_flag=0 AND has_qapairs=1 AND latest=1 AND user_id_norm=? AND user_id_qa=? ORDER BY RAND() LIMIT 1";
             $stmt= $conn->prepare($sql);
 
-            if ($user_id == 3) {
-                $user_id2 = 1;
-                $user_id1 = 2;
+            if ($user_id == 1) {
+                $user_id1 = 5;
+                $user_id2 = 4;
             } else if ($user_id == 2) {
-                $user_id2 = 3;
                 $user_id1 = 1;
-            } else if ($user_id == 1) {
-                $user_id2 = 2;
+                $user_id2 = 5;
+            } else if ($user_id == 3) {
+                $user_id1 = 2;
+                $user_id2 = 1;
+            } else if ($user_id == 4) {
                 $user_id1 = 3;
+                $user_id2 = 2;
+            } else if ($user_id == 5) {
+                $user_id1 = 4;
+                $user_id2 = 3;
             }
 
             $stmt->bind_param("ii", $user_id1, $user_id2);
@@ -144,6 +150,7 @@ if ($req_type == "next-data"){
                         $count_string = "question_" . (string)$counter;
                         $question_array = array();
 
+                        $question_array['text'] = $row_qa['question'];
                         $question_array['question_problems'] = explode(" [SEP] ", $row_qa['question_problems']);
             
                         $answers = array();

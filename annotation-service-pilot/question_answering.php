@@ -51,7 +51,7 @@ if ($req_type == "next-data"){
             WHERE qa_annotators_num = 0 AND qa_taken_flag=0 AND qa_skipped=0 AND latest=1 AND user_id_norm = ? ORDER BY RAND() LIMIT 1";
             $stmt= $conn->prepare($sql);
 
-            if ($user_id == 3) {
+            if ($user_id == 5) {
                 $user_id_norm = 1;
             } else {
                 $user_id_norm = $user_id + 1;

@@ -1,6 +1,6 @@
 <?php
 
-$json_string = file_get_contents('sample.json');
+$json_string = file_get_contents('pilot.json');
 $data = json_decode($json_string, true);
 
 $db_params = parse_ini_file(dirname(__FILE__).'/db_params.ini', false);
