@@ -93,8 +93,9 @@ class StaticQuestionEntryField extends React.Component {
                 <SourceSpacingDiv/>
                 <AtLeastOneCheckboxGroup 
                     name="answer_problems" 
-                    label="Potential problems with this answer. Check any you think apply:" 
+                    label={this.props.readOnly? "Potential problems with this answer noted by other annotators:" : "Potential problems with this answer. Check any you think apply:"}
                     data={answer["answer_problems"]}
+                    readOnly={this.props.readOnly}
                     items={[
                         {label: "The answer is not understandable/readable", tooltip: "Please check this box if the answer is empty, gibberish, or ungrammatical to the point where you cannot understand it."},
                         {label: "Answer seems wrong, but is supported by the source", tooltip: "Please check this box if you believe the answer might be wrong, but the source supports the answer."},
@@ -119,8 +120,9 @@ class StaticQuestionEntryField extends React.Component {
                     <ColumnDiv data-tour="report_question_problems">
                         <ExtraLeftSpacing/>
                         <AtLeastOneCheckboxGroup 
-                        name="question_problems"                         
-                        label="Potential problems with this question. Check any you think apply:" 
+                        name="question_problems"        
+                        readOnly={this.props.readOnly}                 
+                        label={this.props.readOnly? "Potential problems with this question noted by other annotators:" : "Potential problems with this question. Check any you think apply:"}
                         data={this.props.data["question_problems"]}
                         items={[
                             {label: "The question is not understandable/readable", tooltip: "Please check this box if the question is empty, gibberish, or ungrammatical to the point where you cannot understand it."},

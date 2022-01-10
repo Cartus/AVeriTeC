@@ -68,6 +68,7 @@ class AnnotatorControl extends React.Component {
                 </div>
                 {(this.state.user.is_admin === 1)? <AdminPanel>
                     <AdminControl name="Users"/>
+                    <AdminControl name="Disagreements"/>
                 </AdminPanel> : ""}
             </div>
         );
