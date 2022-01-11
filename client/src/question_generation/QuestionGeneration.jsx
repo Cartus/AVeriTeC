@@ -203,7 +203,7 @@ class QuestionGeneration extends React.Component {
             },
             {
               selector: '[data-tour="claim_page_view"]',
-              content: "WARNING: For persistence, we have stored all fact-checking articles on archive.org Fact-checking articles may feature \"double-archived\" links using both archive.org and archive.is, e.g. \"https://web.archive.org/web/20201229212702/https://archive.md/28fMd\". Archive.org returns a 404 page for these. To view such a link, please just copy-paste the archive.is part (e.g. \"https://archive.md/28fMd\") into your browser."
+              content: "WARNING: For persistence, we have stored all fact-checking articles on archive.org. Fact-checking articles may feature \"double-archived\" links using both archive.org and archive.is, e.g. \"https://web.archive.org/web/20201229212702/https://archive.md/28fMd\". Archive.org returns a 404 page for these. To view such a link, please just copy-paste the archive.is part (e.g. \"https://archive.md/28fMd\") into your browser."
             },
             {
               selector: '[data-tour="claim_page_view"]',

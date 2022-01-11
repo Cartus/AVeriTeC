@@ -177,14 +177,14 @@ class ClaimEntryField extends React.Component {
                 <ColumnDiv>
                 <TextLeftEntryDiv>
                 <DatePickerWithTooltip name="date" label="Claim Date" onChange={this.handleFieldChange} value={this.props.data["date"]} tooltip="The date the original claim was made, if mentioned by the fact checking article. If no exact date is mentioned, please leave the field empty."/>
-                <TextFieldWithTooltip name='hyperlink' label="Hyperlink" onChange={this.handleFieldChange} value={this.props.data["hyperlink"]} tooltip="A hyperlink to the original claim, if that is provided by the fact checking site. If the original claim has a hyperlink on the fact checking site, but that hyperlink is dead, please leave the field empty."/>
+                <TextFieldWithTooltip name='hyperlink' label="Hyperlink" onChange={this.handleFieldChange} value={this.props.data["hyperlink"]} tooltip="A hyperlink to the original claim, if that is provided by the fact checking site. If the original claim has a hyperlink on the fact checking site, but that hyperlink is dead, please leave the field empty. Some links may have been incorrectly archived, so that archive.org shows a 404 page when you click the link; for these, you can try using the original version instead. Otherwise, please copy-paste the link as used in the fact-checking article."/>
                 <TextFieldWithTooltip name='speaker' label="Speaker" onChange={this.handleFieldChange} value={this.props.data["speaker"]} tooltip="The person or organization that said or wrote the original claim, if mentioned."/>
                 <TextFieldWithTooltip name='source' label="Source" onChange={this.handleFieldChange} value={this.props.data["source"]} tooltip="The source that published the original claim, if mentioned."/>
                 </TextLeftEntryDiv>
                 <TextRightEntryDiv>                
                 <TextFieldWithTooltip name='transcription' label="Transcription" value={this.props.data["transcription"]} onChange={this.handleFieldChange} tooltip="If the original source is an image that contains text (for example a meme or image macro), please transcribe whatever text occurs in the image here."/>
                 <TextFieldWithTooltip name='media_source' label="Media Source URLs" value={this.props.data["media_source"]} onChange={this.handleFieldChange} tooltip="If the claim refers directly to an image, video, or audio file, please paste a link here. If multiple sources are referred to, please add them all, separated by commas. Please try to provide direct links to images, videos, and so on, rather than links to pages containing them."/>
-                <CountryPickerWithTooltip name="location" label="Location" value={this.props.data["location"]} onChange={this.handleFieldChange} tooltip="Please select the location most relevant to the claim."/>
+                <CountryPickerWithTooltip name="location" label="Location" value={this.props.data["location"]} onChange={this.handleFieldChange} tooltip="Please select the location most relevant to the claim. If the claim is not local to any particular place, please use the location of the fact-checking agency. If you cannot identify that either, please leave the field blank."/>
 
 
                 </TextRightEntryDiv>
@@ -210,8 +210,8 @@ class ClaimEntryField extends React.Component {
                   {label: "Numerical Claim", tooltip: "The primary task is to verify whether a numerical fact is true, to verify whether a comparison between several numerical facts hold, or to determine whether a numerical trend or correlation is supported by the evidence."},
                   {label: "Quote Verification", tooltip: "The primary task is to identify whether a quote was actually said by the supposed speaker."},
                   {label: "Event/Property Claim", tooltip: "The primary task is to determine the veracity of a narrative about a particular event or series of events, or to identify whether a certain non-numerical property is true, e.g. a person attending a particular university."},
-                  {label: "Media Matching Claim", tooltip: "The primary task is to determine whether an image, video, or soundbite is presented in the right context. This includes doctored media as well as media taken out of context. This also includes HTML-doctoring of social media posts."},
-                  {label: "Complex Media Claim", tooltip: "The primary task is to perform complex reasoning about pieces of media, distinct from doctoring. This could for example be geolocating an image, or identifying whether a voice in an audio clip belongs to a certain person."}
+                  {label: "Media Sourcing Claim", tooltip: "The primary task is to determine whether an image, video, or soundbite was published by a certain person or organization. This could for example be identifying whether a public figure actually re-tweeted a particular video."},
+                  {label: "Media Analysis Claim", tooltip: "The primary task is to perform reasoning about pieces of media. This could for example be geolocating an image, or identifying whether a voice in an audio clip belongs to a certain person."}
                 ]} 
                 onChange={this.handleFieldChange}
                 tooltip="Please determine the type of the claim itself, independent of the approach taken by the fact checker to verify or refute it. Check any that apply."
@@ -226,13 +226,15 @@ class ClaimEntryField extends React.Component {
                 validator={atLeastOneValidator}
                 required
                 items={[
-                  {label: "Written Evidence", tooltip: "The fact checking process involved finding contradicting written evidence, e.g. a news article directly refuting the claim."},
+                  {label: "Written Evidence", tooltip: "The fact checking process involved finding contradicting written evidence, e.g. a news article directly refuting the claim, or evidence that the speaker has retracted the claim. This category also includes evidence that is mentioned, but not directly linked to, or evidence which is no longer available on the internet."},
                   {label: "Numerical Comparison", tooltip: "The fact checking process involved numerical comparisons, such as verifying that one number is greater than another."},
                   {label: "Consultation", tooltip: "The fact checkers directly reached out to relevant experts or people involved with the story, reporting new information from such sources as part of the fact checking article."},
                   {label: "Satirical Source Identification", tooltip: "The fact checking process involved identifying the source of the claim as satire, e.g. The Onion. We will discard all claims that were refuted only through satirical source identification."},
                   {label: "Media Source Discovery", tooltip: "The fact checking process involved finding the original source of a (potentially doctored) image, video, or soundbite."},
                   {label: "Image Analysis", tooltip: "The fact checking process involved image analysis other than finding the original source of an image, such as comparing two images."},
-                  {label: "Other Non-text Media Analysis", tooltip: "The fact checking process involved analysing other media, such as video or audio. Transcription does NOT count as media analysis."},
+                  {label: "Video Analysis", tooltip: "The fact checking process involved analysing video. Transcription does NOT count as video analysis."},
+                  {label: "Audio Analysis", tooltip: "The fact checking process involved analysing audio. Transcription does NOT count as video analysis."},
+                  {label: "Geolocation", tooltip: "The fact checking process involved determining where an image or video was taken, through comparing landmarks to pictures from Google Streetview or similar."},
                   {label: "Fact-checker Reference", tooltip: "The fact checking process involved referencing another fact-checking article to show that the claim has previously been checked."}
                 ]} 
                 onChange={this.handleFieldChange}
