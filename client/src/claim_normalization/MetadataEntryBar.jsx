@@ -210,7 +210,7 @@ class ClaimEntryField extends React.Component {
                   {label: "Numerical Claim", tooltip: "The primary task is to verify whether a numerical fact is true, to verify whether a comparison between several numerical facts hold, or to determine whether a numerical trend or correlation is supported by the evidence."},
                   {label: "Quote Verification", tooltip: "The primary task is to identify whether a quote was actually said by the supposed speaker."},
                   {label: "Event/Property Claim", tooltip: "The primary task is to determine the veracity of a narrative about a particular event or series of events, or to identify whether a certain non-numerical property is true, e.g. a person attending a particular university."},
-                  {label: "Media Sourcing Claim", tooltip: "The primary task is to determine whether an image, video, or soundbite was published by a certain person or organization. This could for example be identifying whether a public figure actually re-tweeted a particular video."},
+                  {label: "Publishing Claim", tooltip: "The primary task is to determine whether an image, video, or soundbite was published by a certain person or organization. This could for example be identifying whether a public figure actually re-tweeted a particular video."},
                   {label: "Media Analysis Claim", tooltip: "The primary task is to perform reasoning about pieces of media. This could for example be geolocating an image, or identifying whether a voice in an audio clip belongs to a certain person."}
                 ]} 
                 onChange={this.handleFieldChange}
