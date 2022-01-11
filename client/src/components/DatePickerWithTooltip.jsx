@@ -62,7 +62,7 @@ export default function DatePickerWithTooltip(props) {
                     var fakeEvent = new Object();
                     fakeEvent.target = {
                         name: props.name,
-                        value: shiftPickerDateToUTCDate(newValue)
+                        value: newValue? shiftPickerDateToUTCDate(newValue) : null
                     };
                     
                     props.onChange(fakeEvent)
