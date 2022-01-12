@@ -348,8 +348,7 @@ if ($req_type == "next-data"){
             $valid_annotators_num, $valid_taken_flag, $has_qapairs, $date, $claim_loc, $latest, $source);
 
         }
-        $skipped = 0;
-        update_table($conn, "UPDATE Claim_Map (user_id, claim_id, skipped, date_made) VALUES (?, ?, ?, ?)", 'iiis', $user_id, $claim_id, $skipped, $date);
+        update_table($conn, "UPDATE Claim_Map SET skipped=0, date_made=? WHERE user_id=? AND claim_id=?", 'sii', $date, $user_id, $claim_id);
         $conn->commit();
         echo "Resubmit Successfully!";
     }catch (mysqli_sql_exception $exception) {

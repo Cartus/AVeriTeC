@@ -39,7 +39,7 @@ class AnnotatorControl extends React.Component {
             assignments:{
                 phase_1: {
                     done: localStorage.finished_norm_annotations,
-                    total: 10
+                    total: 20
                 },
                 phase_2: {
                     done: localStorage.finished_qa_annotations,
