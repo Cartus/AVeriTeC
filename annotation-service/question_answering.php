@@ -48,7 +48,7 @@ if ($req_type == "next-data"){
             echo(json_encode($output));
         } else {
             $sql = "SELECT claim_norm_id, web_archive, cleaned_claim, speaker, source, check_date, claim_loc, user_id_norm FROM Norm_Claims 
-            WHERE qa_annotators_num = 0 AND qa_taken_flag=0 AND qa_skipped=0 AND latest=1 AND user_id_norm != ? ORDER BY RAND() LIMIT 1";
+            WHERE qa_annotators_num=0 AND qa_taken_flag=0 AND qa_skipped=0 AND latest=1 AND nonfactual=0 AND user_id_norm != ? ORDER BY RAND() LIMIT 1";
             $stmt= $conn->prepare($sql);
             $stmt->bind_param("i", $user_id);
             $stmt->execute();

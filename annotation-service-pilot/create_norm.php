@@ -58,7 +58,8 @@ date_modified_norm DATETIME,
 date_made_qa DATETIME,
 date_modified_qa DATETIME,
 date_made_valid DATETIME,
-date_modified_valid DATETIME
+date_modified_valid DATETIME，
+nonfactual INT(6) NOT NULL,
 )";
 
 

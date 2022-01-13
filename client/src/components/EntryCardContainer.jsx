@@ -131,8 +131,8 @@ class EntryCardContainer extends React.Component {
                     await axios(request).then((response) => {
                         console.log(response.data);
                         localStorage.claim_id = 0;
-                        window.location.reload(false);
-                    }).catch((error) => {window.alert(error)})	
+                        // window.location.reload(false);
+                    }).catch((error) => {window.alert(error)})
                 } else {
 		            var request = {
                         method: "post",
