@@ -83,7 +83,7 @@ class ReportBar extends React.Component {
             <EntryCard>
               <ReportDiv data-tour="report">
                 <ReportTextDiv>
-                If the fact checking article displays an error, is behind a paywall, or if it takes more than one minute to load, please let us know and skip the claim.
+                If the fact checking article displays an error, is behind a paywall, or if it takes more than three minutes to load, please let us know and skip the claim.
                 </ReportTextDiv>
               
               <ReportButton variant="contained" color="error" onClick={this.onReport}>
