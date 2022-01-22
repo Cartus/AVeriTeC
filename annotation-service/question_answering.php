@@ -479,7 +479,7 @@ if ($req_type == "next-data"){
             $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third);
         }
 
-        update_table($conn, "UPDATE Norm_Claims SET qa_skipped=0, qa_annotators_num = qa_annotators_num+1, phase_2_label=?, num_qapairs=?, date_modified_qa=?, correction_claim=?
+        update_table($conn, "UPDATE Norm_Claims SET qa_taken_flag=0, has_qapairs=1, qa_skipped=0, qa_annotators_num = qa_annotators_num+1, phase_2_label=?, num_qapairs=?, date_modified_qa=?, correction_claim=?
         WHERE claim_norm_id=?",'sissi', $phase_2_label, $num_qapairs, $date, $correction_claim, $claim_norm_id);
         $conn->commit();
         echo "Resubmit Successfully!";
