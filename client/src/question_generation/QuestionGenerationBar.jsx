@@ -55,6 +55,13 @@ function validate(content){
                   valid = false;
                 }
               }
+
+              if (answer["answer_type"] != "Unanswerable"){
+                if (!("answer" in answer) ||  notEmptyValidator(answer["answer"]).error){
+                  console.log("no answer and not unanswerable");
+                  valid = false;
+                }
+              }
             });
           }
         });
