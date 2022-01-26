@@ -136,6 +136,7 @@ class VerdictValidation extends React.Component {
 
                 axios(request).then((response) => {
                     if (response.data) {
+                        console.log("Recevied response")
                         console.log(response.data);
                         const new_claim = {
                             web_archive: response.data.web_archive,
@@ -167,6 +168,7 @@ class VerdictValidation extends React.Component {
 
                 axios(request).then((response) => {
                     if (response.data) {
+                        console.log("Recevied response")
                         console.log(response.data);
                         if (Number(localStorage.finished_valid_annotations) === 0) {
                             this.setState({ userIsFirstVisiting: true });
@@ -290,11 +292,15 @@ class VerdictValidation extends React.Component {
             },
         ];
 
-        const questionPairs = Object.keys(this.state.claim.questions).map(question_id => (
-            <EntryCard variant="outlined">
-                <StaticQuestionEntryField id={question_id} data={this.state.claim.questions[question_id]} onChange={this.handleFieldChange} />
-            </EntryCard>
-        ));
+        var questionPairs = ""
+
+        if (this.state.claim && this.state.claim.questions){
+            questionPairs = Object.keys(this.state.claim.questions).map(question_id => (
+                <EntryCard variant="outlined">
+                    <StaticQuestionEntryField id={question_id} data={this.state.claim.questions[question_id]} onChange={this.handleFieldChange} />
+                </EntryCard>
+            ));
+        }        
 
         var current_idx = Number(localStorage.finished_valid_annotations) + 1 - Number(localStorage.pc);
         var final_idx = 20;
@@ -315,7 +321,6 @@ class VerdictValidation extends React.Component {
                         <NavBar onPrevious={this.doPrevious} onSubmit={this.doSubmit} onNext={this.doNext} />
                     </QABox>
                     {this.state.userIsFirstVisiting ? <TourWrapper /> : ""}
-                    {JSON.stringify(this.state)}
                 </TourProvider>
             </div>
         );
