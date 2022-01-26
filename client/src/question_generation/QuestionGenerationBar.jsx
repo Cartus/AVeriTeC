@@ -1,75 +1,10 @@
 import React from 'react';
-import EntryCardContainer from '../components/EntryCardContainer';
+import EntryCardContainer from '../components/PropEntryCardContainer';
 import ClaimTopField from '../averitec_components/ClaimTopField';
 import QuestionEntryField from '../averitec_components/QuestionEntryField';
-import {notEmptyValidator, atLeastOneValidator} from '../utils/validation.js'
 import PhaseControl from '../averitec_components/PhaseControl';
 import VerdictBar from '../averitec_components/VerdictBar';
 import ReportBar from '../averitec_components/ReportBar';
-
-function validate(content){
-    var valid = true
-
-    if(!("label" in content["qa_pair_footer"]) || notEmptyValidator(content["qa_pair_footer"]["label"]).error){
-        console.log("no label");
-        valid = false;
-    }
-
-    // if("should_correct" in content["qa_pair_header"] && (!("claim_correction" in content["qa_pair_header"]) || notEmptyValidator(content["qa_pair_header"]["claim_correction"]).error)){
-    // if(content["qa_pair_header"]["should_correct"] === 1 && (!("claim_correction" in content["qa_pair_header"]) || notEmptyValidator(content["qa_pair_header"]["claim_correction"]).error)){
-    //     console.log("no correction");
-    //     valid = false;
-    // }
-
-    if("should_correct" in content["qa_pair_header"] && content["qa_pair_header"]["should_correct"] == true &&(!("claim_correction" in content["qa_pair_header"]) || notEmptyValidator(content["qa_pair_header"]["claim_correction"]).error)){
-        console.log("no correction");
-        valid = false;
-    }
-
-    Object.values(content["entries"]).forEach(entry =>
-        {
-          if(!("question" in entry) || notEmptyValidator(entry["question"]).error){
-            console.log("no question");
-            valid = false;
-          } 
-          else if (!"answers" in entry){
-            console.log("no answers");
-            valid = false;
-          } else{
-            entry["answers"].forEach(answer => {
-              if(!("answer_type" in answer) || notEmptyValidator(answer["answer_type"]).error){
-                console.log("no answer type");
-                valid = false;
-              }
-
-              if(!("source_url" in answer) || notEmptyValidator(answer["source_url"]).error){
-                if (!("answer_type" in answer) || answer["answer_type"] != "Unanswerable"){
-                  console.log("no source url and not unanswerable");
-                  valid = false;
-                }
-              }
-
-              if (answer["answer_type"] == "Boolean"){
-                if (!("bool_explanation" in answer) ||  notEmptyValidator(answer["bool_explanation"]).error){
-                  console.log("boolean and no expl");
-                  valid = false;
-                }
-              }
-
-              if (answer["answer_type"] != "Unanswerable"){
-                if (!("answer" in answer) ||  notEmptyValidator(answer["answer"]).error){
-                  console.log("no answer and not unanswerable");
-                  valid = false;
-                }
-              }
-            });
-          }
-        });
-
-    console.log(valid);
-  
-    return valid;
-  }
 
 class QuestionGenerationBar extends React.Component {
 
@@ -89,7 +24,11 @@ class QuestionGenerationBar extends React.Component {
             entries={this.props.entries}
             header={this.props.header}
             footer={this.props.footer}
-            validationFunction={validate}
+            valid={this.props.valid}
+            addEntry={this.props.addEntry}
+            deleteEntry={this.props.deleteEntry}
+            doSubmit={this.props.doSubmit}
+            handleFieldChange={this.props.handleFieldChange}
             />
           </div>
         );
