@@ -130,7 +130,7 @@ class StaticQuestionEntryField extends React.Component {
                     {source_url ?
                         <div>
                             <SourceSpacingDiv />
-                            <span><a href={source_url}>View source</a></span>
+                            <span><a target="_blank" rel="noopener noreferrer" href={source_url}>View source</a></span>
                         </div>
                         :
                         ""
