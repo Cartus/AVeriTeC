@@ -309,7 +309,7 @@ class VerdictValidation extends React.Component {
             <div>
                 <TourProvider steps={steps}>
                     <RightBox>
-                        <RightPhaseControl current_idx={current_idx} final_idx={final_idx} phaseName="Verdict Validation" phaseInstructions="Please read the claim and the question-answer pairs. Then, give your verdict on the claim. Do not look at any external information; make your verdict based ONLY on the question-answer pairs. If there are any problems with a question-answer pair, please use the form to report it. Do not use the information in any question-answer pair you report to make your verdict." />
+                        <RightPhaseControl current_idx={current_idx} final_idx={final_idx} phaseName="Quality Control" phaseInstructions="Please read the claim and the question-answer pairs. Then, give your verdict on the claim. Do not look at any external information; make your verdict based ONLY on the question-answer pairs. If there are any problems with a question-answer pair, please use the form to report it. Do not use the information in any question-answer pair you report to make your verdict." />
                     </RightBox>
                     <LeftBox>
                         <ValidationClaimTopField claim={this.state.claim} valid={this.state.valid} data={this.state.annotation} ask_for_justification onChange={this.handleFieldChange} id="annotation" />
