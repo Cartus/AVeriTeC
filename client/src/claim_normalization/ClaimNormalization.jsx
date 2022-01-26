@@ -143,7 +143,7 @@ class ClaimNormalization extends React.Component {
             },
             {
               selector: '[data-tour="claim_textfield"]',
-              content: "Fill in the text of the main claim the article is dealing with. Please edit the claim according to the instructions, but otherwise change it as little as possible."
+              content: "Fill in the text of the main claim the article is dealing with. Please edit the claim according to the instructions, but otherwise change it as little as possible. If there is a discrepancy between the original claim (e.g. a claim posted to Twitter) and the text of the claim in the fact-checking article, please stick as closely as possible to the original wording."
             },
             {
               selector: '[data-tour="verdict"]',

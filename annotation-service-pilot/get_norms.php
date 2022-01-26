@@ -46,6 +46,7 @@ if ($result->num_rows > 0) {
         echo "date_made_norm: " . $row["date_made_norm"]. "<br>";
         echo "date_made_qa: " . $row["date_made_qa"]. "<br>";
         echo "date_made_valid: " . $row["date_made_valid"]. "<br>";
+        echo "nonfactual: " . $row["nonfactual"]. "<br>";
         echo "<br>";
     }
 } else {

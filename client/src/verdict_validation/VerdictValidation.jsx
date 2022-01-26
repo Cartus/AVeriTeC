@@ -4,13 +4,13 @@ import styled from 'styled-components';
 import Card from '@material-ui/core/Card';
 import StaticQuestionEntryField from '../averitec_components/StaticQuestionEntryField';
 import Button from '@material-ui/core/Button';
-import {notEmptyValidator, atLeastOneValidator} from '../utils/validation.js'
+import { notEmptyValidator, atLeastOneValidator } from '../utils/validation.js'
 import NavBar from '../averitec_components/NavBar';
 import PhaseControl from '../averitec_components/PhaseControl';
 import { TourProvider } from "@reactour/tour";
 import TourWrapper from '../components/TourWrapper';
 import axios from "axios";
-import {Redirect} from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import config from "../config.json";
 
 const EntryCard = styled(Card)`
@@ -58,24 +58,24 @@ const QABox = styled.div`
   margin: -10px 0px 0px 0px;
 `
 
-function validate(content){
+function validate(content) {
     var valid = true
 
-    if(!("label" in content["annotation"]) || notEmptyValidator(content["annotation"]["label"]).error){
+    if (!("label" in content["annotation"]) || notEmptyValidator(content["annotation"]["label"]).error) {
         valid = content["annotation"]["unreadable"];
-    } else if(!("justification" in content["annotation"]) || notEmptyValidator(content["annotation"]["justification"]).error){
+    } else if (!("justification" in content["annotation"]) || notEmptyValidator(content["annotation"]["justification"]).error) {
         valid = false;
     }
-  
+
     return valid;
-  }
+}
 
 class VerdictValidation extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            claim : {
+            claim: {
                 web_archive: "",
                 claim_text: "",
                 claim_speaker: "",
@@ -96,38 +96,38 @@ class VerdictValidation extends React.Component {
     }
 
     handleFieldChange(fieldId, element, value) {
-        if (fieldId === "annotation"){
-          this.setState(prevState => ({
-            [fieldId]: {
-                  ...prevState[fieldId],
-                  [element]: value
-              }
-          }))  
-        } else{
-          this.setState(prevState => ({
-              claim:{
-                ...prevState.claim,
-                questions: {
-                    ...prevState.claim.questions,
-                    [fieldId]: {
-                        ...prevState.claim.questions[fieldId],
-                        [element]: value
+        if (fieldId === "annotation") {
+            this.setState(prevState => ({
+                [fieldId]: {
+                    ...prevState[fieldId],
+                    [element]: value
+                }
+            }))
+        } else {
+            this.setState(prevState => ({
+                claim: {
+                    ...prevState.claim,
+                    questions: {
+                        ...prevState.claim.questions,
+                        [fieldId]: {
+                            ...prevState.claim.questions[fieldId],
+                            [element]: value
+                        }
                     }
                 }
-            }
-          }))
-        }   
+            }))
+        }
     }
 
     componentDidMount() {
         if (localStorage.getItem('login')) {
             let pc = Number(localStorage.pc);
-            if (pc !== 0){
-		        var request = {
+            if (pc !== 0) {
+                var request = {
                     method: "post",
                     baseURL: config.api_url,
                     url: "/verdict_validate.php",
-                    data:{
+                    data: {
                         user_id: localStorage.getItem('user_id'),
                         req_type: 'reload-data',
                         offset: pc - 1
@@ -136,6 +136,7 @@ class VerdictValidation extends React.Component {
 
                 axios(request).then((response) => {
                     if (response.data) {
+                        console.log("Recevied response")
                         console.log(response.data);
                         const new_claim = {
                             web_archive: response.data.web_archive,
@@ -148,18 +149,18 @@ class VerdictValidation extends React.Component {
                             country_code: response.data.country_code
                         };
                         localStorage.claim_norm_id = response.data.claim_norm_id;
-                        this.setState({claim: new_claim});
-                        this.setState({annotation: response.data.annotation});
+                        this.setState({ claim: new_claim });
+                        this.setState({ annotation: response.data.annotation });
                     } else {
                         window.alert("No more claims!");
                     }
-                }).catch((error) => {window.alert(error)})    
+                }).catch((error) => { window.alert(error) })
             } else {
                 var request = {
                     method: "post",
                     baseURL: config.api_url,
                     url: "/verdict_validate.php",
-                    data:{
+                    data: {
                         user_id: localStorage.getItem('user_id'),
                         req_type: 'next-data'
                     }
@@ -167,9 +168,10 @@ class VerdictValidation extends React.Component {
 
                 axios(request).then((response) => {
                     if (response.data) {
+                        console.log("Recevied response")
                         console.log(response.data);
                         if (Number(localStorage.finished_valid_annotations) === 0) {
-                            this.setState({userIsFirstVisiting: true});
+                            this.setState({ userIsFirstVisiting: true });
                         }
                         const new_claim = {
                             web_archive: response.data.web_archive,
@@ -181,26 +183,26 @@ class VerdictValidation extends React.Component {
                             questions: response.data.questions,
                             country_code: response.data.country_code,
                         };
-                        this.setState({claim: new_claim});
+                        this.setState({ claim: new_claim });
                         console.log(this.state.claim);
                     } else {
                         window.alert("No more claims!");
                     }
-                }).catch((error) => {window.alert(error)})    
+                }).catch((error) => { window.alert(error) })
             }
         }
     }
 
     async doSubmit() {
-        if (validate(this.state)){
+        if (validate(this.state)) {
             let pc = Number(localStorage.pc);
             if (pc !== 0) {
                 localStorage.pc = Number(localStorage.pc) - 1;
-		        var request = {
+                var request = {
                     method: "post",
-                    baseURL:  config.api_url,
+                    baseURL: config.api_url,
                     url: "/verdict_validate.php",
-                    data:{
+                    data: {
                         user_id: localStorage.getItem('user_id'),
                         req_type: 'resubmit-data',
                         annotation: this.state.annotation,
@@ -213,13 +215,13 @@ class VerdictValidation extends React.Component {
                     console.log(response.data);
                     localStorage.claim_norm_id = 0;
                     window.location.reload(false);
-                }).catch((error) => {window.alert(error)})
+                }).catch((error) => { window.alert(error) })
             } else {
-		        var request = {
+                var request = {
                     method: "post",
-                    baseURL:  config.api_url,
+                    baseURL: config.api_url,
                     url: "/verdict_validate.php",
-                    data:{
+                    data: {
                         user_id: localStorage.getItem('user_id'),
                         req_type: 'submit-data',
                         annotation: this.state.annotation,
@@ -231,9 +233,9 @@ class VerdictValidation extends React.Component {
                     console.log(response.data);
                     localStorage.finished_valid_annotations = Number(localStorage.finished_valid_annotations) + 1;
                     window.location.reload(false);
-                }).catch((error) => {window.alert(error)})    
+                }).catch((error) => { window.alert(error) })
             }
-        } else{
+        } else {
             this.setState({
                 valid: false
             });
@@ -252,74 +254,77 @@ class VerdictValidation extends React.Component {
 
     render() {
         if (!localStorage.getItem('login')) {
-            return <Redirect to='/'/>;
+            return <Redirect to='/' />;
         }
 
         const steps = [
             {
-            selector: '[data-tour="claim_text"]',
-            content: "Begin by reading the claim."
+                selector: '[data-tour="claim_text"]',
+                content: "Begin by reading the claim."
             },
             {
-            selector: '[data-tour="question_view"]',
-            content: "Read the question-answer pairs supplied by your fellow annotators."
+                selector: '[data-tour="question_view"]',
+                content: "Read the question-answer pairs supplied by your fellow annotators."
             },
             {
-            selector: '[data-tour="verdict"]',
-            content: "Give your verdict for the claim. Do not use prior knowledge you may have, or information from elsewhere on the internet - give your verdict based ONLY on the question-answer pairs."
+                selector: '[data-tour="verdict"]',
+                content: "Give your verdict for the claim. Do not use prior knowledge you may have, or information from elsewhere on the internet - give your verdict based ONLY on the question-answer pairs."
             },
             {
-            selector: '[data-tour="justification"]',
-            content: "Write a short explanation explaining how you decided the answer based on the question-answer pairs."
+                selector: '[data-tour="justification"]',
+                content: "Write a short explanation explaining how you decided the answer based on the question-answer pairs."
             },
             {
-            selector: '[data-tour="unreadable"]',
-            content: "If the claim lacks context or is otherwise not understandable, please report it rather than giving a label. If you do so, please use the justification field to explain why the question cannot be understood."
+                selector: '[data-tour="unreadable"]',
+                content: "If the claim lacks context or is otherwise not understandable, please report it rather than giving a label. If you do so, please use the justification field to explain why the question cannot be understood."
             },
             {
-            selector: '[data-tour="report_question_problems"]',
-            content: "If there are any problems with a question, please report it. If you report a question, please DO NOT use the information in that question-answer pair to give your verdict."
+                selector: '[data-tour="report_question_problems"]',
+                content: "If there are any problems with a question, please report it. If you report a question, please DO NOT use the information in that question-answer pair to give your verdict."
             },
             {
-            selector: '[data-tour="report_answer_problems"]',
-            content: "Similarly, if there are any problems with an answer, please report it. If you report an answer, please DO NOT use the information in that answer to give your verdict. You can still use any other answers provided for the question."
+                selector: '[data-tour="report_answer_problems"]',
+                content: "Similarly, if there are any problems with an answer, please report it. If you report an answer, please DO NOT use the information in that answer to give your verdict. You can still use any other answers provided for the question."
             },
             {
-            selector: '[data-tour="submit"]',
-            content: "When you have verified the claim, submit your verdict and proceed to the next article."
+                selector: '[data-tour="submit"]',
+                content: "When you have verified the claim, submit your verdict and proceed to the next article."
             },
         ];
 
-        const questionPairs = Object.keys(this.state.claim.questions).map(question_id => (
-            <EntryCard variant="outlined">
-                <StaticQuestionEntryField id={question_id} data={this.state.claim.questions[question_id]} onChange={this.handleFieldChange}/>
-            </EntryCard>
-          ));
+        var questionPairs = ""
 
-        var current_idx = Number(localStorage.finished_valid_annotations)+1 - Number(localStorage.pc);
+        if (this.state.claim && this.state.claim.questions){
+            questionPairs = Object.keys(this.state.claim.questions).map(question_id => (
+                <EntryCard variant="outlined">
+                    <StaticQuestionEntryField id={question_id} data={this.state.claim.questions[question_id]} onChange={this.handleFieldChange} />
+                </EntryCard>
+            ));
+        }        
+
+        var current_idx = Number(localStorage.finished_valid_annotations) + 1 - Number(localStorage.pc);
         var final_idx = 20;
 
         return (
             <div>
-              <TourProvider steps={steps}>
-              <RightBox>
-                <RightPhaseControl current_idx={current_idx} final_idx={final_idx} phaseName="Verdict Validation" phaseInstructions="Please read the claim and the question-answer pairs. Then, give your verdict on the claim. Do not look at any external information; make your verdict based ONLY on the question-answer pairs. If there are any problems with a question-answer pair, please use the form to report it. Do not use the information in any question-answer pair you report to make your verdict."/>
-              </RightBox>
-                <LeftBox>
-                  <ValidationClaimTopField claim={this.state.claim} valid={this.state.valid} data={this.state.annotation} ask_for_justification onChange={this.handleFieldChange} id="annotation"/>
-                </LeftBox>
-                <QABox >
-                  <div data-tour="question_view">
-                    {questionPairs}
-                  </div>
-                    <NavBar onPrevious={this.doPrevious} onSubmit={this.doSubmit} onNext={this.doNext}/>
-                </QABox>
-                {this.state.userIsFirstVisiting? <TourWrapper/> : ""}
-                  {/*{JSON.stringify(this.state)}*/}
+                <TourProvider steps={steps}>
+                    <RightBox>
+                        <RightPhaseControl current_idx={current_idx} final_idx={final_idx} phaseName="Quality Control" phaseInstructions="Please read the claim and the question-answer pairs. Then, give your verdict on the claim. Do not look at any external information; make your verdict based ONLY on the question-answer pairs. If there are any problems with a question-answer pair, please use the form to report it. Do not use the information in any question-answer pair you report to make your verdict." />
+                    </RightBox>
+                    <LeftBox>
+                        <ValidationClaimTopField claim={this.state.claim} valid={this.state.valid} data={this.state.annotation} ask_for_justification onChange={this.handleFieldChange} id="annotation" />
+                    </LeftBox>
+                    <QABox >
+                        <div data-tour="question_view">
+                            {questionPairs}
+                        </div>
+                        <NavBar onPrevious={this.doPrevious} onSubmit={this.doSubmit} onNext={this.doNext} />
+                    </QABox>
+                    {this.state.userIsFirstVisiting ? <TourWrapper /> : ""}
                 </TourProvider>
             </div>
         );
-      }
+    }
 }
 
 export default VerdictValidation;

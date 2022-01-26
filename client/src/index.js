@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 import VerdictValidation from './verdict_validation/VerdictValidation';
 import AnnotatorControl from './control_panels/AnnotatorControl';
 import ChangePassword from './login/ChangePassword';
+import DisagreementResolution from './disagreement_resolution/DisagreementResolution';
 
 const routing = (
   <Router>
@@ -36,6 +37,9 @@ const routing = (
           </Route>
           <Route path="/phase_3">
             <VerdictValidation />
+          </Route>
+          <Route path="/disagreement">
+            <DisagreementResolution />
           </Route>
           <Route path="/control">
             <AnnotatorControl />

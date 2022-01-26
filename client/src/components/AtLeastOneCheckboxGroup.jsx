@@ -71,6 +71,7 @@ export default function AtLeastOneCheckboxGroup(props) {
         onChange={handleChange} 
         name={v} />}
         label={v}
+        disabled={props.readOnly}
         />
       <TooltipQMark title={tooltipDict[v]} discrete/>
     </div>

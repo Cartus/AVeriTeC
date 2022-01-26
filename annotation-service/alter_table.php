@@ -10,7 +10,6 @@ $conn = new mysqli($servername, $db_params['user'], $db_params['password'], $dbn
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
- 
 
 // sql to create table
 $sql = "ALTER TABLE Norm_Claims
@@ -23,4 +22,3 @@ if ($conn->query($sql) === TRUE) {
 }
 
 $conn->close();
-?>

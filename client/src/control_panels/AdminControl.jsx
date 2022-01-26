@@ -64,11 +64,14 @@ class AdminControl extends react.Component {
             axios(request).then((response) => {
                 this.setState({
                     header: [
-                        {field: "id", headerName: "ID", width:120},
-                        {field: "user_name", headerName: "Name", editable:true, width: 250},
+                        {field: "id", headerName: "ID", width: 120},
+                        {field: "user_name", headerName: "Name", editable:true, width: 200},
                         {field: "finished_norm_annotations", headerName: "Phase1 Finished", type: "number", editable: true, width: 250},
                         {field: "finished_qa_annotations", headerName: "Phase2 Finished", type: "number", editable: true, width: 250},
                         {field: "finished_valid_annotations", headerName: "Phase3 Finished", type: "number", editable: true, width: 250},
+                        {field: "p1_training", headerName: "P1 Training Agreement", type: "number", editable: true, width: 220},
+                        {field: "p2_training", headerName: "P2 Training Agreement", type: "number", editable: true, width: 220},
+                        {field: "p3_training", headerName: "P3 Training Agreement", type: "number", editable: true, width: 220},
                     ],
                     table: response.data
                 })
@@ -76,7 +79,7 @@ class AdminControl extends react.Component {
         } else if (this.props.name == "Claims"){
             this.setState({
                 header: [
-                    {field: "id", headerName: "ID", width:120}, 
+                    {field: "id", headerName: "ID", width: 120}, 
                     {field: "claim_url", editable:true, width: 600}, 
                     {field: "phase_1_annotation_ids", editable: true, width: 250},
                     {field: "phase_2_annotation_ids", editable: true, width: 250},
@@ -86,12 +89,31 @@ class AdminControl extends react.Component {
                     {id: 0, claim_url: "https://web.archive.org/web/20210717085246/https://www.factcheck.org/2021/07/cdc-data-thus-far-show-covid-19-vaccination-safe-during-pregnancy/", phase_1_annotation_ids: [23, 1, 7], phase_2_annotation_ids: [3,4], phase_3_annotation_ids: [8]},
                 ]
             })
+        } else if (this.props.name == "Disagreements"){
+            this.setState({
+                header: [
+                    {field: "id", headerName: "ID", width: 120}, 
+                    {
+                        field: "resolve_link", 
+                        editable: false, 
+                        width: 250, 
+                        renderCell: (cellValues) => {
+                        return <a href={`/disagreement?id=${cellValues.row.id}`}>Resolve</a>;
+                      }},
+                    {field: "resolved_status", type: "boolean", editable: true, width: 250},
+                    {field: "phase_2_annotation_id", type: "number", editable: true, width: 250},
+                    {field: "phase_3_annotation_id", type: "number", editable: true, width: 250}
+                ],
+                table: [
+                    {id: 0, resolved_status: false, phase_2_annotation_id: 3, phase_3_annotation_id: 8},
+                ]
+            })
         }
     }
 
     cellEdit(params, event) {
         console.log(`Editing cell with value: ${params.value} and row id: ${params.id}, column: ${params.field}, triggered by ${event.type}.`)
-        // I did not implement code to edit the state here. We shjould make the API call to edit instead, then reload the entire table. That way, if there is a mistake/lost connection to the server/etc, the state will not falsely update.
+        // I did not implement code to edit the state here. We should make the API call to edit instead, then reload the entire table. That way, if there is a mistake/lost connection to the server/etc, the state will not falsely update.
     }
 
     makeNewRow(){
@@ -101,7 +123,7 @@ class AdminControl extends react.Component {
 
     deleteRows(){
         console.log(`Delete entries by ID: ` + JSON.stringify(this.state.selected))
-        // I did not implement code to delete from the state here. We shjould make the API call to edit instead, then reload the entire table. That way, if there is a mistake/lost connection to the server/etc, the state will not falsely update.
+        // I did not implement code to delete from the state here. We should make the API call to edit instead, then reload the entire table. That way, if there is a mistake/lost connection to the server/etc, the state will not falsely update.
     }
 
     deleteRows(){
