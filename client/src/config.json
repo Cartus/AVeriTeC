@@ -1,4 +1,4 @@
 {
-    "api_url": "https://api.averitec.eu/",
+    "api_url": "http://localhost:8081/api",
     "search_api_url": "https://api.averitec.eu/"
 }
