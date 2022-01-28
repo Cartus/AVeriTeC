@@ -48,7 +48,7 @@ if ($req_type == "next-data"){
             echo(json_encode($output));
         } else {
             $sql = "SELECT claim_norm_id, web_archive, cleaned_claim, speaker, source, check_date, claim_loc, user_id_norm FROM Norm_Claims 
-            WHERE qa_annotators_num = 0 AND qa_taken_flag=0 AND qa_skipped=0 AND latest=1 AND user_id_norm != ? ORDER BY RAND() LIMIT 1";
+            WHERE qa_annotators_num=0 AND qa_taken_flag=0 AND qa_skipped=0 AND latest=1 AND nonfactual=0 AND user_id_norm != ? ORDER BY RAND() LIMIT 1";
             $stmt= $conn->prepare($sql);
             $stmt->bind_param("i", $user_id);
             $stmt->execute();
@@ -479,7 +479,7 @@ if ($req_type == "next-data"){
             $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third);
         }
 
-        update_table($conn, "UPDATE Norm_Claims SET qa_skipped=0, qa_annotators_num = qa_annotators_num+1, phase_2_label=?, num_qapairs=?, date_modified_qa=?, correction_claim=?
+        update_table($conn, "UPDATE Norm_Claims SET qa_taken_flag=0, has_qapairs=1, qa_skipped=0, qa_annotators_num = qa_annotators_num+1, phase_2_label=?, num_qapairs=?, date_modified_qa=?, correction_claim=?
         WHERE claim_norm_id=?",'sissi', $phase_2_label, $num_qapairs, $date, $correction_claim, $claim_norm_id);
         $conn->commit();
         echo "Resubmit Successfully!";
@@ -509,7 +509,5 @@ if ($req_type == "next-data"){
     }
     $conn->close();
 }
-
-
 
 ?>

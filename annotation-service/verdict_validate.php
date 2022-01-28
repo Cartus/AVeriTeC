@@ -18,7 +18,6 @@ $db_params = parse_ini_file( dirname(__FILE__).'/db_params.ini', false);
 $json_result = file_get_contents("php://input");
 $_POST = json_decode($json_result, true);
 
-// if (empty($user_id) && empty($req_type)) die();
 
 $user_id = $_POST['user_id'];
 $req_type = $_POST['req_type'];
@@ -72,7 +71,7 @@ if ($req_type == "next-data"){
                     if (!is_null($row_qa["bool_explanation"])){
                         $answers[0]['explanation'] = $row_qa['bool_explanation'];
                     }
-        
+
                     if (!is_null($row_qa['answer_second'])){
                         $answers[1]['answer'] = $row_qa['answer_second'];
                     }
@@ -88,7 +87,7 @@ if ($req_type == "next-data"){
                     if (!is_null($row_qa["bool_explanation_second"])){
                         $answers[1]['explanation'] = $row_qa['bool_explanation_second'];
                     }
-        
+
                     if (!is_null($row_qa['answer_third'])){
                         $answers[2]['answer'] = $row_qa['answer_third'];
                     }
@@ -104,11 +103,11 @@ if ($req_type == "next-data"){
                     if (!is_null($row_qa["bool_explanation_third"])){
                         $answers[2]['explanation'] = $row_qa['bool_explanation_third'];
                     }
-        
+
                     $question_array['answers'] = $answers;
                     $questions[$count_string] = $question_array;
                 }
-                
+
                 $output = (["web_archive" => $row['web_archive'], "claim_text" => $row['cleaned_claim'], "claim_speaker" => $row['speaker'], "claim_source" => $row['source'],
                     "claim_date" => $row['check_date'], "claim_hyperlink" => $row['hyperlink'], "questions" => $questions, "country_code" => $row['claim_loc']]);
                 echo(json_encode($output));
@@ -145,7 +144,7 @@ if ($req_type == "next-data"){
 
             if(mysqli_num_rows($result) > 0) {
                 $row = $result->fetch_assoc();
-                
+
                 $qa_latest = 1;
                 $sql_qa = "SELECT * FROM Qapair WHERE qa_latest=? AND claim_norm_id=? AND user_id_qa=?";;
                 $stmt =  $conn->prepare($sql_qa);
@@ -161,10 +160,10 @@ if ($req_type == "next-data"){
                         $counter = $counter + 1;
                         $count_string = "question_" . (string)$counter;
                         $question_array = array();
-                        
+
                         $question_array['text'] = $row_qa['question'];
                         $question_array['question_problems'] = explode(" [SEP] ", $row_qa['question_problems']);
-            
+
                         $answers = array();
                         $answers[0]['answer'] = $row_qa['answer'];
                         $answers[0]['source_url'] = $row_qa['source_url'];
@@ -174,11 +173,11 @@ if ($req_type == "next-data"){
                         if (!is_null($row["bool_explanation"])){
                             $answers[0]['explanation'] = $row_qa['bool_explanation'];
                         }
-            
+
                         if (!is_null($row_qa['answer_problems'])){
                             $answers[0]['answer_problems'] = explode(" [SEP] ", $row_qa['answer_problems']);
                         }
-            
+
                         if (!is_null($row_qa['answer_second'])){
                             $answers[1]['answer'] = $row_qa['answer_second'];
                         }
@@ -194,11 +193,11 @@ if ($req_type == "next-data"){
                         if (!is_null($row_qa["bool_explanation_second"])){
                             $answers[1]['explanation'] = $row_qa['bool_explanation_second'];
                         }
-            
+
                         if (!is_null($row_qa['answer_problems_second'])){
                             $answers[1]['answer_problems'] = explode(" [SEP] ", $row_qa['answer_problems_second']);
                         }
-            
+
                         if (!is_null($row_qa['answer_third'])){
                             $answers[2]['answer'] = $row_qa['answer_third'];
                         }
@@ -214,11 +213,11 @@ if ($req_type == "next-data"){
                         if (!is_null($row_qa["bool_explanation_third"])){
                             $answers[2]['explanation'] = $row_qa['bool_explanation_third'];
                         }
-            
+
                         if (!is_null($row_qa['answer_problems_third'])){
                             $answers[2]['answer_problems'] = explode(" [SEP] ", $row_qa['answer_problems_third']);
                         }
-                        
+
                         $question_array['answers'] = $answers;
                         $questions[$count_string] = $question_array;
                     }
@@ -230,7 +229,7 @@ if ($req_type == "next-data"){
                 } else {
                     echo "0 Results";
                 }
-                
+
                 $conn->begin_transaction();
                 try {
                     if(!is_null($row['claim_norm_id'])){
@@ -321,19 +320,17 @@ if ($req_type == "next-data"){
                     $answer_problems_third = NULL;
                 }
 
-                update_table($conn, "UPDATE Qapair SET question_problems=?, answer_problems=?, answer_problems_second=?, 
+                update_table($conn, "UPDATE Qapair SET question_problems=?, answer_problems=?, answer_problems_second=?,
                 answer_problems_third=? WHERE qa_id=?",'ssssi', $question_problems, $answer_problems, $answer_problems_second, $answer_problems_third, $row_qa['qa_id']);
-
-                update_table($conn, "UPDATE Norm_Claims SET valid_taken_flag=0, valid_annotators_num = valid_annotators_num+1, phase_3_label=?, justification=?, date_made_valid=?, unreadable=?
-                WHERE claim_norm_id=?",'sssii', $phase_3_label, $justification, $date, $unreadable, $row['claim_norm_id']);
-                update_table($conn, "UPDATE Annotators SET current_valid_task=0, finished_valid_annotations=finished_valid_annotations+1 WHERE user_id=?",'i', $user_id);
-                $conn->commit();
-                echo "Submit Successfully!";
             }
         }else {
             echo "0 Results";
         }
-        
+        update_table($conn, "UPDATE Norm_Claims SET valid_taken_flag=0, valid_annotators_num = valid_annotators_num+1, phase_3_label=?, justification=?, date_made_valid=?, unreadable=?
+        WHERE claim_norm_id=?",'sssii', $phase_3_label, $justification, $date, $unreadable, $row['claim_norm_id']);
+        update_table($conn, "UPDATE Annotators SET current_valid_task=0, finished_valid_annotations=finished_valid_annotations+1 WHERE user_id=?",'i', $user_id);
+        $conn->commit();
+        echo "Submit Successfully!";
     }catch (mysqli_sql_exception $exception) {
         $conn->rollback();
         throw $exception;
@@ -373,7 +370,7 @@ if ($req_type == "next-data"){
             $question_array['text'] = $row_qa['question'];
 
             $question_array['question_problems'] = explode(" [SEP] ", $row_qa['question_problems']);
-            
+
             $answers = array();
             $answers[0]['answer'] = $row_qa['answer'];
             $answers[0]['source_url'] = $row_qa['source_url'];
@@ -429,7 +426,6 @@ if ($req_type == "next-data"){
             }
 
             $question_array['answers'] = $answers;
-            
             $questions[$count_string] = $question_array;
         }
         $annotation = array();
@@ -439,12 +435,10 @@ if ($req_type == "next-data"){
         $output = (["claim_norm_id" => $row['claim_norm_id'], "web_archive" => $row['web_archive'], "claim_text" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
         "claim_date" => $row['check_date'], "hyperlink" => $row['hyperlink'],  "questions" => $questions, "annotation" => $annotation, "country_code" => $row['claim_loc']]);
         echo(json_encode($output));
-
     } else {
         echo "0 Results";
     }
     $conn->close();
-    
 } else if ($req_type == "resubmit-data") {
 
     // print_r($_POST["questions"]);
@@ -514,10 +508,6 @@ if ($req_type == "next-data"){
                 } else {
                     $answer_problems_third = NULL;
                 }
-                
-                // echo $answer_problems;
-                // echo $answer_problems_second;
-                // echo $answer_problems_third;
 
                 update_table($conn, "UPDATE Qapair SET question_problems=?, answer_problems=?, answer_problems_second=?, 
                 answer_problems_third=? WHERE qa_id=?",'ssssi', $question_problems, $answer_problems, $answer_problems_second, $answer_problems_third, $row_qa['qa_id']);
@@ -536,7 +526,3 @@ if ($req_type == "next-data"){
     }
     $conn->close();
 }
-
-
-?>
-

@@ -18,16 +18,11 @@ if ($conn->connect_error) {
 }
 
 
-$user_id = 5;
-// $claim_id = 10;
+$id = 3;
 
 
-// update_table($conn, "UPDATE Norm_Claims SET user_id_qa=NULL, qa_taken_flag=0 WHERE user_id_norm=? AND claim_norm_id=?", 'ii', $user_id, $claim_id);
-// update_table($conn, "UPDATE Norm_Claims SET latest=1 WHERE user_id_norm=? AND claim_norm_id=?", 'ii', $user_id, $claim_id);
-
-update_table($conn, "DELETE FROM Norm_Claims WHERE latest=0 AND user_id_norm=?", 'i', $user_id);
+update_table($conn, "UPDATE Norm_Claims SET user_id_qa=NULL, qa_taken_flag=0 WHERE user_id_qa=?", 'i', $id);
 
 
 $conn->close();
 ?>
-

@@ -18,8 +18,6 @@ $db_params = parse_ini_file( dirname(__FILE__).'/db_params.ini', false);
 $json_result = file_get_contents("php://input");
 $_POST = json_decode($json_result, true);
 
-// if (empty($user_id) && empty($req_type)) die();
-
 $user_id = $_POST['user_id'];
 $req_type = $_POST['req_type'];
 
@@ -226,7 +224,6 @@ if ($req_type == "next-data"){
                     $output = (["web_archive" => $row['web_archive'], "claim_text" => $row['cleaned_claim'], "claim_speaker" => $row['speaker'], "claim_date" => $row['check_date'], "claim_source" => $row['source'],
                     "claim_hyperlink" => $row['hyperlink'], "questions" => $questions, "country_code" => $row['claim_loc']]);
                     echo(json_encode($output));
-
                 } else {
                     echo "0 Results";
                 }
@@ -323,17 +320,15 @@ if ($req_type == "next-data"){
 
                 update_table($conn, "UPDATE Qapair SET question_problems=?, answer_problems=?, answer_problems_second=?,
                 answer_problems_third=? WHERE qa_id=?",'ssssi', $question_problems, $answer_problems, $answer_problems_second, $answer_problems_third, $row_qa['qa_id']);
-
-                update_table($conn, "UPDATE Norm_Claims SET valid_taken_flag=0, valid_annotators_num = valid_annotators_num+1, phase_3_label=?, justification=?, date_made_valid=?, unreadable=?
-                WHERE claim_norm_id=?",'sssii', $phase_3_label, $justification, $date, $unreadable, $row['claim_norm_id']);
-                update_table($conn, "UPDATE Annotators SET current_valid_task=0, finished_valid_annotations=finished_valid_annotations+1 WHERE user_id=?",'i', $user_id);
-                $conn->commit();
-                echo "Submit Successfully!";
             }
         }else {
             echo "0 Results";
         }
-
+        update_table($conn, "UPDATE Norm_Claims SET valid_taken_flag=0, valid_annotators_num = valid_annotators_num+1, phase_3_label=?, justification=?, date_made_valid=?, unreadable=?
+        WHERE claim_norm_id=?",'sssii', $phase_3_label, $justification, $date, $unreadable, $row['claim_norm_id']);
+        update_table($conn, "UPDATE Annotators SET current_valid_task=0, finished_valid_annotations=finished_valid_annotations+1 WHERE user_id=?",'i', $user_id);
+        $conn->commit();
+        echo "Submit Successfully!";
     }catch (mysqli_sql_exception $exception) {
         $conn->rollback();
         throw $exception;
@@ -429,7 +424,6 @@ if ($req_type == "next-data"){
             }
 
             $question_array['answers'] = $answers;
-
             $questions[$count_string] = $question_array;
         }
         $annotation = array();
@@ -439,12 +433,10 @@ if ($req_type == "next-data"){
         $output = (["claim_norm_id" => $row['claim_norm_id'], "web_archive" => $row['web_archive'], "claim_text" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
         "claim_date" => $row['check_date'], "hyperlink" => $row['hyperlink'],  "questions" => $questions, "annotation" => $annotation, "country_code" => $row['claim_loc']]);
         echo(json_encode($output));
-
     } else {
         echo "0 Results";
     }
     $conn->close();
-
 } else if ($req_type == "resubmit-data") {
 
     // print_r($_POST["questions"]);
@@ -532,6 +524,3 @@ if ($req_type == "next-data"){
     }
     $conn->close();
 }
-
-
-?>

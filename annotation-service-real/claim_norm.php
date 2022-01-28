@@ -5,7 +5,7 @@ header('Access-Control-Allow-Headers: Content-Type');
 function update_table($conn, $sql_command, $types, ...$vars)
 {
     $sql2 = $sql_command;
-    $stmt =  $conn->prepare($sql2);
+    $stmt = $conn->prepare($sql2);
     $stmt->bind_param($types, ...$vars);
     $stmt->execute();
 }
@@ -155,6 +155,22 @@ if ($req_type == "next-data"){
             }
 
             $claim_types = $item['claim_types'];
+            $nonfactual = 0;
+            if (in_array("Speculative Claim", $claim_types)) {
+                $nonfactual=1;
+            } elseif (in_array("Opinion Claim", $claim_types)) {
+                $nonfactual=1;
+            } elseif (in_array("Publishing Claim", $claim_types)) {
+                $nonfactual=1;
+            } elseif (in_array("Media Analysis Claim", $claim_types)) {
+                $nonfactual=1;
+            } elseif (in_array("Media Matching Claim", $claim_types)) {
+                $nonfactual=1;
+            } elseif (in_array("Complex Media Claim", $claim_types)) {
+                $nonfactual=1;
+            }
+            echo $nonfactual;
+
             $fact_checker_strategy = $item['fact_checker_strategy'];
             $phase_1_label = $item['phase_1_label'];
 
@@ -164,10 +180,10 @@ if ($req_type == "next-data"){
 
             update_table($conn, "INSERT INTO Norm_Claims (claim_id, web_archive, user_id_norm, cleaned_claim, speaker, hyperlink, transcription, media_source,
             check_date, claim_types, fact_checker_strategy, phase_1_label, qa_annotators_num, qa_taken_flag, qa_skipped, valid_annotators_num, valid_taken_flag,
-            has_qapairs, date_made_norm, claim_loc, latest, source)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'isisssssssssiiiiiissis', $row['claim_id'], $row['web_archive'], $user_id, $cleaned_claim, $speaker,
+            has_qapairs, date_made_norm, claim_loc, latest, source, nonfactual)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'isisssssssssiiiiiissisi', $row['claim_id'], $row['web_archive'], $user_id, $cleaned_claim, $speaker,
             $hyperlink, $transcription, $media_source, $check_date, $claim_types, $fact_checker_strategy, $phase_1_label, $qa_annotators_num, $qa_taken_flag, $qa_skipped,
-            $valid_annotators_num, $valid_taken_flag, $has_qapairs, $date, $claim_loc, $latest, $source);
+            $valid_annotators_num, $valid_taken_flag, $has_qapairs, $date, $claim_loc, $latest, $source, $nonfactual);
         }
 
         update_table($conn, "UPDATE Claims SET norm_taken_flag=0, norm_annotators_num = norm_annotators_num+1, date_made_norm=? WHERE claim_id=?",'si', $date, $row['claim_id']);
@@ -345,6 +361,22 @@ if ($req_type == "next-data"){
             }
 
             $claim_types = $item['claim_types'];
+            $nonfactual = 0;
+            if (in_array("Speculative Claim", $claim_types)) {
+                $nonfactual=1;
+            } elseif (in_array("Opinion Claim", $claim_types)) {
+                $nonfactual=1;
+            } elseif (in_array("Publishing Claim", $claim_types)) {
+                $nonfactual=1;
+            } elseif (in_array("Media Analysis Claim", $claim_types)) {
+                $nonfactual=1;
+            } elseif (in_array("Media Matching Claim", $claim_types)) {
+                $nonfactual=1;
+            } elseif (in_array("Complex Media Claim", $claim_types)) {
+                $nonfactual=1;
+            }
+            echo $nonfactual;
+
             $fact_checker_strategy = $item['fact_checker_strategy'];
             $phase_1_label = $item['phase_1_label'];
 
@@ -354,10 +386,10 @@ if ($req_type == "next-data"){
 
             update_table($conn, "INSERT INTO Norm_Claims (claim_id, web_archive, user_id_norm, cleaned_claim, speaker, hyperlink, transcription, media_source,
             check_date, claim_types, fact_checker_strategy, phase_1_label, qa_annotators_num, qa_taken_flag, qa_skipped, valid_annotators_num, valid_taken_flag,
-            has_qapairs, date_modified_norm, claim_loc, latest, source)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'isisssssssssiiiiiissis', $claim_id, $row['web_archive'], $user_id, $cleaned_claim, $speaker,
+            has_qapairs, date_modified_norm, claim_loc, latest, source, nonfactual)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'isisssssssssiiiiiissisi', $claim_id, $row['web_archive'], $user_id, $cleaned_claim, $speaker,
             $hyperlink, $transcription, $media_source, $check_date, $claim_types, $fact_checker_strategy, $phase_1_label, $qa_annotators_num, $qa_taken_flag, $qa_skipped,
-            $valid_annotators_num, $valid_taken_flag, $has_qapairs, $date, $claim_loc, $latest, $source);
+            $valid_annotators_num, $valid_taken_flag, $has_qapairs, $date, $claim_loc, $latest, $source, $nonfactual);
         }
         $norm_skipped = 0;
         update_table($conn, "UPDATE Claims SET norm_annotators_num = norm_annotators_num+1, date_made_norm=?, norm_skipped=? WHERE claim_id=?",'sii', $date, $norm_skipped, $claim_id);
@@ -391,6 +423,3 @@ if ($req_type == "next-data"){
     $conn->close();
 }
 
-
-
-?>
