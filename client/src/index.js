@@ -10,6 +10,7 @@ import VerdictValidation from './verdict_validation/VerdictValidation';
 import AnnotatorControl from './control_panels/AnnotatorControl';
 import ChangePassword from './login/ChangePassword';
 import DisagreementResolution from './disagreement_resolution/DisagreementResolution';
+import TrainingOverlay from './training_components/TrainingOverlay';
 
 const routing = (
   <Router>
@@ -43,6 +44,15 @@ const routing = (
           </Route>
           <Route path="/control">
             <AnnotatorControl />
+          </Route>
+          <Route path="/training/phase_1">
+            <TrainingOverlay phase={1}/>
+          </Route>
+          <Route path="/training/phase_2">
+            <TrainingOverlay phase={2}/>
+          </Route>
+          <Route path="/training/phase_3">
+            <TrainingOverlay phase={3}/>
           </Route>
       </Switch>
   </Router>

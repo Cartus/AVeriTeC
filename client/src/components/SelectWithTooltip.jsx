@@ -7,6 +7,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import TooltipQMark from './TooltipQMark';
 import styled from 'styled-components';
+import TextField from '@material-ui/core/TextField';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -39,16 +40,20 @@ const StyledFormControl = styled(FormControl)`
     width:100%
 `
 
+const StyledTextField = styled(TextField)`
+    width:100%
+`
+
 export default function SelectWithTooltip(props) {
   const classes = useStyles();
 
-  var value = (props.value != null)? props.value : "";
+  var value = (props.value != null) ? props.value : "";
 
-  if (props.validator != null){
+  if (props.validator != null) {
     let validation = props.validator(value)
-    var error =  validation.error && !props.valid;
+    var error = validation.error && !props.valid;
     var message = validation.message
-  } else{
+  } else {
     var error = false
   }
 
@@ -59,22 +64,26 @@ export default function SelectWithTooltip(props) {
   return (
     <ElementContainer>
       <TextFieldContainer>
-      <StyledFormControl disabled={props.disabled} required={props.required} error={error} variant="outlined" size="small" className={classes.formControl}>
-        <InputLabel>{props.label}</InputLabel>
-        <Select
-          // value={props.value}
-          value={value}
-          onChange={props.onChange}
-          label={props.label}
-          name={props.name}
-        >
-          {menuItems}
-        </Select>
-        {/*error? <FormHelperText error={error}>{message}</FormHelperText> : ""*/}
-      </StyledFormControl>
+        {props.readOnly ?
+          <StyledTextField size="small" error={error} inputProps={{ readOnly: true }} {...props} value={value} variant="filled" />
+          :
+          <StyledFormControl InputProps={props.InputProps} variant={props.variant ? props.variant : "outlined"} disabled={props.disabled} required={props.required} error={error} size="small" className={classes.formControl}>
+            <InputLabel>{props.label}</InputLabel>
+            <Select
+              // value={props.value}
+              value={value}
+              onChange={props.onChange}
+              label={props.label}
+              name={props.name}
+            >
+              {menuItems}
+            </Select>
+            {/*error? <FormHelperText error={error}>{message}</FormHelperText> : ""*/}
+          </StyledFormControl>
+        }
       </TextFieldContainer>
       <QMarkContainer>
-      <TooltipQMark title={props.tooltip}/>
+        <TooltipQMark title={props.tooltip} />
       </QMarkContainer>
     </ElementContainer>
   );

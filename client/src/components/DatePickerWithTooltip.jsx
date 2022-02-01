@@ -34,8 +34,8 @@ function shiftPickerDateToUTCDate(pickerDate) {
         pickerDate.getFullYear(),
         pickerDate.getMonth(),
         pickerDate.getDate()
-      );
-    
+    );
+
     return new Date(timestamp);
 }
 
@@ -44,36 +44,44 @@ function shiftFromUTCDate(systemDate) {
         systemDate.getUTCFullYear(),
         systemDate.getUTCMonth(),
         systemDate.getUTCDate()
-      );
+    );
 }
 
+// Hack to format date strings to match material-ui date pickers:
+function formatDate(date){
+    return ('00' + (date.getDate())).slice(-2) + "/" + ('00' + (date.getMonth() + 1)).slice(-2) + "/" + ('0000' + (date.getFullYear())).slice(-4)
+}
 
-export default function DatePickerWithTooltip(props) {  
+export default function DatePickerWithTooltip(props) {
     return (
         <ElementContainer>
             <TextFieldContainer>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DatePicker
-                label={props.label}
-                value={props.value? shiftFromUTCDate(props.value) : null}
-                inputFormat="dd/MM/yyyy"
-                onChange={(newValue) => {            
-                    // Essentially a massive hack to make datepicker play nice with our onchange function
-                    var fakeEvent = new Object();
-                    fakeEvent.target = {
-                        name: props.name,
-                        value: newValue? shiftPickerDateToUTCDate(newValue) : null
-                    };
-                    
-                    props.onChange(fakeEvent)
-                }}
-                renderInput={(params) => <StyledTextField size="small" {...params} />}
-                />
-            </LocalizationProvider>
+                {props.readOnly ?
+                    <StyledTextField size="small" inputProps={{ readOnly: true }} {...props} value={props.value ? formatDate(shiftFromUTCDate(props.value)) : null} variant="filled" />
+                    :
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DatePicker
+                            label={props.label}
+                            value={props.value ? shiftFromUTCDate(props.value) : null}
+                            inputFormat="dd/MM/yyyy"
+                            onChange={(newValue) => {
+                                // Essentially a massive hack to make datepicker play nice with our onchange function
+                                var fakeEvent = new Object();
+                                fakeEvent.target = {
+                                    name: props.name,
+                                    value: newValue ? shiftPickerDateToUTCDate(newValue) : null
+                                };
+
+                                props.onChange(fakeEvent)
+                            }}
+                            renderInput={(params) => <StyledTextField size="small" {...params} />}
+                        />
+                    </LocalizationProvider>
+                }
             </TextFieldContainer>
             <QMarkContainer>
-            <TooltipQMark title={props.tooltip}/>
+                <TooltipQMark title={props.tooltip} />
             </QMarkContainer>
         </ElementContainer>
     );
-  }
+}

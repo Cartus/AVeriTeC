@@ -122,7 +122,7 @@ class ClaimTopField extends React.Component {
 
     render() {
       var location = ""
-      if (this.props.claim.country_code){
+      if (this.props.claim && this.props.claim.country_code){
         var country_list = countryFlagEmoji.list.filter((entry) => {return !["European Union", "United Nations"].includes(entry.name)}).sort( (a,b) => {
           var textA = a.name.toUpperCase();
           var textB = b.name.toUpperCase();
@@ -150,12 +150,12 @@ class ClaimTopField extends React.Component {
                     <TextFieldWithTooltip name='claim_location' label="Location" value={location} defaultValue={location} InputProps={{readOnly: true}} variant="filled" tooltip="The location most relevant to the claim."/>
                 </TextLeftEntryDiv>
                 <TextRightEntryDiv>
-                <CheckboxBox data-tour="should_correct" control={<Checkbox  name="should_correct" checked={this.props.data["should_correct"]? this.props.data["should_correct"] : false} onChange={this.handleCheckboxChange} />} label="I think the claim has been formatted wrong. It should be:" />
+                <CheckboxBox data-tour="should_correct" control={<Checkbox  name="should_correct" checked={this.props.data["should_correct"]? this.props.data["should_correct"] : false} onChange={this.props.posthocView ? () => { } : this.handleCheckboxChange} />} label="I think the claim has been formatted wrong. It should be:" />
                 {
-                  this.props.data["should_correct"]?
-                  <TextFieldWithTooltip name='claim_correction' label="Correction" multiline rows={3} value={this.props.data["claim_correction"]} validator={notEmptyValidator} valid={this.props.valid} onChange={this.handleFieldChange} required tooltip="A correction for the claim next, if you think it is necessary"/>
+                  (this.props.data["should_correct"] && !this.props.posthoc_view)?
+                  <TextFieldWithTooltip name='claim_correction' label="Correction" multiline rows={3} value={this.props.data["claim_correction"]} validator={notEmptyValidator} valid={this.props.valid} onChange={this.handleFieldChange} required tooltip="A correction for the claim text, if you think it is necessary"/>
                   :
-                  <TextFieldWithTooltip name='claim_correction' label="Correction" multiline rows={3} value={this.props.data["claim_correction"]} InputProps={{readOnly: true}} variant="filled" tooltip="A correction for the claim next, if you think it is necessary."/>
+                  <TextFieldWithTooltip name='claim_correction' label="Correction" multiline rows={3} value={this.props.data["claim_correction"]} InputProps={{readOnly: true}} variant="filled" tooltip="A correction for the claim text, if you think it is necessary."/>
                 }
                 </TextRightEntryDiv>                   
                 </ContainerDiv>

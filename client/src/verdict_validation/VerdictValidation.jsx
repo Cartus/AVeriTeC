@@ -12,6 +12,7 @@ import TourWrapper from '../components/TourWrapper';
 import axios from "axios";
 import { Redirect } from "react-router-dom";
 import config from "../config.json";
+import VerdictValidationBar from './VerdictValidationBar';
 
 const EntryCard = styled(Card)`
   margin:10px;
@@ -308,18 +309,17 @@ class VerdictValidation extends React.Component {
         return (
             <div>
                 <TourProvider steps={steps}>
-                    <RightBox>
-                        <RightPhaseControl current_idx={current_idx} final_idx={final_idx} phaseName="Quality Control" phaseInstructions="Please read the claim and the question-answer pairs. Then, give your verdict on the claim. Do not look at any external information; make your verdict based ONLY on the question-answer pairs. If there are any problems with a question-answer pair, please use the form to report it. Do not use the information in any question-answer pair you report to make your verdict." />
-                    </RightBox>
-                    <LeftBox>
-                        <ValidationClaimTopField claim={this.state.claim} valid={this.state.valid} data={this.state.annotation} ask_for_justification onChange={this.handleFieldChange} id="annotation" />
-                    </LeftBox>
-                    <QABox >
-                        <div data-tour="question_view">
-                            {questionPairs}
-                        </div>
-                        <NavBar onPrevious={this.doPrevious} onSubmit={this.doSubmit} onNext={this.doNext} />
-                    </QABox>
+                    <VerdictValidationBar 
+                    current_idx={current_idx} 
+                    final_idx={final_idx} 
+                    claim={this.state.claim} 
+                    valid={this.state.valid} 
+                    annotation={this.state.annotation} 
+                    handleFieldChange={this.handleFieldChange}
+                    doPrevious={this.doPrevious}
+                    doSubmit={this.doSubmit}
+                    doNext={this.doNext}
+                    />
                     {this.state.userIsFirstVisiting ? <TourWrapper /> : ""}
                 </TourProvider>
             </div>

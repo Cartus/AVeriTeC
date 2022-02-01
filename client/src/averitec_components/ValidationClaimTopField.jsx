@@ -106,6 +106,8 @@ class ClaimTopField extends React.Component {
           multiline
           rows={5}
           onChange={this.handleFieldChange}
+          InputProps={this.props.posthocView ? { readOnly: true } : undefined} 
+          variant={this.props.posthocView ? "filled" : undefined}
           tooltip="Please write a short explanation for how you decided the answer based on the questions."
         />
       </TextEntryDiv>
@@ -132,7 +134,7 @@ class ClaimTopField extends React.Component {
             <div data-tour="verdict">
               {this.props.data["unreadable"] ?
 
-                <SelectWithTooltip name="label" disabled value={this.props.data["label"]} label="Claim Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Information", "Missing Context"]} tooltip={
+                <SelectWithTooltip readOnly={this.props.posthocView} name="label" disabled value={this.props.data["label"]} label="Claim Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Information", "Missing Context"]} tooltip={
                   <ul>
                     <li>Supported: The claim is fully supported by the arguments and evidence presented.</li>
                     <li>Refuted: The claim is fully contradicted by the arguments and evidence presented.</li>
@@ -143,7 +145,7 @@ class ClaimTopField extends React.Component {
 
                 :
 
-                <SelectWithTooltip name="label" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["label"]} label="Claim Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Information", "Missing Context"]} tooltip={
+                <SelectWithTooltip readOnly={this.props.posthocView} name="label" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["label"]} label="Claim Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Information", "Missing Context"]} tooltip={
                   <ul>
                     <li>Supported: The claim is fully supported by the arguments and evidence presented.</li>
                     <li>Refuted: The claim is fully contradicted by the arguments and evidence presented.</li>
@@ -155,7 +157,7 @@ class ClaimTopField extends React.Component {
               }
             </div>
 
-            <CheckboxBox data-tour="unreadable" control={<Checkbox name="unreadable" checked={this.props.data["unreadable"] ? this.props.data["unreadable"] : false} onChange={this.handleCheckboxChange} />} label="The claim is vague, unreadable, or otherwise impossible to understand." />
+            <CheckboxBox data-tour="unreadable" control={<Checkbox name="unreadable" checked={this.props.data["unreadable"] ? this.props.data["unreadable"] : false} onChange={this.props.posthocView ? () => { } : this.handleFieldChange} />} label="The claim is vague, unreadable, or otherwise impossible to understand." />
 
           </TextEntryDiv>
           {justification}

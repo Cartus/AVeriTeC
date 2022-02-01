@@ -145,7 +145,7 @@ class StaticQuestionEntryField extends React.Component {
                             data={answer["answer_problems"]}
                             readOnly={this.props.readOnly}
                             items={answer_problem_items}
-                            onChange={(event) => this.handleAnswerFieldChange(index, event)}
+                            onChange={this.props.posthocView ? () => { } : (event) => this.handleAnswerFieldChange(index, event)}
                             tooltip="If you believe there are problems with this answer, please tick the appropriate boxes here. If you identify problems with an answer, please do not use it to support your verdict."
                         />
                     </ColumnDiv> : ""}
@@ -172,7 +172,7 @@ class StaticQuestionEntryField extends React.Component {
                                         { label: "The question is not understandable/readable", tooltip: "Please check this box if the question is empty, gibberish, or ungrammatical to the point where you cannot understand it." },
                                         { label: "The question is unrelated to the claim", tooltip: "Please check this box if the question does not seem relevant to verifying the claim." },
                                     ]}
-                                    onChange={this.handleFieldChange}
+                                    onChange={this.props.posthocView ? () => { } : this.handleFieldChange}
                                     tooltip="If you believe there are problems with this question, please tick the appropriate boxes here. If you identify problems with a question, please do not use it to support your verdict."
                                 />
                             </ColumnDiv> : ""}

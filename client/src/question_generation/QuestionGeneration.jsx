@@ -337,94 +337,53 @@ class QuestionGeneration extends React.Component {
     // e.preventDefault();
     console.log("Valid: " + validate(this.state));
     if (validate(this.state)) {
-      let phase = localStorage.getItem('phase');
-      if (phase === 'phase_1') {
-        let pc = Number(localStorage.pc);
-        if (pc !== 0) {
-          localStorage.pc = Number(localStorage.pc) - 1;
-          var request = {
-            method: "post",
-            baseURL: config.api_url,
-            url: "/claim_norm.php",
-            data: {
-              user_id: localStorage.getItem('user_id'),
-              req_type: 'resubmit-data',
-              entries: this.state.entries,
-              claim_id: localStorage.claim_id
-            }
-          };
+      let pc = Number(localStorage.pc);
+      // console.log(pc);
+      if (pc !== 0) {
+        localStorage.pc = Number(localStorage.pc) - 1;
+        var request = {
+          method: "post",
+          baseURL: config.api_url,
+          url: "/question_answering.php",
+          data: {
+            user_id: localStorage.getItem('user_id'),
+            req_type: 'resubmit-data',
+            entries: this.state.entries,
+            added_entries: this.state.added_entries,
+            qa_pair_header: this.state.qa_pair_header,
+            qa_pair_footer: this.state.qa_pair_footer,
+            claim_norm_id: localStorage.claim_norm_id
+          }
+        };
 
-          await axios(request).then((response) => {
-            console.log(response.data);
-            localStorage.claim_id = 0;
-            // window.location.reload(false);
-          }).catch((error) => { window.alert(error) })
-        } else {
-          var request = {
-            method: "post",
-            baseURL: config.api_url,
-            url: "/claim_norm.php",
-            data: {
-              user_id: localStorage.getItem('user_id'),
-              req_type: 'submit-data',
-              entries: this.state.entries
-            }
-          };
+        await axios(request).then((response) => {
+          console.log(response.data);
+          localStorage.claim_norm_id = 0;
+          window.location.reload(false);
+        }).catch((error) => { window.alert(error) })
+      } else {
+        // console.log(this.state.added_entries);
+        var request = {
+          method: "post",
+          baseURL: config.api_url,
+          url: "/question_answering.php",
+          data: {
+            user_id: localStorage.getItem('user_id'),
+            req_type: 'submit-data',
+            entries: this.state.entries,
+            added_entries: this.state.added_entries,
+            qa_pair_header: this.state.qa_pair_header,
+            qa_pair_footer: this.state.qa_pair_footer
+          }
+        };
 
-          await axios(request).then((response) => {
-            localStorage.finished_norm_annotations = Number(localStorage.finished_norm_annotations) + 1;
-            console.log(response.data);
-            window.location.reload(false);
-          }).catch((error) => { window.alert(error) })
-        }
-      } else if (phase === 'phase_2') {
-        let pc = Number(localStorage.pc);
-        // console.log(pc);
-        if (pc !== 0) {
-          localStorage.pc = Number(localStorage.pc) - 1;
-          var request = {
-            method: "post",
-            baseURL: config.api_url,
-            url: "/question_answering.php",
-            data: {
-              user_id: localStorage.getItem('user_id'),
-              req_type: 'resubmit-data',
-              entries: this.state.entries,
-              added_entries: this.state.added_entries,
-              qa_pair_header: this.state.qa_pair_header,
-              qa_pair_footer: this.state.qa_pair_footer,
-              claim_norm_id: localStorage.claim_norm_id
-            }
-          };
-
-          await axios(request).then((response) => {
-            console.log(response.data);
-            localStorage.claim_norm_id = 0;
-            window.location.reload(false);
-          }).catch((error) => { window.alert(error) })
-        } else {
-          // console.log(this.state.added_entries);
-          var request = {
-            method: "post",
-            baseURL: config.api_url,
-            url: "/question_answering.php",
-            data: {
-              user_id: localStorage.getItem('user_id'),
-              req_type: 'submit-data',
-              entries: this.state.entries,
-              added_entries: this.state.added_entries,
-              qa_pair_header: this.state.qa_pair_header,
-              qa_pair_footer: this.state.qa_pair_footer
-            }
-          };
-
-          await axios(request).then((response) => {
-            localStorage.finished_qa_annotations = Number(localStorage.finished_qa_annotations) + 1;
-            console.log(response.data);
-            window.location.reload(false);
-          }).catch((error) => { window.alert(error) })
-        }
+        await axios(request).then((response) => {
+          localStorage.finished_qa_annotations = Number(localStorage.finished_qa_annotations) + 1;
+          console.log(response.data);
+          window.location.reload(false);
+        }).catch((error) => { window.alert(error) })
       }
+
     } else {
       this.setState({
         valid: false
@@ -521,25 +480,25 @@ class QuestionGeneration extends React.Component {
       <QAPageDiv>
         {!this.state.confirmation ?
           <TourProvider steps={steps}>
-          <QAPageView claim={this.state.claim} />
-          <QADataField>
-            <QuestionGenerationBar
-              handleFieldChange={this.handleFieldChange}
-              current_idx={current_idx}
-              final_idx={final_idx}
-              claim={this.state.claim}
-              entries={this.state.entries}
-              addEntry={this.addEntry}
-              deleteEntry={this.deleteEntry}
-              doSubmit={this.proceedToConfirmation}
-              header={this.state.qa_pair_header}
-              footer={this.state.qa_pair_footer}
-              valid={this.state.valid}
-            />
-            <SearchField claim_date={this.state.claim.claim_date} country_code={this.state.claim.country_code} />
-          </QADataField>
-          {this.state.userIsFirstVisiting ? <TourWrapper /> : ""}
-        </TourProvider>
+            <QAPageView claim={this.state.claim} />
+            <QADataField>
+              <QuestionGenerationBar
+                handleFieldChange={this.handleFieldChange}
+                current_idx={current_idx}
+                final_idx={final_idx}
+                claim={this.state.claim}
+                entries={this.state.entries}
+                addEntry={this.addEntry}
+                deleteEntry={this.deleteEntry}
+                doSubmit={this.proceedToConfirmation}
+                header={this.state.qa_pair_header}
+                footer={this.state.qa_pair_footer}
+                valid={this.state.valid}
+              />
+              <SearchField claim_date={this.state.claim.claim_date} country_code={this.state.claim.country_code} />
+            </QADataField>
+            {this.state.userIsFirstVisiting ? <TourWrapper /> : ""}
+          </TourProvider>
           :
           <QuestionGenerationConfirmation confirmFunction={this.doSubmit} cancelFunction={this.cancelConfirmation} current_idx={current_idx} final_idx={final_idx} claim={this.state.claim} entries={this.state.entries} label={this.state.qa_pair_footer.label} footer={this.state.qa_pair_footer} changeLabel={this.changeLabel} />
         }

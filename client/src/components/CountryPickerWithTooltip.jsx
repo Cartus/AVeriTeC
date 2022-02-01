@@ -43,26 +43,30 @@ const StyledFormControl = styled(FormControl)`
     width:100%
 `
 
+const StyledTextField = styled(TextField)`
+    width:100%
+`
+
 export default function CountryPickerWithTooltip(props) {
   const classes = useStyles();
 
-  var value = (props.value != null)? props.value : "";
-    
-  if (props.validator != null){
+  var value = (props.value != null) ? props.value : "";
+
+  if (props.validator != null) {
     let validation = props.validator(value)
-    var error =  validation.error && !props.valid;
+    var error = validation.error && !props.valid;
     var message = validation.message
-  } else{
+  } else {
     var error = false
   }
 
-  var country_list = countryFlagEmoji.list.filter((entry) => {return !["European Union", "United Nations"].includes(entry.name)}).sort( (a,b) => {
+  var country_list = countryFlagEmoji.list.filter((entry) => { return !["European Union", "United Nations"].includes(entry.name) }).sort((a, b) => {
     var textA = a.name.toUpperCase();
     var textB = b.name.toUpperCase();
     return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-});
+  });
 
-  var country_by_code_dict = country_list.reduce((a,x) => ({...a, [x.code]: x}), {})
+  var country_by_code_dict = country_list.reduce((a, x) => ({ ...a, [x.code]: x }), {})
   // console.log(country_by_code_dict[props.value])
 
   const handleChange = (event, values) => {
@@ -73,40 +77,44 @@ export default function CountryPickerWithTooltip(props) {
       value: values.code
     };
     props.onChange(fakeEvent)
-};
+  };
 
 
   return (
     <ElementContainer>
       <TextFieldContainer>
-        <Autocomplete
+        {props.readOnly ?
+          <StyledTextField size="small" inputProps={{ readOnly: true }} {...props} value={country_by_code_dict[props.value].name  + " (" + country_by_code_dict[props.value].code + ")"} variant="filled" />
+          :
+          <Autocomplete
             value={country_by_code_dict[props.value]}
             options={country_list}
             onChange={handleChange}
             autoHighlight
             getOptionLabel={(option) => option.name + " (" + option.code + ")"}
             renderOption={(props, option) => (
-                <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-                    {option.emoji}  {option.name} ({option.code})
-                </Box>
-        )}
-        renderInput={(params) => (
-        <TextField
-          {...params}
-          name={props.name}
-          size="small" 
-          label={props.label}
-          inputProps={{
-            ...params.inputProps,
-            autoComplete: 'new-password', // disable autocomplete and autofill
-          }}
-        />
-      )}
-    />
+              <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                {option.emoji}  {option.name} ({option.code})
+              </Box>
+            )}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                name={props.name}
+                size="small"
+                label={props.label}
+                inputProps={{
+                  ...params.inputProps,
+                  autoComplete: 'new-password', // disable autocomplete and autofill
+                }}
+              />
+            )}
+          />
+        }
         {/*error? <FormHelperText error={error}>{message}</FormHelperText> : ""*/}
       </TextFieldContainer>
       <QMarkContainer>
-      <TooltipQMark title={props.tooltip}/>
+        <TooltipQMark title={props.tooltip} />
       </QMarkContainer>
     </ElementContainer>
   );
