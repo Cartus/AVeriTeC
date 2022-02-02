@@ -10,6 +10,9 @@ import Card from '@material-ui/core/Card';
 import moment from "moment";
 import QuestionGenerationBar from "../question_generation/QuestionGenerationBar"
 import VerdictValidationBar from '../verdict_validation/VerdictValidationBar';
+import IconButton from '@material-ui/core/IconButton';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
 const AnnotationView = styled("div")`
     width: -webkit-calc(50% - 4px)!important;
@@ -24,20 +27,34 @@ const AnnotationView = styled("div")`
     overflow: auto;
 `
 
+const NavButton = styled(IconButton)`
+  width:55px;
+  height:53px;
+`
+const PrevButton = styled(NavButton)`
+  float: left;
+`
+const NextButton = styled(NavButton)`
+  float: right;
+`
+
 const EntryCard = styled(Card)`
   margin:10px;
   text-align:center;
 `
 
 const BarPartBox = styled("div")`
-    width: -webkit-calc(50%)!important;
-    width:    -moz-calc(50%)!important;
-    width:         calc(50%)!important;
-    float:left;
+  width: 100%;
+  float:left;
 `
 
 const PaddingTypographBox = styled(Typography)`
-  padding: 0px 24px;
+  padding: 10px 24px;
+  width: -webkit-calc(100% - 158px)!important;
+  width:    -moz-calc(100% - 158px)!important;
+  width:         calc(100% - 158px)!important;
+  float:left;
+  text-align:center;
 `
 
 const ShoveBox = styled("div")`
@@ -71,16 +88,50 @@ class TrainingOverlay extends React.Component {
 
       ]
     }
+
+    this.moveForward = this.moveForward.bind(this);
+    this.moveBackward = this.moveBackward.bind(this);
   }
 
   componentDidMount() {
     console.log("Loading training overview for phase " + this.props.phase)
+    this.fillPhase()
+  }
+
+  fillPhase() {
     if (this.props.phase == 1) {
       this.fillPhaseOneData()
     } else if (this.props.phase == 2) {
       this.fillPhaseTwoData()
     } else if (this.props.phase == 3) {
       this.fillPhaseThreeData()
+    }
+  }
+
+  canMoveBackward() {
+    return this.state.shown_annotation_id > 0
+  }
+
+  canMoveForward() {
+    let trainingClaimsInPhase = 5 // TODO: Just hardcode the actual number of training claims here individually for each phase, it's a bit hacky but it'll save so much time
+    return this.state.shown_annotation_id + 1 < trainingClaimsInPhase
+  }
+
+  moveForward() {
+    if (this.canMoveForward()) {
+      console.log("Moving to claim " + (this.state.shown_annotation_id + 1))
+      this.setState({
+        shown_annotation_id: this.state.shown_annotation_id + 1
+      }, this.fillPhase)
+    }
+  }
+
+  moveBackward() {
+    if (this.canMoveBackward()) {
+      console.log("Moving to claim " + (this.state.shown_annotation_id - 1))
+      this.setState({
+        shown_annotation_id: this.state.shown_annotation_id - 1
+      }, this.fillPhase)
     }
   }
 
@@ -168,7 +219,6 @@ class TrainingOverlay extends React.Component {
 
           this.setState({
             gold_annotations: [
-              ...this.state.gold_annotations,
               annotation_dict,
               annotation_dict,
               annotation_dict,
@@ -298,7 +348,6 @@ class TrainingOverlay extends React.Component {
 
           this.setState({
             gold_annotations: [
-              ...this.state.gold_annotations,
               annotation_dict,
               annotation_dict,
               annotation_dict,
@@ -410,7 +459,6 @@ class TrainingOverlay extends React.Component {
 
           this.setState({
             gold_annotations: [
-              ...this.state.gold_annotations,
               annotation_dict,
               annotation_dict,
               annotation_dict,
@@ -494,7 +542,7 @@ class TrainingOverlay extends React.Component {
             claim={annotation.claim}
             annotation={annotation.annotation}
           />
-          <P3SepDiv/>
+          <P3SepDiv />
         </div>
       })
     }
@@ -504,20 +552,28 @@ class TrainingOverlay extends React.Component {
         <AppBar>
           <Toolbar>
             <BarPartBox>
-              <Typography variant="h6" component="div">
-                Your Annotation
-              </Typography>
-            </BarPartBox>
-            <BarPartBox>
+              {this.canMoveBackward() ?
+                <PrevButton onClick={this.moveBackward}><NavigateBeforeIcon fontSize="large" style={{ color: 'white' }} /></PrevButton>
+                :
+                <PrevButton onClick={() => { }}><NavigateBeforeIcon fontSize="large" disabled style={{ color: 'grey' }} /></PrevButton>
+              }
               <PaddingTypographBox variant="h6" component="div">
-                Suggested Annotation
+                Training Annotation Overview | Phase {this.props.phase} | Example {this.state.shown_annotation_id + 1}
               </PaddingTypographBox>
+              {this.canMoveForward() ?
+                <NextButton onClick={this.moveForward}><NavigateNextIcon fontSize="large" style={{ color: 'white' }} /></NextButton>
+                :
+                <NextButton onClick={() => { }}><NavigateNextIcon fontSize="large" disabled style={{ color: 'grey' }} /></NextButton>
+              }
             </BarPartBox>
           </Toolbar>
         </AppBar>
         <ShoveBox />
 
         <AnnotationView>
+          <EntryCard>
+            <h3>Your Annotation</h3>
+          </EntryCard>
           {annotator_view}
         </AnnotationView>
         <AnnotationView>
