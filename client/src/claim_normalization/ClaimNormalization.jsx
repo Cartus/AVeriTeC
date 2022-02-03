@@ -324,7 +324,7 @@ class ClaimNormalization extends React.Component {
         return (
             <PageDiv>
                 <TourProvider steps={steps}>
-                    <NPageView claim={this.state.claim} />
+                    <NPageView claim={this.state.claim} phase={1}/>
                     <NEntryBar
                         handleFieldChange={this.handleFieldChange}
                         current_idx={current_idx}

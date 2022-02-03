@@ -34,65 +34,65 @@ const ReportDiv = styled.div`
 `
 
 class ReportBar extends React.Component {
-    constructor(props) {
-        super(props);
-        this.onReport = this.onReport.bind(this)
+  constructor(props) {
+    super(props);
+    this.onReport = this.onReport.bind(this)
+  }
+
+  async onReport() {
+    let phase = localStorage.getItem('phase');
+    if (phase === 'phase_1') {
+      var request = {
+        method: "post",
+        baseURL: config.api_url,
+        url: "/claim_norm.php",
+        data: {
+          user_id: localStorage.getItem('user_id'),
+          req_type: 'skip-data',
+          claim_id: localStorage.claim_id
+        }
+      };
+
+      await axios(request).then((response) => {
+        console.log(response.data);
+        localStorage.finished_norm_annotations = Number(localStorage.finished_norm_annotations) + 1;
+        window.location.reload(false);
+      }).catch((error) => { window.alert(error) })
+    } else if (phase === 'phase_2') {
+      var request = {
+        method: "post",
+        baseURL: config.api_url,
+        url: "/question_answering.php",
+        data: {
+          user_id: localStorage.getItem('user_id'),
+          req_type: 'skip-data',
+          claim_norm_id: localStorage.claim_norm_id
+        }
+      };
+
+      await axios(request).then((response) => {
+        console.log(response.data);
+        localStorage.finished_qa_annotations = Number(localStorage.finished_qa_annotations) + 1;
+        window.location.reload(false);
+      }).catch((error) => { window.alert(error) })
     }
-
-    async onReport() {
-      let phase = localStorage.getItem('phase');
-      if (phase === 'phase_1') {
-            var request = {
-              method: "post",
-              baseURL: config.api_url,
-              url: "/claim_norm.php",
-              data:{
-                  user_id: localStorage.getItem('user_id'),
-                  req_type: 'skip-data',
-                  claim_id: localStorage.claim_id
-              }
-          };
-
-          await axios(request).then((response) => {
-              console.log(response.data);
-              localStorage.finished_norm_annotations = Number(localStorage.finished_norm_annotations) + 1;
-              window.location.reload(false);
-          }).catch((error) => {window.alert(error)})	
-      } else if (phase === 'phase_2') {
-            var request = {
-              method: "post",
-              baseURL: config.api_url,
-              url: "/question_answering.php",
-              data:{
-                  user_id: localStorage.getItem('user_id'),
-                  req_type: 'skip-data',
-                  claim_norm_id: localStorage.claim_norm_id
-              }
-          };
-
-          await axios(request).then((response) => {
-              console.log(response.data);
-              localStorage.finished_qa_annotations = Number(localStorage.finished_qa_annotations) + 1;
-              window.location.reload(false);
-          }).catch((error) => {window.alert(error)})	
-      }
   };
 
-    render() {
-        return (
-            <EntryCard>
-              <ReportDiv data-tour="report">
-                <ReportTextDiv>
-                If the fact checking article displays an error, is behind a paywall, or if it takes more than three minutes to load, please let us know and skip the claim.
-                </ReportTextDiv>
-              
-              <ReportButton variant="contained" color="error" onClick={this.onReport}>
-                  Report &amp; Skip
-              </ReportButton>
-              </ReportDiv>
-            </EntryCard>
-        );
-    }
+  render() {
+    return (
+      <EntryCard>
+        <ReportDiv data-tour="report">
+          <ReportTextDiv>
+            If the fact checking article displays an error, is behind a paywall, or if it takes more than three minutes to load, please let us know and skip the claim.
+          </ReportTextDiv>
+
+          <ReportButton variant="contained" color="error" onClick={this.onReport}>
+            Report &amp; Skip
+          </ReportButton>
+        </ReportDiv>
+      </EntryCard>
+    );
+  }
 }
 
 export default ReportBar;

@@ -480,7 +480,7 @@ class QuestionGeneration extends React.Component {
       <QAPageDiv>
         {!this.state.confirmation ?
           <TourProvider steps={steps}>
-            <QAPageView claim={this.state.claim} />
+            <QAPageView claim={this.state.claim} phase={2}/>
             <QADataField>
               <QuestionGenerationBar
                 handleFieldChange={this.handleFieldChange}
