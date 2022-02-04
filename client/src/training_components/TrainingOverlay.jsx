@@ -27,6 +27,10 @@ const AnnotationView = styled("div")`
     overflow: auto;
 `
 
+const WhiteLink = styled.a`
+  color:white;
+`
+
 const NavButton = styled(IconButton)`
   width:55px;
   height:53px;
@@ -50,11 +54,18 @@ const BarPartBox = styled("div")`
 
 const PaddingTypographBox = styled(Typography)`
   padding: 10px 24px;
-  width: -webkit-calc(100% - 158px)!important;
-  width:    -moz-calc(100% - 158px)!important;
-  width:         calc(100% - 158px)!important;
+  width: -webkit-calc(100% - 258px)!important;
+  width:    -moz-calc(100% - 258px)!important;
+  width:         calc(100% - 258px)!important;
   float:left;
   text-align:center;
+`
+
+const ContinueTypographBox = styled(Typography)`
+  padding: 10px 24px;
+  float:right;
+  color:white;
+  text-decoration:underline;
 `
 
 const ShoveBox = styled("div")`
@@ -563,6 +574,8 @@ class TrainingOverlay extends React.Component {
               {this.canMoveForward() ?
                 <NextButton onClick={this.moveForward}><NavigateNextIcon fontSize="large" style={{ color: 'white' }} /></NextButton>
                 :
+                this.props.finish_path? 
+                <WhiteLink href={this.props.finish_path}><ContinueTypographBox variant="h6" component="div">Continue</ContinueTypographBox></WhiteLink> : 
                 <NextButton onClick={() => { }}><NavigateNextIcon fontSize="large" disabled style={{ color: 'grey' }} /></NextButton>
               }
             </BarPartBox>
