@@ -84,7 +84,7 @@ export default function CountryPickerWithTooltip(props) {
     <ElementContainer>
       <TextFieldContainer>
         {props.readOnly ?
-          <StyledTextField size="small" inputProps={{ readOnly: true }} {...props} value={country_by_code_dict[props.value].name  + " (" + country_by_code_dict[props.value].code + ")"} variant="filled" />
+          <StyledTextField size="small" inputProps={{ readOnly: true }} {...props} value={country_by_code_dict[props.value]? country_by_code_dict[props.value].name  + " (" + country_by_code_dict[props.value].code + ")": ""} variant="filled" />
           :
           <Autocomplete
             value={country_by_code_dict[props.value]}

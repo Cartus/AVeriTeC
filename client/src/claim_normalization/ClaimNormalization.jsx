@@ -145,11 +145,15 @@ class ClaimNormalization extends React.Component {
         })
     }
 
-    async doSubmit() {
+    async doSubmit() {        
+        let is_at_last_claim = true; // TODO fix
+        let should_use_finish_path = this.props.finish_path && is_at_last_claim
+
         // e.preventDefault();
         console.log("Valid: " + validate(this.state));
         if (validate(this.state)) {
             let pc = Number(localStorage.pc);
+            var request = {}
             if (pc !== 0) {
                 localStorage.pc = Number(localStorage.pc) - 1;
                 var request = {
@@ -167,7 +171,12 @@ class ClaimNormalization extends React.Component {
                 await axios(request).then((response) => {
                     console.log(response.data);
                     localStorage.claim_id = 0;
-                    window.location.reload(false);
+
+                    if (should_use_finish_path){
+                        window.location.assign(this.props.finish_path);
+                    }else {
+                        window.location.reload(false);
+                    }
                 }).catch((error) => { window.alert(error) })
             } else {
                 var request = {
