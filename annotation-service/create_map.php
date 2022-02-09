@@ -25,6 +25,7 @@ map_id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 user_id INT(6) NOT NULL,
 claim_id INT(6) NOT NULL,
 skipped INT(6) NOT NULL,
+date_start DATETIME NOT NULL,
 date_made DATETIME NOT NULL
 )";
 

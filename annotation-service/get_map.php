@@ -18,6 +18,7 @@ if ($result->num_rows > 0) {
         echo "claim_id: " . $row["claim_id"]. "<br>";
         echo "skipped: " . $row["skipped"]. "<br>";
         echo "date_made: " . $row["date_made"]. "<br>";
+        echo "date_start: " . $row["date_start"]. "<br>";
     }
 } else {
     echo "0 Results";
