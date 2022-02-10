@@ -38,7 +38,7 @@ class AssignmentControl extends React.Component {
 
         var assignments = "Finished " + this.props.assignments.done + "/" + this.props.assignments.total + "."
 
-        var nextAssignmentLink = "/" + this.props.page
+        var nextAssignmentLink = "/" + this.props.page + "/begin"
 
         return (
             <div className={className}>
@@ -52,11 +52,11 @@ class AssignmentControl extends React.Component {
                         localStorage.setItem('phase', this.props.page);
                         window.location.href=nextAssignmentLink;
                         }}>
-                        Start Next
+                        To Task
                     </StartButton>
                     :
                     <StartButton variant="contained" color="primary" disabled>
-                        Start Next
+                        To Task
                     </StartButton>                    
                     }
                 </EntryCard> 

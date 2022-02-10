@@ -50,62 +50,122 @@ class AdminControl extends react.Component {
     }
 
     componentDidMount() {
-        if (this.props.name == "Users"){
-	    var request = {
+        if (this.props.name == "Users") {
+            var request = {
                 method: "post",
                 baseURL: config.api_url,
                 url: "/admin_control.php",
-                data:{
+                data: {
                     user_id: localStorage.getItem('user_id'),
                     req_type: 'get-user'
                 }
             };
 
             axios(request).then((response) => {
+                var user_data = response.data
+                console.log("User data")
+                console.log(user_data)
+
+                var request = {
+                    method: "get",
+                    baseURL: config.api_url,
+                    url: "/timekeeping.php",
+                    data: {
+                        user_id: localStorage.getItem('user_id'),
+                        req_type: 'group_by_username_and_phase'
+                    }
+                };
+
+                // expecting: list of (username, phase, start_time, load_time, finish_time)
+                //  axios(request).then((response) => { time_data = response.data 
+                var time_data = [
+                    {
+                        "user_name": "michael",
+                        "phase": 1,
+                        "start_time": new Date(Date.now() - 1000 * 120),
+                        "load_time": new Date(Date.now() - 1000 * 90),
+                        "end_time": Date.now()
+                    }
+                ]
+
+                let time_dict = {
+                    1: {},
+                    2: {},
+                    3: {}
+                }
+                let count_dict = {
+                    1: {},
+                    2: {},
+                    3: {}
+                }
+                time_data.forEach(row => {
+                    let time_spent = (row["end_time"] - row["load_time"]) / 60000;
+                    if (row["user_name"] in time_dict[row["phase"]]){
+                        time_dict[row["phase"]][row["user_name"]] += time_spent
+                        count_dict[row["phase"]][row["user_name"]] += 1
+                    } else{
+                        time_dict[row["phase"]][row["user_name"]] = time_spent
+                        count_dict[row["phase"]][row["user_name"]] = 1                        
+                    }
+                });
+
+                user_data = user_data.map(user_dict => {
+                    let new_dict = user_dict      
+                    for (let phase = 1; phase < 4; phase++) {
+                        if (user_dict["user_name"] in time_dict[phase]){
+                            let avg = time_dict[phase][user_dict["user_name"]] / count_dict[phase][user_dict["user_name"]]
+
+                            new_dict["p" + phase + "_time"] = avg
+                        }                       
+                    }        
+                    return new_dict          
+                });
+
                 this.setState({
                     header: [
-                        {field: "id", headerName: "ID", width: 120},
-                        {field: "user_name", headerName: "Name", editable:true, width: 200},
-                        {field: "finished_norm_annotations", headerName: "Phase1 Finished", type: "number", editable: true, width: 250},
-                        {field: "finished_qa_annotations", headerName: "Phase2 Finished", type: "number", editable: true, width: 250},
-                        {field: "finished_valid_annotations", headerName: "Phase3 Finished", type: "number", editable: true, width: 250},
-                        {field: "p1_training", headerName: "P1 Training Agreement", type: "number", editable: true, width: 220},
-                        {field: "p2_training", headerName: "P2 Training Agreement", type: "number", editable: true, width: 220},
-                        {field: "p3_training", headerName: "P3 Training Agreement", type: "number", editable: true, width: 220},
+                        { field: "id", headerName: "ID", width: 120 },
+                        { field: "user_name", headerName: "Name", editable: true, width: 200 },
+                        { field: "finished_norm_annotations", headerName: "Phase1 Finished", type: "number", editable: true, width: 250 },
+                        { field: "finished_qa_annotations", headerName: "Phase2 Finished", type: "number", editable: true, width: 250 },
+                        { field: "finished_valid_annotations", headerName: "Phase3 Finished", type: "number", editable: true, width: 250 },
+                        { field: "p1_time", headerName: "P1 Average Time", type: "number", editable: true, width: 220 },
+                        { field: "p2_time", headerName: "P2 Average Time", type: "number", editable: true, width: 220 },
+                        { field: "p3_time", headerName: "P3 Average Time", type: "number", editable: true, width: 220 },
                     ],
-                    table: response.data
+                    table: user_data
                 })
-            }).catch((error) => {window.alert(error)})	
-        } else if (this.props.name == "Claims"){
+            }).catch((error) => { window.alert(error) })
+        } else if (this.props.name == "Claims") {
             this.setState({
                 header: [
-                    {field: "id", headerName: "ID", width: 120}, 
-                    {field: "claim_url", editable:true, width: 600}, 
-                    {field: "phase_1_annotation_ids", editable: true, width: 250},
-                    {field: "phase_2_annotation_ids", editable: true, width: 250},
-                    {field: "phase_3_annotation_ids", editable: true, width: 250}
+                    { field: "id", headerName: "ID", width: 120 },
+                    { field: "claim_url", editable: true, width: 600 },
+                    { field: "phase_1_annotation_ids", editable: true, width: 250 },
+                    { field: "phase_2_annotation_ids", editable: true, width: 250 },
+                    { field: "phase_3_annotation_ids", editable: true, width: 250 }
                 ],
                 table: [
-                    {id: 0, claim_url: "https://web.archive.org/web/20210717085246/https://www.factcheck.org/2021/07/cdc-data-thus-far-show-covid-19-vaccination-safe-during-pregnancy/", phase_1_annotation_ids: [23, 1, 7], phase_2_annotation_ids: [3,4], phase_3_annotation_ids: [8]},
+                    { id: 0, claim_url: "https://web.archive.org/web/20210717085246/https://www.factcheck.org/2021/07/cdc-data-thus-far-show-covid-19-vaccination-safe-during-pregnancy/", phase_1_annotation_ids: [23, 1, 7], phase_2_annotation_ids: [3, 4], phase_3_annotation_ids: [8] },
                 ]
             })
-        } else if (this.props.name == "Disagreements"){
+        } else if (this.props.name == "Disagreements") {
             this.setState({
                 header: [
-                    {field: "id", headerName: "ID", width: 120}, 
+                    { field: "id", headerName: "ID", width: 120 },
                     {
-                        field: "resolve_link", 
-                        editable: false, 
-                        width: 250, 
+                        field: "resolve_link",
+                        editable: false,
+                        width: 250,
                         renderCell: (cellValues) => {
-                        return <a href={`/disagreement?id=${cellValues.row.id}`}>Resolve</a>;
-                      }},
-                    {field: "resolved_status", type: "boolean", editable: true, width: 250},
-                    {field: "phase_2_annotation_id", type: "number", editable: true, width: 250},
-                    {field: "phase_3_annotation_id", type: "number", editable: true, width: 250}
+                            return <a href={`/disagreement?id=${cellValues.row.id}`}>Resolve</a>;
+                        }
+                    },
+                    { field: "resolved_status", type: "boolean", editable: true, width: 250 },
+                    { field: "phase_2_annotation_id", type: "number", editable: true, width: 250 },
+                    { field: "phase_3_annotation_id", type: "number", editable: true, width: 250 }
                 ],
                 table: [
-                    {id: 0, resolved_status: false, phase_2_annotation_id: 3, phase_3_annotation_id: 8},
+                    { id: 0, resolved_status: false, phase_2_annotation_id: 3, phase_3_annotation_id: 8 },
                 ]
             })
         }
@@ -116,31 +176,31 @@ class AdminControl extends react.Component {
         // I did not implement code to edit the state here. We should make the API call to edit instead, then reload the entire table. That way, if there is a mistake/lost connection to the server/etc, the state will not falsely update.
     }
 
-    makeNewRow(){
+    makeNewRow() {
         // This should be an API call
-        return {id: this.state.table.length}
+        return { id: this.state.table.length }
     }
 
-    deleteRows(){
+    deleteRows() {
         console.log(`Delete entries by ID: ` + JSON.stringify(this.state.selected))
         // I did not implement code to delete from the state here. We should make the API call to edit instead, then reload the entire table. That way, if there is a mistake/lost connection to the server/etc, the state will not falsely update.
     }
 
-    deleteRows(){
+    deleteRows() {
         console.log(`Get JSON list file from the API containing full JSONs for these: ` + JSON.stringify(this.state.selected))
     }
 
-    setSelectedRows(rows){
+    setSelectedRows(rows) {
         this.setState({
             selected: rows
         })
     }
 
-    addRow(){
+    addRow() {
         this.setState({
             table: [
-                  ...this.state.table, 
-                  this.makeNewRow()
+                ...this.state.table,
+                this.makeNewRow()
             ]
         })
     }
@@ -148,13 +208,13 @@ class AdminControl extends react.Component {
     render() {
         let className = ''
 
-        if(this.props.className !== undefined){
+        if (this.props.className !== undefined) {
             className = this.props.className
         }
 
         let datagrid = ""
 
-        if (this.state.header){
+        if (this.state.header) {
             datagrid = <DataGrid
                 rows={this.state.table}
                 columns={this.state.header}
@@ -167,14 +227,14 @@ class AdminControl extends react.Component {
             />
         }
 
-        var hackedDivHeight = 55 * ((this.state.table)? ((this.state.table.length > 10)? 10 : this.state.table.length) + 2 : 0) + 10
+        var hackedDivHeight = 55 * ((this.state.table) ? ((this.state.table.length > 10) ? 10 : this.state.table.length) + 2 : 0) + 10
 
         return (
             <div className={className}>
                 <EntryCard>
                     <Header>{this.props.name}</Header>
                     <div style={{ height: hackedDivHeight, width: '100%' }}>
-                        {datagrid}                        
+                        {datagrid}
                         <AddButton variant="contained" color="primary" onClick={this.addRow}>
                             Add Row
                         </AddButton>
@@ -185,7 +245,7 @@ class AdminControl extends react.Component {
                             Delete Selected
                         </DeleteButton>
                     </div>
-                </EntryCard> 
+                </EntryCard>
             </div>
         );
     }

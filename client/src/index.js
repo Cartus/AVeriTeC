@@ -17,6 +17,7 @@ import MidTrainingControl from './training_components/MidTrainingControl';
 import PostTrainingControl from './training_components/PostTrainingControl';
 import PostPhaseOneScreen from './claim_normalization/PostPhaseOneScreen';
 import PostReviewTrainingControl from './training_components/PostReviewTrainingControl';
+import PrePhaseOneScreen from './claim_normalization/PrePhaseOneScreen';
 
 const routing = (
   <Router>
@@ -35,6 +36,9 @@ const routing = (
           </Route>
           <Route path="/change_password">
             <ChangePassword/>
+          </Route>
+          <Route path="/phase_1/begin">
+            <PrePhaseOneScreen />
           </Route>
           <Route path="/phase_1/completed">
             <PostPhaseOneScreen />
