@@ -42,10 +42,21 @@ if ($result->num_rows > 0) {
         echo "qa_skipped: " . $row["qa_skipped"]. "<br>";
         echo "valid_taken_flag: " . $row["valid_taken_flag"]. "<br>";
         echo "has_qapairs: " . $row["has_qapairs"]. "<br>";
-        echo "lastest: " . $row["latest"]. "<br>";
+        echo "latest: " . $row["latest"]. "<br>";
+        echo "date_start_norm: " . $row["date_start_norm"]. "<br>";
+        echo "date_load_norm: " . $row["date_load_norm"]. "<br>";
         echo "date_made_norm: " . $row["date_made_norm"]. "<br>";
+        echo "date_restart_norm: " . $row["date_restart_norm"]. "<br>";
+        echo "date_modified_norm: " . $row["date_modified_norm"]. "<br>";
+        echo "date_start_qa: " . $row["date_start_qa"]. "<br>";
+        echo "date_load_qa: " . $row["date_load_qa"]. "<br>";
         echo "date_made_qa: " . $row["date_made_qa"]. "<br>";
+        echo "date_restart_qa: " . $row["date_restart_qa"]. "<br>";
+        echo "date_modified_qa: " . $row["date_modified_qa"]. "<br>";
+        echo "date_start_valid: " . $row["date_start_valid"]. "<br>";
         echo "date_made_valid: " . $row["date_made_valid"]. "<br>";
+        echo "date_restart_valid: " . $row["date_restart_valid"]. "<br>";
+        echo "date_modified_valid: " . $row["date_modified_valid"]. "<br>";
         echo "nonfactual: " . $row["nonfactual"]. "<br>";
         echo "<br>";
     }

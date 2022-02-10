@@ -36,7 +36,7 @@ if ($req_type == "next-data"){
     if(mysqli_num_rows($result) > 0){
         $row = $result->fetch_assoc();
         if ($row['current_norm_task'] != 0) {
-            $sql = "SELECT claim_id, web_archive FROM Claims WHERE claim_id = ?";
+            $sql = "SELECT claim_id, web_archive FROM Claims WHERE claim_id=?";
             $stmt= $conn->prepare($sql);
             $stmt->bind_param("i", $row['current_norm_task']);
             $stmt->execute();
@@ -44,6 +44,9 @@ if ($req_type == "next-data"){
             $row = $result->fetch_assoc();
             $output = (["web_archive" => $row['web_archive'], "claim_id" => $row['claim_id']]);
             echo(json_encode($output));
+
+            update_table($conn, "UPDATE Claims SET date_start_norm=? WHERE claim_id=?", 'si', $date, $row['claim_id']);
+
         } else {
             $sql = "SELECT Claims.claim_id, web_archive FROM Claims WHERE Claims.claim_id NOT IN (SELECT Claim_Map.claim_id FROM Claim_Map WHERE user_id = ?)";
             $stmt= $conn->prepare($sql);
@@ -60,6 +63,7 @@ if ($req_type == "next-data"){
                 try {
                     if(!is_null($row['claim_id'])){
                         update_table($conn, "UPDATE Annotators SET current_norm_task=? WHERE user_id=?", 'ii', $row['claim_id'], $user_id);
+                        update_table($conn, "UPDATE Claims SET date_start_norm=? WHERE claim_id=?", 'si', $date, $row['claim_id']);
                     }
                     $conn->commit();
                 }catch (mysqli_sql_exception $exception) {
@@ -77,7 +81,7 @@ if ($req_type == "next-data"){
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $sql = "SELECT claim_id, web_archive, claim_date FROM Claims WHERE (claim_id = (SELECT current_norm_task FROM Annotators WHERE user_id=?))";
+    $sql = "SELECT claim_id, web_archive, claim_date, date_start_norm, date_load_norm FROM Claims WHERE (claim_id = (SELECT current_norm_task FROM Annotators WHERE user_id=?))";
     $stmt= $conn->prepare($sql);
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
@@ -147,6 +151,7 @@ if ($req_type == "next-data"){
             }
 
             $claim_types = $item['claim_types'];
+
             $nonfactual = 0;
             if (in_array("Speculative Claim", $claim_types)) {
                 $nonfactual=1;
@@ -161,7 +166,6 @@ if ($req_type == "next-data"){
             } elseif (in_array("Complex Media Claim", $claim_types)) {
                 $nonfactual=1;
             }
-            echo $nonfactual;
 
             $fact_checker_strategy = $item['fact_checker_strategy'];
             $phase_1_label = $item['phase_1_label'];
@@ -172,13 +176,14 @@ if ($req_type == "next-data"){
 
             update_table($conn, "INSERT INTO Norm_Claims (claim_id, web_archive, user_id_norm, cleaned_claim, speaker, hyperlink, transcription, media_source,
             check_date, claim_types, fact_checker_strategy, phase_1_label, qa_annotators_num, qa_taken_flag, qa_skipped, valid_annotators_num, valid_taken_flag,
-            has_qapairs, date_made_norm, claim_loc, latest, source, nonfactual)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'isisssssssssiiiiiissisi', $row['claim_id'], $row['web_archive'], $user_id, $cleaned_claim, $speaker,
+            has_qapairs, date_made_norm, claim_loc, latest, source, nonfactual, date_start_norm, date_load_norm)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'isisssssssssiiiiiissisiss', $row['claim_id'], $row['web_archive'], $user_id, $cleaned_claim, $speaker,
             $hyperlink, $transcription, $media_source, $check_date, $claim_types, $fact_checker_strategy, $phase_1_label, $qa_annotators_num, $qa_taken_flag, $qa_skipped,
-            $valid_annotators_num, $valid_taken_flag, $has_qapairs, $date, $claim_loc, $latest, $source, $nonfactual);
+            $valid_annotators_num, $valid_taken_flag, $has_qapairs, $date, $claim_loc, $latest, $source, $nonfactual, $row['date_start_norm'], $row['date_load_norm']);
+
         }
 
-        update_table($conn, "INSERT INTO Claim_Map (user_id, claim_id, skipped, date_made) VALUES (?, ?, ?, ?)", 'iiis', $user_id, $row['claim_id'], $skipped, $date);
+        update_table($conn, "INSERT INTO Claim_Map (user_id, claim_id, skipped, date_made, date_start) VALUES (?, ?, ?, ?, ?)", 'iiiss', $user_id, $row['claim_id'], $skipped, $date, $row['date_start_norm']);
         update_table($conn, "UPDATE Annotators SET current_norm_task=0, finished_norm_annotations=finished_norm_annotations+1  WHERE user_id=?",'i', $user_id);
         $conn->commit();
         echo "Submit Successfully!";
@@ -195,7 +200,7 @@ if ($req_type == "next-data"){
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $sql = "SELECT claim_id, skipped FROM Claim_Map WHERE user_id = ? ORDER BY date_made DESC LIMIT 1 OFFSET ?";
+    $sql = "SELECT claim_id, skipped FROM Claim_Map WHERE user_id = ? ORDER BY date_start DESC LIMIT 1 OFFSET ?";
     $stmt= $conn->prepare($sql);
     $stmt->bind_param("ii", $user_id, $offset);
     $stmt->execute();
@@ -260,6 +265,9 @@ if ($req_type == "next-data"){
 
             $output = (["claim_id" => $row['claim_id'], "web_archive" => $web_archive, "entries" => $entries]);
             echo(json_encode($output));
+
+            update_table($conn, "UPDATE Claims SET date_restart_norm=? WHERE claim_id=?", 'si', $date, $row['claim_id']);
+
         } else {
             echo "0 Results";
         }
@@ -279,7 +287,7 @@ if ($req_type == "next-data"){
     $stmt->bind_param("iii", $latest, $claim_id, $user_id);
     $stmt->execute();
 
-    $sql = "SELECT web_archive, claim_date FROM Claims WHERE claim_id = ?";
+    $sql = "SELECT web_archive, claim_date, date_restart_norm, date_load_norm FROM Claims WHERE claim_id = ?";
     $stmt= $conn->prepare($sql);
     $stmt->bind_param("i", $claim_id);
     $stmt->execute();
@@ -374,13 +382,13 @@ if ($req_type == "next-data"){
 
             update_table($conn, "INSERT INTO Norm_Claims (claim_id, web_archive, user_id_norm, cleaned_claim, speaker, hyperlink, transcription, media_source,
             check_date, claim_types, fact_checker_strategy, phase_1_label, qa_annotators_num, qa_taken_flag, qa_skipped, valid_annotators_num, valid_taken_flag,
-            has_qapairs, date_modified_norm, claim_loc, latest, source, nonfactual)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'isisssssssssiiiiiissisi', $claim_id, $row['web_archive'], $user_id, $cleaned_claim, $speaker,
+            has_qapairs, date_modified_norm, claim_loc, latest, source, nonfactual, date_restart_norm, date_load_norm)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'isisssssssssiiiiiissisiss', $claim_id, $row['web_archive'], $user_id, $cleaned_claim, $speaker,
             $hyperlink, $transcription, $media_source, $check_date, $claim_types, $fact_checker_strategy, $phase_1_label, $qa_annotators_num, $qa_taken_flag, $qa_skipped,
-            $valid_annotators_num, $valid_taken_flag, $has_qapairs, $date, $claim_loc, $latest, $source, $nonfactual);
+            $valid_annotators_num, $valid_taken_flag, $has_qapairs, $date, $claim_loc, $latest, $source, $nonfactual, $row['date_restart_norm'], $row['date_load_norm']);
         }
 
-        update_table($conn, "UPDATE Claim_Map SET skipped=0, date_made=? WHERE user_id=? AND claim_id=?", 'sii', $date, $user_id, $claim_id);
+        update_table($conn, "UPDATE Claim_Map SET skipped=0, date_made=? WHERE user_id=? AND claim_id=?", 'ssii', $date, $user_id, $claim_id);
         $conn->commit();
         echo "Resubmit Successfully!";
     }catch (mysqli_sql_exception $exception) {
@@ -400,7 +408,7 @@ if ($req_type == "next-data"){
 
     $conn->begin_transaction();
     try {
-        update_table($conn, "INSERT INTO Claim_Map (user_id, claim_id, skipped, date_made) VALUES (?, ?, ?, ?)", 'iiis', $user_id, $claim_id, $skipped, $date);
+        update_table($conn, "INSERT INTO Claim_Map (user_id, claim_id, skipped, date_start, date_made) VALUES (?, ?, ?, ?, ?)", 'iiiss', $user_id, $claim_id, $skipped, $date, $date);
         update_table($conn, "UPDATE Annotators SET current_norm_task=0, skipped_norm_data=skipped_norm_data+1, finished_norm_annotations=finished_norm_annotations+1 WHERE user_id=?",'i', $user_id);
         $conn->commit();
         echo "Skip Successfully!";

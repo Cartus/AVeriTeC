@@ -50,6 +50,7 @@ class LoadingIFrame extends React.Component {
       });
     }
 
+    // let phase = localStorage.getItem('phase');
     var request = {
       method: "post",
       baseURL: config.api_url,
@@ -57,9 +58,10 @@ class LoadingIFrame extends React.Component {
       data: {
         user_id: localStorage.getItem('user_id'),
         claim_id: localStorage.claim_id,
-        loading_start_time: loading_start_time,
-        loading_stop_time: loading_stop_time,
-        seconds_taken: seconds_taken,
+        claim_norm_id: localStorage.claim_norm_id,
+        // loading_start_time: loading_start_time,
+        // loading_stop_time: loading_stop_time,
+        // seconds_taken: seconds_taken,
         phase: this.props.phase
       }
     };
