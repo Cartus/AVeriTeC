@@ -54,6 +54,9 @@ function validate(content) {
 }
 
 class ClaimNormalization extends React.Component {
+
+    final_idx = 10;
+
     constructor(props) {
         super(props);
 
@@ -145,8 +148,10 @@ class ClaimNormalization extends React.Component {
         })
     }
 
-    async doSubmit() {        
-        let is_at_last_claim = true; // TODO fix
+    async doSubmit() {    
+        var current_idx = Number(localStorage.finished_norm_annotations) + 1 - Number(localStorage.pc);
+    
+        let is_at_last_claim = current_idx === this.final_idx;
         let should_use_finish_path = this.props.finish_path && is_at_last_claim
 
         // e.preventDefault();
@@ -193,7 +198,12 @@ class ClaimNormalization extends React.Component {
                 await axios(request).then((response) => {
                     localStorage.finished_norm_annotations = Number(localStorage.finished_norm_annotations) + 1;
                     console.log(response.data);
-                    window.location.reload(false);
+                    
+                    if (should_use_finish_path){
+                        window.location.assign(this.props.finish_path);
+                    }else {
+                        window.location.reload(false);
+                    }
                 }).catch((error) => { window.alert(error) })
             }
         } else {
@@ -289,7 +299,6 @@ class ClaimNormalization extends React.Component {
     render() {
 
         var current_idx = Number(localStorage.finished_norm_annotations) + 1 - Number(localStorage.pc);;
-        var final_idx = 10;
 
         if (!localStorage.getItem('login')) {
             return <Redirect to='/' />;
@@ -337,7 +346,7 @@ class ClaimNormalization extends React.Component {
                     <NEntryBar
                         handleFieldChange={this.handleFieldChange}
                         current_idx={current_idx}
-                        final_idx={final_idx}
+                        final_idx={this.final_idx}
                         claim={this.state.claim}
                         entries={this.state.entries}
                         addEntry={this.addEntry}

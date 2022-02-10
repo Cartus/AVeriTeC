@@ -18,6 +18,9 @@ import PostTrainingControl from './training_components/PostTrainingControl';
 import PostPhaseOneScreen from './claim_normalization/PostPhaseOneScreen';
 import PostReviewTrainingControl from './training_components/PostReviewTrainingControl';
 import PrePhaseOneScreen from './claim_normalization/PrePhaseOneScreen';
+import PostPhaseTwoScreen from './question_generation/PostPhaseTwoScreen';
+import PrePhaseTwoScreen from './question_generation/PrePhaseTwoScreen';
+import PrePhaseThreeScreen from './verdict_validation/PrePhaseThreeScreen';
 
 const routing = (
   <Router>
@@ -46,20 +49,29 @@ const routing = (
           <Route path="/phase_1">
             <ClaimNormalization finish_path="/phase_1/completed/"/>
           </Route>
+          <Route path="/phase_2/begin">
+            <PrePhaseTwoScreen />
+          </Route>
+          <Route path="/phase_2/completed">
+            <PostPhaseTwoScreen />
+          </Route>
           <Route path="/phase_2">
-            <QuestionGeneration />
+            <QuestionGeneration finish_path="/phase_2/completed/"/>
+          </Route>
+          <Route path="/phase_3/begin">
+            <PrePhaseThreeScreen />
+          </Route>
+          <Route path="/phase_3/completed">
+            <PostPhaseTwoScreen />
           </Route>
           <Route path="/phase_3">
-            <VerdictValidation />
+            <VerdictValidation finish_path="/phase_2/completed/"/>
           </Route>
           <Route path="/disagreement">
             <DisagreementResolution />
           </Route>
           <Route path="/control">
             <AnnotatorControl />
-          </Route>
-          <Route path="/training_review/phase_1">
-            <TrainingOverlay phase={1}/>
           </Route>
 
           <Route path="/training/phase_1/task_1_start">
@@ -84,17 +96,48 @@ const routing = (
             <PostTrainingControl phase={1}/>
           </Route>
 
-          <Route path="/training/phase_2">
-            <TrainingOverlay phase={2}/>
+          <Route path="/training/phase_2/task_1_start">
+            <PreTrainingControl phase={2} taskLink="/training/phase_2/task_1"/>
           </Route>
-          <Route path="/training/phase_3">
-            <TrainingOverlay phase={3}/>
+          <Route path="/training/phase_2/task_1">
+            <QuestionGeneration finish_path="/training/phase_2/mid"/>
           </Route>
-          <Route path="/start_training/">
-            <PreTrainingControl phase={1}/>
+          <Route path="/training/phase_2/mid">
+            <MidTrainingControl phase={2} taskLink="/training/phase_2/mid_review"/>
           </Route>
-          <Route path="/post_training/">
-            <PostTrainingControl phase={1}/>
+          <Route path="/training/phase_2/mid_review">
+            <TrainingOverlay phase={2} finish_path="/training/phase_2/task_2_start"/>
+          </Route>
+          <Route path="/training/phase_2/task_2_start">
+            <PostReviewTrainingControl phase={2} taskLink="/training/phase_2/task_2"/>
+          </Route>
+          <Route path="/training/phase_2/task_2">
+            <QuestionGeneration finish_path="/training/phase_2/complete"/>
+          </Route>
+          <Route path="/training/phase_2/complete">
+            <PostTrainingControl phase={2}/>
+          </Route>
+
+          <Route path="/training/phase_3/task_1_start">
+            <PreTrainingControl phase={3} taskLink="/training/phase_3/task_1"/>
+          </Route>
+          <Route path="/training/phase_3/task_1">
+            <VerdictValidation finish_path="/training/phase_3/mid"/>
+          </Route>
+          <Route path="/training/phase_3/mid">
+            <MidTrainingControl phase={3} taskLink="/training/phase_3/mid_review"/>
+          </Route>
+          <Route path="/training/phase_3/mid_review">
+            <TrainingOverlay phase={3} finish_path="/training/phase_3/task_2_start"/>
+          </Route>
+          <Route path="/training/phase_3/task_2_start">
+            <PostReviewTrainingControl phase={3} taskLink="/training/phase_3/task_2"/>
+          </Route>
+          <Route path="/training/phase_3/task_2">
+            <VerdictValidation finish_path="/training/phase_3/complete"/>
+          </Route>
+          <Route path="/training/phase_3/complete">
+            <PostTrainingControl phase={3}/>
           </Route>
       </Switch>
   </Router>

@@ -12,13 +12,13 @@ if ($conn->connect_error) {
 }
 
 $sql = "DROP TABLE Norm_Claims";
- 
+
 if ($conn->query($sql) === TRUE) {
     echo "Table dropped successfully";
 } else {
     echo "Error creating table: " . $conn->error;
 }
- 
+
 
 // sql to create table
 $sql = "CREATE TABLE Norm_Claims (
@@ -53,12 +53,22 @@ qa_skipped INT(6) NOT NULL,
 qa_skipped_by INT(6),
 valid_taken_flag INT(6) NOT NULL,
 latest INT(6) NOT NULL,
+date_start_norm DATETIME,
+date_load_norm DATETIME,
 date_made_norm DATETIME,
+date_restart_norm DATETIME,
 date_modified_norm DATETIME,
+date_start_qa DATETIME,
+date_load_qa DATETIME,
 date_made_qa DATETIME,
+date_restart_qa DATETIME,
+date_restart_cache_qa DATETIME,
+date_load_cache_qa DATETIME,
 date_modified_qa DATETIME,
+date_start_valid DATETIME,
 date_made_valid DATETIME,
-date_modified_valid DATETIME，
+date_restart_valid DATETIME,
+date_modified_valid DATETIME,
 nonfactual INT(6) NOT NULL
 )";
 

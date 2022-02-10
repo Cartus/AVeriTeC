@@ -72,6 +72,9 @@ function validate(content) {
 }
 
 class VerdictValidation extends React.Component {
+
+    final_idx = 5
+
     constructor(props) {
         super(props);
 
@@ -195,6 +198,11 @@ class VerdictValidation extends React.Component {
     }
 
     async doSubmit() {
+        var current_idx = Number(localStorage.finished_valid_annotations) + 1 - Number(localStorage.pc);
+        
+        let is_at_last_claim = current_idx === this.final_idx;
+        let should_use_finish_path = this.props.finish_path && is_at_last_claim
+        
         if (validate(this.state)) {
             let pc = Number(localStorage.pc);
             if (pc !== 0) {
@@ -215,7 +223,12 @@ class VerdictValidation extends React.Component {
                 await axios(request).then((response) => {
                     console.log(response.data);
                     localStorage.claim_norm_id = 0;
-                    window.location.reload(false);
+                    
+                    if (should_use_finish_path){
+                        window.location.assign(this.props.finish_path);
+                    }else {
+                        window.location.reload(false);
+                    }
                 }).catch((error) => { window.alert(error) })
             } else {
                 var request = {
@@ -233,7 +246,12 @@ class VerdictValidation extends React.Component {
                 await axios(request).then((response) => {
                     console.log(response.data);
                     localStorage.finished_valid_annotations = Number(localStorage.finished_valid_annotations) + 1;
-                    window.location.reload(false);
+                    
+                    if (should_use_finish_path){
+                        window.location.assign(this.props.finish_path);
+                    }else {
+                        window.location.reload(false);
+                    }
                 }).catch((error) => { window.alert(error) })
             }
         } else {
@@ -304,14 +322,13 @@ class VerdictValidation extends React.Component {
         }        
 
         var current_idx = Number(localStorage.finished_valid_annotations) + 1 - Number(localStorage.pc);
-        var final_idx = 20;
 
         return (
             <div>
                 <TourProvider steps={steps}>
                     <VerdictValidationBar 
                     current_idx={current_idx} 
-                    final_idx={final_idx} 
+                    final_idx={this.final_idx} 
                     claim={this.state.claim} 
                     valid={this.state.valid} 
                     annotation={this.state.annotation} 

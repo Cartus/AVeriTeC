@@ -112,6 +112,9 @@ function validate(content) {
 }
 
 class QuestionGeneration extends React.Component {
+
+  final_idx = 5
+
   constructor(props) {
     super(props);
 
@@ -334,6 +337,11 @@ class QuestionGeneration extends React.Component {
   }
 
   async doSubmit() {
+    var current_idx = Number(localStorage.finished_qa_annotations) + 1 - Number(localStorage.pc);
+
+    let is_at_last_claim = current_idx === this.final_idx;
+    let should_use_finish_path = this.props.finish_path && is_at_last_claim
+
     // e.preventDefault();
     console.log("Valid: " + validate(this.state));
     if (validate(this.state)) {
@@ -359,7 +367,13 @@ class QuestionGeneration extends React.Component {
         await axios(request).then((response) => {
           console.log(response.data);
           localStorage.claim_norm_id = 0;
-          window.location.reload(false);
+          
+          if (should_use_finish_path){
+            console.log("redirect")
+            window.location.assign(this.props.finish_path);
+          } else {
+            window.location.reload(false);
+          }
         }).catch((error) => { window.alert(error) })
       } else {
         // console.log(this.state.added_entries);
@@ -380,7 +394,12 @@ class QuestionGeneration extends React.Component {
         await axios(request).then((response) => {
           localStorage.finished_qa_annotations = Number(localStorage.finished_qa_annotations) + 1;
           console.log(response.data);
-          window.location.reload(false);
+          
+          if (should_use_finish_path){
+            window.location.assign(this.props.finish_path);
+          } else {
+            window.location.reload(false);
+          }
         }).catch((error) => { window.alert(error) })
       }
 
@@ -474,7 +493,6 @@ class QuestionGeneration extends React.Component {
     ];
 
     var current_idx = Number(localStorage.finished_qa_annotations) + 1 - Number(localStorage.pc);
-    var final_idx = 20;
 
     return (
       <QAPageDiv>
@@ -485,7 +503,7 @@ class QuestionGeneration extends React.Component {
               <QuestionGenerationBar
                 handleFieldChange={this.handleFieldChange}
                 current_idx={current_idx}
-                final_idx={final_idx}
+                final_idx={this.final_idx}
                 claim={this.state.claim}
                 entries={this.state.entries}
                 addEntry={this.addEntry}
@@ -500,7 +518,7 @@ class QuestionGeneration extends React.Component {
             {this.state.userIsFirstVisiting ? <TourWrapper /> : ""}
           </TourProvider>
           :
-          <QuestionGenerationConfirmation confirmFunction={this.doSubmit} cancelFunction={this.cancelConfirmation} current_idx={current_idx} final_idx={final_idx} claim={this.state.claim} entries={this.state.entries} label={this.state.qa_pair_footer.label} footer={this.state.qa_pair_footer} changeLabel={this.changeLabel} />
+          <QuestionGenerationConfirmation confirmFunction={this.doSubmit} cancelFunction={this.cancelConfirmation} current_idx={current_idx} final_idx={this.final_idx} claim={this.state.claim} entries={this.state.entries} label={this.state.qa_pair_footer.label} footer={this.state.qa_pair_footer} changeLabel={this.changeLabel} />
         }
       </QAPageDiv>
     );
