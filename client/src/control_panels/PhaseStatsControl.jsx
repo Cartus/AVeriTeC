@@ -1,113 +1,158 @@
-import React from 'react';
+import Card from '@material-ui/core/Card';
 import styled from 'styled-components';
-import UserPanel from './UserPanel';
-import AssignmentControl from './AssignmentControl';
-import AdminControl from './AdminControl';
-import {Redirect} from "react-router-dom";
-import TrainingControl from './TrainingControl';
+import * as react from "react";
+import { DataGrid } from '@mui/x-data-grid';
+import Button from '@material-ui/core/Button';
+import DeleteIcon from '@material-ui/icons/Delete';
+import axios from "axios";
+import config from "../config.json"
+import {
+    AreaChart,
+    Area,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip, LineChart, Line, Legend, ResponsiveContainer
+} from "recharts";
 
-const AssignmentField = styled(AssignmentControl)`
-    width:33.333%;
-    float:left;
-
-    @media (max-width: 640px)  {
-        width:320px;
-    }
-
-    @media (min-width: 640px) and (max-width: 960px)  {
-        width:50%;
-    }
-    
-    @media (min-width: 960px)  {
-        width:33.333%;
-    }
+const EntryCard = styled(Card)`
+    margin:10px;
+    padding: 0px 20px 5px 20px;
 `
 
-const TrainingField = styled(TrainingControl)`
-    width:33.333%;
-    float:left;
-
-    @media (max-width: 640px)  {
-        width:320px;
-    }
-
-    @media (min-width: 640px) and (max-width: 960px)  {
-        width:50%;
-    }
-    
-    @media (min-width: 960px)  {
-        width:33.333%;
-    }
+const Header = styled.h4`
 `
 
-const AdminPanel = styled.div`
-    width: 100%;
+const AddButton = styled(Button)`
+float:left;
+width:200px;
+margin:10px 0px!important;
+`
+
+const JsonButton = styled(Button)`
+float:left;
+width:200px;
+margin:10px!important;
+`
+
+const DeleteButton = styled(Button)`
+float:right;
+width:200px;
+margin:10px 0px!important;
+`
+
+const ChartBox = styled("div")`
+    width: 510px;
     float: left;
 `
 
-class AnnotatorControl extends React.Component {
+
+class PhaseStatsControl extends react.Component {
     constructor(props) {
         super(props);
-        
+
         this.state = {
-            user : {
-                username: localStorage.getItem('user_name'),
-                is_admin: Number(localStorage.getItem('is_admin'))
-            },
-            assignments:{
-                phase_1: {
-                    done: localStorage.finished_norm_annotations,
-                    total: 20
-                },
-                phase_2: {
-                    done: localStorage.finished_qa_annotations,
-                    total: 20
-                },
-                phase_3: {
-                    done: localStorage.finished_valid_annotations,
-                    total: 20
-                },
-                phase_1_training: {
-                    done: 0,
-                    total: 10
-                },
-                phase_2_training: {
-                    done: 2,
-                    total: 10
-                },
-                phase_3_training: {
-                    done: 0,
-                    total: 10
-                }
+            avg_times: {
+                load: 0.87,
+                finish: 1.9
             }
         }
-      }
+    }
+
+    componentDidMount() {
+
+    }
 
     render() {
-	if (!localStorage.getItem('login')) {
-            return <Redirect to='/'/>;
-        } 
+        let className = ''
+
+        if (this.props.className !== undefined) {
+            className = this.props.className
+        }
+
+        const timekeeping_avg = {
+            Task: 4.2,
+            Loading: 1.2
+        }
+
+        const annotation_data = [
+            {
+                name: 'Week 1',
+                "Annotations completed": 4000,
+            },
+            {
+                name: 'Week 2',
+                "Annotations completed": 5000,
+            },
+            {
+                name: 'Week 3',
+                "Annotations completed": 6000,
+            },
+            {
+                name: 'Week 4',
+                "Annotations completed": 8000,
+            },
+            {
+                name: 'Week 5',
+                "Annotations completed": 14000,
+            },
+            {
+                name: 'Week 6',
+                "Annotations completed": 15000,
+            },
+            {
+                name: 'Week 7',
+                "Annotations completed": 15000,
+            },
+            {
+                name: 'Week 8',
+                "Annotations completed": 16000,
+            },
+        ];
 
         return (
-            <div>
-                <UserPanel user={this.state.user}/>
-                <div>
-                    {(this.state.assignments.phase_1.total > 0)?<AssignmentField name="Claim Normalization" page="phase_1" assignments={this.state.assignments.phase_1}/>: ""}
-                    {(this.state.assignments.phase_2.total > 0)?<AssignmentField name="Question Generation" page="phase_2" assignments={this.state.assignments.phase_2}/>: ""}
-                    {(this.state.assignments.phase_3.total > 0)?<AssignmentField name="Quality Control" page="phase_3" assignments={this.state.assignments.phase_3}/>: ""}
-                </div>
-                <div>
-                    {(this.state.assignments.phase_1_training.total > 0)?<TrainingField name="Claim Normalization" page="phase_1" assignments={this.state.assignments.phase_1_training}/>: ""}
-                    {(this.state.assignments.phase_2_training.total > 0)?<TrainingField name="Question Generation" page="phase_2" assignments={this.state.assignments.phase_2_training}/>: ""}
-                    {(this.state.assignments.phase_3_training.total > 0)?<TrainingField name="Quality Control" page="phase_3" assignments={this.state.assignments.phase_3_training}/>: ""}
-                </div>
-                {(this.state.user.is_admin === 1)? <AdminPanel>
-                    <AdminControl name="Users"/>
-                    <AdminControl name="Disagreements"/>
-                </AdminPanel> : ""}
-            </div>
+            <div className={className}>
+                <EntryCard>
+                    <Header>{this.props.name}</Header>
+                    <ChartBox>
+                        <span>
+                            Average time spent loading: {timekeeping_avg.Loading}
+                        </span>
+                        <br/>
+                        <br/>
+                        <span>
+                            Average time spent on task: {timekeeping_avg.Task}
+                        </span>
+                        <br/>
+                        <br/>
+                        <span>
+                            Performance metrics:
+                        </span>
+                    </ChartBox>
+                    <ChartBox>
+                        <LineChart
+                            width={500}
+                            height={300}
+                            data={annotation_data}
+                            margin={{
+                                top: 5,
+                                right: 30,
+                                left: 20,
+                                bottom: 5,
+                            }}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="name" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Line type="monotone" dataKey="Annotations completed" stroke="#8884d8" activeDot={{ r: 8 }} />
+                        </LineChart>
+                    </ChartBox>
+                </EntryCard >
+            </div >
         );
-      }
+    }
 }
 
-export default AnnotatorControl;
+export default PhaseStatsControl;

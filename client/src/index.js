@@ -21,6 +21,7 @@ import PrePhaseOneScreen from './claim_normalization/PrePhaseOneScreen';
 import PostPhaseTwoScreen from './question_generation/PostPhaseTwoScreen';
 import PrePhaseTwoScreen from './question_generation/PrePhaseTwoScreen';
 import PrePhaseThreeScreen from './verdict_validation/PrePhaseThreeScreen';
+import UserDetailsOverview from './control_panels/UserDetailsOverview';
 
 const routing = (
   <Router>
@@ -72,6 +73,9 @@ const routing = (
           </Route>
           <Route path="/control">
             <AnnotatorControl />
+          </Route>
+          <Route path="/user">
+            <UserDetailsOverview />
           </Route>
 
           <Route path="/training/phase_1/task_1_start">

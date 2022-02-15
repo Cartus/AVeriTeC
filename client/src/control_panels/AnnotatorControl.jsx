@@ -5,6 +5,7 @@ import AssignmentControl from './AssignmentControl';
 import AdminControl from './AdminControl';
 import {Redirect} from "react-router-dom";
 import TrainingControl from './TrainingControl';
+import PhaseStatsControl from './PhaseStatsControl';
 
 const AssignmentField = styled(AssignmentControl)`
     width:33.333%;
@@ -102,8 +103,10 @@ class AnnotatorControl extends React.Component {
                     {(this.state.assignments.phase_3_training.total > 0)?<TrainingField name="Quality Control" page="phase_3" assignments={this.state.assignments.phase_3_training}/>: ""}
                 </div>
                 {(this.state.user.is_admin === 1)? <AdminPanel>
-                    <AdminControl name="Users"/>
-                    <AdminControl name="Disagreements"/>
+                    <AdminControl name="Users"/> 
+                    <PhaseStatsControl phase={1} name={"Analysis | Claim Normalization"}/>
+                    <PhaseStatsControl phase={2} name={"Analysis | Question Generation"}/>
+                    <PhaseStatsControl phase={3} name={"Analysis | Quality Control"}/>
                 </AdminPanel> : ""}
             </div>
         );

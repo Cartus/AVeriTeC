@@ -66,74 +66,37 @@ class AdminControl extends react.Component {
                 console.log("User data")
                 console.log(user_data)
 
-                var request = {
-                    method: "get",
-                    baseURL: config.api_url,
-                    url: "/timekeeping.php",
-                    data: {
-                        user_id: localStorage.getItem('user_id'),
-                        req_type: 'group_by_username_and_phase'
-                    }
-                };
-
-                // expecting: list of (username, phase, start_time, load_time, finish_time)
-                //  axios(request).then((response) => { time_data = response.data 
-                var time_data = [
-                    {
-                        "user_name": "michael",
-                        "phase": 1,
-                        "start_time": new Date(Date.now() - 1000 * 120),
-                        "load_time": new Date(Date.now() - 1000 * 90),
-                        "end_time": Date.now()
-                    }
-                ]
-
-                let time_dict = {
-                    1: {},
-                    2: {},
-                    3: {}
-                }
-                let count_dict = {
-                    1: {},
-                    2: {},
-                    3: {}
-                }
-                time_data.forEach(row => {
-                    let time_spent = (row["end_time"] - row["load_time"]) / 60000;
-                    if (row["user_name"] in time_dict[row["phase"]]){
-                        time_dict[row["phase"]][row["user_name"]] += time_spent
-                        count_dict[row["phase"]][row["user_name"]] += 1
-                    } else{
-                        time_dict[row["phase"]][row["user_name"]] = time_spent
-                        count_dict[row["phase"]][row["user_name"]] = 1                        
-                    }
-                });
-
+                // Please update this: 
                 user_data = user_data.map(user_dict => {
-                    let new_dict = user_dict      
-                    for (let phase = 1; phase < 4; phase++) {
-                        if (user_dict["user_name"] in time_dict[phase]){
-                            let avg = time_dict[phase][user_dict["user_name"]] / count_dict[phase][user_dict["user_name"]]
-
-                            new_dict["p" + phase + "_time"] = avg
-                        }                       
-                    }        
-                    return new_dict          
+                    let new_dict = user_dict
+                    new_dict["p1_task_time"] = 8.2
+                    new_dict["p2_task_time"] = 17.5
+                    return new_dict
                 });
+                // ----------- 
 
                 this.setState({
                     header: [
-                        { field: "id", headerName: "ID", width: 120 },
+                        {
+                            field: "id",
+                            headerName: "ID",
+                            width: 120,
+                            renderCell: (cellValues) => {
+                                return <a href={`/user?id=${cellValues.row.id}`}>{cellValues.row.id}</a>;
+                            }
+                        },
                         { field: "user_name", headerName: "Name", editable: true, width: 200 },
-                        { field: "finished_norm_annotations", headerName: "Phase1 Finished", type: "number", editable: true, width: 250 },
-                        { field: "finished_qa_annotations", headerName: "Phase2 Finished", type: "number", editable: true, width: 250 },
-                        { field: "finished_valid_annotations", headerName: "Phase3 Finished", type: "number", editable: true, width: 250 },
-                        { field: "p1_time", headerName: "P1 Average Time", type: "number", editable: true, width: 220 },
-                        { field: "p2_time", headerName: "P2 Average Time", type: "number", editable: true, width: 220 },
-                        { field: "p3_time", headerName: "P3 Average Time", type: "number", editable: true, width: 220 },
+                        { field: "finished_norm_annotations", headerName: "Phase1 Finished", type: "number", editable: false, width: 250 },
+                        { field: "finished_qa_annotations", headerName: "Phase2 Finished", type: "number", editable: false, width: 250 },
+                        { field: "finished_valid_annotations", headerName: "Phase3 Finished", type: "number", editable: false, width: 250 },
+                        { field: "p1_task_time", headerName: "P1 Average Time", type: "number", editable: false, width: 220 },
+                        { field: "p2_task_time", headerName: "P2 Average Time", type: "number", editable: false, width: 220 },
+                        { field: "p3_task_time", headerName: "P3 Average Time", type: "number", editable: false, width: 220 },
                     ],
                     table: user_data
                 })
+
+
             }).catch((error) => { window.alert(error) })
         } else if (this.props.name == "Claims") {
             this.setState({
@@ -178,16 +141,12 @@ class AdminControl extends react.Component {
 
     makeNewRow() {
         // This should be an API call
-        return { id: this.state.table.length }
+        return { id: this.state.table.length + 1 }
     }
 
     deleteRows() {
         console.log(`Delete entries by ID: ` + JSON.stringify(this.state.selected))
         // I did not implement code to delete from the state here. We should make the API call to edit instead, then reload the entire table. That way, if there is a mistake/lost connection to the server/etc, the state will not falsely update.
-    }
-
-    deleteRows() {
-        console.log(`Get JSON list file from the API containing full JSONs for these: ` + JSON.stringify(this.state.selected))
     }
 
     setSelectedRows(rows) {
@@ -238,9 +197,11 @@ class AdminControl extends react.Component {
                         <AddButton variant="contained" color="primary" onClick={this.addRow}>
                             Add Row
                         </AddButton>
-                        <JsonButton variant="contained" color="primary" onClick={this.downloadJsons}>
-                            Download JSONs
-                        </JsonButton>
+                        {
+                            //<JsonButton variant="contained" color="primary" onClick={this.downloadJsons}>
+                            //   Download JSONs
+                            //</JsonButton>
+                        }
                         <DeleteButton variant="contained" color="error" startIcon={<DeleteIcon />} onClick={this.deleteRows}>
                             Delete Selected
                         </DeleteButton>
