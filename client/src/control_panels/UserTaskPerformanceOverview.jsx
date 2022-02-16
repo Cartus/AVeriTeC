@@ -27,15 +27,52 @@ const ChartBox = styled("div")`
 
 export default function UserTaskPerformanceOverview(props) {
 
-    var chartData = []
 
+    const metricChartKeys = {
+        average_training_label_agreement: "Training label agreement",
+        average_training_claim_overlap_rouge: "Training claim ROUGE-L",
+        average_training_strategy_f1: "Training strategy f1",
+        average_training_claim_type_f1: "Training type f1",
+        average_training_question_overlap_rouge: "Training question ROUGE-L",
+        average_training_answer_overlap_rouge: "Training answer ROUGE-L",
+        average_agreement_with_p3_annotators: "Label agreement w/ P3",
+        average_agreement_with_p2_annotators: "Label agreement w/ P2",
+    }
+
+    
+
+    var chartData = []
     if (props.userStats) {
         Object.keys(props.userStats).forEach(key => {
-            if (key in props.userStats && key in props.averageStats && key in props.chartKeys) {
+            if (key in props.userStats && key in props.averageStats && key in metricChartKeys) {
                 chartData = [
                     ...chartData,
                     {
-                        name: props.chartKeys[key],
+                        name: metricChartKeys[key],
+                        user: props.userStats[key],
+                        average: props.averageStats[key]
+                    }
+                ]
+            }
+        })
+    }
+
+    const countChartKeys = {
+        annotations_done: "Annotations completed",
+        annotations_assigned: "Annotations assigned",
+        claims_skipped: "Annotations skipped",
+        annotations_timed_out: "Annotations timed out",
+        speed_traps_hit: "Speed traps hit",
+    }
+
+    var countChartData = []
+    if (props.userStats) {
+        Object.keys(props.userStats).forEach(key => {
+            if (key in props.userStats && key in props.averageStats && key in countChartKeys) {
+                countChartData = [
+                    ...countChartData,
+                    {
+                        name: countChartKeys[key],
                         user: props.userStats[key],
                         average: props.averageStats[key]
                     }
@@ -86,6 +123,30 @@ export default function UserTaskPerformanceOverview(props) {
             </ChartBox>
             :
             ""}
+        {countChartData.length > 0 ?
+            <ChartBox>
+                <BarChart
+                    width={225 * countChartData.length + 100}
+                    height={300}
+                    data={countChartData}
+                    margin={{
+                        top: 5,
+                        right: 30,
+                        left: 20,
+                        bottom: 5,
+                    }}
+                >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar name="User" dataKey="user" fill="#8884d8" />
+                    <Bar name="Average" dataKey="average" fill="#82ca9d" />
+                </BarChart>
+            </ChartBox>
+            :
+            ""}
         {timeData.length > 0 ?
             <ChartBox>
                 <BarChart
@@ -101,10 +162,10 @@ export default function UserTaskPerformanceOverview(props) {
                 >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
-                    <YAxis unit=" s"/>
+                    <YAxis unit=" s" />
                     <Tooltip />
                     <Legend />
-                    <Bar name="User" dataKey="user" fill="#8884d8" unit=" s"/>
+                    <Bar name="User" dataKey="user" fill="#8884d8" unit=" s" />
                     <Bar name="Average" dataKey="average" fill="#82ca9d" unit=" s" />
                 </BarChart>
             </ChartBox>

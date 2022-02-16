@@ -12,7 +12,8 @@ import {
     XAxis,
     YAxis,
     CartesianGrid,
-    Tooltip, LineChart, Line, Legend, ResponsiveContainer
+    Tooltip, LineChart, Line, Legend, ResponsiveContainer,
+    BarChart, Bar, Cell
 } from "recharts";
 
 const EntryCard = styled(Card)`
@@ -42,7 +43,6 @@ margin:10px 0px!important;
 `
 
 const ChartBox = styled("div")`
-    width: 510px;
     float: left;
 `
 
@@ -55,11 +55,97 @@ class PhaseStatsControl extends react.Component {
             avg_times: {
                 load: 0.87,
                 finish: 1.9
-            }
+            },
+            phase_eval_stats: {
+            },
+            annotation_data: [
+                {
+                    name: 'Week 1',
+                    "Annotations pending": 7500,
+                    "Annotations assigned": 0,
+                    "Annotations completed": 0,
+                    "Claims skipped": 0,
+                },
+                {
+                    name: 'Week 2',
+                    "Annotations pending": 4000,
+                    "Annotations assigned": 500,
+                    "Annotations completed": 3000,
+                    "Claims skipped": 20,
+                },
+                {
+                    name: 'Week 3',
+                    "Annotations pending": 3000,
+                    "Annotations assigned": 1500,
+                    "Annotations completed": 3000,
+                    "Claims skipped": 100,
+                },
+                {
+                    name: 'Week 4',
+                    "Annotations pending": 1000,
+                    "Annotations assigned": 2000,
+                    "Annotations completed": 5500,
+                    "Claims skipped": 120,
+                },
+                {
+                    name: 'Week 5',
+                    "Annotations pending": 0,
+                    "Annotations assigned": 2000,
+                    "Annotations completed": 5500,
+                    "Claims skipped": 150,
+                },
+                {
+                    name: 'Week 6',
+                    "Annotations pending": 0,
+                    "Annotations assigned": 1000,
+                    "Annotations completed": 6500,
+                    "Claims skipped": 170,
+                },
+                {
+                    name: 'Week 7',
+                    "Annotations pending": 0,
+                    "Annotations assigned": 500,
+                    "Annotations completed": 7000,
+                    "Claims skipped": 200,
+                },
+                {
+                    name: 'Week 8',
+                    "Annotations pending": 0,
+                    "Annotations assigned": 0,
+                    "Annotations completed": 7500,
+                    "Claims skipped": 240,
+                }
+            ]
         }
     }
 
     componentDidMount() {
+        if (this.props.phase == 1) {
+            this.setState({
+                phase_eval_stats: {
+                    average_training_label_agreement: 0.7,
+                    average_training_claim_overlap_rouge: 0.4,
+                    average_training_strategy_f1: 0.5,
+                    average_training_claim_type_f1: 0.9
+                }
+            })
+        } else if (this.props.phase == 2) {
+            this.setState({
+                phase_eval_stats: {
+                    average_training_label_agreement: 0.2,
+                    average_training_question_overlap_rouge: 0.1,
+                    average_training_answer_overlap_rouge: 1.0,
+                    average_agreement_with_p3_annotators: 0.5
+                }
+            })
+        } else if (this.props.phase == 3) {
+            this.setState({
+                phase_eval_stats: {
+                    average_training_label_agreement: 0.7,
+                    average_agreement_with_p2_annotators: 0.5
+                }
+            })
+        }
 
     }
 
@@ -75,65 +161,54 @@ class PhaseStatsControl extends react.Component {
             Loading: 1.2
         }
 
-        const annotation_data = [
-            {
-                name: 'Week 1',
-                "Annotations completed": 4000,
-            },
-            {
-                name: 'Week 2',
-                "Annotations completed": 5000,
-            },
-            {
-                name: 'Week 3',
-                "Annotations completed": 6000,
-            },
-            {
-                name: 'Week 4',
-                "Annotations completed": 8000,
-            },
-            {
-                name: 'Week 5',
-                "Annotations completed": 14000,
-            },
-            {
-                name: 'Week 6',
-                "Annotations completed": 15000,
-            },
-            {
-                name: 'Week 7',
-                "Annotations completed": 15000,
-            },
-            {
-                name: 'Week 8',
-                "Annotations completed": 16000,
-            },
-        ];
+        var chartData = []
+
+        const chart_keys = {
+            average_training_label_agreement: "Training label agreement",
+            average_training_claim_overlap_rouge: "Training claim ROUGE-L",
+            average_training_strategy_f1: "Training strategy f1",
+            average_training_claim_type_f1: "Training type f1",
+            average_training_question_overlap_rouge: "Training question ROUGE-L",
+            average_training_answer_overlap_rouge: "Training answer ROUGE-L",
+            average_agreement_with_p3_annotators: "Label agreement w/ P3",
+            average_agreement_with_p2_annotators: "Label agreement w/ P2",
+        }
+
+        if (this.state.phase_eval_stats) {
+            Object.keys(this.state.phase_eval_stats).forEach(key => {
+                chartData = [
+                    ...chartData,
+                    {
+                        name: chart_keys[key],
+                        user: "average",
+                        average: this.state.phase_eval_stats[key]
+                    }
+                ]
+            })
+        }
+
+        var timeData = []
+        if (this.state.avg_times) {
+            timeData = [
+                {
+                    name: "Average load time",
+                    average: this.state.avg_times.load,
+                }, {
+                    name: "Average task time",
+                    average: this.state.avg_times.finish
+                }
+            ]
+        }
 
         return (
             <div className={className}>
                 <EntryCard>
                     <Header>{this.props.name}</Header>
                     <ChartBox>
-                        <span>
-                            Average time spent loading: {timekeeping_avg.Loading}
-                        </span>
-                        <br/>
-                        <br/>
-                        <span>
-                            Average time spent on task: {timekeeping_avg.Task}
-                        </span>
-                        <br/>
-                        <br/>
-                        <span>
-                            Performance metrics:
-                        </span>
-                    </ChartBox>
-                    <ChartBox>
                         <LineChart
                             width={500}
                             height={300}
-                            data={annotation_data}
+                            data={this.state.annotation_data}
                             margin={{
                                 top: 5,
                                 right: 30,
@@ -147,8 +222,59 @@ class PhaseStatsControl extends react.Component {
                             <Tooltip />
                             <Legend />
                             <Line type="monotone" dataKey="Annotations completed" stroke="#8884d8" activeDot={{ r: 8 }} />
+                            <Line type="monotone" dataKey="Annotations assigned" stroke="#82ca9d" activeDot={{ r: 8 }} />
+                            <Line type="monotone" dataKey="Annotations pending" stroke="#ed6145" activeDot={{ r: 8 }} />
+                            <Line type="monotone" dataKey="Claims skipped" stroke="#e0cc19" activeDot={{ r: 8 }} />
                         </LineChart>
                     </ChartBox>
+
+                    {timeData.length > 0 ?
+                        <ChartBox>
+                            <BarChart
+                                width={200 * timeData.length + 100}
+                                height={300}
+                                data={timeData}
+                                margin={{
+                                    top: 5,
+                                    right: 30,
+                                    left: 20,
+                                    bottom: 5,
+                                }}
+                            >
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="name" />
+                                <YAxis />
+                                <Tooltip />
+                                <Legend />
+                                <Bar barSize={60} name="Average" dataKey="average" fill="#82ca9d" unit=" s" />
+                            </BarChart>
+                        </ChartBox>
+                        :
+                        ""}
+
+                    {chartData.length > 0 ?
+                        <ChartBox>
+                            <BarChart
+                                width={200 * chartData.length + 100}
+                                height={300}
+                                data={chartData}
+                                margin={{
+                                    top: 5,
+                                    right: 30,
+                                    left: 20,
+                                    bottom: 5,
+                                }}
+                            >
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="name" />
+                                <YAxis />
+                                <Tooltip />
+                                <Legend />
+                                <Bar barSize={60} name="Average" dataKey="average" fill="#82ca9d" />
+                            </BarChart>
+                        </ChartBox>
+                        :
+                        ""}
                 </EntryCard >
             </div >
         );
