@@ -22,6 +22,9 @@ import PostPhaseTwoScreen from './question_generation/PostPhaseTwoScreen';
 import PrePhaseTwoScreen from './question_generation/PrePhaseTwoScreen';
 import PrePhaseThreeScreen from './verdict_validation/PrePhaseThreeScreen';
 import UserDetailsOverview from './control_panels/UserDetailsOverview';
+import PrePhaseFourScreen from './phase_four_question_generation/PrePhaseFourScreen';
+import PostPhaseFourScreen from './phase_four_question_generation/PostPhaseFourScreen';
+import PhaseFourQuestionGeneration from './phase_four_question_generation/PhaseFourQuestionGeneration';
 
 const routing = (
   <Router>
@@ -67,6 +70,15 @@ const routing = (
           </Route>
           <Route path="/phase_3">
             <VerdictValidation finish_path="/phase_2/completed/"/>
+          </Route>
+          <Route path="/phase_4/begin">
+            <PrePhaseFourScreen />
+          </Route>
+          <Route path="/phase_4/completed">
+            <PostPhaseFourScreen />
+          </Route>
+          <Route path="/phase_4">
+            <PhaseFourQuestionGeneration finish_path="/phase_4/completed/"/>
           </Route>
           <Route path="/disagreement">
             <DisagreementResolution />

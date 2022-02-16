@@ -38,13 +38,12 @@ export default function UserTaskPerformanceOverview(props) {
         average_agreement_with_p3_annotators: "Label agreement w/ P3",
         average_agreement_with_p2_annotators: "Label agreement w/ P2",
     }
-
-    
+   
 
     var chartData = []
     if (props.userStats) {
         Object.keys(props.userStats).forEach(key => {
-            if (key in props.userStats && key in props.averageStats && key in metricChartKeys) {
+            if (key in props.userStats && key in props.averageStats && key in metricChartKeys && props.averageStats[key] != null) {
                 chartData = [
                     ...chartData,
                     {
@@ -68,7 +67,7 @@ export default function UserTaskPerformanceOverview(props) {
     var countChartData = []
     if (props.userStats) {
         Object.keys(props.userStats).forEach(key => {
-            if (key in props.userStats && key in props.averageStats && key in countChartKeys) {
+            if (key in props.userStats && key in props.averageStats && key in countChartKeys && props.averageStats[key] != null) {
                 countChartData = [
                     ...countChartData,
                     {

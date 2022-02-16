@@ -88,6 +88,28 @@ class EntryCardContainer extends React.Component {
       ));
     }
 
+    if (this.props.extraPosthocEntries) {
+      let extraEntries = Object.keys(this.props.extraPosthocEntries).map(field_id => (
+        <EntryCard variant="outlined">
+          <this.props.contentClass
+            key={field_id}
+            id={field_id}
+            onChange={this.props.handleFieldChange}
+            valid={true}
+            data={this.props.extraPosthocEntries[field_id]}
+            removeDelete={true}
+            {...this.props}
+            posthocView={true}
+          />
+        </EntryCard>
+      ));
+
+      entryFields = [
+        ...extraEntries,
+        ...entryFields
+      ]
+    }
+
     if (this.props.headerClass != null) {
       var headerField = <this.props.headerClass
         key={this.props.entryName + "_header"}
