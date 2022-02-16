@@ -120,33 +120,47 @@ class PhaseStatsControl extends react.Component {
     }
 
     componentDidMount() {
-        if (this.props.phase == 1) {
-            this.setState({
-                phase_eval_stats: {
-                    average_training_label_agreement: 0.7,
-                    average_training_claim_overlap_rouge: 0.4,
-                    average_training_strategy_f1: 0.5,
-                    average_training_claim_type_f1: 0.9
-                }
-            })
-        } else if (this.props.phase == 2) {
-            this.setState({
-                phase_eval_stats: {
-                    average_training_label_agreement: 0.2,
-                    average_training_question_overlap_rouge: 0.1,
-                    average_training_answer_overlap_rouge: 1.0,
-                    average_agreement_with_p3_annotators: 0.5
-                }
-            })
-        } else if (this.props.phase == 3) {
-            this.setState({
-                phase_eval_stats: {
-                    average_training_label_agreement: 0.7,
-                    average_agreement_with_p2_annotators: 0.5
-                }
-            })
-        }
+        var request = {
+            method: "get",
+            baseURL: config.api_url,
+            url: "/global_statistics.php",
+            data: {
+                logged_in_user_id: localStorage.getItem('user_id'),
+                req_type: 'get-statistics'
+            }
+        };
 
+        axios(request).then((response) => {
+            if (!response.data.is_admin) {
+                window.alert("Error: Access denied.")
+            } else {
+                if (this.props.phase == 1) {            
+                    this.setState({
+                        phase_eval_stats: response.data.phase_1,
+                        avg_times: {
+                            load: response.data.phase_1.average_load_time,
+                            finish: response.data.phase_1.average_task_time
+                        }
+                    })
+                } else if (this.props.phase == 2) {
+                    this.setState({
+                        phase_eval_stats: response.data.phase_2,
+                        avg_times: {
+                            load: response.data.phase_2.average_load_time,
+                            finish: response.data.phase_2.average_task_time
+                        }
+                    })
+                } else if (this.props.phase == 3) {
+                    this.setState({
+                        phase_eval_stats: response.data.phase_3,
+                        avg_times: {
+                            load: response.data.phase_3.average_load_time,
+                            finish: response.data.phase_3.average_task_time
+                        }
+                    })
+                }
+            }
+        }).catch((error) => { window.alert(error) })
     }
 
     render() {
