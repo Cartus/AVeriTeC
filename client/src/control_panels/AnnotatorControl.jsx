@@ -46,6 +46,12 @@ const AdminPanel = styled.div`
     float: left;
 `
 
+const SepDiv = styled("div")`
+    width:100%;
+    float:left;
+    height:0px;
+`
+
 class AnnotatorControl extends React.Component {
     constructor(props) {
         super(props);
@@ -66,6 +72,10 @@ class AnnotatorControl extends React.Component {
                 },
                 phase_3: {
                     done: localStorage.finished_valid_annotations,
+                    total: 20
+                },
+                phase_4: {
+                    done: 0,
                     total: 20
                 },
                 phase_1_training: {
@@ -96,7 +106,9 @@ class AnnotatorControl extends React.Component {
                     {(this.state.assignments.phase_1.total > 0)?<AssignmentField name="Claim Normalization" page="phase_1" assignments={this.state.assignments.phase_1}/>: ""}
                     {(this.state.assignments.phase_2.total > 0)?<AssignmentField name="Question Generation" page="phase_2" assignments={this.state.assignments.phase_2}/>: ""}
                     {(this.state.assignments.phase_3.total > 0)?<AssignmentField name="Quality Control" page="phase_3" assignments={this.state.assignments.phase_3}/>: ""}
+                    {(this.state.assignments.phase_4.total > 0)?<AssignmentField name="Question Generation: Round Two" page="phase_4" assignments={this.state.assignments.phase_4}/>: ""}
                 </div>
+                <SepDiv/>
                 <div>
                     {(this.state.assignments.phase_1_training.total > 0)?<TrainingField name="Claim Normalization" page="phase_1" assignments={this.state.assignments.phase_1_training}/>: ""}
                     {(this.state.assignments.phase_2_training.total > 0)?<TrainingField name="Question Generation" page="phase_2" assignments={this.state.assignments.phase_2_training}/>: ""}
