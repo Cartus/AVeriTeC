@@ -13,7 +13,7 @@ export default function PrePhaseFourScreen(props) {
     desc_text += "The fact-checking article can be used as inspiration for which questions to ask. "
     desc_text += "Please refer to the annotation guideline document for precise instructions on how to complete the task. "
 
-    let header_text = "Averitec Annotation | Phase Four"
+    let header_text = "Averitec Annotation | Question Generation: Second Round"
 
     let current_idx = Number(localStorage.finished_norm_annotations) + 1 - Number(localStorage.pc)
 

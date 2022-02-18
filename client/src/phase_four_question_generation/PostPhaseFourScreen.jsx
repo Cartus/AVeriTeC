@@ -7,7 +7,7 @@ export default function PostPhaseFourScreen(props) {
     desc_text += "Thank you for completing the additional question generation phase! "
     desc_text += "You can now log out, or return to the control panel."
 
-    let header_text = "Averitec Annotation | Phase Four"
+    let header_text = "Averitec Annotation | Question Generation: Second Round"
 
     return <NoteScreen header={header_text}>
         <TaskSummaryBox>

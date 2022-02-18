@@ -4,10 +4,10 @@ import TaskSummaryBox from "../note_screen/TaskSummaryBox";
 
 export default function PostPhaseOneScreen(props) {
     let desc_text = ""
-    desc_text += "Thank you for completing the Averitec phase one annotation task! "
+    desc_text += "Thank you for completing the Averitec claim normalization annotation task! "
     desc_text += "You can now log out, or return to the control panel."
 
-    let header_text = "Averitec Annotation | Phase One"
+    let header_text = "Averitec Annotation | Claim Normalization"
 
     return <NoteScreen header={header_text}>
         <TaskSummaryBox>

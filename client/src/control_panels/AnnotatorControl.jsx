@@ -78,6 +78,10 @@ class AnnotatorControl extends React.Component {
                     done: 0,
                     total: 20
                 },
+                phase_5: {
+                    done: 0,
+                    total: 20
+                },
                 phase_1_training: {
                     done: 0,
                     total: 10
@@ -107,6 +111,7 @@ class AnnotatorControl extends React.Component {
                     {(this.state.assignments.phase_2.total > 0)?<AssignmentField name="Question Generation" page="phase_2" assignments={this.state.assignments.phase_2}/>: ""}
                     {(this.state.assignments.phase_3.total > 0)?<AssignmentField name="Quality Control" page="phase_3" assignments={this.state.assignments.phase_3}/>: ""}
                     {(this.state.assignments.phase_4.total > 0)?<AssignmentField name="Question Generation: Round Two" page="phase_4" assignments={this.state.assignments.phase_4}/>: ""}
+                    {(this.state.assignments.phase_3.total > 0)?<AssignmentField name="Quality Control: Round Two" page="phase_3" assignments={this.state.assignments.phase_5} add_phase_4_questions={true}/>: ""}
                 </div>
                 <SepDiv/>
                 <div>
