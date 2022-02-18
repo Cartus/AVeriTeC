@@ -10,13 +10,13 @@ if ($conn->connect_error) {
 }
 
 $sql = "DROP TABLE Annotators";
- 
+
 if ($conn->query($sql) === TRUE) {
     echo "Table dropped successfully";
 } else {
     echo "Error creating table: " . $conn->error;
 }
- 
+
 
 // sql to create table
 $sql = "CREATE TABLE Annotators (
@@ -33,10 +33,20 @@ current_valid_task INT(6),
 finished_norm_annotations INT(6) NOT NULL,
 finished_qa_annotations INT(6) NOT NULL,
 finished_valid_annotations INT(6) NOT NULL,
-annotation_norm_time INT(6),
 skipped_norm_data INT(6) NOT NULL,
 skipped_qa_data INT(6) NOT NULL,
-skipped_valid_data INT(6)                  
+skipped_valid_data INT(6),
+p1_time_sum float(12),
+p1_load_sum float(12),
+p2_time_sum float(12),
+p2_load_sum float(12),
+p3_time_sum float(12),
+p3_load_sum float(12),
+p1_timed_out INT(6),
+p2_timed_out INT(6),
+p1_speed_trap INT(6),
+p2_speed_trap INT(6),
+p3_speed_trap INT(6)
 )";
 
 if ($conn->query($sql) === TRUE) {

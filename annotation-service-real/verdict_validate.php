@@ -239,7 +239,7 @@ if ($req_type == "next-data"){
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $sql = "SELECT claim_norm_id FROM Norm_Claims WHERE (claim_norm_id = (SELECT current_valid_task FROM Annotators WHERE user_id=?))";
+    $sql = "SELECT claim_norm_id, date_start_valid FROM Norm_Claims WHERE (claim_norm_id = (SELECT current_valid_task FROM Annotators WHERE user_id=?))";
     $stmt= $conn->prepare($sql);
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
@@ -315,7 +315,19 @@ if ($req_type == "next-data"){
         }
         update_table($conn, "UPDATE Norm_Claims SET valid_taken_flag=0, valid_annotators_num = valid_annotators_num+1, phase_3_label=?, justification=?, date_made_valid=?, unreadable=?
         WHERE claim_norm_id=?",'sssii', $phase_3_label, $justification, $date, $unreadable, $row['claim_norm_id']);
-        update_table($conn, "UPDATE Annotators SET current_valid_task=0, finished_valid_annotations=finished_valid_annotations+1 WHERE user_id=?",'i', $user_id);
+
+        $to_time = strtotime($date);
+        $from_time = strtotime($row['date_start_valid']);
+        $minutes = round(abs($to_time - $from_time) / 60,2);
+        echo("The annotation time is: $minutes minutes.");
+
+        $p3_speed_trap = 0;
+        if ($minutes < 0.4) {
+            $p3_speed_trap = 1;
+        }
+
+        update_table($conn, "UPDATE Annotators SET current_valid_task=0, finished_valid_annotations=finished_valid_annotations+1, p3_time_sum=p3_time_sum+?, p3_speed_trap=p3_speed_trap+? WHERE user_id=?",'ddi', $minutes, $p3_speed_trap, $user_id);
+
         $conn->commit();
         echo "Submit Successfully!";
     }catch (mysqli_sql_exception $exception) {
@@ -511,6 +523,20 @@ if ($req_type == "next-data"){
         }else {
             echo "0 Results";
         }
+
+        $sql = "SELECT date_restart_valid FROM Norm_Claims WHERE claim_norm_id=?";
+        $stmt= $conn->prepare($sql);
+        $stmt->bind_param("i", $claim_norm_id);
+        $stmt->execute();
+        $result_time = $stmt->get_result();
+        $row_time = $result_time->fetch_assoc();
+
+        $to_time = strtotime($date);
+        $from_time = strtotime($row_time['date_restart_valid']);
+        $minutes = round(abs($to_time - $from_time) / 60,2);
+        echo("The annotation time is: $minutes minutes.");
+
+        update_table($conn, "UPDATE Annotators SET p3_time_sum=p3_time_sum+? WHERE user_id=?",'di', $minutes, $user_id);
 
         update_table($conn, "UPDATE Norm_Claims SET valid_annotators_num = valid_annotators_num+1, phase_3_label=?, justification=?, date_modified_valid=?, unreadable=?
         WHERE claim_norm_id=?",'sssii', $phase_3_label, $justification, $date, $unreadable, $claim_norm_id);

@@ -90,7 +90,7 @@ if ($req_type == "next-data"){
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $sql = "SELECT claim_norm_id, date_load_cache_qa FROM Norm_Claims WHERE (claim_norm_id = (SELECT current_qa_task FROM Annotators WHERE user_id=?))";
+    $sql = "SELECT claim_norm_id, date_start_qa, date_load_cache_qa FROM Norm_Claims WHERE (claim_norm_id = (SELECT current_qa_task FROM Annotators WHERE user_id=?))";
     $stmt= $conn->prepare($sql);
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
@@ -223,7 +223,24 @@ if ($req_type == "next-data"){
 
         update_table($conn, "UPDATE Norm_Claims SET qa_taken_flag=0, has_qapairs=1, qa_annotators_num = qa_annotators_num+1, phase_2_label=?, num_qapairs=?, date_made_qa=?,
         correction_claim=?, date_load_qa=? WHERE claim_norm_id=?",'sisssi', $phase_2_label, $num_qapairs, $date, $correction_claim, $row['date_load_cache_qa'], $row['claim_norm_id']);
-        update_table($conn, "UPDATE Annotators SET current_qa_task=0, finished_qa_annotations=finished_qa_annotations+1  WHERE user_id=?",'i', $user_id);
+
+        $to_time = strtotime($date);
+        $from_time = strtotime($row['date_start_qa']);
+        $minutes = round(abs($to_time - $from_time) / 60,2);
+        echo("The annotation time is: $minutes minutes.");
+
+        $load_time = strtotime($row['date_load_cache_qa']);
+        $load_minutes = round(abs($load_time - $from_time) / 60,2);
+        echo("The loading time is: $load_minutes minutes.");
+
+        $speed_cal = round(abs($to_time - $load_time) / 60,2);
+        $p2_speed_trap = 0;
+        if ($speed_cal < 0.4) {
+            $p2_speed_trap = 1;
+        }
+
+        update_table($conn, "UPDATE Annotators SET current_qa_task=0, finished_qa_annotations=finished_qa_annotations+1, p2_time_sum=p2_time_sum+?, p2_load_sum=p2_load_sum+?, p2_speed_trap=p2_speed_trap+? WHERE user_id=?",'dddi', $minutes, $load_minutes, $p2_speed_trap, $user_id);
+
         $conn->commit();
         echo "Submit Successfully!";
     }catch (mysqli_sql_exception $exception) {
@@ -493,6 +510,18 @@ if ($req_type == "next-data"){
         update_table($conn, "UPDATE Norm_Claims SET qa_taken_flag=0, has_qapairs=1, qa_skipped=0, qa_annotators_num=qa_annotators_num+1, phase_2_label=?,
         num_qapairs=?, date_modified_qa=?, correction_claim=?, date_restart_qa=?, date_load_qa=? WHERE claim_norm_id=?",'sissssi',
         $phase_2_label, $num_qapairs, $date, $correction_claim, $row['date_restart_cache_qa'], $row['date_load_cache_qa'], $claim_norm_id);
+
+        $to_time = strtotime($date);
+        $from_time = strtotime($row['date_restart_cache_qa']);
+        $minutes = round(abs($to_time - $from_time) / 60,2);
+        echo("The annotation time is: $minutes minutes.");
+
+        $load_time = strtotime($row['date_load_cache_qa']);
+        $load_minutes = round(abs($load_time - $from_time) / 60,2);
+        echo("The loading time is: $load_minutes minutes.");
+
+        update_table($conn, "UPDATE Annotators SET p2_time_sum=p2_time_sum+?, p2_load_sum=p2_load_sum+? WHERE user_id=?",'ddi', $minutes, $load_minutes, $user_id);
+
         $conn->commit();
         echo "Resubmit Successfully!";
     }catch (mysqli_sql_exception $exception) {
@@ -507,6 +536,18 @@ if ($req_type == "next-data"){
     $conn = new mysqli($db_params['servername'], $db_params['user'], $db_params['password'], $db_params['database']);
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
+    }
+
+    $sql = "SELECT date_load_cache_qa FROM Norm_Claims WHERE (claim_norm_id = (SELECT current_qa_task FROM Annotators WHERE user_id=?))";
+
+    $stmt= $conn->prepare($sql);
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    if(is_null($row['date_load_cache_qa'])){
+        update_table($conn, "UPDATE Annotators SET p2_timed_out=p2_timed_out+1 WHERE user_id=?", 'i', $user_id);
     }
 
     $conn->begin_transaction();

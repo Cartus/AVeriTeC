@@ -184,7 +184,24 @@ if ($req_type == "next-data"){
         }
 
         update_table($conn, "INSERT INTO Claim_Map (user_id, claim_id, skipped, date_made, date_start) VALUES (?, ?, ?, ?, ?)", 'iiiss', $user_id, $row['claim_id'], $skipped, $date, $row['date_start_norm']);
-        update_table($conn, "UPDATE Annotators SET current_norm_task=0, finished_norm_annotations=finished_norm_annotations+1  WHERE user_id=?",'i', $user_id);
+
+        $to_time = strtotime($date);
+        $from_time = strtotime($row['date_start_norm']);
+        $minutes = round(abs($to_time - $from_time) / 60,2);
+        echo("The annotation time is: $minutes minutes.");
+
+        $load_time = strtotime($row['date_load_norm']);
+        $load_minutes = round(abs($load_time - $from_time) / 60,2);
+        echo("The loading time is: $load_minutes minutes.");
+
+        $speed_cal = round(abs($to_time - $load_time) / 60,2);
+        $p1_speed_trap = 0;
+        if ($speed_cal < 0.4) {
+            $p1_speed_trap = 1;
+        }
+
+        update_table($conn, "UPDATE Annotators SET current_norm_task=0, finished_norm_annotations=finished_norm_annotations+1, p1_time_sum=p1_time_sum+?, p1_load_sum=p1_load_sum+?, p1_speed_trap=p1_speed_trap+? WHERE user_id=?",'dddi', $minutes, $load_minutes, $p1_speed_trap, $user_id);
+
         $conn->commit();
         echo "Submit Successfully!";
     }catch (mysqli_sql_exception $exception) {
@@ -388,6 +405,17 @@ if ($req_type == "next-data"){
             $valid_annotators_num, $valid_taken_flag, $has_qapairs, $date, $claim_loc, $latest, $source, $nonfactual, $row['date_restart_norm'], $row['date_load_norm']);
         }
 
+        $to_time = strtotime($date);
+        $from_time = strtotime($row['date_restart_norm']);
+        $minutes = round(abs($to_time - $from_time) / 60,2);
+        echo("The annotation time is: $minutes minutes.");
+
+        $load_time = strtotime($row['date_load_norm']);
+        $load_minutes = round(abs($load_time - $from_time) / 60,2);
+        echo("The loading time is: $load_minutes minutes.");
+
+        update_table($conn, "UPDATE Annotators SET p1_time_sum=p1_time_sum+?, p1_load_sum=p1_load_sum+? WHERE user_id=?",'ddi', $minutes, $load_minutes, $user_id);
+
         update_table($conn, "UPDATE Claim_Map SET skipped=0, date_made=? WHERE user_id=? AND claim_id=?", 'ssii', $date, $user_id, $claim_id);
         $conn->commit();
         echo "Resubmit Successfully!";
@@ -404,6 +432,17 @@ if ($req_type == "next-data"){
     $conn = new mysqli($db_params['servername'], $db_params['user'], $db_params['password'], $db_params['database']);
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
+    }
+
+    $sql = "SELECT date_load_norm FROM Claims WHERE (claim_id = (SELECT current_norm_task FROM Annotators WHERE user_id=?))";
+    $stmt= $conn->prepare($sql);
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    if(is_null($row['date_load_norm'])){
+        update_table($conn, "UPDATE Annotators SET p1_timed_out=p1_timed_out+1 WHERE user_id=?", 'i', $user_id);
     }
 
     $conn->begin_transaction();
