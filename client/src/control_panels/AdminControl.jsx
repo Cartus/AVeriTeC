@@ -6,6 +6,45 @@ import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
 import axios from "axios";
 import config from "../config.json"
+import Slider from '@mui/material/Slider';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import { TextField } from '@mui/material';
+import {
+    AreaChart,
+    Area,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip, LineChart, Line, Legend, ResponsiveContainer,
+    BarChart, Bar, Cell
+} from "recharts";
+
+const AssignChartBox = styled("div")`
+    float: right;
+    width: 30%;
+    height: 0px;
+`
+
+const AssignRadioBox = styled("div")`
+    float: left;
+    width: 30%;
+`
+
+const AssignControlBox = styled("div")`
+    float: left;
+    width: 100%;
+`
+
+const AssignControlTextBox = styled("div")`
+    float: left;
+    width: 100%;
+    margin: 10px 0px;
+    line-height: 210%;
+`
 
 const EntryCard = styled(Card)`
     margin:10px;
@@ -186,6 +225,17 @@ class AdminControl extends react.Component {
             />
         }
 
+        const availableClaimsData = [
+            {
+                name: "Unassigned Claims",
+                p1: 7500,
+                p2: 3500,
+                p3: 2500,
+                p4: 6500,
+                p5: 1500,
+            },
+        ]
+
         var hackedDivHeight = 55 * ((this.state.table) ? ((this.state.table.length > 10) ? 10 : this.state.table.length) + 2 : 0) + 10
 
         return (
@@ -197,16 +247,88 @@ class AdminControl extends react.Component {
                         <AddButton variant="contained" color="primary" onClick={this.addRow}>
                             Add Row
                         </AddButton>
-                        {
-                            //<JsonButton variant="contained" color="primary" onClick={this.downloadJsons}>
-                            //   Download JSONs
-                            //</JsonButton>
-                        }
+
+                        <JsonButton
+                            variant="contained"
+                            color="primary"
+                            type="button"
+                            href={`data:text/json;charset=utf-8,${encodeURIComponent(
+                                JSON.stringify(this.state.table)
+                            )}`}
+                            download={this.props.name + ".json"}
+                        >
+                            Download as JSON
+                        </JsonButton>
+
                         <DeleteButton variant="contained" color="error" startIcon={<DeleteIcon />} onClick={this.deleteRows}>
                             Delete Selected
                         </DeleteButton>
                     </div>
                 </EntryCard>
+                {this.props.name === "Users" ?
+                    <EntryCard>
+                        <Header>Assignments</Header>
+                        <AssignChartBox>
+                            <BarChart
+                                width={100 + availableClaimsData.length * 350}
+                                height={300}
+                                data={availableClaimsData}
+                                margin={{
+                                    top: 5,
+                                    right: 30,
+                                    left: 20,
+                                    bottom: 5,
+                                }}
+                            >
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="name" />
+                                <YAxis />
+                                <Tooltip />
+                                <Bar barSize={60} name="Claim Normalization" dataKey="p1" fill="#8884d8" />
+                                <Bar barSize={60} name="Question Generation" dataKey="p2" fill="#8dd1e1" />
+                                <Bar barSize={60} name="Quality Control" dataKey="p3" fill="#82ca9d" />
+                                <Bar barSize={60} name="Dispute Resolution" dataKey="p4" fill="#d0ed57" />
+                                <Bar barSize={60} name="Post-Resolution Quality Control" dataKey="p5" fill="#ffc658" />
+                            </BarChart>
+                        </AssignChartBox>
+
+                        <AssignRadioBox>
+                            <FormLabel component="type_legend">Phase:</FormLabel>
+                            <RadioGroup aria-label="assignment_phase" name="assignment_phase" defaultValue="1">
+                                <FormControlLabel value="1" control={<Radio />} label="Claim Normalization" />
+                                <FormControlLabel value="2" control={<Radio />} label="Question Generation" />
+                                <FormControlLabel value="3" control={<Radio />} label="Quality Control" />
+                                <FormControlLabel value="4" control={<Radio />} label="Dispute Resolution" />
+                                <FormControlLabel value="5" control={<Radio />} label="Post-Resolution Quality Control" />
+                            </RadioGroup>
+                        </AssignRadioBox>
+                        
+                        <AssignRadioBox>
+                            <FormLabel component="type_legend">Assign to:</FormLabel>
+                            <RadioGroup aria-label="assignment_type" name="assignment_type" defaultValue="non_admin">
+                                <FormControlLabel value="non_admin" control={<Radio />} label="All Non-admins" />
+                                <FormControlLabel value="selection" control={<Radio />} label="Selected Users" />
+                                <FormControlLabel value="all" control={<Radio />} label="All Users" />
+                            </RadioGroup>
+                        </AssignRadioBox>
+
+                        <AssignControlTextBox>
+                            Assign (up to) <TextField size="small"></TextField> claims to each user. A total of {45} claims will be assigned.
+                        </AssignControlTextBox>
+
+                        <AssignControlBox>
+                            <AddButton variant="contained" color="secondary">
+                                Max
+                            </AddButton>
+                            <JsonButton variant="contained" color="primary">
+                                Assign
+                            </JsonButton>
+                        </AssignControlBox>
+
+
+                    </EntryCard>
+                    :
+                    ""}
             </div>
         );
     }
