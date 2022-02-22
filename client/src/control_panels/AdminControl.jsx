@@ -78,7 +78,17 @@ class AdminControl extends react.Component {
         super(props);
 
         this.state = {
-            selected: []
+            selected: [],
+            availableClaimsData: [
+                {
+                    name: "Unassigned Claims",
+                    p1: 7500,
+                    p2: 3500,
+                    p3: 2500,
+                    p4: 6500,
+                    p5: 1500,
+                },
+            ]
         }
 
         this.cellEdit = this.cellEdit.bind(this);
@@ -86,6 +96,61 @@ class AdminControl extends react.Component {
         this.makeNewRow = this.makeNewRow.bind(this);
         this.deleteRows = this.deleteRows.bind(this);
         this.setSelectedRows = this.setSelectedRows.bind(this);
+        this.handleAssignFieldChange = this.handleAssignFieldChange.bind(this);
+        this.assignMax = this.assignMax.bind(this);
+    }
+
+    assignMax() {
+        var phase_id = "p1"
+        if (this.state.assignment && this.state.assignment.assignment_phase) {
+            phase_id = "p" + this.state.assignment.assignment_phase;
+        }
+
+        if (this.state.table) {
+            var user_count = this.state.table.length // TODO: count non-admins
+
+            if (this.state.assignment && this.state.assignment.assignment_type === "all") {
+                user_count = this.state.table.length
+            }
+
+            if (this.state.assignment && this.state.assignment.assignment_type === "selection") {
+                user_count = this.state.selected? this.state.selected.length : 0
+            }
+
+            var total_to_assign = this.state.availableClaimsData[0][phase_id]
+
+            var per_user = 0
+            if (user_count > 0){
+                per_user = Math.ceil(total_to_assign / user_count)
+            }
+
+            console.log(per_user)
+
+            this.setState(prevState => ({
+                assignment: {
+                    ...prevState.assignment,
+                    n_to_assign: per_user
+                }
+            }));
+        }
+    }
+
+    handleAssignFieldChange(event) {
+        const { name, value } = event.target;
+
+        if (name === "n_to_assign") {
+            const re = /^[0-9\b]+$/;
+            if (value != '' && !re.test(value)) {
+                return;
+            }
+        }
+
+        this.setState(prevState => ({
+            assignment: {
+                ...prevState.assignment,
+                [name]: value
+            }
+        }));
     }
 
     componentDidMount() {
@@ -225,16 +290,29 @@ class AdminControl extends react.Component {
             />
         }
 
-        const availableClaimsData = [
-            {
-                name: "Unassigned Claims",
-                p1: 7500,
-                p2: 3500,
-                p3: 2500,
-                p4: 6500,
-                p5: 1500,
-            },
-        ]
+
+        var assign_count = 0
+
+        var phase_id = "p1"
+        if (this.state.assignment && this.state.assignment.assignment_phase) {
+            phase_id = "p" + this.state.assignment.assignment_phase;
+        }
+
+        if (this.state.table) {
+            var user_count = this.state.table.length // TODO: count non-admins
+
+            if (this.state.assignment && this.state.assignment.assignment_type === "all") {
+                user_count = this.state.table.length
+            }
+
+            if (this.state.assignment && this.state.assignment.assignment_type === "selection") {
+                user_count = this.state.selected.length
+            }
+
+            if (this.state.assignment && this.state.assignment.n_to_assign) {
+                assign_count = Math.min(this.state.availableClaimsData[0][phase_id], this.state.assignment.n_to_assign * user_count);
+            }
+        }
 
         var hackedDivHeight = 55 * ((this.state.table) ? ((this.state.table.length > 10) ? 10 : this.state.table.length) + 2 : 0) + 10
 
@@ -270,9 +348,9 @@ class AdminControl extends react.Component {
                         <Header>Assignments</Header>
                         <AssignChartBox>
                             <BarChart
-                                width={100 + availableClaimsData.length * 350}
+                                width={100 + this.state.availableClaimsData.length * 350}
                                 height={300}
-                                data={availableClaimsData}
+                                data={this.state.availableClaimsData}
                                 margin={{
                                     top: 5,
                                     right: 30,
@@ -294,7 +372,7 @@ class AdminControl extends react.Component {
 
                         <AssignRadioBox>
                             <FormLabel component="type_legend">Phase:</FormLabel>
-                            <RadioGroup aria-label="assignment_phase" name="assignment_phase" defaultValue="1">
+                            <RadioGroup onChange={this.handleAssignFieldChange} aria-label="assignment_phase" name="assignment_phase" value={this.state.assignment && this.state.assignment.assignment_phase ? this.state.assignment.assignment_phase : 1}>
                                 <FormControlLabel value="1" control={<Radio />} label="Claim Normalization" />
                                 <FormControlLabel value="2" control={<Radio />} label="Question Generation" />
                                 <FormControlLabel value="3" control={<Radio />} label="Quality Control" />
@@ -302,10 +380,10 @@ class AdminControl extends react.Component {
                                 <FormControlLabel value="5" control={<Radio />} label="Post-Resolution Quality Control" />
                             </RadioGroup>
                         </AssignRadioBox>
-                        
+
                         <AssignRadioBox>
                             <FormLabel component="type_legend">Assign to:</FormLabel>
-                            <RadioGroup aria-label="assignment_type" name="assignment_type" defaultValue="non_admin">
+                            <RadioGroup onChange={this.handleAssignFieldChange} aria-label="assignment_type" name="assignment_type" value={this.state.assignment && this.state.assignment.assignment_type ? this.state.assignment.assignment_type : "non_admin"}>
                                 <FormControlLabel value="non_admin" control={<Radio />} label="All Non-admins" />
                                 <FormControlLabel value="selection" control={<Radio />} label="Selected Users" />
                                 <FormControlLabel value="all" control={<Radio />} label="All Users" />
@@ -313,19 +391,18 @@ class AdminControl extends react.Component {
                         </AssignRadioBox>
 
                         <AssignControlTextBox>
-                            Assign (up to) <TextField size="small"></TextField> claims to each user. A total of {45} claims will be assigned.
+                            Assign (up to) <TextField value={this.state.assignment && (this.state.assignment.n_to_assign || this.state.assignment.n_to_assign === 0)? this.state.assignment.n_to_assign : ""} size="small" name="n_to_assign" onChange={this.handleAssignFieldChange}></TextField> claims to each user.
+                            {this.state.table ? " A total of " + assign_count + " claims will be assigned." : ""}
                         </AssignControlTextBox>
 
                         <AssignControlBox>
-                            <AddButton variant="contained" color="secondary">
+                            <AddButton variant="contained" onClick={this.assignMax} color="secondary">
                                 Max
                             </AddButton>
                             <JsonButton variant="contained" color="primary">
                                 Assign
                             </JsonButton>
                         </AssignControlBox>
-
-
                     </EntryCard>
                     :
                     ""}

@@ -33,6 +33,15 @@ class LoadingIFrame extends React.Component {
     this.frameHasLoaded = this.frameHasLoaded.bind(this);
   }
 
+  componentDidMount() {
+    setTimeout(() => {
+      console.log("Page timed out. Removing loading wheel...")
+      this.setState({
+        loading: false
+      });
+    }, 30000);
+  }
+
   frameHasLoaded = (event) => {
     if (this.props.src && event.target.src === this.props.src) { // Workaround to discard spurious first event
       var loading_start_time = this.state.loading_start_time;
