@@ -195,11 +195,11 @@ class AdminControl extends react.Component {
     doAssign(){
         var uids = null
         
-        if (this.state.assignment.assignment_type === "non_admin"){
+        if (this.state.assignment.assignment_type != "selection"){
             uids = []
             
             this.state.table.forEach(row => {
-                if (!row.is_admin){
+                if (this.state.assignment.assignment_type === "all" || !row.is_admin){
                     uids = [
                         ...uids,
                         row.id
@@ -229,10 +229,12 @@ class AdminControl extends react.Component {
         var { name, value } = event.target;
 
         if (name === "n_to_assign") {
-            const re = /^[0-9\b]+$/;
+            const re = /^\-?[0-9\b]+$/;
             if (value != '' && !re.test(value)) {
                 return;
             }
+
+            value = parseInt(value, 10) - 0
 
             let max_per_user = this.getMax();            
             value = Math.min(value, max_per_user);
@@ -246,7 +248,7 @@ class AdminControl extends react.Component {
         }), () => {
             if (name != "n_to_assign"){
                 let max_per_user = this.getMax();
-                if (this.state.assignment.n_to_assign > max_per_user){
+                if (this.state.assignment.n_to_assign && this.state.assignment.n_to_assign > max_per_user){
                     this.setState(prevState => ({
                         assignment: {
                             ...prevState.assignment,
@@ -383,6 +385,7 @@ class AdminControl extends react.Component {
 
     makeNewRow() {
         // This should be an API call creating a new entry in the approppriate table. Then, we should reload the entire table. That way, if there is a mistake/lost connection to the server/etc, the state will not falsely update.
+        // We don't use this since the only table we render is users, so please ignore
         return { id: this.state.table.length + 1 }
     }
 
@@ -622,7 +625,7 @@ class AdminControl extends react.Component {
                         </AssignRadioBox>
 
                         <AssignControlTextBox>
-                            Assign (up to) <TextField value={this.state.assignment && (this.state.assignment.n_to_assign || this.state.assignment.n_to_assign === 0)? this.state.assignment.n_to_assign : ""} size="small" name="n_to_assign" onChange={this.handleAssignFieldChange}></TextField> claims to each user.
+                            Assign (up to) <TextField value={this.state.assignment && (this.state.assignment.n_to_assign || this.state.assignment.n_to_assign === 0)? this.state.assignment.n_to_assign : ""} size="small" name="n_to_assign" type="number" onChange={this.handleAssignFieldChange}></TextField> claims to each user.
                             {this.state.table ? " A total of " + assign_count + " claims will be assigned." : ""}
                         </AssignControlTextBox>
 
