@@ -56,7 +56,7 @@ if ($req_type == "add-user") {
 
     $user_ids_to_delete = $_POST['user_ids_to_delete'];
     //$user_ids_to_delete = implode("','", $user_ids_to_delete);
-    $sql_del = "DELETE FROM Annotators WHERE user_id=IN ('".$ids."')";
+    $sql_del = "DELETE FROM Annotators WHERE user_id=IN ('".$user_ids_to_delete."')";
 
     $stmt= $conn->prepare($sql_del);
     $stmt->bind_param("ii", $user_id);
