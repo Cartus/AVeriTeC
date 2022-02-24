@@ -53,8 +53,8 @@ class PhaseStatsControl extends react.Component {
 
         this.state = {
             avg_times: {
-                load: 0.87,
-                finish: 1.9
+                load: 0,
+                finish: 0
             },
             phase_eval_stats: {
             },
@@ -154,7 +154,6 @@ class PhaseStatsControl extends react.Component {
                     this.setState({
                         phase_eval_stats: response.data.phase_3,
                         avg_times: {
-                            load: response.data.phase_3.average_load_time,
                             finish: response.data.phase_3.average_task_time
                         }
                     })
@@ -203,15 +202,25 @@ class PhaseStatsControl extends react.Component {
 
         var timeData = []
         if (this.state.avg_times) {
-            timeData = [
-                {
-                    name: "Average load time",
-                    average: this.state.avg_times.load,
-                }, {
-                    name: "Average task time",
-                    average: this.state.avg_times.finish
-                }
-            ]
+            if (this.props.phase == 3){
+                timeData = [
+                    {
+                        name: "Average load time",
+                        average: this.state.avg_times.load,
+                    }
+                ]
+
+            } else {
+                timeData = [
+                    {
+                        name: "Average load time",
+                        average: this.state.avg_times.load,
+                    }, {
+                        name: "Average task time",
+                        average: this.state.avg_times.finish
+                    }
+                ]
+            }
         }
 
         return (
