@@ -369,7 +369,24 @@ class AdminControl extends react.Component {
 
     deleteRows() {
         console.log(`Delete entries by ID: ` + JSON.stringify(this.state.selected))
-        // I did not implement code to delete from the state here. We should make the API call to delete instead, then reload the entire table. That way, if there is a mistake/lost connection to the server/etc, the state will not falsely update.
+
+        if (this.props.name == "Users") {
+            var request = {
+                method: "post",
+                baseURL: config.api_url,
+                url: "/admin_control.php",
+                data: {
+                    user_id: localStorage.getItem('user_id'),
+                    req_type: 'remove-users',
+                    user_ids_to_delete: this.state.selected
+                }
+            };
+        }
+        
+        axios(request).then((response) => {
+            console.log(response.data);
+            this.loadTableFromDB();
+          }).catch((error) => {window.alert(error)})
     }
 
     setSelectedRows(rows) {

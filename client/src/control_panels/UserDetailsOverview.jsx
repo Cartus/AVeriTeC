@@ -32,8 +32,8 @@ export default function UserDetailsOverview(props) {
                 window.alert("Error: Access denied.")
             } else {
                 // Replace with:
-                // setUser(response.data);
-                setUser({
+                setUser(response.data);
+                /*setUser({
                     username: "Michael",
                     phase_1: {
                         annotations_done: 5,
@@ -71,7 +71,7 @@ export default function UserDetailsOverview(props) {
                         average_task_time: 3,
                         average_agreement_with_p2_annotators: 0.9
                     }
-                })
+                })*/
             }
         }).catch((error) => { window.alert(error) })
 
@@ -86,13 +86,13 @@ export default function UserDetailsOverview(props) {
         };
 
         axios(request).then((response) => {
-            if (!response.data.is_admin) {
+            if (response.data.is_admin === false) {
                 window.alert("Error: Access denied.")
             } else {
                 // Replace with:
-                // setTaskStats(response.data);
+                setTaskStats(response.data);
 
-                setTaskStats({
+                /*setTaskStats({
                     phase_1: {
                         annotations_done: 5.5,
                         annotations_assigned: 10,
@@ -129,7 +129,7 @@ export default function UserDetailsOverview(props) {
                         average_task_time: 12,
                         average_agreement_with_p2_annotators: 0.5
                     }
-                })
+                })*/
             }
         }).catch((error) => { window.alert(error) })
 
@@ -139,8 +139,21 @@ export default function UserDetailsOverview(props) {
     let header_text = "User Overview | " + user.username
 
     return <NoteScreen header={header_text}>
+        {user.phase_1 && taskStats.phase_1?
         <UserTaskPerformanceOverview name={"Phase 1"} userStats={user.phase_1} averageStats={taskStats.phase_1} />
+        :
+        ""
+        }
+        {user.phase_3 && taskStats.phase_3?
         <UserTaskPerformanceOverview name={"Phase 2"} userStats={user.phase_2} averageStats={taskStats.phase_2} />
+        :
+        ""
+        }
+        {user.phase_3 && taskStats.phase_3?
         <UserTaskPerformanceOverview name={"Phase 3"} userStats={user.phase_3} averageStats={taskStats.phase_3} />
+        :
+        ""
+        }
+        
     </NoteScreen>;
 }
