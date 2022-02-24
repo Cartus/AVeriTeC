@@ -28,7 +28,7 @@ export default function UserDetailsOverview(props) {
         };
 
         axios(request).then((response) => {
-            if (!response.data.is_admin) {
+            if (response.data.is_admin === false) {
                 window.alert("Error: Access denied.")
             } else {
                 // Replace with:
