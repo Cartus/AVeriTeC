@@ -88,7 +88,11 @@ class AdminControl extends react.Component {
                     p4: 6500,
                     p5: 1500,
                 },
-            ]
+            ],
+            assignment:{
+                assignment_type: "non_admin",
+                assignment_phase: 1
+            }
         }
 
         this.cellEdit = this.cellEdit.bind(this);
@@ -98,9 +102,11 @@ class AdminControl extends react.Component {
         this.setSelectedRows = this.setSelectedRows.bind(this);
         this.handleAssignFieldChange = this.handleAssignFieldChange.bind(this);
         this.assignMax = this.assignMax.bind(this);
+        this.doAssign = this.doAssign.bind(this);
+        this.getMax = this.getMax.bind(this);
     }
 
-    assignMax() {
+    getMax(){
         var phase_id = "p1"
         if (this.state.assignment && this.state.assignment.assignment_phase) {
             phase_id = "p" + this.state.assignment.assignment_phase;
@@ -124,7 +130,15 @@ class AdminControl extends react.Component {
                 per_user = Math.ceil(total_to_assign / user_count)
             }
 
-            console.log(per_user)
+            return per_user;
+        } else {
+            return 0;
+        }
+    }
+
+    assignMax() {
+        if (this.state.table) {
+            let per_user = this.getMax()
 
             this.setState(prevState => ({
                 assignment: {
@@ -135,14 +149,50 @@ class AdminControl extends react.Component {
         }
     }
 
+    doAssign(){
+        var uids = null
+        
+        if (this.state.assignment.assignment_type === "non_admin"){
+            uids = []
+            
+            this.state.table.forEach(row => {
+                if (!row.is_admin){
+                    uids = [
+                        ...uids,
+                        row.id
+                    ]
+                }
+            })
+        }
+
+        var request = {
+            method: "post",
+            baseURL: config.api_url,
+            url: "/assign_claims.php",
+            data: {
+                user_id: localStorage.getItem('user_id'),
+                req_type: this.state.assignment.assignment_type,
+                assignments_per_user: this.state.assignment.n_to_assign,
+                assignment_user_ids: this.state.assignment.assignment_type === "selection"? this.state.selected : uids
+            }
+        };
+
+        console.log(request)
+
+        // Todo: send axios call, then update state
+    }
+
     handleAssignFieldChange(event) {
-        const { name, value } = event.target;
+        var { name, value } = event.target;
 
         if (name === "n_to_assign") {
             const re = /^[0-9\b]+$/;
             if (value != '' && !re.test(value)) {
                 return;
             }
+
+            let max_per_user = this.getMax();            
+            value = Math.min(value, max_per_user);
         }
 
         this.setState(prevState => ({
@@ -150,7 +200,19 @@ class AdminControl extends react.Component {
                 ...prevState.assignment,
                 [name]: value
             }
-        }));
+        }), () => {
+            if (name != "n_to_assign"){
+                let max_per_user = this.getMax();
+                if (this.state.assignment.n_to_assign > max_per_user){
+                    this.setState(prevState => ({
+                        assignment: {
+                            ...prevState.assignment,
+                            n_to_assign: max_per_user
+                        }
+                    }));
+                }
+            }
+        });
     }
 
     componentDidMount() {
@@ -190,6 +252,7 @@ class AdminControl extends react.Component {
                             }
                         },
                         { field: "user_name", headerName: "Name", editable: true, width: 200 },
+                        { field: "is_admin", headerName: "Admin", editable: true, type: "boolean", width: 150 },
                         { field: "finished_norm_annotations", headerName: "Phase1 Finished", type: "number", editable: false, width: 250 },
                         { field: "finished_qa_annotations", headerName: "Phase2 Finished", type: "number", editable: false, width: 250 },
                         { field: "finished_valid_annotations", headerName: "Phase3 Finished", type: "number", editable: false, width: 250 },
@@ -244,18 +307,30 @@ class AdminControl extends react.Component {
     }
 
     makeNewRow() {
-        // This should be an API call
+        // This should be an API call creating a new entry in the approppriate table. Then, we should reload the entire table. That way, if there is a mistake/lost connection to the server/etc, the state will not falsely update.
         return { id: this.state.table.length + 1 }
     }
 
     deleteRows() {
         console.log(`Delete entries by ID: ` + JSON.stringify(this.state.selected))
-        // I did not implement code to delete from the state here. We should make the API call to edit instead, then reload the entire table. That way, if there is a mistake/lost connection to the server/etc, the state will not falsely update.
+        // I did not implement code to delete from the state here. We should make the API call to delete instead, then reload the entire table. That way, if there is a mistake/lost connection to the server/etc, the state will not falsely update.
     }
 
     setSelectedRows(rows) {
         this.setState({
             selected: rows
+        }, () => {
+            if (this.props.name === "Users" && this.state.assignment.assignment_type === "selection"){
+                let max_per_user = this.getMax();
+                if (this.state.assignment.n_to_assign > max_per_user){
+                    this.setState(prevState => ({
+                        assignment: {
+                            ...prevState.assignment,
+                            n_to_assign: max_per_user
+                        }
+                    }));
+                }
+            }
         })
     }
 
@@ -289,7 +364,6 @@ class AdminControl extends react.Component {
                 onSelectionModelChange={this.setSelectedRows}
             />
         }
-
 
         var assign_count = 0
 
@@ -399,9 +473,15 @@ class AdminControl extends react.Component {
                             <AddButton variant="contained" onClick={this.assignMax} color="secondary">
                                 Max
                             </AddButton>
-                            <JsonButton variant="contained" color="primary">
+                            {this.state.assignment.n_to_assign && !(this.state.assignment.assignment_type === "selection" && this.state.selected.length === 0)?
+                            <JsonButton variant="contained" onClick={this.doAssign} color="primary">
                                 Assign
                             </JsonButton>
+                            :
+                            <JsonButton variant="contained" disabled color="primary">
+                                Assign
+                            </JsonButton>
+                            }
                         </AssignControlBox>
                     </EntryCard>
                     :
