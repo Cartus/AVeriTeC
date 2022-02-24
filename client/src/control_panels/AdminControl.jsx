@@ -358,8 +358,27 @@ class AdminControl extends react.Component {
     }
 
     cellEdit(params, event) {
-        console.log(`Editing cell with value: ${params.value} and row id: ${params.id}, column: ${params.field}, triggered by ${event.type}.`)
-        // I did not implement code to edit the state here. We should make the API call to edit instead, then reload the entire table. That way, if there is a mistake/lost connection to the server/etc, the state will not falsely update.
+        console.log(`Editing cell with row id: ${params.id} and column: ${params.field} to have value: ${params.value}, triggered by ${event.type}.`)
+
+                
+        if (this.props.name == "Users") {
+            var request = {
+                method: "post",
+                baseURL: config.api_url,
+                url: "/admin_control.php",
+                data: {
+                    user_id: localStorage.getItem('user_id'),
+                    req_type: 'edit-users',
+                    user_id_to_edit: params.id,
+                    [params.field]: params.value // this will automatically become e.g. user_name: EditedMichael
+                }
+            };
+
+            axios(request).then((response) => {
+                console.log(response.data);
+                this.loadTableFromDB();
+            }).catch((error) => {window.alert(error)})
+        }
     }
 
     makeNewRow() {
@@ -381,12 +400,12 @@ class AdminControl extends react.Component {
                     user_ids_to_delete: this.state.selected
                 }
             };
+
+            axios(request).then((response) => {
+                console.log(response.data);
+                this.loadTableFromDB();
+            }).catch((error) => {window.alert(error)})
         }
-        
-        axios(request).then((response) => {
-            console.log(response.data);
-            this.loadTableFromDB();
-          }).catch((error) => {window.alert(error)})
     }
 
     setSelectedRows(rows) {
@@ -460,7 +479,7 @@ class AdminControl extends react.Component {
                 rowsPerPageOptions={[10]}
                 checkboxSelection
                 disableSelectionOnClick
-                onCellEditStop={this.cellEdit}
+                onCellEditCommit={this.cellEdit}
                 onSelectionModelChange={this.setSelectedRows}
             />
         }
