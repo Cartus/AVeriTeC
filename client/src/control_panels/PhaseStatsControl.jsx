@@ -131,7 +131,7 @@ class PhaseStatsControl extends react.Component {
         };
 
         axios(request).then((response) => {
-            if (!response.data.is_admin) {
+            if (response.data.is_admin === false) {
                 window.alert("Error: Access denied.")
             } else {
                 if (this.props.phase == 1) {            

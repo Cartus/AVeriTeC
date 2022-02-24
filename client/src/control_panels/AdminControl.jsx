@@ -9,6 +9,7 @@ import config from "../config.json"
 import Slider from '@mui/material/Slider';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
+import IconButton from '@material-ui/core/IconButton';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
@@ -22,11 +23,32 @@ import {
     Tooltip, LineChart, Line, Legend, ResponsiveContainer,
     BarChart, Bar, Cell
 } from "recharts";
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
+import md5 from 'md5';
+import ClearIcon from '@material-ui/icons/Clear';
+
+const StyledPopup = styled(Popup)` 
+    &-content {    
+        width:290px!important;
+    }
+`
 
 const AssignChartBox = styled("div")`
     float: right;
     width: 30%;
     height: 0px;
+`
+
+const ModalPartBox = styled("div")`
+    width:100%;
+    margin:10px;
+`
+
+const CancelButton = styled(IconButton)`
+    float: right;
+    width:40px;
+    margin: -10px 0px!important;
 `
 
 const AssignRadioBox = styled("div")`
@@ -72,6 +94,25 @@ width:200px;
 margin:10px 0px!important;
 `
 
+const generatePassword  = () =>  {
+    var length = 8;
+    var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    var retVal = "";
+
+    for (var i = 0, n = charset.length; i < length; ++i) {
+        retVal += charset.charAt(Math.floor(Math.random() * n));
+    }
+
+    return retVal;
+}
+
+const propComparator = (p1, p2) => {
+    let p1_n = parseInt(p1.split(" / ")[0])
+    let p2_n = parseInt(p2.split(" / ")[0])
+
+    return p1_n - p2_n
+}
+
 
 class AdminControl extends react.Component {
     constructor(props) {
@@ -92,11 +133,13 @@ class AdminControl extends react.Component {
             assignment:{
                 assignment_type: "non_admin",
                 assignment_phase: 1
-            }
+            },
+            new_username: ""
         }
 
         this.cellEdit = this.cellEdit.bind(this);
         this.addRow = this.addRow.bind(this);
+        this.addUser = this.addUser.bind(this);
         this.makeNewRow = this.makeNewRow.bind(this);
         this.deleteRows = this.deleteRows.bind(this);
         this.setSelectedRows = this.setSelectedRows.bind(this);
@@ -215,7 +258,7 @@ class AdminControl extends react.Component {
         });
     }
 
-    componentDidMount() {
+    loadTableFromDB(){
         if (this.props.name == "Users") {
             var request = {
                 method: "post",
@@ -239,6 +282,14 @@ class AdminControl extends react.Component {
                     new_dict["p2_task_time"] = 17.5
                     return new_dict
                 });
+
+                user_data = user_data.map(user_dict => {
+                    let new_dict = user_dict
+                    new_dict["finished_norm_annotations_prop"] = new_dict["finished_norm_annotations"] + " / " + 20
+                    new_dict["finished_qa_annotations_prop"] = new_dict["finished_qa_annotations"] + " / " + 20
+                    new_dict["finished_valid_annotations_prop"] = new_dict["finished_valid_annotations"] + " / " + 20
+                    return new_dict
+                });
                 // ----------- 
 
                 this.setState({
@@ -253,12 +304,13 @@ class AdminControl extends react.Component {
                         },
                         { field: "user_name", headerName: "Name", editable: true, width: 200 },
                         { field: "is_admin", headerName: "Admin", editable: true, type: "boolean", width: 150 },
-                        { field: "finished_norm_annotations", headerName: "Phase1 Finished", type: "number", editable: false, width: 250 },
-                        { field: "finished_qa_annotations", headerName: "Phase2 Finished", type: "number", editable: false, width: 250 },
-                        { field: "finished_valid_annotations", headerName: "Phase3 Finished", type: "number", editable: false, width: 250 },
-                        { field: "p1_task_time", headerName: "P1 Average Time", type: "number", editable: false, width: 220 },
-                        { field: "p2_task_time", headerName: "P2 Average Time", type: "number", editable: false, width: 220 },
-                        { field: "p3_task_time", headerName: "P3 Average Time", type: "number", editable: false, width: 220 },
+                        { field: "finished_norm_annotations_prop", headerName: "Phase1 Finished", type: "string", editable: false, width: 250, sortComparator: propComparator, align: "right", headerAlign: "right" },
+                        { field: "finished_qa_annotations_prop", headerName: "Phase2 Finished", type: "string", editable: false, width: 250, sortComparator: propComparator, align: "right", headerAlign: "right" },
+                        { field: "finished_valid_annotations_prop", headerName: "Phase3 Finished", type: "string", editable: false, width: 250, sortComparator: propComparator, align: "right", headerAlign: "right" },
+                        { field: "p1_task_time", headerName: "P1 Average Minutes", type: "number", editable: false, width: 220 },
+                        { field: "p2_task_time", headerName: "P2 Average Minutes", type: "number", editable: false, width: 220 },
+                        { field: "p3_task_time", headerName: "P3 Average Minutes", type: "number", editable: false, width: 220 },
+                        { field: "total_hours", headerName: "Total Hours Worked", type: "number", editable: false, width: 220 },
                     ],
                     table: user_data
                 })
@@ -301,6 +353,10 @@ class AdminControl extends react.Component {
         }
     }
 
+    componentDidMount() {
+        this.loadTableFromDB()
+    }
+
     cellEdit(params, event) {
         console.log(`Editing cell with value: ${params.value} and row id: ${params.id}, column: ${params.field}, triggered by ${event.type}.`)
         // I did not implement code to edit the state here. We should make the API call to edit instead, then reload the entire table. That way, if there is a mistake/lost connection to the server/etc, the state will not falsely update.
@@ -341,6 +397,33 @@ class AdminControl extends react.Component {
                 this.makeNewRow()
             ]
         })
+    }
+
+    addUser() {
+        let username = this.state.new_username;
+        let password = this.state.tempPassword;
+        let password_md5 = md5(password);
+
+        // Create user
+        // Warning: I copypasted this code from registration
+        var request = {
+            method: "post",
+            baseURL: config.api_url,
+            url: "/registration.php",
+            data:{
+              name: username,
+              password: password,
+              password_md5: password_md5
+            }
+          };
+
+          axios(request).then((response) => {
+            console.log(response.data);
+            this.loadTableFromDB();
+          }).catch((error) => {window.alert(error)})	
+
+        this.setState({new_username: ""})
+        this.setState({tempPassword: ""})
     }
 
     render() {
@@ -396,10 +479,48 @@ class AdminControl extends react.Component {
                     <Header>{this.props.name}</Header>
                     <div style={{ height: hackedDivHeight, width: '100%' }}>
                         {datagrid}
+                        {this.props.name === "Users"? 
+                        <StyledPopup trigger={
+                            <AddButton variant="contained" color="primary">
+                                Create User
+                            </AddButton>
+                            } 
+                            onOpen={() => {
+                                let password = generatePassword()
+                                console.log(password)
+                                this.setState({tempPassword: password})
+                                }}
+                        modal
+                        >
+                            {(close) => 
+                            <div>
+                                <CancelButton onClick={close}><ClearIcon /></CancelButton>
+                                 <ModalPartBox>
+                                Create a new user. Username:
+                                </ModalPartBox>
+                                <ModalPartBox>
+                                <TextField value={this.state.new_username} size="small" name="new_username" onChange={(event) => {
+                                    this.setState({new_username: event.target.value})
+                                }}></TextField>
+                                </ModalPartBox>
+                                <ModalPartBox>
+                                Temporary password:
+                                </ModalPartBox>
+                                <ModalPartBox>
+                                <TextField value={this.state.tempPassword? this.state.tempPassword : ""} size="small" InputProps={{readOnly: true}} variant="filled" name="new_password"></TextField>
+                                </ModalPartBox>
+                                <ModalPartBox>
+                                <AddButton variant="contained" color="primary" onClick={() => {this.addUser(); close();}}>
+                                    Create User
+                                </AddButton>
+                                </ModalPartBox>
+                            </div>}
+                        </StyledPopup> 
+                        : 
                         <AddButton variant="contained" color="primary" onClick={this.addRow}>
-                            Add Row
+                            Create Row
                         </AddButton>
-
+                        }
                         <JsonButton
                             variant="contained"
                             color="primary"
