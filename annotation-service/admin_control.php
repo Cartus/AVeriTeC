@@ -48,17 +48,20 @@ if ($req_type == "add-user") {
         throw $exception;
     }
     $conn->close();
-} else if ($req_type == "remove-user") {
+} else if ($req_type == "remove-users") {
     $conn = new mysqli($db_params['servername'], $db_params['user'], $db_params['password'], $db_params['database']);
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $sql_del = "DELETE FROM Annotators WHERE user_id=?";
+    $user_ids_to_delete = $_POST['user_ids_to_delete'];
+    $ids = implode("','", $user_ids_to_delete);
+    $sql_del = "DELETE FROM Annotators WHERE user_id=IN ('".$ids."')";
+
     $stmt= $conn->prepare($sql_del);
     $stmt->bind_param("ii", $user_id);
     $stmt->execute();
-    echo "User Deleted!";
+    echo "Users Deleted!";
     $conn->close();
 } else if ($req_type == "get-user") {
     $conn = new mysqli($db_params['servername'], $db_params['user'], $db_params['password'], $db_params['database']);
