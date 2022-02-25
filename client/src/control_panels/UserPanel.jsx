@@ -2,6 +2,7 @@ import React from 'react';
 import Card from '@material-ui/core/Card';
 import styled from 'styled-components';
 import {Redirect} from "react-router-dom";
+import config from "../config.json"
 
 const EntryCard = styled(Card)`
     margin:10px;
@@ -45,7 +46,7 @@ class UserPanel extends React.Component {
             <EntryCard>
                 <Header>Welcome, {this.props.user.username}!</Header>
                 <LogoutBox>
-                    <a href="/change_password">Change Password</a> | <a href="#" onClick={this.onLogout}>Log out</a>
+                    <a href={config.api_url + "/guideline.pdf"} >Guidelines</a> | <a href="/change_password">Change Password</a> | <a href="#" onClick={this.onLogout}>Log out</a>
                 </LogoutBox>
             </EntryCard>
         );

@@ -35,9 +35,9 @@ const WhiteLink = styled.a`
 `
 
 const BarPartBox = styled("div")`
-  width: -webkit-calc(100% - 200px)!important;
-  width:    -moz-calc(100% - 200px)!important;
-  width:         calc(100% - 200px)!important;
+  width: -webkit-calc(100% - 270px)!important;
+  width:    -moz-calc(100% - 270px)!important;
+  width:         calc(100% - 270px)!important;
   float:left;
 `
 
@@ -72,7 +72,7 @@ class NoteScreen extends React.Component {
                             </PaddingTypographBox>
                         </BarPartBox>
                         <LogoutBox>
-                            <WhiteLink href="/control" >Control Panel</WhiteLink> | <WhiteLink href="#" onClick={() => {}}>Log out</WhiteLink>
+                        <WhiteLink href={config.api_url + "/guideline.pdf"} >Guidelines</WhiteLink> | <WhiteLink href="/control" >Control Panel</WhiteLink> | <WhiteLink href="#" onClick={() => {}}>Log out</WhiteLink>
                         </LogoutBox>
                     </Toolbar>
                 </AppBar>
