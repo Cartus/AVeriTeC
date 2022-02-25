@@ -17,7 +17,7 @@ export default function UserDetailsOverview(props) {
         // Todo: get this only if admin. Else, show access denied error and redirect to /.
 
         var request = {
-            method: "get",
+            method: "post",
             baseURL: config.api_url,
             url: "/user_statistics.php",
             data: {
