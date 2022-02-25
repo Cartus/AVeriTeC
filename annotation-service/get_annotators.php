@@ -17,6 +17,7 @@ if ($result->num_rows > 0) {
         echo "user_id: " . $row["user_id"]. "<br>";
         echo "user_name: " . $row["user_name"]. "<br>";
         echo "is_admin: " . $row["is_admin"]. "<br>";
+        echo "is_active: " . $row["is_active"]. "<br>";
         echo "Password: " . $row["password_cleartext"]. "<br>";
         echo "current_norm_task: " . $row["current_norm_task"]. "<br>";
         echo "current_qa_task: " . $row["current_qa_task"]. "<br>";

@@ -23,6 +23,7 @@ $sql = "CREATE TABLE Annotators (
 user_id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 user_name VARCHAR(255) NOT NULL,
 is_admin INT(6) NOT NULL,
+is_active INT(6) NOT NULL,
 password_cleartext VARCHAR(255) NOT NULL,
 password_md5 VARCHAR(255) NOT NULL,
 number_logins INT(6) NOT NULL,

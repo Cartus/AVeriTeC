@@ -30,17 +30,36 @@ if ($req_type == "add-user") {
     }
 
     $is_admin = 0;
+    $is_active = 1;
     $number_logins = 0;
     $finished_norm_annotations = 0;
     $finished_qa_annotations = 0;
     $finished_valid_annotations = 0;
+    $skipped_norm_data = 0;
+    $skipped_qa_data = 0;
+    $p1_time_sum = 0;
+    $p1_load_sum = 0;
+    $p2_time_sum = 0;
+    $p2_load_sum = 0;
+    $p3_time_sum = 0;
+    $p3_load_sum = 0;
+    $p1_timed_out = 0;
+    $p2_timed_out = 0;
+    $p1_speed_trap = 0;
+    $p2_speed_trap = 0;
+    $p3_speed_trap = 0;
 
     $conn->begin_transaction();
     try {
-        update_table($conn, "INSERT INTO Annotators (user_name, password_cleartext, password_md5, is_admin, number_logins,
-        finished_norm_annotations, finished_qa_annotations, finished_valid_annotations) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)", 'sssiiiii', 
-        $user_name, $password, $password_md5, $is_admin, $number_logins, $finished_norm_annotations, $finished_qa_annotations, $finished_valid_annotations);
+        update_table($conn, "INSERT INTO Annotators (user_name, password_cleartext, password_md5, is_admin, is_active, number_logins,
+        finished_norm_annotations, finished_qa_annotations, finished_valid_annotations, skipped_norm_data, skipped_qa_data,
+        p1_time_sum, p1_load_sum, p2_time_sum, p2_load_sum, p3_time_sum, p3_load_sum, p1_timed_out, p2_timed_out,
+        p1_speed_trap, p2_speed_trap, p3_speed_trap)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'sssiiiiiiiiiiiiiiiiiii',
+        $user_name, $password, $password_md5, $is_admin, $is_active, $number_logins, $finished_norm_annotations, $finished_qa_annotations,
+        $finished_valid_annotations, $skipped_norm_data, $skipped_qa_data, $p1_time_sum, $p1_load_sum, $p2_time_sum,
+        $p2_load_sum, $p3_time_sum, $p3_load_sum, $p1_timed_out, $p2_timed_out, $p1_speed_trap, $p2_speed_trap, $p3_speed_trap);
+
         $conn->commit();
         echo "User Added!";
     }catch (mysqli_sql_exception $exception) {
@@ -55,12 +74,12 @@ if ($req_type == "add-user") {
     }
 
     $user_ids_to_delete = $_POST['user_ids_to_delete'];
-    //$user_ids_to_delete = implode("','", $user_ids_to_delete);
-    $sql_del = "DELETE FROM Annotators WHERE user_id=IN ('".$user_ids_to_delete."')";
+    foreach ($user_ids_to_delete as $del_id) {
+        $sql_del = "UPDATE Annotators SET is_active = 0 WHERE user_id=$del_id";
+        $stmt= $conn->prepare($sql_del);
+        $stmt->execute();
+    }
 
-    $stmt= $conn->prepare($sql_del);
-    $stmt->bind_param("ii", $user_id);
-    $stmt->execute();
     echo "Users Deleted!";
     $conn->close();
 } else if ($req_type == "get-user") {
@@ -69,7 +88,8 @@ if ($req_type == "add-user") {
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $sql = "SELECT user_id, user_name, finished_norm_annotations, finished_qa_annotations, finished_valid_annotations FROM Annotators";
+    $sql = "SELECT user_id, user_name, p1_time_sum, p2_time_sum, p3_time_sum, finished_norm_annotations, finished_qa_annotations,
+            finished_valid_annotations FROM Annotators WHERE is_active=1";
     $result = $conn->query($sql);
     
     $table = array();
@@ -82,6 +102,13 @@ if ($req_type == "add-user") {
             $table_row["finished_norm_annotations"] = $row['finished_norm_annotations'];
             $table_row["finished_qa_annotations"] = $row['finished_qa_annotations'];
             $table_row["finished_valid_annotations"] = $row['finished_valid_annotations'];
+            $p1_task_time = round($row['p1_time_sum'] / max($row['finished_norm_annotations'], 1), 2);
+            $p2_task_time = round($row['p2_time_sum'] / max($row['finished_qa_annotations'], 1), 2);
+            $p3_task_time = round($row['p3_time_sum'] / max($row['finished_valid_annotations'], 1), 2);
+            $table_row["p1_task_time"] = $p1_task_time;
+            $table_row["p2_task_time"] = $p2_task_time;
+            $table_row["p3_task_time"] = $p3_task_time;
+            $table_row["total_hour"] = $p1_task_time + $p2_task_time + $p3_task_time;
             $table[$counter] = $table_row;
             $counter = $counter + 1;
         };
