@@ -188,12 +188,15 @@ if ($req_type == "next-data"){
         echo("The annotation time is: $minutes minutes.");
 
         $load_time = strtotime($row['date_load_norm']);
-        $load_minutes = round(abs($load_time - $from_time) / 60,2);
+        if ($load_time == 0) {
+            $load_minutes = $minutes;
+        } else {
+            $load_minutes = round(abs($load_time - $from_time) / 60,2);
+        }
         echo("The loading time is: $load_minutes minutes.");
 
-        $speed_cal = round(abs($to_time - $load_time) / 60,2);
         $p1_speed_trap = 0;
-        if ($speed_cal < 0.4) {
+        if ($minutes < 0.4) {
             $p1_speed_trap = 1;
         }
 

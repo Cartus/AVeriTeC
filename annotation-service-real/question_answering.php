@@ -223,17 +223,19 @@ if ($req_type == "next-data"){
         echo("The annotation time is: $minutes minutes.");
 
         $load_time = strtotime($row['date_load_cache_qa']);
-        $load_minutes = round(abs($load_time - $from_time) / 60,2);
+        if ($load_time == 0) {
+            $load_minutes = $minutes;
+        } else {
+            $load_minutes = round(abs($load_time - $from_time) / 60,2);
+        }
         echo("The loading time is: $load_minutes minutes.");
 
-        $speed_cal = round(abs($to_time - $load_time) / 60,2);
         $p2_speed_trap = 0;
-        if ($speed_cal < 0.4) {
+        if ($minutes < 0.4) {
             $p2_speed_trap = 1;
         }
 
         update_table($conn, "UPDATE Annotators SET current_qa_task=0, finished_qa_annotations=finished_qa_annotations+1, p2_time_sum=p2_time_sum+?, p2_load_sum=p2_load_sum+?, p2_speed_trap=p2_speed_trap+? WHERE user_id=?",'dddi', $minutes, $load_minutes, $p2_speed_trap, $user_id);
-
         $conn->commit();
         echo "Submit Successfully!";
     }catch (mysqli_sql_exception $exception) {
