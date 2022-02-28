@@ -31,7 +31,9 @@ user_id_norm INT(6),
 norm_taken_flag INT(6) NOT NULL,
 norm_skipped INT(6) NOT NULL,
 norm_skipped_by INT(6),
+submitted INT(6),
 date_start_norm DATETIME,
+date_skip_norm DATETIME,
 date_load_norm DATETIME,
 date_restart_norm DATETIME
 )";

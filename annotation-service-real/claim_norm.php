@@ -155,13 +155,19 @@ if ($req_type == "next-data"){
                 $nonfactual=1;
             } elseif (in_array("Opinion Claim", $claim_types)) {
                 $nonfactual=1;
-            } elseif (in_array("Publishing Claim", $claim_types)) {
+            } elseif (in_array("Media Publishing Claim", $claim_types)) {
                 $nonfactual=1;
             } elseif (in_array("Media Analysis Claim", $claim_types)) {
                 $nonfactual=1;
-            } elseif (in_array("Media Matching Claim", $claim_types)) {
+            } elseif (in_array("Geolocation", $claim_types)) {
                 $nonfactual=1;
-            } elseif (in_array("Complex Media Claim", $claim_types)) {
+            } elseif (in_array("Image Analysis", $claim_types)) {
+                $nonfactual=1;
+            } elseif (in_array("Video Analysis", $claim_types)) {
+                $nonfactual=1;
+            } elseif (in_array("Audio Analysis", $claim_types)) {
+                $nonfactual=1;
+            } elseif (in_array("Media Source Discovery", $claim_types)) {
                 $nonfactual=1;
             }
 
@@ -180,7 +186,7 @@ if ($req_type == "next-data"){
             $valid_annotators_num, $valid_taken_flag, $has_qapairs, $date, $claim_loc, $latest, $source, $nonfactual, $row['date_start_norm'], $row['date_load_norm']);
         }
 
-        update_table($conn, "UPDATE Claims SET norm_taken_flag=0, norm_annotators_num = norm_annotators_num+1, date_made_norm=? WHERE claim_id=?",'si', $date, $row['claim_id']);
+        update_table($conn, "UPDATE Claims SET norm_taken_flag=0, norm_annotators_num=norm_annotators_num+1, submitted=1, date_start_norm=? WHERE claim_id=?",'si', $date, $row['claim_id']);
 
         $to_time = strtotime($date);
         $from_time = strtotime($row['date_start_norm']);
@@ -217,9 +223,10 @@ if ($req_type == "next-data"){
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $sql = "SELECT claim_id, web_archive, norm_skipped FROM Claims WHERE user_id_norm = ? ORDER BY date_start_norm DESC LIMIT 1 OFFSET ?";
+    $submitted = 1;
+    $sql = "SELECT claim_id, web_archive, norm_skipped FROM Claims WHERE user_id_norm=? AND submitted=? ORDER BY date_start_norm DESC LIMIT 1 OFFSET ?";
     $stmt= $conn->prepare($sql);
-    $stmt->bind_param("ii", $user_id, $offset);
+    $stmt->bind_param("iii", $user_id, $submitted, $offset);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
@@ -399,7 +406,7 @@ if ($req_type == "next-data"){
             $valid_annotators_num, $valid_taken_flag, $has_qapairs, $date, $claim_loc, $latest, $source, $nonfactual, $row['date_restart_norm'], $row['date_load_norm']);
         }
         $norm_skipped = 0;
-        update_table($conn, "UPDATE Claims SET norm_annotators_num = norm_annotators_num+1, norm_skipped=? WHERE claim_id=?",'ii', $norm_skipped, $claim_id);
+        update_table($conn, "UPDATE Claims SET norm_annotators_num=norm_annotators_num+1, submitted=1, norm_skipped=? WHERE claim_id=?",'ii', $norm_skipped, $claim_id);
 
         $to_time = strtotime($date);
         $from_time = strtotime($row['date_restart_norm']);
@@ -442,7 +449,7 @@ if ($req_type == "next-data"){
 
     $conn->begin_transaction();
     try {
-        update_table($conn, "UPDATE Claims SET norm_skipped=1, norm_skipped_by=?, date_start_norm=? WHERE claim_id=?",'isi', $user_id, $date, $claim_id);
+        update_table($conn, "UPDATE Claims SET submitted=1, norm_skipped=1, norm_skipped_by=?, date_skip_norm=? WHERE claim_id=?",'isi', $user_id, $date, $claim_id);
         update_table($conn, "UPDATE Annotators SET current_norm_task=0, skipped_norm_data=skipped_norm_data+1, finished_norm_annotations=finished_norm_annotations+1 WHERE user_id=?",'i', $user_id);
         $conn->commit();
         echo "Skip Successfully!";

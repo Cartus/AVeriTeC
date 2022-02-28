@@ -24,6 +24,7 @@ if ($result->num_rows > 0) {
         echo "norm_skipped: " . $row["norm_skipped"]. "<br>";
         echo "norm_skipped_by: " . $row["norm_skipped_by"]. "<br>";
         echo "date_start_norm : " . $row["date_start_norm"]. "<br>";
+        echo "date_skip_norm : " . $row["date_skip_norm"]. "<br>";
         echo "date_load_norm : " . $row["date_load_norm"]. "<br>";
         echo "<br>";
     }
