@@ -214,13 +214,15 @@ class AdminControl extends react.Component {
             url: "/assign_claims.php",
             data: {
                 user_id: localStorage.getItem('user_id'),
-                req_type: this.state.assignment.assignment_type,
+                req_type: this.state.assignment.assignment_phase,
                 assignments_per_user: this.state.assignment.n_to_assign,
                 assignment_user_ids: this.state.assignment.assignment_type === "selection"? this.state.selected : uids
             }
         };
 
-        console.log(request)
+        axios(request).then((response) => {
+            console.log(response.data);
+        }).catch((error) => {window.alert(error)})
 
         // Todo: send axios call, then update state
     }
