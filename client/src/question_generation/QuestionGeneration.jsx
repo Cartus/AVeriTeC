@@ -113,8 +113,6 @@ function validate(content) {
 
 class QuestionGeneration extends React.Component {
 
-  final_idx = 5
-
   constructor(props) {
     super(props);
 
@@ -134,7 +132,8 @@ class QuestionGeneration extends React.Component {
       userIsFirstVisiting: false,
       added_entries: 1,
       valid: true,
-      confirmation: false
+      confirmation: false,
+      final_idx: 0
     }
 
     this.changeLabel = this.changeLabel.bind(this);
@@ -170,6 +169,24 @@ class QuestionGeneration extends React.Component {
 
   componentDidMount() {
     if (localStorage.getItem('login')) {
+      var request = {
+        method: "get",
+        baseURL: config.api_url,
+        url: "/user_statistics.php",
+        data: {
+          logged_in_user_id: localStorage.getItem('user_id'),
+          req_type: 'get-statistics',
+          get_by_user_id: localStorage.getItem('user_id')
+        }
+      };
+
+      axios(request).then((response) => {
+        this.setState({
+          final_idx: response.data.phase_2.annotations_assigned
+        })
+
+      }).catch((error) => { window.alert(error) });
+
       let pc = Number(localStorage.pc);
       if (pc !== 0) {
         var request = {
@@ -367,8 +384,8 @@ class QuestionGeneration extends React.Component {
         await axios(request).then((response) => {
           console.log(response.data);
           localStorage.claim_norm_id = 0;
-          
-          if (should_use_finish_path){
+
+          if (should_use_finish_path) {
             console.log("redirect")
             window.location.assign(this.props.finish_path);
           } else {
@@ -394,8 +411,8 @@ class QuestionGeneration extends React.Component {
         await axios(request).then((response) => {
           localStorage.finished_qa_annotations = Number(localStorage.finished_qa_annotations) + 1;
           console.log(response.data);
-          
-          if (should_use_finish_path){
+
+          if (should_use_finish_path) {
             window.location.assign(this.props.finish_path);
           } else {
             window.location.reload(false);
@@ -498,12 +515,12 @@ class QuestionGeneration extends React.Component {
       <QAPageDiv>
         {!this.state.confirmation ?
           <TourProvider steps={steps}>
-            <QAPageView claim={this.state.claim} phase={2}/>
+            <QAPageView claim={this.state.claim} phase={2} />
             <QADataField>
               <QuestionGenerationBar
                 handleFieldChange={this.handleFieldChange}
                 current_idx={current_idx}
-                final_idx={this.final_idx}
+                final_idx={this.state.final_idx}
                 claim={this.state.claim}
                 entries={this.state.entries}
                 addEntry={this.addEntry}

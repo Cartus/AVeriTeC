@@ -55,8 +55,6 @@ function validate(content) {
 
 class ClaimNormalization extends React.Component {
 
-    final_idx = 10;
-
     constructor(props) {
         super(props);
 
@@ -71,7 +69,8 @@ class ClaimNormalization extends React.Component {
             claim_footer: {},
             userIsFirstVisiting: false,
             added_entries: 1,
-            valid: true
+            valid: true,
+            final_idx: 0
         }
 
         this.doSubmit = this.doSubmit.bind(this);
@@ -215,6 +214,24 @@ class ClaimNormalization extends React.Component {
 
     componentDidMount() {
         if (localStorage.getItem('login')) {
+            var request = {
+                method: "get",
+                baseURL: config.api_url,
+                url: "/user_statistics.php",
+                data: {
+                    logged_in_user_id: localStorage.getItem('user_id'),
+                    req_type: 'get-statistics',
+                    get_by_user_id: localStorage.getItem('user_id')
+                }
+            };
+    
+            axios(request).then((response) => {
+                this.setState({
+                    final_idx: response.data.phase_1.annotations_assigned
+                })
+    
+            }).catch((error) => { window.alert(error) });
+
             let pc = Number(localStorage.pc);
             console.log(pc);
             if (pc !== 0) {
@@ -298,7 +315,7 @@ class ClaimNormalization extends React.Component {
 
     render() {
 
-        var current_idx = Number(localStorage.finished_norm_annotations) + 1 - Number(localStorage.pc);;
+        var current_idx = Number(localStorage.finished_norm_annotations) + 1 - Number(localStorage.pc);
 
         if (!localStorage.getItem('login')) {
             return <Redirect to='/' />;
@@ -346,7 +363,7 @@ class ClaimNormalization extends React.Component {
                     <NEntryBar
                         handleFieldChange={this.handleFieldChange}
                         current_idx={current_idx}
-                        final_idx={this.final_idx}
+                        final_idx={this.state.final_idx}
                         claim={this.state.claim}
                         entries={this.state.entries}
                         addEntry={this.addEntry}

@@ -73,8 +73,6 @@ function validate(content) {
 
 class VerdictValidation extends React.Component {
 
-    final_idx = 5
-
     constructor(props) {
         super(props);
 
@@ -90,7 +88,8 @@ class VerdictValidation extends React.Component {
             annotation: {},
             valid: true,
             submitted: false,
-            userIsFirstVisiting: false
+            userIsFirstVisiting: false,
+            final_idx: 0
         }
 
         this.handleFieldChange = this.handleFieldChange.bind(this);
@@ -125,6 +124,24 @@ class VerdictValidation extends React.Component {
 
     componentDidMount() {
         if (localStorage.getItem('login')) {
+            var request = {
+                method: "get",
+                baseURL: config.api_url,
+                url: "/user_statistics.php",
+                data: {
+                    logged_in_user_id: localStorage.getItem('user_id'),
+                    req_type: 'get-statistics',
+                    get_by_user_id: localStorage.getItem('user_id')
+                }
+            };
+
+            axios(request).then((response) => {
+                this.setState({
+                    final_idx: response.data.phase_3.annotations_assigned
+                })
+
+            }).catch((error) => { window.alert(error) });
+
             let pc = Number(localStorage.pc);
             if (pc !== 0) {
                 var request = {
@@ -199,10 +216,10 @@ class VerdictValidation extends React.Component {
 
     async doSubmit() {
         var current_idx = Number(localStorage.finished_valid_annotations) + 1 - Number(localStorage.pc);
-        
+
         let is_at_last_claim = current_idx === this.final_idx;
         let should_use_finish_path = this.props.finish_path && is_at_last_claim
-        
+
         if (validate(this.state)) {
             let pc = Number(localStorage.pc);
             if (pc !== 0) {
@@ -223,10 +240,10 @@ class VerdictValidation extends React.Component {
                 await axios(request).then((response) => {
                     console.log(response.data);
                     localStorage.claim_norm_id = 0;
-                    
-                    if (should_use_finish_path){
+
+                    if (should_use_finish_path) {
                         window.location.assign(this.props.finish_path);
-                    }else {
+                    } else {
                         window.location.reload(false);
                     }
                 }).catch((error) => { window.alert(error) })
@@ -246,10 +263,10 @@ class VerdictValidation extends React.Component {
                 await axios(request).then((response) => {
                     console.log(response.data);
                     localStorage.finished_valid_annotations = Number(localStorage.finished_valid_annotations) + 1;
-                    
-                    if (should_use_finish_path){
+
+                    if (should_use_finish_path) {
                         window.location.assign(this.props.finish_path);
-                    }else {
+                    } else {
                         window.location.reload(false);
                     }
                 }).catch((error) => { window.alert(error) })
@@ -313,29 +330,29 @@ class VerdictValidation extends React.Component {
 
         var questionPairs = ""
 
-        if (this.state.claim && this.state.claim.questions){
+        if (this.state.claim && this.state.claim.questions) {
             questionPairs = Object.keys(this.state.claim.questions).map(question_id => (
                 <EntryCard variant="outlined">
                     <StaticQuestionEntryField id={question_id} data={this.state.claim.questions[question_id]} onChange={this.handleFieldChange} />
                 </EntryCard>
             ));
-        }        
+        }
 
         var current_idx = Number(localStorage.finished_valid_annotations) + 1 - Number(localStorage.pc);
 
         return (
             <div>
                 <TourProvider steps={steps}>
-                    <VerdictValidationBar 
-                    current_idx={current_idx} 
-                    final_idx={this.final_idx} 
-                    claim={this.state.claim} 
-                    valid={this.state.valid} 
-                    annotation={this.state.annotation} 
-                    handleFieldChange={this.handleFieldChange}
-                    doPrevious={this.doPrevious}
-                    doSubmit={this.doSubmit}
-                    doNext={this.doNext}
+                    <VerdictValidationBar
+                        current_idx={current_idx}
+                        final_idx={this.state.final_idx}
+                        claim={this.state.claim}
+                        valid={this.state.valid}
+                        annotation={this.state.annotation}
+                        handleFieldChange={this.handleFieldChange}
+                        doPrevious={this.doPrevious}
+                        doSubmit={this.doSubmit}
+                        doNext={this.doNext}
                     />
                     {this.state.userIsFirstVisiting ? <TourWrapper /> : ""}
                 </TourProvider>
