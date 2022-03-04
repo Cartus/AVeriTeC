@@ -27,6 +27,18 @@ import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import md5 from 'md5';
 import ClearIcon from '@material-ui/icons/Clear';
+import Spinner from 'react-spinkit';
+
+const StyledSpinner = styled(Spinner)`
+    width:80px;
+    height:80px;
+    border: 1px solid transparent;
+    display: block;
+
+    margin: 20px 0px 20px -webkit-calc(50% - 40px)!important;
+    margin: 20px 0px 20px -moz-calc(50% - 40px)!important;
+    margin: 20px 0px 20px calc(50% - 40px)!important;
+`
 
 const StyledPopup = styled(Popup)` 
     &-content {    
@@ -94,7 +106,7 @@ width:200px;
 margin:10px 0px!important;
 `
 
-const generatePassword  = () =>  {
+const generatePassword = () => {
     var length = 8;
     var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     var retVal = "";
@@ -130,11 +142,12 @@ class AdminControl extends react.Component {
                     p5: 1500,
                 },
             ],
-            assignment:{
+            assignment: {
                 assignment_type: "non_admin",
                 assignment_phase: 1
             },
-            new_username: ""
+            new_username: "",
+            processing_assignment: true
         }
 
         this.cellEdit = this.cellEdit.bind(this);
@@ -149,7 +162,7 @@ class AdminControl extends react.Component {
         this.getMax = this.getMax.bind(this);
     }
 
-    getMax(){
+    getMax() {
         var phase_id = "p1"
         if (this.state.assignment && this.state.assignment.assignment_phase) {
             phase_id = "p" + this.state.assignment.assignment_phase;
@@ -163,13 +176,13 @@ class AdminControl extends react.Component {
             }
 
             if (this.state.assignment && this.state.assignment.assignment_type === "selection") {
-                user_count = this.state.selected? this.state.selected.length : 0
+                user_count = this.state.selected ? this.state.selected.length : 0
             }
 
             var total_to_assign = this.state.availableClaimsData[0][phase_id]
 
             var per_user = 0
-            if (user_count > 0){
+            if (user_count > 0) {
                 per_user = Math.ceil(total_to_assign / user_count)
             }
 
@@ -192,14 +205,14 @@ class AdminControl extends react.Component {
         }
     }
 
-    doAssign(){
+    doAssign() {
         var uids = null
-        
-        if (this.state.assignment.assignment_type != "selection"){
+
+        if (this.state.assignment.assignment_type != "selection") {
             uids = []
-            
+
             this.state.table.forEach(row => {
-                if (this.state.assignment.assignment_type === "all" || !row.is_admin){
+                if (this.state.assignment.assignment_type === "all" || !row.is_admin) {
                     uids = [
                         ...uids,
                         row.id
@@ -216,7 +229,7 @@ class AdminControl extends react.Component {
                 user_id: localStorage.getItem('user_id'),
                 req_type: this.state.assignment.assignment_phase,
                 assignments_per_user: this.state.assignment.n_to_assign,
-                assignment_user_ids: this.state.assignment.assignment_type === "selection"? this.state.selected : uids
+                assignment_user_ids: this.state.assignment.assignment_type === "selection" ? this.state.selected : uids
             }
         };
 
@@ -224,7 +237,12 @@ class AdminControl extends react.Component {
             console.log(response.data);
         }).catch((error) => {window.alert(error)})
 
+        this.setState({
+            processing_assignment: true
+        });
+
         // Todo: send axios call, then update state
+        // In .then, also set processing_assignment: false
     }
 
     handleAssignFieldChange(event) {
@@ -238,7 +256,7 @@ class AdminControl extends react.Component {
 
             value = parseInt(value, 10) - 0
 
-            let max_per_user = this.getMax();            
+            let max_per_user = this.getMax();
             value = Math.min(value, max_per_user);
         }
 
@@ -248,9 +266,9 @@ class AdminControl extends react.Component {
                 [name]: value
             }
         }), () => {
-            if (name != "n_to_assign"){
+            if (name != "n_to_assign") {
                 let max_per_user = this.getMax();
-                if (this.state.assignment.n_to_assign && this.state.assignment.n_to_assign > max_per_user){
+                if (this.state.assignment.n_to_assign && this.state.assignment.n_to_assign > max_per_user) {
                     this.setState(prevState => ({
                         assignment: {
                             ...prevState.assignment,
@@ -262,7 +280,7 @@ class AdminControl extends react.Component {
         });
     }
 
-    loadTableFromDB(){
+    loadTableFromDB() {
         if (this.props.name == "Users") {
             var request = {
                 method: "post",
@@ -359,12 +377,26 @@ class AdminControl extends react.Component {
 
     componentDidMount() {
         this.loadTableFromDB()
+
+        // TODO: set availableClaimsData via API call.
+        // Only execute the following setState if no assignment is currently in progress.
+        this.setState({
+            processing_assignment: false
+        });
+
+        // IF NECESSARY:
+
+        // Use this to test if server is done every 5 sec
+        // this.interval = setInterval(() => this.tick(), 5000);
+
+        // Use this to stop checking
+        // clearInterval(this.interval);
     }
 
     cellEdit(params, event) {
         console.log(`Editing cell with row id: ${params.id} and column: ${params.field} to have value: ${params.value}, triggered by ${event.type}.`)
 
-                
+
         if (this.props.name == "Users") {
             var request = {
                 method: "post",
@@ -381,7 +413,7 @@ class AdminControl extends react.Component {
             axios(request).then((response) => {
                 console.log(response.data);
                 this.loadTableFromDB();
-            }).catch((error) => {window.alert(error)})
+            }).catch((error) => { window.alert(error) })
         }
     }
 
@@ -409,7 +441,7 @@ class AdminControl extends react.Component {
             axios(request).then((response) => {
                 console.log(response.data);
                 this.loadTableFromDB();
-            }).catch((error) => {window.alert(error)})
+            }).catch((error) => { window.alert(error) })
         }
     }
 
@@ -417,9 +449,9 @@ class AdminControl extends react.Component {
         this.setState({
             selected: rows
         }, () => {
-            if (this.props.name === "Users" && this.state.assignment.assignment_type === "selection"){
+            if (this.props.name === "Users" && this.state.assignment.assignment_type === "selection") {
                 let max_per_user = this.getMax();
-                if (this.state.assignment.n_to_assign > max_per_user){
+                if (this.state.assignment.n_to_assign > max_per_user) {
                     this.setState(prevState => ({
                         assignment: {
                             ...prevState.assignment,
@@ -451,20 +483,20 @@ class AdminControl extends react.Component {
             method: "post",
             baseURL: config.api_url,
             url: "/registration.php",
-            data:{
-              name: username,
-              password: password,
-              password_md5: password_md5
+            data: {
+                name: username,
+                password: password,
+                password_md5: password_md5
             }
-          };
+        };
 
-          axios(request).then((response) => {
+        axios(request).then((response) => {
             console.log(response.data);
             this.loadTableFromDB();
-          }).catch((error) => {window.alert(error)})	
+        }).catch((error) => { window.alert(error) })
 
-        this.setState({new_username: ""})
-        this.setState({tempPassword: ""})
+        this.setState({ new_username: "" })
+        this.setState({ tempPassword: "" })
     }
 
     render() {
@@ -520,47 +552,47 @@ class AdminControl extends react.Component {
                     <Header>{this.props.name}</Header>
                     <div style={{ height: hackedDivHeight, width: '100%' }}>
                         {datagrid}
-                        {this.props.name === "Users"? 
-                        <StyledPopup trigger={
-                            <AddButton variant="contained" color="primary">
-                                Create User
-                            </AddButton>
-                            } 
-                            onOpen={() => {
-                                let password = generatePassword()
-                                console.log(password)
-                                this.setState({tempPassword: password})
-                                }}
-                        modal
-                        >
-                            {(close) => 
-                            <div>
-                                <CancelButton onClick={close}><ClearIcon /></CancelButton>
-                                 <ModalPartBox>
-                                Create a new user. Username:
-                                </ModalPartBox>
-                                <ModalPartBox>
-                                <TextField value={this.state.new_username} size="small" name="new_username" onChange={(event) => {
-                                    this.setState({new_username: event.target.value})
-                                }}></TextField>
-                                </ModalPartBox>
-                                <ModalPartBox>
-                                Temporary password:
-                                </ModalPartBox>
-                                <ModalPartBox>
-                                <TextField value={this.state.tempPassword? this.state.tempPassword : ""} size="small" InputProps={{readOnly: true}} variant="filled" name="new_password"></TextField>
-                                </ModalPartBox>
-                                <ModalPartBox>
-                                <AddButton variant="contained" color="primary" onClick={() => {this.addUser(); close();}}>
+                        {this.props.name === "Users" ?
+                            <StyledPopup trigger={
+                                <AddButton variant="contained" color="primary">
                                     Create User
                                 </AddButton>
-                                </ModalPartBox>
-                            </div>}
-                        </StyledPopup> 
-                        : 
-                        <AddButton variant="contained" color="primary" onClick={this.addRow}>
-                            Create Row
-                        </AddButton>
+                            }
+                                onOpen={() => {
+                                    let password = generatePassword()
+                                    console.log(password)
+                                    this.setState({ tempPassword: password })
+                                }}
+                                modal
+                            >
+                                {(close) =>
+                                    <div>
+                                        <CancelButton onClick={close}><ClearIcon /></CancelButton>
+                                        <ModalPartBox>
+                                            Create a new user. Username:
+                                        </ModalPartBox>
+                                        <ModalPartBox>
+                                            <TextField value={this.state.new_username} size="small" name="new_username" onChange={(event) => {
+                                                this.setState({ new_username: event.target.value })
+                                            }}></TextField>
+                                        </ModalPartBox>
+                                        <ModalPartBox>
+                                            Temporary password:
+                                        </ModalPartBox>
+                                        <ModalPartBox>
+                                            <TextField value={this.state.tempPassword ? this.state.tempPassword : ""} size="small" InputProps={{ readOnly: true }} variant="filled" name="new_password"></TextField>
+                                        </ModalPartBox>
+                                        <ModalPartBox>
+                                            <AddButton variant="contained" color="primary" onClick={() => { this.addUser(); close(); }}>
+                                                Create User
+                                            </AddButton>
+                                        </ModalPartBox>
+                                    </div>}
+                            </StyledPopup>
+                            :
+                            <AddButton variant="contained" color="primary" onClick={this.addRow}>
+                                Create Row
+                            </AddButton>
                         }
                         <JsonButton
                             variant="contained"
@@ -582,69 +614,73 @@ class AdminControl extends react.Component {
                 {this.props.name === "Users" ?
                     <EntryCard>
                         <Header>Assignments</Header>
-                        <AssignChartBox>
-                            <BarChart
-                                width={100 + this.state.availableClaimsData.length * 350}
-                                height={300}
-                                data={this.state.availableClaimsData}
-                                margin={{
-                                    top: 5,
-                                    right: 30,
-                                    left: 20,
-                                    bottom: 5,
-                                }}
-                            >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-                                <YAxis />
-                                <Tooltip />
-                                <Bar barSize={60} name="Claim Normalization" dataKey="p1" fill="#8884d8" />
-                                <Bar barSize={60} name="Question Generation" dataKey="p2" fill="#8dd1e1" />
-                                <Bar barSize={60} name="Quality Control" dataKey="p3" fill="#82ca9d" />
-                                <Bar barSize={60} name="Dispute Resolution" dataKey="p4" fill="#d0ed57" />
-                                <Bar barSize={60} name="Post-Resolution Quality Control" dataKey="p5" fill="#ffc658" />
-                            </BarChart>
-                        </AssignChartBox>
+                        {this.state.processing_assignment ? <StyledSpinner
+                            name="circle"
+                        /> : <div>
+                            <AssignChartBox>
+                                <BarChart
+                                    width={100 + this.state.availableClaimsData.length * 350}
+                                    height={300}
+                                    data={this.state.availableClaimsData}
+                                    margin={{
+                                        top: 5,
+                                        right: 30,
+                                        left: 20,
+                                        bottom: 5,
+                                    }}
+                                >
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Bar barSize={60} name="Claim Normalization" dataKey="p1" fill="#8884d8" />
+                                    <Bar barSize={60} name="Question Generation" dataKey="p2" fill="#8dd1e1" />
+                                    <Bar barSize={60} name="Quality Control" dataKey="p3" fill="#82ca9d" />
+                                    <Bar barSize={60} name="Dispute Resolution" dataKey="p4" fill="#d0ed57" />
+                                    <Bar barSize={60} name="Post-Resolution Quality Control" dataKey="p5" fill="#ffc658" />
+                                </BarChart>
+                            </AssignChartBox>
 
-                        <AssignRadioBox>
-                            <FormLabel component="type_legend">Phase:</FormLabel>
-                            <RadioGroup onChange={this.handleAssignFieldChange} aria-label="assignment_phase" name="assignment_phase" value={this.state.assignment && this.state.assignment.assignment_phase ? this.state.assignment.assignment_phase : 1}>
-                                <FormControlLabel value="1" control={<Radio />} label="Claim Normalization" />
-                                <FormControlLabel value="2" control={<Radio />} label="Question Generation" />
-                                <FormControlLabel value="3" control={<Radio />} label="Quality Control" />
-                                <FormControlLabel value="4" control={<Radio />} label="Dispute Resolution" />
-                                <FormControlLabel value="5" control={<Radio />} label="Post-Resolution Quality Control" />
-                            </RadioGroup>
-                        </AssignRadioBox>
+                            <AssignRadioBox>
+                                <FormLabel component="type_legend">Phase:</FormLabel>
+                                <RadioGroup onChange={this.handleAssignFieldChange} aria-label="assignment_phase" name="assignment_phase" value={this.state.assignment && this.state.assignment.assignment_phase ? this.state.assignment.assignment_phase : 1}>
+                                    <FormControlLabel value="1" control={<Radio />} label="Claim Normalization" />
+                                    <FormControlLabel value="2" control={<Radio />} label="Question Generation" />
+                                    <FormControlLabel value="3" control={<Radio />} label="Quality Control" />
+                                    <FormControlLabel value="4" control={<Radio />} label="Dispute Resolution" />
+                                    <FormControlLabel value="5" control={<Radio />} label="Post-Resolution Quality Control" />
+                                </RadioGroup>
+                            </AssignRadioBox>
 
-                        <AssignRadioBox>
-                            <FormLabel component="type_legend">Assign to:</FormLabel>
-                            <RadioGroup onChange={this.handleAssignFieldChange} aria-label="assignment_type" name="assignment_type" value={this.state.assignment && this.state.assignment.assignment_type ? this.state.assignment.assignment_type : "non_admin"}>
-                                <FormControlLabel value="non_admin" control={<Radio />} label="All Non-admins" />
-                                <FormControlLabel value="selection" control={<Radio />} label="Selected Users" />
-                                <FormControlLabel value="all" control={<Radio />} label="All Users" />
-                            </RadioGroup>
-                        </AssignRadioBox>
+                            <AssignRadioBox>
+                                <FormLabel component="type_legend">Assign to:</FormLabel>
+                                <RadioGroup onChange={this.handleAssignFieldChange} aria-label="assignment_type" name="assignment_type" value={this.state.assignment && this.state.assignment.assignment_type ? this.state.assignment.assignment_type : "non_admin"}>
+                                    <FormControlLabel value="non_admin" control={<Radio />} label="All Non-admins" />
+                                    <FormControlLabel value="selection" control={<Radio />} label="Selected Users" />
+                                    <FormControlLabel value="all" control={<Radio />} label="All Users" />
+                                </RadioGroup>
+                            </AssignRadioBox>
 
-                        <AssignControlTextBox>
-                            Assign (up to) <TextField value={this.state.assignment && (this.state.assignment.n_to_assign || this.state.assignment.n_to_assign === 0)? this.state.assignment.n_to_assign : ""} size="small" name="n_to_assign" type="number" onChange={this.handleAssignFieldChange}></TextField> claims to each user.
-                            {this.state.table ? " A total of " + assign_count + " claims will be assigned." : ""}
-                        </AssignControlTextBox>
+                            <AssignControlTextBox>
+                                Assign (up to) <TextField value={this.state.assignment && (this.state.assignment.n_to_assign || this.state.assignment.n_to_assign === 0) ? this.state.assignment.n_to_assign : ""} size="small" name="n_to_assign" type="number" onChange={this.handleAssignFieldChange}></TextField> claims to each user.
+                                {this.state.table ? " A total of " + assign_count + " claims will be assigned." : ""}
+                            </AssignControlTextBox>
 
-                        <AssignControlBox>
-                            <AddButton variant="contained" onClick={this.assignMax} color="secondary">
-                                Max
-                            </AddButton>
-                            {this.state.assignment.n_to_assign && !(this.state.assignment.assignment_type === "selection" && this.state.selected.length === 0)?
-                            <JsonButton variant="contained" onClick={this.doAssign} color="primary">
-                                Assign
-                            </JsonButton>
-                            :
-                            <JsonButton variant="contained" disabled color="primary">
-                                Assign
-                            </JsonButton>
-                            }
-                        </AssignControlBox>
+                            <AssignControlBox>
+                                <AddButton variant="contained" onClick={this.assignMax} color="secondary">
+                                    Max
+                                </AddButton>
+                                {this.state.assignment.n_to_assign && !(this.state.assignment.assignment_type === "selection" && this.state.selected.length === 0) ?
+                                    <JsonButton variant="contained" onClick={this.doAssign} color="primary">
+                                        Assign
+                                    </JsonButton>
+                                    :
+                                    <JsonButton variant="contained" disabled color="primary">
+                                        Assign
+                                    </JsonButton>
+                                }
+                            </AssignControlBox>
+                        </div>}
                     </EntryCard>
                     :
                     ""}

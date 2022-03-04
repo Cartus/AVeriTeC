@@ -6,6 +6,8 @@ import AdminControl from './AdminControl';
 import {Redirect} from "react-router-dom";
 import TrainingControl from './TrainingControl';
 import PhaseStatsControl from './PhaseStatsControl';
+import config from "../config.json"
+import axios from "axios";
 
 const AssignmentField = styled(AssignmentControl)`
     width:33.333%;
@@ -63,40 +65,93 @@ class AnnotatorControl extends React.Component {
             },
             assignments:{
                 phase_1: {
-                    done: localStorage.finished_norm_annotations,
-                    total: 20
+                    done: 0,
+                    total: 0
                 },
                 phase_2: {
-                    done: localStorage.finished_qa_annotations,
-                    total: 20
+                    done: 0,
+                    total: 0
                 },
                 phase_3: {
-                    done: localStorage.finished_valid_annotations,
-                    total: 20
+                    done: 0,
+                    total: 0
                 },
                 phase_4: {
                     done: 0,
-                    total: 20
+                    total: 0
                 },
                 phase_5: {
                     done: 0,
-                    total: 20
+                    total: 0
                 },
                 phase_1_training: {
                     done: 0,
-                    total: 10
+                    total: 0
                 },
                 phase_2_training: {
-                    done: 2,
-                    total: 10
+                    done: 0,
+                    total: 0
                 },
                 phase_3_training: {
                     done: 0,
-                    total: 10
+                    total: 0
                 }
             }
         }
       }
+
+    componentDidMount() {
+        var request = {
+            method: "get",
+            baseURL: config.api_url,
+            url: "/user_statistics.php",
+            data: {
+                logged_in_user_id: localStorage.getItem('user_id'),
+                req_type: 'get-statistics',
+                get_by_user_id: localStorage.getItem('user_id')
+            }
+        };
+
+        axios(request).then((response) => {
+            this.setState({
+                assignments: {
+                    phase_1: {
+                        done: response.data.phase_1.annotations_done,
+                        total: response.data.phase_1.annotations_assigned
+                    },
+                    phase_2: {
+                        done: response.data.phase_2.annotations_done,
+                        total: response.data.phase_2.annotations_assigned
+                    },
+                    phase_3: {
+                        done: response.data.phase_3.annotations_done,
+                        total: response.data.phase_3.annotations_assigned
+                    },
+                    phase_4: {
+                        done: response.data.phase_4.annotations_done,
+                        total: response.data.phase_4.annotations_assigned
+                    },
+                    phase_5: {
+                        done: response.data.phase_5.annotations_done,
+                        total: response.data.phase_5.annotations_assigned
+                    },
+                    phase_1_training: {
+                        done: response.data.phase_1.training_annotations_done,
+                        total: response.data.phase_1.training_annotations_assigned
+                    },
+                    phase_2_training: {
+                        done: response.data.phase_2.training_annotations_done,
+                        total: response.data.phase_2.training_annotations_assigned
+                    },
+                    phase_3_training: {
+                        done: response.data.phase_3.training_annotations_done,
+                        total: response.data.phase_3.training_annotations_assigned
+                    },
+                }
+            })
+
+        }).catch((error) => { window.alert(error) });
+    }
 
     render() {
 	if (!localStorage.getItem('login')) {
