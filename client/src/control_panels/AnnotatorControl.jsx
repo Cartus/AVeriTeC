@@ -113,6 +113,7 @@ class AnnotatorControl extends React.Component {
         };
 
         axios(request).then((response) => {
+            console.log(response);
             this.setState({
                 assignments: {
                     phase_1: {
@@ -128,24 +129,34 @@ class AnnotatorControl extends React.Component {
                         total: response.data.phase_3.annotations_assigned
                     },
                     phase_4: {
-                        done: response.data.phase_4.annotations_done,
-                        total: response.data.phase_4.annotations_assigned
+                        // done: response.data.phase_4.annotations_done,
+                        // total: response.data.phase_4.annotations_assigned,
+                        done: 0,
+                        total: 0
                     },
                     phase_5: {
-                        done: response.data.phase_5.annotations_done,
-                        total: response.data.phase_5.annotations_assigned
+                        // done: response.data.phase_5.annotations_done,
+                        // total: response.data.phase_5.annotations_assigned
+                        done: 0,
+                        total: 0
                     },
                     phase_1_training: {
-                        done: response.data.phase_1.training_annotations_done,
-                        total: response.data.phase_1.training_annotations_assigned
+                        // done: response.data.phase_1.training_annotations_done,
+                        // total: response.data.phase_1.training_annotations_assigned
+                        done: 0,
+                        total: 0
                     },
                     phase_2_training: {
-                        done: response.data.phase_2.training_annotations_done,
-                        total: response.data.phase_2.training_annotations_assigned
+                        // done: response.data.phase_2.training_annotations_done,
+                        // total: response.data.phase_2.training_annotations_assigned
+                        done: 0,
+                        total: 0
                     },
                     phase_3_training: {
-                        done: response.data.phase_3.training_annotations_done,
-                        total: response.data.phase_3.training_annotations_assigned
+                        // done: response.data.phase_3.training_annotations_done,
+                        // total: response.data.phase_3.training_annotations_assigned
+                        done: 0,
+                        total: 0
                     },
                 }
             })

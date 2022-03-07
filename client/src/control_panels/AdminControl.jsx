@@ -240,7 +240,7 @@ class AdminControl extends react.Component {
             axios(request).then((response) => {
                 console.log(response.data);
                 this.setState({
-                    processing_assignment: true
+                    processing_assignment: false
                 });
             }).catch((error) => {window.alert(error)})
         });       
