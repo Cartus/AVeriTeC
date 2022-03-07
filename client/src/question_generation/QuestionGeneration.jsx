@@ -170,7 +170,7 @@ class QuestionGeneration extends React.Component {
   componentDidMount() {
     if (localStorage.getItem('login')) {
       var request = {
-        method: "get",
+        method: "post",
         baseURL: config.api_url,
         url: "/user_statistics.php",
         data: {

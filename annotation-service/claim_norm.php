@@ -377,7 +377,7 @@ if ($req_type == "next-data"){
             }
 
             $claim_types = $item['claim_types'];
-            $nonfactual = 0;
+                $nonfactual = 0;
             if (in_array("Speculative Claim", $claim_types)) {
                 $nonfactual=1;
             } elseif (in_array("Opinion Claim", $claim_types)) {
@@ -386,20 +386,22 @@ if ($req_type == "next-data"){
                 $nonfactual=1;
             } elseif (in_array("Media Analysis Claim", $claim_types)) {
                 $nonfactual=1;
-            } elseif (in_array("Geolocation", $claim_types)) {
+            }
+
+            $fact_checker_strategy = $item['fact_checker_strategy'];
+            if (in_array("Geolocation", $fact_checker_strategy)) {
                 $nonfactual=1;
-            } elseif (in_array("Image Analysis", $claim_types)) {
+            } elseif (in_array("Image Analysis", $fact_checker_strategy)) {
                 $nonfactual=1;
-            } elseif (in_array("Video Analysis", $claim_types)) {
+            } elseif (in_array("Video Analysis", $fact_checker_strategy)) {
                 $nonfactual=1;
-            } elseif (in_array("Audio Analysis", $claim_types)) {
+            } elseif (in_array("Audio Analysis", $fact_checker_strategy)) {
                 $nonfactual=1;
-            } elseif (in_array("Media Source Discovery", $claim_types)) {
+            } elseif (in_array("Media Source Discovery", $fact_checker_strategy)) {
                 $nonfactual=1;
             }
             echo $nonfactual;
 
-            $fact_checker_strategy = $item['fact_checker_strategy'];
             $phase_1_label = $item['phase_1_label'];
 
             $claim_types = implode(" [SEP] ", $claim_types);
