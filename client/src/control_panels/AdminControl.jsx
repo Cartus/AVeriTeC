@@ -233,16 +233,17 @@ class AdminControl extends react.Component {
             }
         };
 
-        axios(request).then((response) => {
-            console.log(response.data);
-        }).catch((error) => {window.alert(error)})
 
         this.setState({
             processing_assignment: true
-        });
-
-        // Todo: send axios call, then update state
-        // In .then, also set processing_assignment: false
+        }, () => {
+            axios(request).then((response) => {
+                console.log(response.data);
+                this.setState({
+                    processing_assignment: true
+                });
+            }).catch((error) => {window.alert(error)})
+        });       
     }
 
     handleAssignFieldChange(event) {
