@@ -189,14 +189,16 @@ class PhaseStatsControl extends react.Component {
 
         if (this.state.phase_eval_stats) {
             Object.keys(this.state.phase_eval_stats).forEach(key => {
-                chartData = [
-                    ...chartData,
-                    {
-                        name: chart_keys[key],
-                        user: "average",
-                        average: this.state.phase_eval_stats[key]
-                    }
-                ]
+                if (key in chart_keys){
+                    chartData = [
+                        ...chartData,
+                        {
+                            name: chart_keys[key],
+                            user: "average",
+                            average: this.state.phase_eval_stats[key]
+                        }
+                    ]
+                }
             })
         }
 

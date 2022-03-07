@@ -239,9 +239,7 @@ class AdminControl extends react.Component {
         }, () => {
             axios(request).then((response) => {
                 console.log(response.data);
-                this.setState({
-                    processing_assignment: false
-                });
+                window.location.reload(false);
             }).catch((error) => {window.alert(error)})
         });       
     }
