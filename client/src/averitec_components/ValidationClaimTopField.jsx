@@ -139,7 +139,7 @@ class ClaimTopField extends React.Component {
                     <li>Supported: The claim is fully supported by the arguments and evidence presented.</li>
                     <li>Refuted: The claim is fully contradicted by the arguments and evidence presented.</li>
                     <li>Not Enough Evidence: There is not enough information to support or refute the claim. The evidence either directly argues that appropriate evidence cannot be found, or leaves some aspect of the claim neither supported nor refuted.</li>
-                    <li>Conflicting Evidence/Cherrypicking: The claim is misleading due to missing context, but not explicitly refuted. This includes cherry picking, true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found.</li>
+                    <li>Conflicting Evidence/Cherrypicking: Both supporting and refuting evidence was found for this claim. This includes cherry-picking, i.e. true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found.</li>
                   </ul>}
                 />
 
@@ -150,7 +150,7 @@ class ClaimTopField extends React.Component {
                     <li>Supported: The claim is fully supported by the arguments and evidence presented.</li>
                     <li>Refuted: The claim is fully contradicted by the arguments and evidence presented.</li>
                     <li>Not Enough Evidence: There is not enough information to support or refute the claim. The evidence either directly argues that appropriate evidence cannot be found, or leaves some aspect of the claim neither supported nor refuted.</li>
-                    <li>Conflicting Evidence/Cherrypicking: The claim is misleading due to missing context, but not explicitly refuted. This includes cherry picking, true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found.</li>
+                    <li>Conflicting Evidence/Cherrypicking: Both supporting and refuting evidence was found for this claim. This includes cherry-picking, i.e. true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found.</li>
                   </ul>}
                 />
 
