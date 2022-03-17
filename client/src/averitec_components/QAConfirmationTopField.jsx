@@ -76,12 +76,12 @@ class QAConfirmationClaimTopField extends React.Component {
         <ContainerDiv>
           <ClaimHeader>{this.props.claim.claim_text}</ClaimHeader>
           <SingleTextEntryDiv>
-            <SelectWithTooltip name="label" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.label} label="Claim Label" onChange={this.props.changeLabel} items={["Supported", "Refuted", "Not Enough Information", "Missing Context"]} tooltip={
+            <SelectWithTooltip name="label" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.label} label="Claim Label" onChange={this.props.changeLabel} items={["Supported", "Refuted", "Not Enough Evidence", "Conflicting Evidence/Cherrypicking"]} tooltip={
               <ul>
                 <li>Supported: The claim is fully supported by the arguments and evidence presented.</li>
                 <li>Refuted: The claim is fully contradicted by the arguments and evidence presented.</li>
-                <li>Not Enough Information: There is not enough information to support or refute the claim. The evidence either directly argues that appropriate evidence cannot be found, or leaves some aspect of the claim neither supported nor refuted.</li>
-                <li>Missing Context: The claim is misleading due to missing context, but not explicitly refuted. This includes cherry picking, true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found.</li>
+                <li>Not Enough Evidence: There is not enough information to support or refute the claim. The evidence either directly argues that appropriate evidence cannot be found, or leaves some aspect of the claim neither supported nor refuted.</li>
+                <li>Conflicting Evidence/Cherrypicking: The claim is misleading due to missing context, but not explicitly refuted. This includes cherry picking, true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found.</li>
               </ul>}
             />
             <SubmitButton variant="contained" color="secondary" onClick={this.props.cancelFunction}>
