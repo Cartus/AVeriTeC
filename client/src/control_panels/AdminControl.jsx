@@ -97,7 +97,7 @@ margin:10px 0px!important;
 const JsonButton = styled(Button)`
 float:left;
 width:200px;
-margin:10px!important;
+margin:10px 0px 10px 10px!important;
 `
 
 const DeleteButton = styled(Button)`
@@ -147,6 +147,7 @@ class AdminControl extends react.Component {
                 assignment_phase: 1
             },
             new_username: "",
+            n_users_to_create: 1,
             processing_assignment: true
         }
 
@@ -160,6 +161,7 @@ class AdminControl extends react.Component {
         this.assignMax = this.assignMax.bind(this);
         this.doAssign = this.doAssign.bind(this);
         this.getMax = this.getMax.bind(this);
+        this.bulkAddUsers = this.bulkAddUsers.bind(this);
     }
 
     getMax() {
@@ -240,8 +242,8 @@ class AdminControl extends react.Component {
             axios(request).then((response) => {
                 console.log(response.data);
                 window.location.reload(false);
-            }).catch((error) => {window.alert(error)})
-        });       
+            }).catch((error) => { window.alert(error) })
+        });
     }
 
     handleAssignFieldChange(event) {
@@ -332,6 +334,9 @@ class AdminControl extends react.Component {
                         { field: "p2_task_time", headerName: "P2 Average Minutes", type: "number", editable: false, width: 220 },
                         { field: "p3_task_time", headerName: "P3 Average Minutes", type: "number", editable: false, width: 220 },
                         { field: "total_hours", headerName: "Total Hours Worked", type: "number", editable: false, width: 220 },
+                        { field: "pages_skipped", headerName: "Total Pages Skipped", type: "number", editable: false, width: 220 },
+                        { field: "pages_timed_out", headerName: "Timeouts", type: "number", editable: false, width: 220 },
+                        { field: "speed_traps_hit", headerName: "Speed traps hit", type: "number", editable: false, width: 220 },
                     ],
                     table: user_data
                 })
@@ -471,6 +476,49 @@ class AdminControl extends react.Component {
         })
     }
 
+    bulkAddUsers() {
+        let generated_users = {}
+        for (let index = 0; index < this.state.n_users_to_create; index++) {
+            let username = "user_" + (index + this.state.table.length * 10)
+            let password = generatePassword();
+            let password_md5 = md5(password);
+
+            generated_users = {
+                ...generated_users,
+                [username]: password
+            }
+
+            var request = {
+                method: "post",
+                baseURL: config.api_url,
+                url: "/registration.php",
+                data: {
+                    name: username,
+                    password: password,
+                    password_md5: password_md5
+                }
+            };
+    
+            axios(request).then((response) => {
+                console.log(response.data);
+                if (index === this.state.n_users_to_create - 1){
+                    this.loadTableFromDB();
+                }                
+            }).catch((error) => { window.alert(error) })
+        }
+
+        const fileName = "generated_users";
+        const json = JSON.stringify(generated_users);
+        const blob = new Blob([json], { type: 'application/json' });
+        const href = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = href;
+        link.download = fileName + ".json";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
     addUser() {
         let username = this.state.new_username;
         let password = this.state.tempPassword;
@@ -552,42 +600,74 @@ class AdminControl extends react.Component {
                     <div style={{ height: hackedDivHeight, width: '100%' }}>
                         {datagrid}
                         {this.props.name === "Users" ?
-                            <StyledPopup trigger={
-                                <AddButton variant="contained" color="primary">
-                                    Create User
-                                </AddButton>
-                            }
-                                onOpen={() => {
-                                    let password = generatePassword()
-                                    console.log(password)
-                                    this.setState({ tempPassword: password })
-                                }}
-                                modal
-                            >
-                                {(close) =>
-                                    <div>
-                                        <CancelButton onClick={close}><ClearIcon /></CancelButton>
-                                        <ModalPartBox>
-                                            Create a new user. Username:
-                                        </ModalPartBox>
-                                        <ModalPartBox>
-                                            <TextField value={this.state.new_username} size="small" name="new_username" onChange={(event) => {
-                                                this.setState({ new_username: event.target.value })
-                                            }}></TextField>
-                                        </ModalPartBox>
-                                        <ModalPartBox>
-                                            Temporary password:
-                                        </ModalPartBox>
-                                        <ModalPartBox>
-                                            <TextField value={this.state.tempPassword ? this.state.tempPassword : ""} size="small" InputProps={{ readOnly: true }} variant="filled" name="new_password"></TextField>
-                                        </ModalPartBox>
-                                        <ModalPartBox>
-                                            <AddButton variant="contained" color="primary" onClick={() => { this.addUser(); close(); }}>
-                                                Create User
-                                            </AddButton>
-                                        </ModalPartBox>
-                                    </div>}
-                            </StyledPopup>
+                            <div>
+                                <StyledPopup trigger={
+                                    <AddButton variant="contained" color="primary">
+                                        Create User
+                                    </AddButton>
+                                }
+                                    onOpen={() => {
+                                        let password = generatePassword()
+                                        console.log(password)
+                                        this.setState({ tempPassword: password })
+                                    }}
+                                    modal
+                                >
+                                    {(close) =>
+                                        <div>
+                                            <CancelButton onClick={close}><ClearIcon /></CancelButton>
+                                            <ModalPartBox>
+                                                Create a new user. Username:
+                                            </ModalPartBox>
+                                            <ModalPartBox>
+                                                <TextField value={this.state.new_username} size="small" name="new_username" onChange={(event) => {
+                                                    this.setState({ new_username: event.target.value })
+                                                }}></TextField>
+                                            </ModalPartBox>
+                                            <ModalPartBox>
+                                                Temporary password:
+                                            </ModalPartBox>
+                                            <ModalPartBox>
+                                                <TextField value={this.state.tempPassword ? this.state.tempPassword : ""} size="small" InputProps={{ readOnly: true }} variant="filled" name="new_password"></TextField>
+                                            </ModalPartBox>
+                                            <ModalPartBox>
+                                                <AddButton variant="contained" color="primary" onClick={() => { this.addUser(); close(); }}>
+                                                    Create User
+                                                </AddButton>
+                                            </ModalPartBox>
+                                        </div>}
+                                </StyledPopup>
+                                <StyledPopup trigger={
+                                    <JsonButton variant="contained" color="primary">
+                                        Bulk create users
+                                    </JsonButton>
+                                }
+                                    onOpen={() => {
+                                        let password = generatePassword()
+                                        console.log(password)
+                                        this.setState({ tempPassword: password })
+                                    }}
+                                    modal
+                                >
+                                    {(close) =>
+                                        <div>
+                                            <CancelButton onClick={close}><ClearIcon /></CancelButton>
+                                            <ModalPartBox>
+                                                Generate several new user accounts. Number to create:
+                                            </ModalPartBox>
+                                            <ModalPartBox>
+                                                <TextField value={this.state.n_users_to_create} size="small" name="n_users_to_create" onChange={(event) => {
+                                                    this.setState({ n_users_to_create: event.target.value })
+                                                }}></TextField>
+                                            </ModalPartBox>
+                                            <ModalPartBox>
+                                                <AddButton variant="contained" color="primary" onClick={() => { this.bulkAddUsers(); close(); }}>
+                                                    Create Users
+                                                </AddButton>
+                                            </ModalPartBox>
+                                        </div>}
+                                </StyledPopup>
+                            </div>
                             :
                             <AddButton variant="contained" color="primary" onClick={this.addRow}>
                                 Create Row
