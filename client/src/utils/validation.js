@@ -15,7 +15,7 @@ export function notEmptyValidator(data) {
 }
 
 export function notBooleanValidator(data) {
-  if (["yes", "no", "true", "false", "yea", "yeah", "nay", "y", "n"].includes(data.toLowerCase())) {
+  if (["yes", "no", "true", "false", "yea", "yeah", "nay", "y", "n", "nope", "aye", "nah"].includes(data.toLowerCase())) {
     return { error: true, message: "Wrong type for boolean answer" }
   } else {
     return { error: false, message: "" }
