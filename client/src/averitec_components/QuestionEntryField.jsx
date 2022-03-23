@@ -6,7 +6,7 @@ import EntryCardContainer from '../components/EntryCardContainer';
 import TextFieldWithTooltip from '../components/TextFieldWithTooltip';
 import SelectWithTooltip from '../components/SelectWithTooltip';
 import ClaimTopField from '../averitec_components/ClaimTopField';
-import { notEmptyValidator } from '../utils/validation.js'
+import { notEmptyValidator, notBooleanValidator, combinedValidator } from '../utils/validation.js'
 import Slider from '@mui/material/Slider';
 import Card from '@material-ui/core/Card';
 
@@ -147,12 +147,12 @@ class AnswerCard extends React.Component {
     var boolean = this.props.data["answer_type"] == "Boolean"
 
     var answer_field = <div>
-      <TextFieldWithTooltip InputProps={this.props.posthocView ? { readOnly: true } : undefined} variant={this.props.posthocView ? "filled" : undefined} data-tour="answer_textfield" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["answer"]} name='answer' label="Answer" multiline rows={7} onChange={this.props.handleFieldChange} tooltip="Please write the answer here. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence." />
+      <TextFieldWithTooltip InputProps={this.props.posthocView ? { readOnly: true } : undefined} variant={this.props.posthocView ? "filled" : undefined} data-tour="answer_textfield" validator={combinedValidator(notEmptyValidator, notBooleanValidator)} valid={this.props.valid} required value={this.props.data["answer"]} name='answer' label="Answer" multiline rows={7} onChange={this.props.handleFieldChange} tooltip="Please write the answer here. For yes/no answers, please remember to use the boolean answer type instead. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence." />
       <PaddingDiv />
     </div>
     if (unanswerable) {
       answer_field = <div>
-        <TextFieldWithTooltip data-tour="answer_textfield" disabled value={this.props.data["answer"]} name='answer' label="Answer" multiline rows={7} onChange={this.props.handleFieldChange} tooltip="Please write the answer here. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence." />
+        <TextFieldWithTooltip data-tour="answer_textfield" disabled value={this.props.data["answer"]} name='answer' label="Answer" multiline rows={7} onChange={this.props.handleFieldChange} tooltip="Please write the answer here. For yes/no answers, please remember to use the boolean answer type instead. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence." />
         <PaddingDiv />
       </div>
     }

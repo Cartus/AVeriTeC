@@ -11,7 +11,7 @@ import { Redirect } from "react-router-dom";
 import config from "../config.json"
 import moment from "moment";
 import QuestionGenerationConfirmation from "./QuestionGenerationConfirmation"
-import { notEmptyValidator, atLeastOneValidator } from '../utils/validation.js'
+import { notEmptyValidator, atLeastOneValidator, notBooleanValidator } from '../utils/validation.js'
 
 const QADataField = styled.div`
     width: -webkit-calc(40% - 10px)!important;
@@ -94,13 +94,16 @@ function validate(content) {
             console.log("boolean and no expl");
             valid = false;
           }
+        } else if (notBooleanValidator(answer["answer"]).error){
+          console.log("wrong type for boolean");
+          valid = false;
         }
-
+        
         if (answer["answer_type"] != "Unanswerable") {
           if (!("answer" in answer) || notEmptyValidator(answer["answer"]).error) {
             console.log("no answer and not unanswerable");
             valid = false;
-          }
+          } 
         }
       });
     }
