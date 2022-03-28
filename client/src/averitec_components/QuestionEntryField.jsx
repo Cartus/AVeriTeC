@@ -196,7 +196,7 @@ class AnswerCard extends React.Component {
           {unanswerable ?
             <SelectWithTooltip name="source_medium" label="Source Medium" disabled value={this.props.data["source_medium"]} onChange={this.props.handleFieldChange} items={["Web text", "Web table", "PDF", "Image/graphic", "Video", "Audio", "Metadata", "Other"]} tooltip="Please describe what medium you found the answer in." />
             :
-            <SelectWithTooltip readOnly={this.props.posthocView} name="source_medium" label="Source Medium" value={this.props.data["source_medium"]} onChange={this.props.handleFieldChange} items={["Web text", "Web table", "PDF", "Image/graphic", "Video", "Audio", "Metadata", "Other"]} tooltip="Please describe what medium you found the answer in." />
+            <SelectWithTooltip readOnly={this.props.posthocView} name="source_medium" label="Source Medium" value={this.props.data["source_medium"]} onChange={this.props.handleFieldChange} validator={notEmptyValidator} items={["Web text", "Web table", "PDF", "Image/graphic", "Video", "Audio", "Metadata", "Other"]} tooltip="Please describe what medium you found the answer in." />
           }
         </div>
       </TextRightEntryDiv>

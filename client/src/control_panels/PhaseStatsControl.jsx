@@ -58,65 +58,14 @@ class PhaseStatsControl extends react.Component {
             },
             phase_eval_stats: {
             },
-            annotation_data: [
+            annotation_data: 
                 {
-                    name: 'Week 1',
-                    "Annotations pending": 7500,
-                    "Annotations assigned": 0,
-                    "Annotations completed": 0,
-                    "Claims skipped": 0,
-                },
-                {
-                    name: 'Week 2',
-                    "Annotations pending": 4000,
-                    "Annotations assigned": 500,
-                    "Annotations completed": 3000,
-                    "Claims skipped": 20,
-                },
-                {
-                    name: 'Week 3',
                     "Annotations pending": 3000,
                     "Annotations assigned": 1500,
                     "Annotations completed": 3000,
-                    "Claims skipped": 100,
-                },
-                {
-                    name: 'Week 4',
-                    "Annotations pending": 1000,
-                    "Annotations assigned": 2000,
-                    "Annotations completed": 5500,
-                    "Claims skipped": 120,
-                },
-                {
-                    name: 'Week 5',
-                    "Annotations pending": 0,
-                    "Annotations assigned": 2000,
-                    "Annotations completed": 5500,
-                    "Claims skipped": 150,
-                },
-                {
-                    name: 'Week 6',
-                    "Annotations pending": 0,
-                    "Annotations assigned": 1000,
-                    "Annotations completed": 6500,
-                    "Claims skipped": 170,
-                },
-                {
-                    name: 'Week 7',
-                    "Annotations pending": 0,
-                    "Annotations assigned": 500,
-                    "Annotations completed": 7000,
-                    "Claims skipped": 200,
-                },
-                {
-                    name: 'Week 8',
-                    "Annotations pending": 0,
-                    "Annotations assigned": 0,
-                    "Annotations completed": 7500,
-                    "Claims skipped": 240,
+                    "Claims skipped": 100
                 }
-            ]
-        }
+            }
     }
 
     componentDidMount() {
@@ -167,11 +116,6 @@ class PhaseStatsControl extends react.Component {
 
         if (this.props.className !== undefined) {
             className = this.props.className
-        }
-
-        const timekeeping_avg = {
-            Task: 4.2,
-            Loading: 1.2
         }
 
         var chartData = []
@@ -230,8 +174,8 @@ class PhaseStatsControl extends react.Component {
                 <EntryCard>
                     <Header>{this.props.name}</Header>
                     <ChartBox>
-                        <LineChart
-                            width={500}
+                        <BarChart
+                            width={900}
                             height={300}
                             data={this.state.annotation_data}
                             margin={{
@@ -246,11 +190,11 @@ class PhaseStatsControl extends react.Component {
                             <YAxis />
                             <Tooltip />
                             <Legend />
-                            <Line type="monotone" dataKey="Annotations completed" stroke="#8884d8" activeDot={{ r: 8 }} />
-                            <Line type="monotone" dataKey="Annotations assigned" stroke="#82ca9d" activeDot={{ r: 8 }} />
-                            <Line type="monotone" dataKey="Annotations pending" stroke="#ed6145" activeDot={{ r: 8 }} />
-                            <Line type="monotone" dataKey="Claims skipped" stroke="#e0cc19" activeDot={{ r: 8 }} />
-                        </LineChart>
+                            <Line type="monotone" name="Annotations completed" datakey="completed" stroke="#8884d8" activeDot={{ r: 8 }} />
+                            <Line type="monotone" name="Annotations assigned" datakey="assigned" stroke="#82ca9d" activeDot={{ r: 8 }} />
+                            <Line type="monotone" name="Annotations pending" datakey="pending" stroke="#ed6145" activeDot={{ r: 8 }} />
+                            <Line type="monotone" name="Claims skipped" datakey="skipped" stroke="#e0cc19" activeDot={{ r: 8 }} />
+                        </BarChart>
                     </ChartBox>
 
                     {timeData.length > 0 ?

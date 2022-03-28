@@ -89,6 +89,13 @@ function validate(content) {
           }
         }
 
+        if (!("source_medium" in answer) || notEmptyValidator(answer["source_medium"]).error) {
+          if (!("answer_type" in answer) || answer["answer_type"] != "Unanswerable") {
+            console.log("no source medium and not unanswerable");
+            valid = false;
+          }
+        }
+
         if (answer["answer_type"] == "Boolean") {
           if (!("bool_explanation" in answer) || notEmptyValidator(answer["bool_explanation"]).error) {
             console.log("boolean and no expl");
