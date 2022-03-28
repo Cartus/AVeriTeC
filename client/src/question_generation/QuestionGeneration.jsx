@@ -11,7 +11,7 @@ import { Redirect } from "react-router-dom";
 import config from "../config.json"
 import moment from "moment";
 import QuestionGenerationConfirmation from "./QuestionGenerationConfirmation"
-import { notEmptyValidator, atLeastOneValidator } from '../utils/validation.js'
+import { notEmptyValidator, atLeastOneValidator, notBooleanValidator } from '../utils/validation.js'
 
 const QADataField = styled.div`
     width: -webkit-calc(40% - 10px)!important;
@@ -94,6 +94,9 @@ function validate(content) {
             console.log("boolean and no expl");
             valid = false;
           }
+        } else if (notBooleanValidator(answer["answer"]).error) {
+          console.log("wrong type for boolean");
+          valid = false;
         }
 
         if (answer["answer_type"] != "Unanswerable") {
@@ -143,6 +146,28 @@ class QuestionGeneration extends React.Component {
     this.addEntry = this.addEntry.bind(this);
     this.proceedToConfirmation = this.proceedToConfirmation.bind(this);
     this.cancelConfirmation = this.cancelConfirmation.bind(this);
+    this.shouldPreventSubmissionBecauseOfUnanswerables = this.shouldPreventSubmissionBecauseOfUnanswerables.bind(this);
+  }
+
+  shouldPreventSubmissionBecauseOfUnanswerables() {
+    if (Object.values(this.state.entries).length >= 5) {
+      return false;
+    }
+
+    let retval = true;
+    Object.values(this.state.entries).forEach(entry => {
+      if ("answers" in entry) {
+        entry["answers"].forEach(answer => {
+          if (answer["answer_type"] != "Unanswerable") {
+            console.log("Found a good answer.")
+            retval = false
+            return;
+          }
+        });
+      }
+    });
+
+    return retval;
   }
 
   deleteEntry = (entryId) => {
@@ -337,9 +362,15 @@ class QuestionGeneration extends React.Component {
     console.log("Valid: " + validate(this.state));
 
     if (validate(this.state)) {
-      this.setState({
-        confirmation: true
-      });
+      if (this.shouldPreventSubmissionBecauseOfUnanswerables()) {
+        console.log(this.shouldPreventSubmissionBecauseOfUnanswerables())
+        console.log("Blocked submission because all answers are unanswerable.")
+        window.alert("Please try to find at least a partial answer to one of your questions. If you cannot, try to ask more questions, or rephrase and reask one of your questions.");
+      } else {
+        this.setState({
+          confirmation: true
+        });
+      }
     } else {
       this.setState({
         valid: false

@@ -41,12 +41,12 @@ export default function PhaseFourTopField(props) {
       </TextDiv>
 
       <EntryDiv>
-        <SelectWithTooltip readOnly={true} name="label" valid={true} value={props.previous_label_data ? props.previous_label_data["phase_two_label"] : ""} label="Phase Two Label" items={["Supported", "Refuted", "Not Enough Information", "Missing Context"]} tooltip={
+        <SelectWithTooltip readOnly={true} name="label" valid={true} value={props.previous_label_data ? props.previous_label_data["phase_two_label"] : ""} label="Phase Two Label" items={["Supported", "Refuted", "Not Enough Evidence", "Conflicting Evidence/Cherrypicking"]} tooltip={
           <ul>
             <li>Supported: The claim is fully supported by the arguments and evidence presented.</li>
             <li>Refuted: The claim is fully contradicted by the arguments and evidence presented.</li>
-            <li>Not Enough Information: There is not enough information to support or refute the claim. The evidence either directly argues that appropriate evidence cannot be found, or leaves some aspect of the claim neither supported nor refuted.</li>
-            <li>Missing Context: The claim is misleading due to missing context, but not explicitly refuted. This includes cherry picking, true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found.</li>
+            <li>Not Enough Evidence: There is not enough information to support or refute the claim. The evidence either directly argues that appropriate evidence cannot be found, or leaves some aspect of the claim neither supported nor refuted.</li>
+            <li>Conflicting Evidence/Cherrypicking: Both supporting and refuting evidence was found for this claim. This includes cherry-picking, i.e. true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found.</li>
           </ul>}
         />
       </EntryDiv>
@@ -56,12 +56,12 @@ export default function PhaseFourTopField(props) {
       </TextDiv>
 
       <EntryDiv>
-        <SelectWithTooltip readOnly={true} name="label" valid={true} value={props.previous_label_data ? props.previous_label_data["phase_three_label"] : ""} label="Phase Three Label" items={["Supported", "Refuted", "Not Enough Information", "Missing Context"]} tooltip={
+        <SelectWithTooltip readOnly={true} name="label" valid={true} value={props.previous_label_data ? props.previous_label_data["phase_three_label"] : ""} label="Phase Three Label" items={["Supported", "Refuted", "Not Enough Evidence", "Conflicting Evidence/Cherrypicking"]} tooltip={
           <ul>
             <li>Supported: The claim is fully supported by the arguments and evidence presented.</li>
             <li>Refuted: The claim is fully contradicted by the arguments and evidence presented.</li>
-            <li>Not Enough Information: There is not enough information to support or refute the claim. The evidence either directly argues that appropriate evidence cannot be found, or leaves some aspect of the claim neither supported nor refuted.</li>
-            <li>Missing Context: The claim is misleading due to missing context, but not explicitly refuted. This includes cherry picking, true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found.</li>
+            <li>Not Enough Evidence: There is not enough information to support or refute the claim. The evidence either directly argues that appropriate evidence cannot be found, or leaves some aspect of the claim neither supported nor refuted.</li>
+            <li>Conflicting Evidence/Cherrypicking: Both supporting and refuting evidence was found for this claim. This includes cherry-picking, i.e. true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found.</li>
           </ul>}
         />
       </EntryDiv>

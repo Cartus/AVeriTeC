@@ -131,7 +131,7 @@ class StaticQuestionEntryField extends React.Component {
                         <div>
                             <SourceSpacingDiv />
                             <span>
-                                {source_url === "metadata" ?
+                                {source_url === "Metadata" ?
                                     "Source: Metadata"
                                     :
                                     <a target="_blank" rel="noopener noreferrer" href={source_url}>View source</a>
