@@ -52,7 +52,7 @@ class NavBar extends React.Component {
                 <SubmitButton data-tour="submit" variant="contained" color="primary" onClick={this.props.onSubmit}>
                   Submit
                 </SubmitButton>
-                <NextButton variant="contained" color="secondary" disabled={Number(localStorage.pc) <= 1}  onClick={this.props.onNext}>
+                <NextButton variant="contained" color="secondary" disabled={Number(localStorage.pc) <= 0}  onClick={this.props.onNext}>
                   Next
                 </NextButton>
             </EntryCard>

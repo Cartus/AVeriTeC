@@ -163,13 +163,13 @@ class ClaimEntryField extends React.Component {
                 <ClaimEntryDiv>
                   <TextFieldWithTooltip InputProps={this.props.posthocView ? { readOnly: true } : undefined} variant={this.props.posthocView ? "filled" : undefined} data-tour="claim_textfield" validator={notEmptyValidator} valid={this.props.valid} required multiline rows={6} value={this.props.data["cleaned_claim"]} name='cleaned_claim' label="Claim" onChange={this.handleFieldChange} tooltip="The text of the claim. Please verify that the claim has been copied correctly from the article below, and that it could be understood without reading the article. Try to make claims specific enough that appropriate evidence can be searched for even by a person who has not read the fact-checking article." />
                   <VerdictBoxDiv data-tour="verdict">
-                    <SelectWithTooltip readOnly={this.props.posthocView} validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["phase_1_label"]} name="phase_1_label" label="Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Information", "Missing Context"]} tooltip={
+                    <SelectWithTooltip readOnly={this.props.posthocView} validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["phase_1_label"]} name="phase_1_label" label="Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Evidence", "Conflicting Evidence/Cherrypicking"]} tooltip={
                       <ul>
                         <li>Supported: The claim is fully supported by the arguments and evidence presented.</li>
                         <li>Refuted: The claim is fully contradicted by the arguments and evidence presented.</li>
-                        <li>Not Enough Information: There is not enough information to support or refute the claim. The evidence either directly argues that appropriate evidence cannot be found, or leaves some aspect of the claim neither supported nor refuted.</li>
-                        <li>Missing Context: The claim is misleading due to missing context, but not explicitly refuted. This includes cherry picking, true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found.</li>
-                      </ul>} />
+                        <li>Not Enough Evidence: There is not enough information to support or refute the claim. The evidence either directly argues that appropriate evidence cannot be found, or leaves some aspect of the claim neither supported nor refuted.</li>
+                        <li>Conflicting Evidence/Cherrypicking: Both supporting and refuting evidence was found for this claim. This includes cherry-picking, i.e. true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found.</li>
+                     </ul>} />
                   </VerdictBoxDiv>
                 </ClaimEntryDiv>
               </TextLeftEntryDiv>

@@ -226,6 +226,7 @@ class ClaimNormalization extends React.Component {
             };
     
             axios(request).then((response) => {
+                console.log(response)
                 this.setState({
                     final_idx: response.data.phase_1.annotations_assigned
                 })

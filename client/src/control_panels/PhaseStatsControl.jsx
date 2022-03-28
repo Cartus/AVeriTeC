@@ -70,7 +70,7 @@ class PhaseStatsControl extends react.Component {
 
     componentDidMount() {
         var request = {
-            method: "get",
+            method: "post",
             baseURL: config.api_url,
             url: "/global_statistics.php",
             data: {
@@ -80,6 +80,7 @@ class PhaseStatsControl extends react.Component {
         };
 
         axios(request).then((response) => {
+            console.log(response)
             if (response.data.is_admin === false) {
                 window.alert("Error: Access denied.")
             } else {
