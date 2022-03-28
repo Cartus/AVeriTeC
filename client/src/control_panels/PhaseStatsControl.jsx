@@ -59,12 +59,15 @@ class PhaseStatsControl extends react.Component {
             phase_eval_stats: {
             },
             annotation_data: 
+            [
                 {
-                    "Annotations pending": 3000,
-                    "Annotations assigned": 1500,
-                    "Annotations completed": 3000,
-                    "Claims skipped": 100
-                }
+                    name: "Assignment Status",
+                    pending: 3000,
+                    assigned: 1500,
+                    completed: 3000,
+                    skipped: 100,
+                },
+            ]
             }
     }
 
@@ -176,7 +179,7 @@ class PhaseStatsControl extends react.Component {
                     <Header>{this.props.name}</Header>
                     <ChartBox>
                         <BarChart
-                            width={900}
+                            width={100 + this.state.annotation_data.length * 350}
                             height={300}
                             data={this.state.annotation_data}
                             margin={{
@@ -190,11 +193,10 @@ class PhaseStatsControl extends react.Component {
                             <XAxis dataKey="name" />
                             <YAxis />
                             <Tooltip />
-                            <Legend />
-                            <Line type="monotone" name="Annotations completed" datakey="completed" stroke="#8884d8" activeDot={{ r: 8 }} />
-                            <Line type="monotone" name="Annotations assigned" datakey="assigned" stroke="#82ca9d" activeDot={{ r: 8 }} />
-                            <Line type="monotone" name="Annotations pending" datakey="pending" stroke="#ed6145" activeDot={{ r: 8 }} />
-                            <Line type="monotone" name="Claims skipped" datakey="skipped" stroke="#e0cc19" activeDot={{ r: 8 }} />
+                            <Bar barSize={60} name="Annotations completed" dataKey="completed" fill="#8884d8" />
+                            <Bar barSize={60} name="Annotations assigned" dataKey="assigned" fill="#82ca9d" />
+                            <Bar barSize={60} name="Annotations pending" dataKey="pending" fill="#ed6145" />
+                            <Bar barSize={60} name="Claims skipped" dataKey="skipped" fill="#e0cc19" />
                         </BarChart>
                     </ChartBox>
 
