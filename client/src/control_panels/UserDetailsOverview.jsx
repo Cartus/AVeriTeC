@@ -76,7 +76,7 @@ export default function UserDetailsOverview(props) {
         }).catch((error) => { window.alert(error) })
 
         var request = {
-            method: "get",
+            method: "post",
             baseURL: config.api_url,
             url: "/global_statistics.php",
             data: {

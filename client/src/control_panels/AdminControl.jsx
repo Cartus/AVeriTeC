@@ -283,6 +283,9 @@ class AdminControl extends react.Component {
 
     loadTableFromDB() {
         if (this.props.name == "Users") {
+            // TODO: set availableClaimsData via API call.
+
+
             var request = {
                 method: "post",
                 baseURL: config.api_url,
@@ -306,11 +309,12 @@ class AdminControl extends react.Component {
                 //     return new_dict
                 // });
 
+                console.log(user_data)
                 user_data = user_data.map(user_dict => {
                     let new_dict = user_dict
-                    new_dict["finished_norm_annotations_prop"] = new_dict["finished_norm_annotations"] + " / " + 20
-                    new_dict["finished_qa_annotations_prop"] = new_dict["finished_qa_annotations"] + " / " + 20
-                    new_dict["finished_valid_annotations_prop"] = new_dict["finished_valid_annotations"] + " / " + 20
+                    new_dict["finished_norm_annotations_prop"] = new_dict["finished_norm_annotations"] + " / " + new_dict['p1_assigned']
+                    new_dict["finished_qa_annotations_prop"] = new_dict["finished_qa_annotations"] + " / " + new_dict['p2_assigned']
+                    new_dict["finished_valid_annotations_prop"] = new_dict["finished_valid_annotations"] + " / " + new_dict['p3_assigned']
                     return new_dict
                 });
                 // ----------- 
@@ -382,7 +386,7 @@ class AdminControl extends react.Component {
     componentDidMount() {
         this.loadTableFromDB()
 
-        // TODO: set availableClaimsData via API call.
+
         // Only execute the following setState if no assignment is currently in progress.
         this.setState({
             processing_assignment: false
@@ -410,7 +414,8 @@ class AdminControl extends react.Component {
                     user_id: localStorage.getItem('user_id'),
                     req_type: 'edit-users',
                     user_id_to_edit: params.id,
-                    [params.field]: params.value // this will automatically become e.g. user_name: EditedMichael
+                    target_field: params.field,
+                    target_value: params.value
                 }
             };
 
@@ -491,7 +496,8 @@ class AdminControl extends react.Component {
             var request = {
                 method: "post",
                 baseURL: config.api_url,
-                url: "/registration.php",
+                // url: "/registration.php",
+                url: "/registration_create.php",
                 data: {
                     name: username,
                     password: password,
@@ -529,7 +535,8 @@ class AdminControl extends react.Component {
         var request = {
             method: "post",
             baseURL: config.api_url,
-            url: "/registration.php",
+            // url: "/registration.php",
+            url: "/registration_create.php",
             data: {
                 name: username,
                 password: password,
