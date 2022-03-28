@@ -297,12 +297,12 @@ class AdminControl extends react.Component {
                 console.log(user_data)
 
                 // Please update this: 
-                user_data = user_data.map(user_dict => {
-                    let new_dict = user_dict
-                    new_dict["p1_task_time"] = 8.2
-                    new_dict["p2_task_time"] = 17.5
-                    return new_dict
-                });
+                // user_data = user_data.map(user_dict => {
+                //     let new_dict = user_dict
+                //     new_dict["p1_task_time"] = 8.2
+                //     new_dict["p2_task_time"] = 17.5
+                //     return new_dict
+                // });
 
                 user_data = user_data.map(user_dict => {
                     let new_dict = user_dict
