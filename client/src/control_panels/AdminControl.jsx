@@ -135,11 +135,11 @@ class AdminControl extends react.Component {
             availableClaimsData: [
                 {
                     name: "Unassigned Claims",
-                    p1: 7500,
-                    p2: 3500,
-                    p3: 2500,
-                    p4: 6500,
-                    p5: 1500,
+                    p1: 0,
+                    p2: 0,
+                    p3: 0,
+                    p4: 0,
+                    p5: 0,
                 },
             ],
             assignment: {
@@ -284,6 +284,32 @@ class AdminControl extends react.Component {
     loadTableFromDB() {
         if (this.props.name == "Users") {
             // TODO: set availableClaimsData via API call.
+            var request = {
+                method: "post",
+                baseURL: config.api_url,
+                url: "/global_statistics.php",
+                data: {
+                    logged_in_user_id: localStorage.getItem('user_id'),
+                    req_type: 'get-statistics'
+                }
+            };
+    
+            axios(request).then((response) => {
+                console.log(response)
+                this.setState({
+                    availableClaimsData: [
+                        {
+                            name: "Unassigned Claims",
+                            p1: response.data.phase_1.pending_claims,
+                            p2: response.data.phase_2.pending_claims,
+                            p3: response.data.phase_3.pending_claims,
+                            p4: 0,
+                            p5: 0,
+                        },
+                    ],
+                })
+
+            }).catch((error) => { window.alert(error) });
 
 
             var request = {
