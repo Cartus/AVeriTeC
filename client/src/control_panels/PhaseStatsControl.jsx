@@ -62,10 +62,10 @@ class PhaseStatsControl extends react.Component {
             [
                 {
                     name: "Assignment Status",
-                    pending: 3000,
-                    assigned: 1500,
-                    completed: 3000,
-                    skipped: 100,
+                    pending: 0,
+                    assigned: 0,
+                    completed: 0,
+                    skipped: 0,
                 },
             ]
             }
@@ -93,7 +93,17 @@ class PhaseStatsControl extends react.Component {
                         avg_times: {
                             load: response.data.phase_1.average_load_time,
                             finish: response.data.phase_1.average_task_time
-                        }
+                        },
+                        annotation_data: 
+                        [
+                            {
+                                name: "Assignment Status",
+                                pending: response.data.phase_1.pending_claims,
+                                assigned: response.data.phase_1.assigned_claims,
+                                completed: response.data.phase_1.completed_claims,
+                                skipped: response.data.phase_1.skipped_claims,
+                            },
+                        ]
                     })
                 } else if (this.props.phase == 2) {
                     this.setState({
@@ -101,16 +111,38 @@ class PhaseStatsControl extends react.Component {
                         avg_times: {
                             load: response.data.phase_2.average_load_time,
                             finish: response.data.phase_2.average_task_time
-                        }
+                        },
+                        annotation_data: 
+                            [
+                                {
+                                    name: "Assignment Status",
+                                    pending: response.data.phase_2.pending_claims,
+                                    assigned: response.data.phase_2.assigned_claims,
+                                    completed: response.data.phase_2.completed_claims,
+                                    skipped: response.data.phase_2.skipped_claims,
+                                },
+                            ]
                     })
                 } else if (this.props.phase == 3) {
                     this.setState({
                         phase_eval_stats: response.data.phase_3,
                         avg_times: {
                             finish: response.data.phase_3.average_task_time
-                        }
+                        },
+                        annotation_data: 
+                            [
+                                {
+                                    name: "Assignment Status",
+                                    pending: response.data.phase_3.pending_claims,
+                                    assigned: response.data.phase_3.assigned_claims,
+                                    completed: response.data.phase_3.completed_claims,
+                                    skipped: response.data.phase_3.skipped_claims,
+                                },
+                            ]
                     })
                 }
+
+
             }
         }).catch((error) => { window.alert(error) })
     }
