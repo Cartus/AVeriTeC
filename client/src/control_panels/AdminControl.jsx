@@ -367,6 +367,7 @@ class AdminControl extends react.Component {
                         { field: "pages_skipped", headerName: "Total Pages Skipped", type: "number", editable: false, width: 220 },
                         { field: "pages_timed_out", headerName: "Timeouts", type: "number", editable: false, width: 220 },
                         { field: "speed_traps_hit", headerName: "Speed traps hit", type: "number", editable: false, width: 220 },
+                        { field: "average_questions", headerName: "Average Questions Generated", type: "number", editable: false, width: 220 },
                     ],
                     table: user_data
                 })
