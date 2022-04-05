@@ -187,8 +187,8 @@ class PhaseStatsControl extends react.Component {
             if (this.props.phase == 3){
                 timeData = [
                     {
-                        name: "Average load time",
-                        average: this.state.avg_times.load,
+                        name: "Average task time",
+                        average: this.state.avg_times.finish,
                     }
                 ]
 

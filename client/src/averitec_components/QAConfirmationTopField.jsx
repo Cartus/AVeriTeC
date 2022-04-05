@@ -71,10 +71,11 @@ class QAConfirmationClaimTopField extends React.Component {
   }
 
   render() {
+    console.log(this.props)
     return (
       <EntryCard>
         <ContainerDiv>
-          <ClaimHeader>{this.props.claim.claim_text}</ClaimHeader>
+          <ClaimHeader>{this.props.claim_text}</ClaimHeader>
           <SingleTextEntryDiv>
             <SelectWithTooltip name="label" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.label} label="Claim Label" onChange={this.props.changeLabel} items={["Supported", "Refuted", "Not Enough Evidence", "Conflicting Evidence/Cherrypicking"]} tooltip={
               <ul>

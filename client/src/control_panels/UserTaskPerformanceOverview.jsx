@@ -170,5 +170,10 @@ export default function UserTaskPerformanceOverview(props) {
             </ChartBox>
             :
             ""}
+
+        {props.name === "Phase 2"? <div>
+        On average, this user generated {props.userStats.average_questions} questions per claim. For the average user, that number is {props.averageStats.average_questions}.
+        </div> :
+        "" }
     </EntryCard >;
 }
