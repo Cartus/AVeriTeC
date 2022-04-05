@@ -303,8 +303,8 @@ class AdminControl extends react.Component {
                             p1: response.data.phase_1.pending_claims,
                             p2: response.data.phase_2.pending_claims,
                             p3: response.data.phase_3.pending_claims,
-                            p4: 0,
-                            p5: 0,
+                            p4: response.data.phase_4? response.data.phase_4.pending_claims: 0,
+                            p5: response.data.phase_5? response.data.phase_5.pending_claims: 0,
                         },
                     ],
                 })
@@ -341,6 +341,8 @@ class AdminControl extends react.Component {
                     new_dict["finished_norm_annotations_prop"] = new_dict["finished_norm_annotations"] + " / " + new_dict['p1_assigned']
                     new_dict["finished_qa_annotations_prop"] = new_dict["finished_qa_annotations"] + " / " + new_dict['p2_assigned']
                     new_dict["finished_valid_annotations_prop"] = new_dict["finished_valid_annotations"] + " / " + new_dict['p3_assigned']
+                    new_dict["finished_p4_prop"] = new_dict["finished_p4"] + " / " + new_dict['p4_assigned']
+                    new_dict["finished_p5_prop"] = new_dict["finished_p5"] + " / " + new_dict['p5_assigned']
                     return new_dict
                 });
                 // ----------- 
@@ -357,17 +359,22 @@ class AdminControl extends react.Component {
                         },
                         { field: "user_name", headerName: "Name", editable: true, width: 200 },
                         { field: "is_admin", headerName: "Admin", editable: true, type: "boolean", width: 150 },
-                        { field: "finished_norm_annotations_prop", headerName: "Phase1 Finished", type: "string", editable: false, width: 250, sortComparator: propComparator, align: "right", headerAlign: "right" },
-                        { field: "finished_qa_annotations_prop", headerName: "Phase2 Finished", type: "string", editable: false, width: 250, sortComparator: propComparator, align: "right", headerAlign: "right" },
-                        { field: "finished_valid_annotations_prop", headerName: "Phase3 Finished", type: "string", editable: false, width: 250, sortComparator: propComparator, align: "right", headerAlign: "right" },
+                        { field: "finished_norm_annotations_prop", headerName: "Phase 1 Finished", type: "string", editable: false, width: 250, sortComparator: propComparator, align: "right", headerAlign: "right" },
+                        { field: "finished_qa_annotations_prop", headerName: "Phase 2 Finished", type: "string", editable: false, width: 250, sortComparator: propComparator, align: "right", headerAlign: "right" },
+                        { field: "finished_valid_annotations_prop", headerName: "Phase 3 Finished", type: "string", editable: false, width: 250, sortComparator: propComparator, align: "right", headerAlign: "right" },
+                        { field: "finished_p4_prop", headerName: "Phase 4 Finished", type: "string", editable: false, width: 250, sortComparator: propComparator, align: "right", headerAlign: "right" },
+                        { field: "finished_p5_prop", headerName: "Phase 5 Finished", type: "string", editable: false, width: 250, sortComparator: propComparator, align: "right", headerAlign: "right" },
                         { field: "p1_task_time", headerName: "P1 Average Minutes", type: "number", editable: false, width: 220 },
                         { field: "p2_task_time", headerName: "P2 Average Minutes", type: "number", editable: false, width: 220 },
                         { field: "p3_task_time", headerName: "P3 Average Minutes", type: "number", editable: false, width: 220 },
+                        { field: "p4_task_time", headerName: "P2 Average Minutes", type: "number", editable: false, width: 220 },
+                        { field: "p5_task_time", headerName: "P3 Average Minutes", type: "number", editable: false, width: 220 },
                         { field: "total_hours", headerName: "Total Hours Worked", type: "number", editable: false, width: 220 },
                         { field: "pages_skipped", headerName: "Total Pages Skipped", type: "number", editable: false, width: 220 },
                         { field: "pages_timed_out", headerName: "Timeouts", type: "number", editable: false, width: 220 },
                         { field: "speed_traps_hit", headerName: "Speed traps hit", type: "number", editable: false, width: 220 },
-                        { field: "average_questions", headerName: "Average Questions Generated", type: "number", editable: false, width: 220 },
+                        { field: "average_questions_p2", headerName: "Average P2 Questions", type: "number", editable: false, width: 220 },
+                        { field: "average_questions_p4", headerName: "Average P4 Questions", type: "number", editable: false, width: 220 },
                     ],
                     table: user_data
                 })
