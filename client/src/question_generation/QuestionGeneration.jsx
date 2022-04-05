@@ -573,7 +573,7 @@ class QuestionGeneration extends React.Component {
             {this.state.userIsFirstVisiting ? <TourWrapper /> : ""}
           </TourProvider>
           :
-          <QuestionGenerationConfirmation confirmFunction={this.doSubmit} cancelFunction={this.cancelConfirmation} current_idx={current_idx} final_idx={this.final_idx} claim={this.state.claim} entries={this.state.entries} label={this.state.qa_pair_footer.label} footer={this.state.qa_pair_footer} changeLabel={this.changeLabel} />
+          <QuestionGenerationConfirmation confirmFunction={this.doSubmit} cancelFunction={this.cancelConfirmation} current_idx={current_idx} final_idx={this.state.final_idx} claim={this.state.claim} entries={this.state.entries} label={this.state.qa_pair_footer.label} footer={this.state.qa_pair_footer} changeLabel={this.changeLabel} />
         }
       </QAPageDiv>
     );
