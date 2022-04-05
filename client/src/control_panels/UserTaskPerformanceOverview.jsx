@@ -171,7 +171,7 @@ export default function UserTaskPerformanceOverview(props) {
             :
             ""}
 
-        {props.name === "Phase 2"? <div>
+        {props.name === "Phase 2" || props.name === "Phase 4"? <div>
         On average, this user generated {props.userStats.average_questions} questions per claim. For the average user, that number is {props.averageStats.average_questions}.
         </div> :
         "" }
