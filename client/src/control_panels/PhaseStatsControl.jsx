@@ -224,11 +224,15 @@ class PhaseStatsControl extends react.Component {
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="name" />
                             <YAxis />
+                            <Legend />
                             <Tooltip />
                             <Bar barSize={60} name="Annotations completed" dataKey="completed" fill="#8884d8" />
                             <Bar barSize={60} name="Annotations assigned" dataKey="assigned" fill="#82ca9d" />
                             <Bar barSize={60} name="Annotations pending" dataKey="pending" fill="#ed6145" />
+                            {(this.props.name === "Analysis | Claim Normalization" || this.props.name === "Analysis | Question Generation")?                        
                             <Bar barSize={60} name="Claims skipped" dataKey="skipped" fill="#e0cc19" />
+                            : ""
+                            }
                         </BarChart>
                     </ChartBox>
 
@@ -249,7 +253,6 @@ class PhaseStatsControl extends react.Component {
                                 <XAxis dataKey="name" />
                                 <YAxis />
                                 <Tooltip />
-                                <Legend />
                                 <Bar barSize={60} name="Average" dataKey="average" fill="#82ca9d" unit=" s" />
                             </BarChart>
                         </ChartBox>

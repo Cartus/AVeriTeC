@@ -40,7 +40,6 @@ class PhaseFourQuestionGenerationBar extends React.Component {
         {!this.props.posthocView ?
           <div>
             <PhaseControl current_idx={this.props.current_idx} final_idx={this.props.final_idx} phaseName="Question Generation" phaseInstructions="Please read the claim below, the fact checking article to the left, and the previously generated verdicts and question-answer pairs. Then, construct additional question-answer pairs to resolve the disagreement between the two verdicts. You can use any links in the fact checking article to provide sources for your answers. If the links in the fact-checking article are not sufficient, you can also use our custom search field below; please do not use any other search field. If you cannot find an answer to a question you ask, please label that question &quot;Unanswerable&quot; and ask another question. When you have collected enough evidence to verify the claim independently of the fact checking article, please give your verdict. Please spend no more than 15 minutes on each claim." />
-            <ReportBar />
           </div>
           : ""
         }
