@@ -154,6 +154,16 @@ export default function UserDetailsOverview(props) {
         :
         ""
         }
+        {user.phase_4 && taskStats.phase_4?
+        <UserTaskPerformanceOverview name={"Phase 4"} userStats={user.phase_4} averageStats={taskStats.phase_4} />
+        :
+        ""
+        }
+        {user.phase_5 && taskStats.phase_5?
+        <UserTaskPerformanceOverview name={"Phase 5"} userStats={user.phase_5} averageStats={taskStats.phase_5} />
+        :
+        ""
+        }
         
     </NoteScreen>;
 }

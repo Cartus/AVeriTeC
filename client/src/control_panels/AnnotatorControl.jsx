@@ -182,8 +182,8 @@ class AnnotatorControl extends React.Component {
                     {(this.state.assignments.phase_1.total > 0)?<AssignmentField name="Claim Normalization" page="phase_1" assignments={this.state.assignments.phase_1}/>: ""}
                     {(this.state.assignments.phase_2.total > 0)?<AssignmentField name="Question Generation" page="phase_2" assignments={this.state.assignments.phase_2}/>: ""}
                     {(this.state.assignments.phase_3.total > 0)?<AssignmentField name="Quality Control" page="phase_3" assignments={this.state.assignments.phase_3}/>: ""}
-                    {(this.state.assignments.phase_4.total > 0)?<AssignmentField name="Question Generation: Round Two" page="phase_4" assignments={this.state.assignments.phase_4}/>: ""}
-                    {(this.state.assignments.phase_3.total > 0)?<AssignmentField name="Quality Control: Round Two" page="phase_3" assignments={this.state.assignments.phase_5} add_phase_4_questions={true}/>: ""}
+                    {(this.state.assignments.phase_4.total > 0)?<AssignmentField name="Dispute Resolution" page="phase_4" assignments={this.state.assignments.phase_4}/>: ""}
+                    {(this.state.assignments.phase_5.total > 0)?<AssignmentField name="Post-Resolution Quality Control" page="phase_3" assignments={this.state.assignments.phase_5} add_phase_4_questions={true}/>: ""}
                 </div>
                 <SepDiv/>
                 <div>
@@ -196,6 +196,8 @@ class AnnotatorControl extends React.Component {
                     <PhaseStatsControl phase={1} name={"Analysis | Claim Normalization"}/>
                     <PhaseStatsControl phase={2} name={"Analysis | Question Generation"}/>
                     <PhaseStatsControl phase={3} name={"Analysis | Quality Control"}/>
+                    <PhaseStatsControl phase={2} name={"Analysis | Dispute Resolution"}/>
+                    <PhaseStatsControl phase={3} name={"Analysis | Post-Resolution Quality Control"}/>
                 </AdminPanel> : ""}
             </div>
         );
