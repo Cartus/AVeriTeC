@@ -7,7 +7,7 @@ import TourWrapper from '../components/TourWrapper';
 import axios from "axios";
 import { Redirect } from "react-router-dom";
 import config from "../config.json"
-import { notEmptyValidator, atLeastOneValidator } from '../utils/validation.js'
+import { notEmptyValidator, atLeastOneValidator, emptyOrValidUrlValidator } from '../utils/validation.js'
 
 const NEntryBar = styled(MetadataEntryBar)`
     width: -webkit-calc(40% - 10px)!important;
@@ -46,6 +46,8 @@ function validate(content) {
         } else if (!("claim_types" in entry) || atLeastOneValidator(entry["claim_types"]).error) {
             valid = false;
         } else if (!("phase_1_label" in entry) || notEmptyValidator(entry["claim_types"]).error) {
+            valid = false;
+        } else if(emptyOrValidUrlValidator(entry["hyperlink"]).error){
             valid = false;
         }
     });

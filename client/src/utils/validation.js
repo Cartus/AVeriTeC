@@ -1,3 +1,6 @@
+
+import isUrl from "is-url"
+
 export function atLeastOneValidator(data) {
   if (data.length === 0) {
     return { error: true, message: "Pick at least one" }
@@ -20,6 +23,14 @@ export function notBooleanValidator(data) {
   } else {
     return { error: false, message: "" }
   }
+}
+
+export function emptyOrValidUrlValidator(data){
+  if (data && !isUrl(data) && !isUrl("http://" + data)){
+    return { error: true, message: "Not a valid URL" };  
+  }
+
+  return { error: false, message: "" }
 }
 
 export function combinedValidator(validator1, validator2) {

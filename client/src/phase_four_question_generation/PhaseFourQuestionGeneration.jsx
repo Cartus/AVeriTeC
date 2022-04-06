@@ -11,7 +11,7 @@ import { Redirect } from "react-router-dom";
 import config from "../config.json"
 import moment from "moment";
 import QuestionGenerationConfirmation from "../question_generation/QuestionGenerationConfirmation"
-import { notEmptyValidator, atLeastOneValidator, notBooleanValidator } from '../utils/validation.js'
+import { notEmptyValidator, atLeastOneValidator, notBooleanValidator, emptyOrValidUrlValidator } from '../utils/validation.js'
 
 const QADataField = styled.div`
     width: -webkit-calc(40% - 10px)!important;
@@ -82,7 +82,7 @@ function validate(content) {
           valid = false;
         }
 
-        if (!("source_url" in answer) || notEmptyValidator(answer["source_url"]).error) {
+        if (!("source_url" in answer) || notEmptyValidator(answer["source_url"]).error || emptyOrValidUrlValidator(answer["source_url"]).error) {
           if (!("answer_type" in answer) || answer["answer_type"] != "Unanswerable") {
             console.log("no source url and not unanswerable");
             valid = false;

@@ -6,7 +6,7 @@ import EntryCardContainer from '../components/EntryCardContainer';
 import TextFieldWithTooltip from '../components/TextFieldWithTooltip';
 import SelectWithTooltip from '../components/SelectWithTooltip';
 import ClaimTopField from '../averitec_components/ClaimTopField';
-import { notEmptyValidator, notBooleanValidator, combinedValidator } from '../utils/validation.js'
+import { notEmptyValidator, notBooleanValidator, combinedValidator, emptyOrValidUrlValidator } from '../utils/validation.js'
 import Slider from '@mui/material/Slider';
 import Card from '@material-ui/core/Card';
 
@@ -187,7 +187,7 @@ class AnswerCard extends React.Component {
           {unanswerable || answer_from_metadata ?
             <TextFieldWithTooltip name='source_url' label="Source URL" disabled value={this.props.data["source_url"]} onChange={this.props.handleFieldChange} tooltip="Please copy-paste the URL where you found the answer here. Try to avoid using other fact-checking articles as sources." />
             :
-            <TextFieldWithTooltip InputProps={this.props.posthocView ? { readOnly: true } : undefined} variant={this.props.posthocView ? "filled" : undefined} name='source_url' label="Source URL" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["source_url"]} onChange={this.props.handleFieldChange} tooltip="Please copy-paste the URL where you found the answer here. Try to avoid using other fact-checking articles as sources." />
+            <TextFieldWithTooltip InputProps={this.props.posthocView ? { readOnly: true } : undefined} variant={this.props.posthocView ? "filled" : undefined} name='source_url' label="Source URL" validator={combinedValidator(notEmptyValidator, emptyOrValidUrlValidator)} valid={this.props.valid} required value={this.props.data["source_url"]} onChange={this.props.handleFieldChange} tooltip="Please copy-paste the URL where you found the answer here. Try to avoid using other fact-checking articles as sources." />
           }
 
           {this.props.posthocView && !unanswerable ? <SpacingDiv /> : ""}
