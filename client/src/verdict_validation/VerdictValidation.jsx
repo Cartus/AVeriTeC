@@ -125,7 +125,7 @@ class VerdictValidation extends React.Component {
     componentDidMount() {
         if (localStorage.getItem('login')) {
             var request = {
-                method: "get",
+                method: "post",
                 baseURL: config.api_url,
                 url: "/user_statistics.php",
                 data: {
@@ -236,6 +236,8 @@ class VerdictValidation extends React.Component {
                         claim_norm_id: localStorage.claim_norm_id
                     }
                 };
+
+                console.log(this.state.annotation)
 
                 await axios(request).then((response) => {
                     console.log(response.data);
