@@ -83,7 +83,7 @@ function validate(content) {
         }
 
         if (!("source_url" in answer) || notEmptyValidator(answer["source_url"]).error || emptyOrValidUrlValidator(answer["source_url"]).error) {
-          if (!("answer_type" in answer) || answer["answer_type"] != "Unanswerable") {
+          if (!("answer_type" in answer) || (answer["answer_type"] != "Unanswerable" && answer["answer_type"] != "Metadata")) {
             console.log("no source url and not unanswerable");
             valid = false;
           }
