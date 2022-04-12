@@ -1,6 +1,6 @@
 <?php
 
-$json_string = file_get_contents('pilot.json');
+$json_string = file_get_contents('train.json');
 $data = json_decode($json_string, true);
 
 $db_params = parse_ini_file(dirname(__FILE__).'/db_params.ini', false);
@@ -41,8 +41,8 @@ foreach($data as $item) {
     // $sql = "INSERT INTO Claims (claim_text, source_claim, source_claim_url, verdict_article, web_archive, norm_annotators_num, taken_flag, skipped)
     // VALUES('$new_text', '$source_claim', '$source_claim_url', '$verdict_article', '$web_archive', 0, 0, 0)";
 
-    $sql = "INSERT INTO Claims (claim_text, web_archive, claim_date, norm_annotators_num, norm_taken_flag, norm_skipped)
-    VALUES('$new_text', '$web_archive', '$claim_date', 0, 0, 0)";
+    $sql = "INSERT INTO Claims (claim_text, web_archive, claim_date, inserted)
+    VALUES('$new_text', '$web_archive', '$claim_date', 0)";
 
     if ($conn->query($sql) === TRUE) {
         echo "Inserted successfully";

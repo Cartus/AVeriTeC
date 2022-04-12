@@ -18,11 +18,12 @@ if ($conn->connect_error) {
 }
 
 
-$id = 3;
+$id = 1;
 
 
-update_table($conn, "UPDATE Norm_Claims SET user_id_qa=NULL, qa_taken_flag=0 WHERE user_id_qa=?", 'i', $id);
+// update_table($conn, "UPDATE Assigned_Norms SET user_id_qa=NULL, qa_taken_flag=0 WHERE user_id_qa=?", 'i', $id);
 
+update_table($conn, "UPDATE Assigned_Norms SET inserted_valid=0 WHERE claim_norm_id=?", 'i', $id);
 
 $conn->close();
 ?>

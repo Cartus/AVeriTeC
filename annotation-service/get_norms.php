@@ -18,10 +18,6 @@ if ($result->num_rows > 0) {
         echo "claim_id: " . $row["claim_id"]. "<br>";
         echo "web_archive: " . $row["web_archive"]. "<br>";
         echo "user_id_norm: " . $row["user_id_norm"]. "<br>";
-        echo "user_id_qa: " . $row["user_id_qa"]. "<br>";
-        echo "user_id_valid: " . $row["user_id_valid"]. "<br>";
-        echo "qa_annotators_num: " . $row["qa_annotators_num"]. "<br>";
-        echo "valid_annotators_num: " . $row["valid_annotators_num"]. "<br>";
         echo "cleaned_claim: " . $row["cleaned_claim"]. "<br>";
         echo "correction_claim: " . $row["correction_claim"]. "<br>";
         echo "speaker: " . $row["speaker"]. "<br>";
@@ -34,30 +30,14 @@ if ($result->num_rows > 0) {
         echo "claim_types: " . $row["claim_types"]. "<br>";
         echo "fact_checker_strategy: " . $row["fact_checker_strategy"]. "<br>";
         echo "phase_1_label: " . $row["phase_1_label"]. "<br>";
-        echo "phase_2_label: " . $row["phase_2_label"]. "<br>";
-        echo "phase_3_label: " . $row["phase_3_label"]. "<br>";
-	    echo "justification: " . $row["justification"]. "<br>";
-	    echo "unreadable: " . $row["unreadable"]. "<br>";
-        echo "qa_taken_flag: " . $row["qa_taken_flag"]. "<br>";
-        echo "qa_skipped: " . $row["qa_skipped"]. "<br>";
-        echo "valid_taken_flag: " . $row["valid_taken_flag"]. "<br>";
-        echo "has_qapairs: " . $row["has_qapairs"]. "<br>";
         echo "latest: " . $row["latest"]. "<br>";
         echo "date_start_norm: " . $row["date_start_norm"]. "<br>";
         echo "date_load_norm: " . $row["date_load_norm"]. "<br>";
         echo "date_made_norm: " . $row["date_made_norm"]. "<br>";
         echo "date_restart_norm: " . $row["date_restart_norm"]. "<br>";
         echo "date_modified_norm: " . $row["date_modified_norm"]. "<br>";
-        echo "date_start_qa: " . $row["date_start_qa"]. "<br>";
-        echo "date_load_qa: " . $row["date_load_qa"]. "<br>";
-        echo "date_made_qa: " . $row["date_made_qa"]. "<br>";
-        echo "date_restart_qa: " . $row["date_restart_qa"]. "<br>";
-        echo "date_modified_qa: " . $row["date_modified_qa"]. "<br>";
-        echo "date_start_valid: " . $row["date_start_valid"]. "<br>";
-        echo "date_made_valid: " . $row["date_made_valid"]. "<br>";
-        echo "date_restart_valid: " . $row["date_restart_valid"]. "<br>";
-        echo "date_modified_valid: " . $row["date_modified_valid"]. "<br>";
         echo "nonfactual: " . $row["nonfactual"]. "<br>";
+        echo "inserted: " . $row["inserted"]. "<br>";
         echo "<br>";
     }
 } else {

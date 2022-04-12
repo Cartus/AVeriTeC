@@ -27,11 +27,11 @@ if ($conn->connect_error) {
 
 if ($phase == 1) {
     $claim_id = $_POST['claim_id'];
-    update_table($conn, "UPDATE Assigned_Claims SET date_load_norm=? WHERE claim_id=?", 'si', $date, $claim_id);
+    update_table($conn, "UPDATE Claims SET date_load_norm=? WHERE claim_id=?", 'si', $date, $claim_id);
     echo "Finished Loading!";
 } elseif ($phase == 2) {
     $claim_norm_id = $_POST['claim_norm_id'];
-    update_table($conn, "UPDATE Assigned_Norms SET date_load_cache_qa=? WHERE claim_norm_id=?",'si', $date, $claim_norm_id);
+    update_table($conn, "UPDATE Norm_Claims SET date_load_cache_qa=? WHERE claim_norm_id=?",'si', $date, $claim_norm_id);
     echo "Finished Loading!";
 }
 

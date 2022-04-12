@@ -18,13 +18,7 @@ if ($result->num_rows > 0) {
         echo "claim_text: " . $row["claim_text"]. "<br>";
         echo "web_archive: " . $row["web_archive"]. "<br>";
         echo "claim_date: " . $row["claim_date"]. "<br>";
-        echo "norm_annotators_num: " . $row["norm_annotators_num"]. "<br>";
-        echo "user_id_norm : " . $row["user_id_norm"]. "<br>";
-        echo "norm_taken_flag : " . $row["norm_taken_flag"]. "<br>";
-        echo "norm_skipped: " . $row["norm_skipped"]. "<br>";
-        echo "norm_skipped_by: " . $row["norm_skipped_by"]. "<br>";
-        echo "date_start_norm : " . $row["date_start_norm"]. "<br>";
-        echo "date_load_norm : " . $row["date_load_norm"]. "<br>";
+        echo "inserted: " . $row["inserted"]. "<br>";
         echo "<br>";
     }
 } else {

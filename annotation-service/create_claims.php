@@ -12,13 +12,13 @@ if ($conn->connect_error) {
 }
 
 $sql = "DROP TABLE Claims";
-
+ 
 if ($conn->query($sql) === TRUE) {
     echo "Table dropped successfully";
 } else {
     echo "Error creating table: " . $conn->error;
 }
-
+ 
 
 // sql to create table
 $sql = "CREATE TABLE Claims (
@@ -26,14 +26,7 @@ claim_id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 claim_text VARCHAR(500) NOT NULL,
 web_archive VARCHAR(500) NOT NULL,
 claim_date VARCHAR(50),
-norm_annotators_num INT(6) NOT NULL,
-user_id_norm INT(6),
-norm_taken_flag INT(6) NOT NULL,
-norm_skipped INT(6) NOT NULL,
-norm_skipped_by INT(6),
-date_start_norm DATETIME,
-date_load_norm DATETIME,
-date_restart_norm DATETIME
+inserted INT(6) NOT NULL
 )";
 
 if ($conn->query($sql) === TRUE) {

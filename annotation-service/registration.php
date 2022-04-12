@@ -35,12 +35,14 @@ if (mysqli_num_rows($result) > 0) {
         echo json_encode(["duplicated" => true]);
     } else {
         $sql = "INSERT INTO Annotators (user_name, password_cleartext, password_md5, is_admin, is_active, number_logins,
-                finished_norm_annotations, finished_qa_annotations, finished_valid_annotations, skipped_norm_data, skipped_qa_data,
-                p1_time_sum, p1_load_sum, p2_time_sum, p2_load_sum, p3_time_sum, p3_load_sum, p1_timed_out, p2_timed_out,
-                p1_speed_trap, p2_speed_trap, p3_speed_trap) VALUES('$name', '$password', '$password_md5', 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)";
-
-        // $sql = "INSERT INTO Annotators (user_name, password_cleartext, password_md5, is_admin, number_logins,
-        // finished_norm_annotations, finished_qa_annotations, finished_valid_annotations) VALUES('$name', '$password', '$password_md5', 0, 0, 0, 0, 0)";
+                finished_norm_annotations, finished_qa_annotations, finished_valid_annotations, finished_res_annotations, finished_post_annotations, 
+                skipped_norm_data, skipped_qa_data,
+                p1_time_sum, p1_load_sum, p2_time_sum, p2_load_sum, p3_time_sum, p4_time_sum, p4_load_sum, p5_time_sum, 
+                p1_timed_out, p2_timed_out, p4_timed_out,
+                p1_speed_trap, p2_speed_trap, p3_speed_trap, p4_speed_trap, p5_speed_trap, 
+                p1_assigned, p2_assigned, p3_assigned, p4_assigned, p5_assigned, 
+                questions_p2, questions_p4) 
+                VALUES('$name', '$password', '$password_md5', 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)";
 
         if ($conn->query($sql) === TRUE) {
             echo json_encode(["duplicated" => false, "registered" => true]);
@@ -51,12 +53,14 @@ if (mysqli_num_rows($result) > 0) {
 }
 else {
     $sql2 = "INSERT INTO Annotators (user_name, password_cleartext, password_md5, is_admin, is_active, number_logins,
-        finished_norm_annotations, finished_qa_annotations, finished_valid_annotations, skipped_norm_data, skipped_qa_data,
-        p1_time_sum, p1_load_sum, p2_time_sum, p2_load_sum, p3_time_sum, p3_load_sum, p1_timed_out, p2_timed_out,
-        p1_speed_trap, p2_speed_trap, p3_speed_trap) VALUES('$name', '$password', '$password_md5', 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)";
-
-    // $sql2 = "INSERT INTO Annotators (user_name, password_cleartext, password_md5, is_admin, number_logins,
-    // finished_norm_annotations, finished_qa_annotations, finished_valid_annotations) VALUES('$name', '$password', '$password_md5', 0, 0, 0, 0, 0)";
+        finished_norm_annotations, finished_qa_annotations, finished_valid_annotations, finished_res_annotations, finished_post_annotations, 
+        skipped_norm_data, skipped_qa_data,
+        p1_time_sum, p1_load_sum, p2_time_sum, p2_load_sum, p3_time_sum, p4_time_sum, p4_load_sum, p5_time_sum, 
+        p1_timed_out, p2_timed_out, p4_timed_out,
+        p1_speed_trap, p2_speed_trap, p3_speed_trap, p4_speed_trap, p5_speed_trap, 
+        p1_assigned, p2_assigned, p3_assigned, p4_assigned, p5_assigned, 
+        questions_p2, questions_p4) 
+        VALUES('$name', '$password', '$password_md5', 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)";
 
     if ($conn->query($sql2) === TRUE) {
         echo json_encode(["duplicated" => false, "registered" => true]);

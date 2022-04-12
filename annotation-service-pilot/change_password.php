@@ -25,10 +25,9 @@ if (empty($_POST['name']) && empty($_POST['password_md5'])) die();
 
 $name = $_POST['name'];
 $pw_md5 = $_POST['password_md5'];
-$new_pw = $_POST['new_password'];
 $new_pw_md5 = $_POST['new_password_md5'];
 
-$sql = "SELECT user_id FROM Annotators WHERE password_md5=? AND user_name=?";
+$sql = "SELECT user_id FROM Annotators WHERE password_md5 = ? AND user_name = ?";
 $stmt= $conn->prepare($sql);
 $stmt->bind_param("ss", $pw_md5, $name);
 $stmt->execute();
@@ -38,7 +37,8 @@ $credentials_match = $result->num_rows > 0;
 
 if ($credentials_match) {
     $row = $result->fetch_assoc();
-    update_table($conn, "UPDATE Annotators SET password_md5=?, password_cleartext=? WHERE user_id=?", 'ssi', $new_pw_md5, $new_pw, $row['user_id']);
+    // update_table($conn, "UPDATE Annotators SET number_logins=number_logins+1, annotation_phase=? WHERE user_id=?", 'si', $phase, $row['user_id']);
+    update_table($conn, "UPDATE Annotators SET password_md5=? WHERE user_id=?", 'i', $new_pw_md5, $row['user_id']);
     echo(json_encode(["successful" => true, "message" => "Your password has been changed"]));
   }else{
     echo(json_encode(["successful" => false, "message" => "Something went wrong"]));
