@@ -37,6 +37,7 @@ const SepSpaceDiv = styled.div`
 
 const TextEntryDiv = styled.div`
   float:left;
+  height:200px;
 
   
   @media  (max-width: 630px)  {
@@ -44,12 +45,16 @@ const TextEntryDiv = styled.div`
     padding: 20px 0px 0px    -moz-calc((100% - 305px)/2)!important;
     padding: 20px 0px 0px         calc((100% - 305px)/2)!important;
   }
-  @media (min-width: 631px)  {
+  @media (min-width: 631px) and (max-width: 880px)  {
     padding: 20px 0px 0px -webkit-calc((100% - 610px)/3)!important;
     padding: 20px 0px 0px    -moz-calc((100% - 610px)/3)!important;
     padding: 20px 0px 0px         calc((100% - 610px)/3)!important;
   }
-
+  @media (min-width: 881px) {
+    padding: 20px 0px 0px -webkit-calc((100% - 915px)/4)!important;
+    padding: 20px 0px 0px    -moz-calc((100% - 915px)/4)!important;
+    padding: 20px 0px 0px         calc((100% - 915px)/4)!important;
+  }
 `
 
 const SingleTextEntryDiv = styled.div`
@@ -130,6 +135,14 @@ class ClaimTopField extends React.Component {
         <ContainerDiv>
 
           <ClaimHeader data-tour="claim_text">{this.props.claim.claim_text}</ClaimHeader>
+          <TextEntryDiv>
+                    <TextFieldWithTooltip name='claim_speaker' label="Claim Speaker" value={this.props.claim.claim_speaker} defaultValue={this.props.claim.claim_speaker} InputProps={{readOnly: true}} variant="filled" tooltip="The person or organization that said or wrote the original claim."/>
+                    <SepSpaceDiv/>
+                    <TextFieldWithTooltip name='claim_source' label="Claim Source" value={this.props.claim.claim_source} defaultValue={this.props.claim.claim_source} InputProps={{readOnly: true}} variant="filled" tooltip="The source that published the original claim."/>
+                    <SepSpaceDiv/>
+                    <TextFieldWithTooltip name='claim_date' label="Claim Date" value={this.props.claim.claim_date} InputProps={{readOnly: true}} variant="filled" tooltip="The date the original claim was made."/>
+                    <SepSpaceDiv/>
+          </TextEntryDiv>
           <TextEntryDiv>
             <div data-tour="verdict">
               {this.props.data["unreadable"] ?

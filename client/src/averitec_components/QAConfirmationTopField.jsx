@@ -48,6 +48,9 @@ const TextEntryDiv = styled.div`
   }
 
 `
+const SepSpaceDiv = styled.div`
+    padding: 10px 0px 0px 0px;
+`
 
 const SingleTextEntryDiv = styled.div`
   float:left;
@@ -76,7 +79,15 @@ class QAConfirmationClaimTopField extends React.Component {
       <EntryCard>
         <ContainerDiv>
           <ClaimHeader>{this.props.claim_text}</ClaimHeader>
-          <SingleTextEntryDiv>
+          <TextEntryDiv>
+                    <TextFieldWithTooltip name='claim_speaker' label="Claim Speaker" value={this.props.claim.claim_speaker} defaultValue={this.props.claim.claim_speaker} InputProps={{readOnly: true}} variant="filled" tooltip="The person or organization that said or wrote the original claim."/>
+                    <SepSpaceDiv/>
+                    <TextFieldWithTooltip name='claim_source' label="Claim Source" value={this.props.claim.claim_source} defaultValue={this.props.claim.claim_source} InputProps={{readOnly: true}} variant="filled" tooltip="The source that published the original claim."/>
+                    <SepSpaceDiv/>
+                    <TextFieldWithTooltip name='claim_date' label="Claim Date" value={this.props.claim.claim_date} InputProps={{readOnly: true}} variant="filled" tooltip="The date the original claim was made."/>
+                    <SepSpaceDiv/>
+          </TextEntryDiv>
+          <TextEntryDiv>
             <SelectWithTooltip name="label" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.label} label="Claim Label" onChange={this.props.changeLabel} items={["Supported", "Refuted", "Not Enough Evidence", "Conflicting Evidence/Cherrypicking"]} tooltip={
               <ul>
                 <li>Supported: The claim is fully supported by the arguments and evidence presented.</li>
@@ -91,7 +102,7 @@ class QAConfirmationClaimTopField extends React.Component {
             <SubmitButton variant="contained" color="primary" onClick={this.props.confirmFunction}>
               Confirm
             </SubmitButton>
-          </SingleTextEntryDiv>
+          </TextEntryDiv>
         </ContainerDiv>
       </EntryCard>
     );

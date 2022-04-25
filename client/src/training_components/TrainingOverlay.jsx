@@ -159,6 +159,7 @@ class TrainingOverlay extends React.Component {
         url: "/verdict_validate.php",
         data: {
           user_id: localStorage.getItem('user_id'),
+          dataset: 'training', // I set it up like this to make code reuse easier. Is it right?
           req_type: 'reload-data',
           offset: this.state.shown_annotation_id
         }
@@ -199,10 +200,10 @@ class TrainingOverlay extends React.Component {
       var request = {
         method: "post",
         baseURL: config.api_url,
-        url: "/verdict_validate.php",
+        url: "/training_verdict_validate.php",
         data: {
           user_id: localStorage.getItem('user_id'),
-          req_type: 'reload-data',
+          req_type: 'load-data',
           offset: this.state.shown_annotation_id
         }
       };
@@ -211,31 +212,33 @@ class TrainingOverlay extends React.Component {
         if (response.data) {
           console.log("Recevied response")
           console.log(response.data);
-          const new_claim = {
-            web_archive: response.data.web_archive,
-            claim_text: response.data.claim_text,
-            claim_speaker: response.data.claim_speaker,
-            claim_source: response.data.claim_source,
-            claim_hyperlink: response.data.claim_hyperlink,
-            claim_date: response.data.claim_date,
-            questions: response.data.questions,
-            country_code: response.data.country_code
-          };
-          localStorage.claim_norm_id = response.data.claim_norm_id;
+          
 
-          let annotation_dict = {
-            claim: new_claim,
-            annotation: response.data.annotation
-          }
+          var gold_annotations = response.data.annotations.map(a => {
+            let new_claim = {
+              web_archive: a.web_archive,
+              claim_text: a.claim_text,
+              claim_speaker: a.claim_speaker,
+              claim_source: a.claim_source,
+              claim_hyperlink: a.claim_hyperlink,
+              claim_date: a.claim_date,
+              questions: a.questions,
+              country_code: a.country_code
+            };
+            localStorage.claim_norm_id = a.claim_norm_id;
+  
+            let annotation_dict = {
+              claim: new_claim,
+              annotation: a.annotation
+            }
+
+            return annotation_dict
+          });          
 
           this.setState({
-            gold_annotations: [
-              annotation_dict,
-              annotation_dict,
-              annotation_dict,
-              annotation_dict
-            ]
+            gold_annotations: gold_annotations
           });
+
         } else {
           window.alert("No more claims!");
         }
@@ -247,8 +250,7 @@ class TrainingOverlay extends React.Component {
     if (localStorage.getItem('login')) {
       console.log(this.state.shown_annotation_id);
 
-      // Load annotator data:
-      // TODO
+      // Load annotator data for training examples:
 
       var request = {
         method: "post",
@@ -256,6 +258,7 @@ class TrainingOverlay extends React.Component {
         url: "/question_answering.php",
         data: {
           user_id: localStorage.getItem('user_id'),
+          dataset: 'training', // I set it up like this to make code reuse easier. Is it right?
           req_type: 'reload-data',
           offset: this.state.shown_annotation_id
         }
@@ -308,22 +311,20 @@ class TrainingOverlay extends React.Component {
               entries: new_entries
             }
           });
-          // ----------------------------------------------------------------------------------------------------------
         } else {
           window.alert("No more claims!");
         }
       }).catch((error) => { window.alert(error) })
 
       // Load gold annotations:
-      // TODO this is just dummy data
 
       var request = {
         method: "post",
         baseURL: config.api_url,
-        url: "/question_answering.php",
+        url: "/training_question_answering.php",
         data: {
           user_id: localStorage.getItem('user_id'),
-          req_type: 'reload-data',
+          req_type: 'load-data',
           offset: this.state.shown_annotation_id
         }
       };
@@ -331,42 +332,41 @@ class TrainingOverlay extends React.Component {
       axios(request).then((response) => {
         if (response.data) {
           console.log(response.data);
-          const new_claim = {
-            web_archive: response.data.web_archive,
-            claim_text: response.data.cleaned_claim,
-            claim_speaker: response.data.speaker,
-            claim_date: response.data.check_date,
-            country_code: response.data.country_code,
-            claim_source: response.data.claim_source
-          };
 
-          if (new_claim.claim_date) {
-            var claim_date = new Date(new_claim.claim_date + "T00:00:00.0Z");
-            new_claim.claim_date = moment(claim_date).format('DD/MM/YYYY');
-          }
+          var gold_annotations = response.data.annotations.map(a => {
+            const new_claim = {
+              web_archive: a.web_archive,
+              claim_text: a.cleaned_claim,
+              claim_speaker: a.speaker,
+              claim_date: a.check_date,
+              country_code: a.country_code,
+              claim_source: a.claim_source
+            };
+  
+            if (new_claim.claim_date) {
+              var claim_date = new Date(new_claim.claim_date + "T00:00:00.0Z");
+              new_claim.claim_date = moment(claim_date).format('DD/MM/YYYY');
+            }
+  
+            let annotation_dict = {}
+            annotation_dict.claim = new_claim;
+  
+            let new_header = { claim_correction: a.claim_correction, should_correct: a.should_correct };
+            annotation_dict.qa_pair_header = new_header;
+  
+            let new_footer = { label: a.label };
+            annotation_dict.qa_pair_footer = new_footer;
+  
+            let new_entries = a.entries;
+            annotation_dict.entries = new_entries;
 
-          let annotation_dict = {}
-          annotation_dict.claim = new_claim;
-
-          const new_header = { claim_correction: response.data.claim_correction, should_correct: response.data.should_correct };
-          annotation_dict.qa_pair_header = new_header;
-
-          const new_footer = { label: response.data.label };
-          annotation_dict.qa_pair_footer = new_footer;
-
-          const new_entries = response.data.entries;
-          annotation_dict.entries = new_entries;
+            return annotation_dict
+          });          
 
           this.setState({
-            gold_annotations: [
-              annotation_dict,
-              annotation_dict,
-              annotation_dict,
-              annotation_dict
-            ]
+            gold_annotations: gold_annotations
           });
 
-          // ----------------------------------------------------------------------------------------------------------
         } else {
           window.alert("No more claims!");
         }
@@ -378,8 +378,7 @@ class TrainingOverlay extends React.Component {
     if (localStorage.getItem('login')) {
       console.log(this.state.shown_annotation_id);
 
-      // Load annotator data:
-      // TODO
+      // Load annotator training data:
 
       var request = {
         method: "post",
@@ -387,6 +386,7 @@ class TrainingOverlay extends React.Component {
         url: "/claim_norm.php",
         data: {
           user_id: localStorage.getItem('user_id'),
+          dataset: 'training', // I set it up like this to make code reuse easier. Is it right?
           req_type: 'reload-data',
           offset: this.state.shown_annotation_id
         }
@@ -432,15 +432,14 @@ class TrainingOverlay extends React.Component {
         window.alert(error)
       })
 
-      // Load gold annotations:
-      // TODO this is just dummy data
+      // Load gold annotation data:
       var request = {
         method: "post",
         baseURL: config.api_url,
-        url: "/claim_norm.php",
+        url: "/training_claim_norm.php",
         data: {
           user_id: localStorage.getItem('user_id'),
-          req_type: 'reload-data',
+          req_type: 'load-data',
           offset: this.state.shown_annotation_id
         }
       };
@@ -449,32 +448,30 @@ class TrainingOverlay extends React.Component {
         if (response.data) {
           console.log("Received response:")
           console.log(response.data);
-          const new_claim = { web_archive: response.data.web_archive };
 
-          localStorage.claim_id = response.data.claim_id;
+          var gold_annotations = response.data.annotations.map(a => {
+            const new_claim = { web_archive: a.web_archive };
+            localStorage.claim_id = a.claim_id;
+            let annotation_dict = {}
 
-          let annotation_dict = {}
+            annotation_dict["claim"] = new_claim
 
-          annotation_dict["claim"] = new_claim
+            var new_entries = a.entries;
 
-          var new_entries = response.data.entries;
-
-          for (var key in new_entries) {
-            var entry = new_entries[key];
-            if (entry.date) {
-              entry.date = new Date(entry.date + "T00:00:00.0Z");
+            for (var key in new_entries) {
+              var entry = new_entries[key];
+              if (entry.date) {
+                entry.date = new Date(entry.date + "T00:00:00.0Z");
+              }
             }
-          }
 
-          annotation_dict["entries"] = new_entries
+            annotation_dict["entries"] = new_entries
+
+            return annotation_dict
+          });          
 
           this.setState({
-            gold_annotations: [
-              annotation_dict,
-              annotation_dict,
-              annotation_dict,
-              annotation_dict
-            ]
+            gold_annotations: gold_annotations
           });
 
           console.log(this.state);

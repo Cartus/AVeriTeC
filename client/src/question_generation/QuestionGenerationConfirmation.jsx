@@ -77,7 +77,7 @@ class QuestionGenerationConfirmation extends React.Component {
                 <RightPhaseControl current_idx={this.props.current_idx} final_idx={this.props.final_idx} phaseName="Confirmation" phaseInstructions="Please confirm that you can infer your chosen verdict using ONLY your question-answer pairs (shown below)." />
             </RightBox>
             <LeftBox>
-                <QAConfirmationTopField claim_text={claim_text} label={this.props.label} cancelFunction={this.props.cancelFunction} confirmFunction={this.props.confirmFunction} changeLabel={this.props.changeLabel} id="confirmation" />
+                <QAConfirmationTopField claim_text={claim_text} claim={this.props.claim} label={this.props.label} cancelFunction={this.props.cancelFunction} confirmFunction={this.props.confirmFunction} changeLabel={this.props.changeLabel} id="confirmation" />
             </LeftBox>
             <QABox >
                 <div>

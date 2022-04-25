@@ -200,12 +200,23 @@ class QuestionGeneration extends React.Component {
   }
 
   componentDidMount() {
+    var dataset = "annotation"
+    if (this.props.dataset){
+        dataset = this.props.dataset
+    }
+
     if (localStorage.getItem('login')) {
+      if (this.props.finish_at){
+        this.setState({
+          final_idx: this.props.finish_at
+        })
+      } else {      
       var request = {
         method: "post",
         baseURL: config.api_url,
         url: "/user_statistics.php",
         data: {
+          dataset: dataset,
           logged_in_user_id: localStorage.getItem('user_id'),
           req_type: 'get-statistics',
           get_by_user_id: localStorage.getItem('user_id')
@@ -218,6 +229,7 @@ class QuestionGeneration extends React.Component {
         })
 
       }).catch((error) => { window.alert(error) });
+    }
 
       let pc = Number(localStorage.pc);
       if (pc !== 0) {
@@ -226,6 +238,7 @@ class QuestionGeneration extends React.Component {
           baseURL: config.api_url,
           url: "/question_answering.php",
           data: {
+            dataset: dataset,
             user_id: localStorage.getItem('user_id'),
             req_type: 'reload-data',
             offset: pc - 1
@@ -282,6 +295,7 @@ class QuestionGeneration extends React.Component {
           baseURL: config.api_url,
           url: "/question_answering.php",
           data: {
+            dataset: dataset,
             user_id: localStorage.getItem('user_id'),
             req_type: 'next-data'
           }
@@ -392,6 +406,12 @@ class QuestionGeneration extends React.Component {
   }
 
   async doSubmit() {
+
+    var dataset = "annotation"
+    if (this.props.dataset){
+        dataset = this.props.dataset
+    }
+
     var current_idx = Number(localStorage.finished_qa_annotations) + 1 - Number(localStorage.pc);
 
     let is_at_last_claim = current_idx === this.final_idx;
@@ -410,6 +430,7 @@ class QuestionGeneration extends React.Component {
           url: "/question_answering.php",
           data: {
             user_id: localStorage.getItem('user_id'),
+            dataset: dataset,
             req_type: 'resubmit-data',
             entries: this.state.entries,
             added_entries: this.state.added_entries,
@@ -438,6 +459,7 @@ class QuestionGeneration extends React.Component {
           url: "/question_answering.php",
           data: {
             user_id: localStorage.getItem('user_id'),
+            dataset: dataset,
             req_type: 'submit-data',
             entries: this.state.entries,
             added_entries: this.state.added_entries,

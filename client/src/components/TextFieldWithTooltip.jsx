@@ -60,7 +60,13 @@ export default function TextFieldWithTooltip(props){
         tooltip = tooltip.slice(0, -1); 
     }
 
-    tooltip += " (max " + maxCharacters + " characters)."
+    if (props.variant != "filled"){
+        tooltip += " (max " + maxCharacters + " characters)."
+    } else{
+        tooltip += "."
+    }
+
+    
 
     return (
         <ElementContainer multiline={props.rows} rows={props.rows}>

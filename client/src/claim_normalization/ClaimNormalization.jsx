@@ -150,6 +150,11 @@ class ClaimNormalization extends React.Component {
     }
 
     async doSubmit() {    
+        var dataset = "annotation"
+        if (this.props.dataset){
+            dataset = this.props.dataset
+        }
+
         var current_idx = Number(localStorage.finished_norm_annotations) + 1 - Number(localStorage.pc);
     
         let is_at_last_claim = current_idx === this.final_idx;
@@ -169,6 +174,7 @@ class ClaimNormalization extends React.Component {
                     data: {
                         user_id: localStorage.getItem('user_id'),
                         req_type: 'resubmit-data',
+                        dataset: dataset,
                         entries: this.state.entries,
                         claim_id: localStorage.claim_id
                     }
@@ -191,6 +197,7 @@ class ClaimNormalization extends React.Component {
                     url: "/claim_norm.php",
                     data: {
                         user_id: localStorage.getItem('user_id'),
+                        dataset: dataset,
                         req_type: 'submit-data',
                         entries: this.state.entries
                     }
@@ -215,13 +222,26 @@ class ClaimNormalization extends React.Component {
     }
 
     componentDidMount() {
+        var dataset = "annotation"
+        if (this.props.dataset){
+            dataset = this.props.dataset
+        }
+
+        console.log(dataset)
+
         if (localStorage.getItem('login')) {
+            if (this.props.finish_at){
+                this.setState({
+                  final_idx: this.props.finish_at
+                })
+              } else {  
             var request = {
                 method: "post",
                 baseURL: config.api_url,
                 url: "/user_statistics.php",
                 data: {
                     logged_in_user_id: localStorage.getItem('user_id'),
+                    dataset: dataset,
                     req_type: 'get-statistics',
                     get_by_user_id: localStorage.getItem('user_id')
                 }
@@ -234,6 +254,7 @@ class ClaimNormalization extends React.Component {
                 })
     
             }).catch((error) => { window.alert(error) });
+        }
 
             let pc = Number(localStorage.pc);
             console.log(pc);
@@ -244,6 +265,7 @@ class ClaimNormalization extends React.Component {
                     url: "/claim_norm.php",
                     data: {
                         user_id: localStorage.getItem('user_id'),
+                        dataset: dataset,
                         req_type: 'reload-data',
                         offset: pc - 1
                     }
@@ -291,6 +313,7 @@ class ClaimNormalization extends React.Component {
                     url: "/claim_norm.php",
                     data: {
                         user_id: localStorage.getItem('user_id'),
+                        dataset: dataset,
                         req_type: 'next-data'
                     }
                 };

@@ -294,7 +294,7 @@ class QuestionEntryField extends React.Component {
     return (
       <ContainerDiv>
         <TextLeftEntryDiv>
-          <TextFieldWithTooltip InputProps={this.props.posthocView ? { readOnly: true } : undefined} variant={this.props.posthocView ? "filled" : undefined} data-tour="question_textfield" validator={notEmptyValidator} valid={this.props.valid} maxCharacters={500} required value={this.props.data["question"]} name='question' label="Question" multiline rows={7} onChange={this.handleFieldChange} tooltip="Please write a question that will help you gather evidence for or against the claim." />
+          <TextFieldWithTooltip InputProps={this.props.posthocView ? { readOnly: true } : undefined} variant={this.props.posthocView ? "filled" : undefined} data-tour="question_textfield" validator={notEmptyValidator} valid={this.props.valid} maxCharacters={1000} required value={this.props.data["question"]} name='question' label="Question" multiline rows={7} onChange={this.handleFieldChange} tooltip="Please write a question that will help you gather evidence for or against the claim." />
           <PaddingDiv />
         </TextLeftEntryDiv>
 

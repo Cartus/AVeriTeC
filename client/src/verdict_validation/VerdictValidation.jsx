@@ -123,12 +123,23 @@ class VerdictValidation extends React.Component {
     }
 
     componentDidMount() {
+        var dataset = "annotation"
+        if (this.props.dataset){
+            dataset = this.props.dataset
+        }
+
         if (localStorage.getItem('login')) {
+            if (this.props.finish_at){
+                this.setState({
+                  final_idx: this.props.finish_at
+                })
+              } else {  
             var request = {
                 method: "post",
                 baseURL: config.api_url,
                 url: "/user_statistics.php",
                 data: {
+                    dataset: dataset,
                     logged_in_user_id: localStorage.getItem('user_id'),
                     req_type: 'get-statistics',
                     get_by_user_id: localStorage.getItem('user_id')
@@ -141,6 +152,7 @@ class VerdictValidation extends React.Component {
                 })
 
             }).catch((error) => { window.alert(error) });
+        }
 
             let pc = Number(localStorage.pc);
             if (pc !== 0) {
@@ -149,6 +161,7 @@ class VerdictValidation extends React.Component {
                     baseURL: config.api_url,
                     url: "/verdict_validate.php",
                     data: {
+                        dataset: dataset,
                         user_id: localStorage.getItem('user_id'),
                         req_type: 'reload-data',
                         offset: pc - 1
@@ -182,6 +195,7 @@ class VerdictValidation extends React.Component {
                     baseURL: config.api_url,
                     url: "/verdict_validate.php",
                     data: {
+                        dataset: dataset,
                         user_id: localStorage.getItem('user_id'),
                         req_type: 'next-data'
                     }
@@ -215,6 +229,11 @@ class VerdictValidation extends React.Component {
     }
 
     async doSubmit() {
+        var dataset = "annotation"
+        if (this.props.dataset){
+            dataset = this.props.dataset
+        }
+
         var current_idx = Number(localStorage.finished_valid_annotations) + 1 - Number(localStorage.pc);
 
         let is_at_last_claim = current_idx === this.final_idx;
@@ -231,6 +250,7 @@ class VerdictValidation extends React.Component {
                     data: {
                         user_id: localStorage.getItem('user_id'),
                         req_type: 'resubmit-data',
+                        dataset: dataset,
                         annotation: this.state.annotation,
                         questions: this.state.claim.questions,
                         claim_norm_id: localStorage.claim_norm_id
@@ -256,6 +276,7 @@ class VerdictValidation extends React.Component {
                     url: "/verdict_validate.php",
                     data: {
                         user_id: localStorage.getItem('user_id'),
+                        dataset: dataset,
                         req_type: 'submit-data',
                         annotation: this.state.annotation,
                         questions: this.state.claim.questions

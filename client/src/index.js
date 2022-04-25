@@ -94,7 +94,7 @@ const routing = (
             <PreTrainingControl phase={1} taskLink="/training/phase_1/task_1"/>
           </Route>
           <Route path="/training/phase_1/task_1">
-            <ClaimNormalization finish_path="/training/phase_1/mid"/>
+            <ClaimNormalization dataset="training" finish_at={10} finish_path="/training/phase_1/mid"/>
           </Route>
           <Route path="/training/phase_1/mid">
             <MidTrainingControl phase={1} taskLink="/training/phase_1/mid_review"/>
@@ -106,7 +106,7 @@ const routing = (
             <PostReviewTrainingControl phase={1} taskLink="/training/phase_1/task_2"/>
           </Route>
           <Route path="/training/phase_1/task_2">
-            <ClaimNormalization finish_path="/training/phase_1/complete"/>
+            <ClaimNormalization dataset="training" finish_at={10} finish_path="/training/phase_1/complete"/>
           </Route>
           <Route path="/training/phase_1/complete">
             <PostTrainingControl phase={1}/>
@@ -116,7 +116,7 @@ const routing = (
             <PreTrainingControl phase={2} taskLink="/training/phase_2/task_1"/>
           </Route>
           <Route path="/training/phase_2/task_1">
-            <QuestionGeneration finish_path="/training/phase_2/mid"/>
+            <QuestionGeneration dataset="training" finish_at={10} finish_path="/training/phase_2/mid"/>
           </Route>
           <Route path="/training/phase_2/mid">
             <MidTrainingControl phase={2} taskLink="/training/phase_2/mid_review"/>
@@ -128,7 +128,7 @@ const routing = (
             <PostReviewTrainingControl phase={2} taskLink="/training/phase_2/task_2"/>
           </Route>
           <Route path="/training/phase_2/task_2">
-            <QuestionGeneration finish_path="/training/phase_2/complete"/>
+            <QuestionGeneration dataset="training" finish_at={10} finish_path="/training/phase_2/complete"/>
           </Route>
           <Route path="/training/phase_2/complete">
             <PostTrainingControl phase={2}/>
@@ -138,7 +138,7 @@ const routing = (
             <PreTrainingControl phase={3} taskLink="/training/phase_3/task_1"/>
           </Route>
           <Route path="/training/phase_3/task_1">
-            <VerdictValidation finish_path="/training/phase_3/mid"/>
+            <VerdictValidation dataset="training" finish_at={10} finish_path="/training/phase_3/mid"/>
           </Route>
           <Route path="/training/phase_3/mid">
             <MidTrainingControl phase={3} taskLink="/training/phase_3/mid_review"/>
@@ -150,7 +150,7 @@ const routing = (
             <PostReviewTrainingControl phase={3} taskLink="/training/phase_3/task_2"/>
           </Route>
           <Route path="/training/phase_3/task_2">
-            <VerdictValidation finish_path="/training/phase_3/complete"/>
+            <VerdictValidation dataset="training" finish_at={10} finish_path="/training/phase_3/complete"/>
           </Route>
           <Route path="/training/phase_3/complete">
             <PostTrainingControl phase={3}/>
