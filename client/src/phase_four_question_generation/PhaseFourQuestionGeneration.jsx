@@ -146,14 +146,12 @@ class PhaseFourQuestionGeneration extends React.Component {
       valid: true,
       confirmation: false,
       previous_entries: {
-        "qa_pair_entry_field_0":{
-          question: "test question"
-        }
+        "qa_pair_entry_field_0":{}
       },
       previous_label_data: {
-        phase_two_label: "Supported",
-        phase_three_label: "Not Enough Information",
-        justification: "Lmao just because"
+        phase_two_label: "",
+        phase_three_label: "",
+        justification: ""
       }
     }
 
@@ -195,7 +193,7 @@ class PhaseFourQuestionGeneration extends React.Component {
         var request = {
           method: "post",
           baseURL: config.api_url,
-          url: "/question_answering.php",
+          url: "/dispute_resolution.php",
           data: {
             user_id: localStorage.getItem('user_id'),
             req_type: 'reload-data',
@@ -251,7 +249,7 @@ class PhaseFourQuestionGeneration extends React.Component {
         var request = {
           method: "post",
           baseURL: config.api_url,
-          url: "/question_answering.php",
+          url: "/dispute_resolution.php",
           data: {
             user_id: localStorage.getItem('user_id'),
             req_type: 'next-data'
@@ -273,6 +271,12 @@ class PhaseFourQuestionGeneration extends React.Component {
               claim_source: response.data.claim_source
             };
 
+            const label_data = {
+              phase_two_label: response.data.phase_two_label,
+              phase_three_label: response.data.phase_three_label,
+              justification: response.data.justification
+            }
+
             if (new_claim.claim_date) {
               var claim_date = new Date(new_claim.claim_date + "T00:00:00.0Z");
               new_claim.claim_date = moment(claim_date).format('DD/MM/YYYY');
@@ -280,6 +284,11 @@ class PhaseFourQuestionGeneration extends React.Component {
 
             localStorage.claim_norm_id = response.data.claim_norm_id;
             this.setState({ claim: new_claim });
+            this.setState({ previous_label_data: label_data });
+
+            const prev_entries = response.data.prev_entries;
+            this.setState({ previous_entries: prev_entries });
+
             const new_entries = { "qa_pair_entry_field_0": {} };
             this.setState({ entries: new_entries });
           } else {
@@ -372,7 +381,7 @@ class PhaseFourQuestionGeneration extends React.Component {
         var request = {
           method: "post",
           baseURL: config.api_url,
-          url: "/question_answering.php",
+          url: "/dispute_resolution.php",
           data: {
             user_id: localStorage.getItem('user_id'),
             req_type: 'resubmit-data',
@@ -400,7 +409,7 @@ class PhaseFourQuestionGeneration extends React.Component {
         var request = {
           method: "post",
           baseURL: config.api_url,
-          url: "/question_answering.php",
+          url: "/dispute_resolution.php",
           data: {
             user_id: localStorage.getItem('user_id'),
             req_type: 'submit-data',
