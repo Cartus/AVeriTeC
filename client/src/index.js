@@ -25,6 +25,9 @@ import UserDetailsOverview from './control_panels/UserDetailsOverview';
 import PrePhaseFourScreen from './phase_four_question_generation/PrePhaseFourScreen';
 import PostPhaseFourScreen from './phase_four_question_generation/PostPhaseFourScreen';
 import PhaseFourQuestionGeneration from './phase_four_question_generation/PhaseFourQuestionGeneration';
+import PrePhaseFiveScreen from './phase_five_verdict_validation/PrePhaseFiveScreen';
+import PostPhaseFiveScreen from './phase_five_verdict_validation/PostPhaseFiveScreen';
+import PhaseFiveVerdictValidation from './phase_five_verdict_validation/PhaseFiveVerdictValidation';
 
 const routing = (
   <Router>
@@ -69,7 +72,7 @@ const routing = (
             <PostPhaseTwoScreen />
           </Route>
           <Route path="/phase_3">
-            <VerdictValidation finish_path="/phase_2/completed/"/>
+            <VerdictValidation finish_path="/phase_3/completed/"/>
           </Route>
           <Route path="/phase_4/begin">
             <PrePhaseFourScreen />
@@ -80,8 +83,14 @@ const routing = (
           <Route path="/phase_4">
             <PhaseFourQuestionGeneration finish_path="/phase_4/completed/"/>
           </Route>
-          <Route path="/disagreement">
-            <DisagreementResolution />
+          <Route path="/phase_5/begin">
+            <PrePhaseFiveScreen />
+          </Route>
+          <Route path="/phase_5/completed">
+            <PostPhaseFiveScreen />
+          </Route>
+          <Route path="/phase_5">
+            <PhaseFiveVerdictValidation finish_path="/phase_5/completed/"/>
           </Route>
           <Route path="/control">
             <AnnotatorControl />

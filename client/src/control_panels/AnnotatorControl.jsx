@@ -183,7 +183,7 @@ class AnnotatorControl extends React.Component {
                     {(this.state.assignments.phase_2.total > 0)?<AssignmentField name="Question Generation" page="phase_2" assignments={this.state.assignments.phase_2}/>: ""}
                     {(this.state.assignments.phase_3.total > 0)?<AssignmentField name="Quality Control" page="phase_3" assignments={this.state.assignments.phase_3}/>: ""}
                     {(this.state.assignments.phase_4.total > 0)?<AssignmentField name="Dispute Resolution" page="phase_4" assignments={this.state.assignments.phase_4}/>: ""}
-                    {(this.state.assignments.phase_5.total > 0)?<AssignmentField name="Post-Resolution Quality Control" page="phase_3" assignments={this.state.assignments.phase_5} add_phase_4_questions={true}/>: ""}
+                    {(this.state.assignments.phase_5.total > 0)?<AssignmentField name="Post-Resolution Quality Control" page="phase_5" assignments={this.state.assignments.phase_5}/>: ""}
                 </div>
                 <SepDiv/>
                 <div>
