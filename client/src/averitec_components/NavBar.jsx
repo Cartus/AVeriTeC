@@ -42,7 +42,9 @@ class NavBar extends React.Component {
             finished_num = Number(localStorage.finished_qa_annotations);
         } else if (phase === 'phase_3') {
             finished_num = Number(localStorage.finished_valid_annotations);
-        }
+        } else if (phase === 'phase_4') {
+          finished_num = Number(localStorage.finished_p4_annotations);
+      }
 
         return (
             <EntryCard>

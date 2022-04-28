@@ -104,12 +104,12 @@ class PhaseControl extends React.Component {
         }
 
         var current_idx = "?"
-        if (this.props.current_idx){
+        if (this.props.current_idx || this.props.current_idx == 0){
             current_idx = this.props.current_idx
         }
 
         var final_idx = "?"
-        if (this.props.final_idx){
+        if (this.props.final_idx || this.props.final_idx == 0){
             final_idx = this.props.final_idx
         }
 

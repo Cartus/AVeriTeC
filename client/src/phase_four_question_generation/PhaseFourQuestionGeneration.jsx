@@ -123,7 +123,6 @@ function validate(content) {
 
 class PhaseFourQuestionGeneration extends React.Component {
 
-  final_idx = 5
 
   constructor(props) {
     super(props);
@@ -152,7 +151,8 @@ class PhaseFourQuestionGeneration extends React.Component {
         phase_two_label: "",
         phase_three_label: "",
         justification: ""
-      }
+      },
+      final_idx: 0
     }
 
     this.changeLabel = this.changeLabel.bind(this);
@@ -187,7 +187,37 @@ class PhaseFourQuestionGeneration extends React.Component {
   }
 
   componentDidMount() {
+    var dataset = "annotation"
+    if (this.props.dataset){
+        dataset = this.props.dataset
+    }
+    
     if (localStorage.getItem('login')) {
+      if (this.props.finish_at){
+        this.setState({
+          final_idx: this.props.finish_at
+        })
+      } else {      
+      var request = {
+        method: "post",
+        baseURL: config.api_url,
+        url: "/user_statistics.php",
+        data: {
+          dataset: dataset,
+          logged_in_user_id: localStorage.getItem('user_id'),
+          req_type: 'get-statistics',
+          get_by_user_id: localStorage.getItem('user_id')
+        }
+      };
+
+      axios(request).then((response) => {
+        console.log(response)
+        this.setState({
+          final_idx: response.data.phase_4.annotations_assigned
+        })
+      }).catch((error) => { window.alert(error) });
+    }
+
       let pc = Number(localStorage.pc);
       if (pc !== 0) {
         var request = {
@@ -258,7 +288,7 @@ class PhaseFourQuestionGeneration extends React.Component {
 
         axios(request).then((response) => {
           if (response.data) {
-            if (Number(localStorage.finished_qa_annotations) === 0) {
+            if (Number(localStorage.finished_p4_annotations) === 0) {
               this.setState({ userIsFirstVisiting: true });
             }
             console.log(response.data);
@@ -366,9 +396,9 @@ class PhaseFourQuestionGeneration extends React.Component {
   }
 
   async doSubmit() {
-    var current_idx = Number(localStorage.finished_qa_annotations) + 1 - Number(localStorage.pc);
+    var current_idx = Number(localStorage.finished_p4_annotations) + 1 - Number(localStorage.pc);
 
-    let is_at_last_claim = current_idx === this.final_idx;
+    let is_at_last_claim = current_idx === this.state.final_idx;
     let should_use_finish_path = this.props.finish_path && is_at_last_claim
 
     // e.preventDefault();
@@ -421,7 +451,7 @@ class PhaseFourQuestionGeneration extends React.Component {
         };
 
         await axios(request).then((response) => {
-          localStorage.finished_qa_annotations = Number(localStorage.finished_qa_annotations) + 1;
+          localStorage.finished_p4_annotations = Number(localStorage.finished_p4_annotations) + 1;
           console.log(response.data);
           
           if (should_use_finish_path){
@@ -521,7 +551,7 @@ class PhaseFourQuestionGeneration extends React.Component {
       },
     ];
 
-    var current_idx = Number(localStorage.finished_qa_annotations) + 1 - Number(localStorage.pc);
+    var current_idx = Number(localStorage.finished_p4_annotations) + 1 - Number(localStorage.pc);
 
     var all_entries = {}
     Object.keys(this.state.entries).forEach(key => {
@@ -543,7 +573,7 @@ class PhaseFourQuestionGeneration extends React.Component {
               <PhaseFourQuestionGenerationBar
                 handleFieldChange={this.handleFieldChange}
                 current_idx={current_idx}
-                final_idx={this.final_idx}
+                final_idx={this.state.final_idx}
                 claim={this.state.claim}
                 entries={this.state.entries}
                 previous_entries={this.state.previous_entries}
