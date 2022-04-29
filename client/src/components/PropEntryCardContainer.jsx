@@ -42,24 +42,28 @@ class EntryCardContainer extends React.Component {
 
   doPrevious() {
     let phase = localStorage.getItem('phase');
-    if (phase === 'phase_1') {
-      localStorage.pc = Number(localStorage.pc) + 1;
-      window.location.reload(false);
-    } else if (phase === 'phase_2') {
-      localStorage.pc = Number(localStorage.pc) + 1;
-      window.location.reload(false);
-    }
+    localStorage.pc = Number(localStorage.pc) + 1;
+    window.location.reload(false);
+    // if (phase === 'phase_1') {
+    //   localStorage.pc = Number(localStorage.pc) + 1;
+    //   window.location.reload(false);
+    // } else if (phase === 'phase_2') {
+    //   localStorage.pc = Number(localStorage.pc) + 1;
+    //   window.location.reload(false);
+    // }
   }
 
   doNext() {
     let phase = localStorage.getItem('phase');
-    if (phase === 'phase_1') {
-      localStorage.pc = Number(localStorage.pc) - 1;
-      window.location.reload(false);
-    } else if (phase === 'phase_2') {
-      localStorage.pc = Number(localStorage.pc) - 1;
-      window.location.reload(false);
-    }
+    localStorage.pc = Number(localStorage.pc) - 1;
+    window.location.reload(false);
+    // if (phase === 'phase_1') {
+    //   localStorage.pc = Number(localStorage.pc) - 1;
+    //   window.location.reload(false);
+    // } else if (phase === 'phase_2') {
+    //   localStorage.pc = Number(localStorage.pc) - 1;
+    //   window.location.reload(false);
+    // }
   }
 
   render() {

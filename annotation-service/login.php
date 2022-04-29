@@ -26,7 +26,7 @@ if (empty($_POST['name']) && empty($_POST['password_md5'])) die();
 $name = $_POST['name'];
 $pw_md5 = $_POST['password_md5'];
 
-$sql = "SELECT user_id, is_admin, finished_norm_annotations, finished_qa_annotations, finished_valid_annotations FROM Annotators WHERE password_md5 = ? AND user_name = ?";
+$sql = "SELECT * FROM Annotators WHERE password_md5 = ? AND user_name = ?";
 $stmt= $conn->prepare($sql);
 $stmt->bind_param("ss", $pw_md5, $name);
 $stmt->execute();
@@ -40,7 +40,8 @@ if ($credentials_match) {
     update_table($conn, "UPDATE Annotators SET number_logins=number_logins+1 WHERE user_id=?", 'i', $row['user_id']);
     echo(json_encode(["login" => true, "user_id" => $row['user_id'], "user_name" => $name, "is_admin" => $row['is_admin'],
     "finished_norm_annotations"=> $row['finished_norm_annotations'], "finished_qa_annotations"=> $row['finished_qa_annotations'],
-    "finished_valid_annotations"=> $row['finished_valid_annotations']]));
+    "finished_valid_annotations"=> $row['finished_valid_annotations'], "finished_p4_annotations" => $row['finished_dispute_annotations'],
+    "finished_p5_annotations" => $row['finished_post_annotations']]));
   }else{
     echo(json_encode(["login" => false, "message" => "Something went wrong"]));
   }

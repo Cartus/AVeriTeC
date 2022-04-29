@@ -38,7 +38,6 @@ if ($req_type == "next-data"){
 
     if($result->num_rows > 0){
         if ($row['current_valid_task'] != 0) {
-            // $sql = "SELECT claim_norm_id, user_id_qa, cleaned_claim, correction_claim, speaker, source, check_date, hyperlink, claim_loc FROM Norm_Claims WHERE claim_norm_id = ?";
             $sql = "SELECT claim_norm_id, claim_qa_id, user_id_qa, cleaned_claim, correction_claim, speaker, source, check_date, hyperlink, claim_loc FROM Assigned_Valids WHERE claim_norm_id=?";
             
             $stmt= $conn->prepare($sql);
@@ -46,10 +45,11 @@ if ($req_type == "next-data"){
             $stmt->execute();
             $result = $stmt->get_result();
             $row = $result->fetch_assoc();
-
-            $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=? AND user_id_qa=?";
+            
+            $qa_latest=1;
+            $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=? AND user_id_qa=? AND qa_latest=?";
             $stmt = $conn->prepare($sql_qa);
-            $stmt->bind_param("ii", $row['claim_qa_id'], $row['user_id_qa']);
+            $stmt->bind_param("iii", $row['claim_qa_id'], $row['user_id_qa'], $qa_latest);
             $stmt->execute();
             $result_qa = $stmt->get_result();
 
@@ -119,18 +119,13 @@ if ($req_type == "next-data"){
                     "claim_date" => $row['check_date'], "claim_hyperlink" => $row['hyperlink'], "questions" => $questions, "country_code" => $row['claim_loc']]);
                 echo(json_encode($output));
 
-                // update_table($conn, "UPDATE Norm_Claims SET date_start_valid=? WHERE claim_norm_id=?", 'si', $date, $row['claim_norm_id']);
-                update_table($conn, "UPDATE Assigned_Valids SET date_start_cache_valid=? WHERE claim_norm_id=?", 'si', $date, $row['claim_norm_id']);
+                update_table($conn, "UPDATE Assigned_Valids SET date_start_valid=? WHERE claim_norm_id=?", 'si', $date, $row['claim_norm_id']);
 
             } else {
                 echo "0 Results";
             }
 
         } else {
-            // $user_id2 = $_POST['user_id'];
-            // $sql = "SELECT claim_norm_id, user_id_qa, correction_claim, cleaned_claim, speaker, source, check_date, claim_types, fact_checker_strategy, hyperlink, claim_loc FROM Norm_Claims
-            // WHERE valid_annotators_num=0 AND valid_taken_flag=0 AND has_qapairs=1 AND latest=1 AND user_id_norm != ? AND user_id_qa != ? ORDER BY RAND() LIMIT 1";
-
             $sql = "SELECT claim_norm_id, claim_qa_id, user_id_qa, correction_claim, cleaned_claim, speaker, source, check_date, claim_types, fact_checker_strategy, hyperlink, claim_loc FROM Assigned_Valids
             WHERE user_id_valid=? AND valid_annotators_num=0 ORDER BY RAND() LIMIT 1";
 
@@ -233,9 +228,7 @@ if ($req_type == "next-data"){
                 } else {
                     echo "0 Results";
                 }
-                // update_table($conn, "UPDATE Norm_Claims SET valid_taken_flag=1, user_id_valid=?, date_start_valid=? WHERE claim_norm_id=?", 'isi', $user_id, $date, $row['claim_norm_id']);
-
-                update_table($conn, "UPDATE Assigned_Valids SET date_start_cache_valid=? WHERE claim_norm_id=?", 'si', $date, $row['claim_norm_id']);
+                update_table($conn, "UPDATE Assigned_Valids SET date_start_valid=? WHERE claim_norm_id=?", 'si', $date, $row['claim_norm_id']);
                 update_table($conn, "UPDATE Annotators SET current_valid_task=? WHERE user_id=?", 'ii', $row['claim_norm_id'], $user_id);
             }
         }
@@ -248,8 +241,7 @@ if ($req_type == "next-data"){
         die("Connection failed: " . $conn->connect_error);
     }
 
-    // $sql = "SELECT claim_norm_id, date_start_valid FROM Norm_Claims WHERE (claim_norm_id = (SELECT current_valid_task FROM Annotators WHERE user_id=?))";
-    $sql = "SELECT claim_norm_id, claim_qa_id, date_start_cache_valid FROM Assigned_Valids WHERE (claim_norm_id = (SELECT current_valid_task FROM Annotators WHERE user_id=?))";
+    $sql = "SELECT * FROM Assigned_Valids WHERE (claim_norm_id = (SELECT current_valid_task FROM Annotators WHERE user_id=?))";
     
     $stmt= $conn->prepare($sql);
     $stmt->bind_param("i", $user_id);
@@ -270,9 +262,10 @@ if ($req_type == "next-data"){
         $unreadable = 0;
     }
 
-    $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=?";
+    $qa_latest = 1;
+    $sql_qa = "SELECT * FROM Qapair WHERE qa_latest=? AND claim_norm_id=? AND user_id_qa=? ";
     $stmt = $conn->prepare($sql_qa);
-    $stmt->bind_param("i", $row['claim_qa_id']);
+    $stmt->bind_param("iii", $qa_latest, $row['claim_qa_id'], $row['user_id_qa']);
     $stmt->execute();
     $result_qa = $stmt->get_result();
 
@@ -324,15 +317,14 @@ if ($req_type == "next-data"){
         }else {
             echo "0 Results";
         }
-        // update_table($conn, "UPDATE Norm_Claims SET valid_taken_flag=0, valid_annotators_num = valid_annotators_num+1, phase_3_label=?, justification=?, date_made_valid=?, unreadable=?
-        // WHERE claim_norm_id=?",'sssii', $phase_3_label, $justification, $date, $unreadable, $row['claim_norm_id']);
 
-        update_table($conn, "UPDATE Assigned_Valids SET valid_annotators_num=valid_annotators_num+1, phase_3_label=?, justification=?, date_made_valid=?, date_start_valid=?, unreadable=?
-        WHERE claim_norm_id=?",'ssssii', $phase_3_label, $justification, $date, $row['date_start_cache_valid'], $unreadable, $row['claim_norm_id']);
-
+        $valid_latest = 1;
+        update_table($conn, "UPDATE Assigned_Valids SET valid_annotators_num=valid_annotators_num+1, phase_3_label=?, justification=?, date_made_valid=?, 
+        date_start_valid=?, unreadable=?, valid_latest=?
+        WHERE claim_norm_id=?",'ssssiii', $phase_3_label, $justification, $date, $row['date_start_valid'], $unreadable, $valid_latest, $row['claim_norm_id']);
 
         $to_time = strtotime($date);
-        $from_time = strtotime($row['date_start_cache_valid']);
+        $from_time = strtotime($row['date_start_valid']);
         $minutes = round(abs($to_time - $from_time) / 60,2);
         echo("The annotation time is: $minutes minutes.");
 
@@ -359,16 +351,13 @@ if ($req_type == "next-data"){
         die("Connection failed: " . $conn->connect_error);
     }
 
-    // $sql = "SELECT claim_norm_id, user_id_qa, cleaned_claim, correction_claim, speaker, source, claim_loc, check_date, hyperlink, phase_3_label, justification, unreadable
-    //  FROM Norm_Claims WHERE user_id_valid=? ORDER BY date_start_valid DESC LIMIT 1 OFFSET ?";
-    
+    $valid_annotated_num = 0;
+    $valid_latest = 1;
     $sql = "SELECT claim_norm_id, claim_qa_id, user_id_qa, cleaned_claim, correction_claim, speaker, source, claim_loc, check_date, hyperlink, phase_3_label, justification, unreadable
-     FROM Assigned_Valids WHERE user_id_valid=? ORDER BY date_start_valid DESC LIMIT 1 OFFSET ?";
+     FROM Assigned_Valids WHERE $valid_latest=? AND user_id_valid=? AND valid_annotators_num!=?  ORDER BY date_start_valid DESC LIMIT 1 OFFSET ?";
 
-    // echo $row['justification'];
-    
     $stmt= $conn->prepare($sql);
-    $stmt->bind_param("ii", $user_id, $offset);
+    $stmt->bind_param("iiii", $valid_latest, $user_id, $valid_annotated_num, $offset);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
@@ -462,7 +451,6 @@ if ($req_type == "next-data"){
         $output = (["claim_norm_id" => $row['claim_norm_id'], "claim_text" => $claim_text, "speaker" => $row['speaker'], "claim_source" => $row['source'],
         "claim_date" => $row['check_date'], "hyperlink" => $row['hyperlink'],  "questions" => $questions, "annotation" => $annotation, "country_code" => $row['claim_loc']]);
         echo(json_encode($output));
-        // update_table($conn, "UPDATE Norm_Claims SET date_restart_valid=? WHERE claim_norm_id=?", 'si', $date, $row['claim_norm_id']);
 
         update_table($conn, "UPDATE Assigned_Valids SET date_restart_valid=? WHERE claim_norm_id=?", 'si', $date, $row['claim_norm_id']);
 
@@ -481,12 +469,18 @@ if ($req_type == "next-data"){
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $sql = "SELECT claim_qa_id, date_restart_valid FROM Assigned_Valids WHERE claim_norm_id=?";
+    $sql = "SELECT * FROM Assigned_Valids WHERE claim_norm_id=?";
     $stmt= $conn->prepare($sql);
     $stmt->bind_param("i", $claim_norm_id);
     $stmt->execute();
     $result_time = $stmt->get_result();
-    $row_time = $result_time->fetch_assoc();
+    $row = $result_time->fetch_assoc();
+
+    $valid_latest = 0;
+    $sql_update = "UPDATE Assigned_Valids SET valid_latest=? WHERE claim_norm_id=?";
+    $stmt= $conn->prepare($sql_update);
+    $stmt->bind_param("ii", $valid_latest, $claim_norm_id);
+    $stmt->execute();
 
     $phase_3_label = $_POST["annotation"]["label"];
     $justification = $_POST["annotation"]["justification"];
@@ -500,9 +494,10 @@ if ($req_type == "next-data"){
         $unreadable = 0;
     }
 
-    $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=?";
+    $qa_latest=1;
+    $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=? AND user_id_qa=? AND qa_latest=?";
     $stmt = $conn->prepare($sql_qa);
-    $stmt->bind_param("i", $row_time['claim_qa_id']);
+    $stmt->bind_param("iii", $row['claim_qa_id'], $row['user_id_qa'], $qa_latest);
     $stmt->execute();
     $result_qa = $stmt->get_result();
 
@@ -513,6 +508,7 @@ if ($req_type == "next-data"){
             while($row_qa = $result_qa->fetch_assoc()) {
                 $counter = $counter + 1;
                 $count_string = "question_" . (string)$counter;
+
                 if (empty($_POST["questions"][$count_string]["question_problems"])){
                     $question_problems = NULL;
                 }else{
@@ -554,27 +550,35 @@ if ($req_type == "next-data"){
             echo "0 Results";
         }
 
-        // $sql = "SELECT date_restart_valid FROM Norm_Claims WHERE claim_norm_id=?";
-        // $sql = "SELECT date_restart_valid FROM Assigned_Valids WHERE claim_norm_id=?";
-        // $stmt= $conn->prepare($sql);
-        // $stmt->bind_param("i", $claim_norm_id);
-        // $stmt->execute();
-        // $result_time = $stmt->get_result();
-        // $row_time = $result_time->fetch_assoc();
-
         $to_time = strtotime($date);
-        $from_time = strtotime($row_time['date_restart_valid']);
+        $from_time = strtotime($row['date_restart_valid']);
         $minutes = round(abs($to_time - $from_time) / 60,2);
         echo("The annotation time is: $minutes minutes.");
 
         update_table($conn, "UPDATE Annotators SET p3_time_sum=p3_time_sum+? WHERE user_id=?",'di', $minutes, $user_id);
+        
+        $valid_latest = 0;
+        update_table($conn, "UPDATE Assigned_Valids SET valid_latest=? WHERE claim_norm_id=?",'ii', $valid_latest, $claim_norm_id);
 
-        // update_table($conn, "UPDATE Norm_Claims SET valid_annotators_num = valid_annotators_num+1, phase_3_label=?, justification=?, date_modified_valid=?, unreadable=?
-        // WHERE claim_norm_id=?",'sssii', $phase_3_label, $justification, $date, $unreadable, $claim_norm_id);
+        $valid_latest = 1;
+        $inserted = 0;
+        $valid_annotators_num = $row['valid_annotators_num']+1;
         
-        update_table($conn, "UPDATE Assigned_Valids SET valid_annotators_num=valid_annotators_num+1, phase_3_label=?, justification=?, date_modified_valid=?, unreadable=?
-        WHERE claim_norm_id=?",'sssii', $phase_3_label, $justification, $date, $unreadable, $claim_norm_id);
-        
+        update_table($conn, "INSERT INTO Assigned_Valids (claim_id, claim_qa_id, web_archive, user_id_norm, user_id_qa, user_id_valid, cleaned_claim, 
+        correction_claim, speaker, hyperlink, transcription, media_source, check_date, claim_types, fact_checker_strategy, phase_1_label, phase_2_label, qa_annotators_num, 
+        qa_skipped, valid_annotators_num, num_qapairs, claim_loc, latest, source, date_start_norm, date_load_norm, date_made_norm, date_restart_norm, 
+        date_modified_norm, date_start_qa, date_load_qa, date_made_qa, date_restart_qa, date_modified_qa, inserted, 
+        date_start_valid, date_made_valid, date_restart_valid, date_modified_valid,
+        phase_3_label, justification, unreadable, valid_latest) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
+        'iisiiisssssssssssiiiisisssssssssssissssssii', 
+        $row['claim_id'], $row['claim_qa_id'], $row['web_archive'], $row['user_id_norm'], $row['user_id_qa'], $row['user_id_valid'], $row['cleaned_claim'], $row['correction_claim'], 
+        $row['speaker'], $row['hyperlink'], $row['transcription'], $row['media_source'], $row['check_date'], $row['claim_types'], $row['fact_checker_strategy'], 
+        $row['phase_1_label'], $row['phase_2_label'], $row['qa_annotators_num'], $row['qa_skipped'], $valid_annotators_num, $row['num_qapairs'],  
+        $row['claim_loc'], $row['latest'], $row['source'], $row['date_start_norm'], $row['date_load_norm'], $row['date_made_norm'], $row['date_restart_norm'], 
+        $row['date_modified_norm'], $row['date_start_qa'], $row['date_load_qa'], $row['date_made_qa'], $row['date_restart_qa'], $row['date_modified_qa'], $inserted, 
+        $row['date_start_valid'], $row['date_made_valid'], $row['date_restart_valid'], $date,
+        $phase_3_label, $justification, $unreadable, $valid_latest);
 
         $conn->commit();
         echo "Resubmit Successfully!";

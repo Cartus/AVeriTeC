@@ -251,9 +251,20 @@ class PhaseFourQuestionGeneration extends React.Component {
             localStorage.claim_norm_id = response.data.claim_norm_id;
             this.setState({ claim: new_claim });
 
-            const new_header = { claim_correction: response.data.claim_correction, should_correct: response.data.should_correct };
-            this.setState({ qa_pair_header: new_header })
-            console.log(this.state.qa_pair_header);
+            const label_data = {
+              phase_two_label: response.data.phase_two_label,
+              phase_three_label: response.data.phase_three_label,
+              justification: response.data.justification
+            }
+            this.setState({ previous_label_data: label_data });
+
+            // TODO: Comment this, as we wont correct the claim here.
+            // const new_header = { claim_correction: response.data.claim_correction, should_correct: response.data.should_correct };
+            // this.setState({ qa_pair_header: new_header })
+            // console.log(this.state.qa_pair_header);
+
+            const prev_entries = response.data.prev_entries;
+            this.setState({ previous_entries: prev_entries });
 
             const new_footer = { label: response.data.label };
             this.setState({ qa_pair_footer: new_footer })
@@ -301,12 +312,6 @@ class PhaseFourQuestionGeneration extends React.Component {
               claim_source: response.data.claim_source
             };
 
-            const label_data = {
-              phase_two_label: response.data.phase_two_label,
-              phase_three_label: response.data.phase_three_label,
-              justification: response.data.justification
-            }
-
             if (new_claim.claim_date) {
               var claim_date = new Date(new_claim.claim_date + "T00:00:00.0Z");
               new_claim.claim_date = moment(claim_date).format('DD/MM/YYYY');
@@ -314,6 +319,12 @@ class PhaseFourQuestionGeneration extends React.Component {
 
             localStorage.claim_norm_id = response.data.claim_norm_id;
             this.setState({ claim: new_claim });
+
+            const label_data = {
+              phase_two_label: response.data.phase_two_label,
+              phase_three_label: response.data.phase_three_label,
+              justification: response.data.justification
+            }
             this.setState({ previous_label_data: label_data });
 
             const prev_entries = response.data.prev_entries;

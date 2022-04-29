@@ -41,9 +41,9 @@ if ($result->num_rows > 0) {
 	    echo "unreadable: " . $row["unreadable"]. "<br>";
         echo "qa_skipped: " . $row["qa_skipped"]. "<br>";
         echo "qa_skipped_by: " . $row["qa_skipped_by"]. "<br>";
-        echo "has_qapairs: " . $row["has_qapairs"]. "<br>";
         echo "num_qapairs: " . $row["num_qapairs"]. "<br>";
         echo "latest: " . $row["latest"]. "<br>";
+        echo "valid_latest: " . $row["valid_latest"]. "<br>";
         echo "date_start_norm: " . $row["date_start_norm"]. "<br>";
         echo "date_load_norm: " . $row["date_load_norm"]. "<br>";
         echo "date_made_norm: " . $row["date_made_norm"]. "<br>";
@@ -58,6 +58,7 @@ if ($result->num_rows > 0) {
         echo "date_made_valid: " . $row["date_made_valid"]. "<br>";
         echo "date_restart_valid: " . $row["date_restart_valid"]. "<br>";
         echo "date_modified_valid: " . $row["date_modified_valid"]. "<br>";
+        echo "inserted: " . $row["inserted"]. "<br>";
         echo "<br>";
     }
 } else {

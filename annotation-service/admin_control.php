@@ -36,7 +36,7 @@ if ($req_type == "add-user") {
     $finished_norm_annotations = 0;
     $finished_qa_annotations = 0;
     $finished_valid_annotations = 0;
-    $finished_res_annotations = 0;
+    $finished_dispute_annotations = 0;
     $finished_post_annotations = 0;
 
     $skipped_norm_data = 0;
@@ -64,14 +64,14 @@ if ($req_type == "add-user") {
     $conn->begin_transaction();
     try {
         update_table($conn, "INSERT INTO Annotators (user_name, password_cleartext, password_md5, is_admin, is_active, number_logins,
-        finished_norm_annotations, finished_qa_annotations, finished_valid_annotations, finished_res_annotations, finished_post_annotations,  
+        finished_norm_annotations, finished_qa_annotations, finished_valid_annotations, finished_dispute_annotations, finished_post_annotations,  
         skipped_norm_data, skipped_qa_data,
         p1_time_sum, p1_load_sum, p2_time_sum, p2_load_sum, p3_time_sum, p4_load_sum, p4_time_sum, p5_time_sum, 
         p1_timed_out, p2_timed_out, p4_timed_out,
         p1_speed_trap, p2_speed_trap, p3_speed_trap, p4_speed_trap, p5_speed_trap)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'sssiiiiiiiiiiiiiiiiiiiiiiiiii',
         $user_name, $password, $password_md5, $is_admin, $is_active, $number_logins, $finished_norm_annotations, $finished_qa_annotations,
-        $finished_valid_annotations, $finished_res_annotations, $finished_post_annotations, 
+        $finished_valid_annotations, $finished_dispute_annotations, $finished_post_annotations, 
         $skipped_norm_data, $skipped_qa_data, $p1_time_sum, $p1_load_sum, $p2_time_sum, 
         $p2_load_sum, $p3_time_sum, $p4_load_sum, $p4_time_sum, $p5_time_sum, 
         $p1_timed_out, $p2_timed_out, $p4_timed_out,
@@ -120,7 +120,7 @@ if ($req_type == "add-user") {
             $table_row["finished_norm_annotations"] = $row['finished_norm_annotations'];
             $table_row["finished_qa_annotations"] = $row['finished_qa_annotations'];
             $table_row["finished_valid_annotations"] = $row['finished_valid_annotations'];
-            $table_row["finished_p4"] = $row['finished_res_annotations'];
+            $table_row["finished_p4"] = $row['finished_dispute_annotations'];
             $table_row["finished_p5"] = $row['finished_post_annotations'];
 
             $table_row["p1_assigned"] = $row['p1_assigned'];
@@ -132,7 +132,7 @@ if ($req_type == "add-user") {
             $p1_task_time = round($row['p1_time_sum'] / max($row['finished_norm_annotations'], 1), 2);
             $p2_task_time = round($row['p2_time_sum'] / max($row['finished_qa_annotations'], 1), 2);
             $p3_task_time = round($row['p3_time_sum'] / max($row['finished_valid_annotations'], 1), 2);
-            $p4_task_time = round($row['p4_time_sum'] / max($row['finished_res_annotations'], 1), 2);
+            $p4_task_time = round($row['p4_time_sum'] / max($row['finished_dispute_annotations'], 1), 2);
             $p5_task_time = round($row['p5_time_sum'] / max($row['finished_post_annotations'], 1), 2);
 
             $table_row["p1_task_time"] = $p1_task_time;
@@ -150,7 +150,7 @@ if ($req_type == "add-user") {
             $table_row["speed_traps_hit"] = $row['p1_speed_trap'] + $row['p2_speed_trap'] + $row['p3_speed_trap'] + $row['p4_speed_trap'] + $row['p5_speed_trap'];
 
             $table_row['average_questions_p2'] = round($row['questions_p2'] / max($row['finished_qa_annotations'], 1), 2);
-            $table_row['average_questions_p4'] = round($row['questions_p4'] / max($row['finished_res_annotations'], 1), 2);
+            $table_row['average_questions_p4'] = round($row['questions_p4'] / max($row['finished_dispute_annotations'], 1), 2);
             $table[$counter] = $table_row;
             $counter = $counter + 1;
         };

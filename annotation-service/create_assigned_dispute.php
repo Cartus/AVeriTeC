@@ -11,7 +11,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "DROP TABLE Assigned_Norms";
+$sql = "DROP TABLE Assigned_Disputes";
 
 if ($conn->query($sql) === TRUE) {
     echo "Table dropped successfully";
@@ -21,13 +21,19 @@ if ($conn->query($sql) === TRUE) {
 
 
 // sql to create table
-$sql = "CREATE TABLE Assigned_Norms (
+$sql = "CREATE TABLE Assigned_Disputes (
 claim_norm_id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 claim_id INT(6) NOT NULL,
+claim_qa_id INT(6) NOT NULL,
+claim_valid_id INT(6) NOT NULL,
 web_archive VARCHAR(500) NOT NULL,
 user_id_norm INT(6) NOT NULL,
 user_id_qa INT(6),
+user_id_valid INT(6),
+user_id_dispute INT(6),
 qa_annotators_num INT(6) NOT NULL,
+valid_annotators_num INT(6) NOT NULL,
+dispute_annotators_num INT(6) NOT NULL,
 cleaned_claim VARCHAR(500) NOT NULL,
 correction_claim VARCHAR(500),
 speaker VARCHAR(100),
@@ -41,10 +47,16 @@ fact_checker_strategy VARCHAR(500) NOT NULL,
 claim_loc VARCHAR(50),
 phase_1_label VARCHAR(50) NOT NULL,
 phase_2_label VARCHAR(50),
+phase_3_label VARCHAR(50),
+phase_4_label VARCHAR(50),
+justification VARCHAR(2500),
 num_qapairs INT(6) NOT NULL,
+unreadable INT(6),
 qa_skipped INT(6) NOT NULL,
 qa_skipped_by INT(6),
 latest INT(6) NOT NULL,
+valid_latest INT(6) NOT NULL,
+added_qas INT(6) NOT NULL,
 date_start_norm DATETIME,
 date_load_norm DATETIME,
 date_made_norm DATETIME,
@@ -57,13 +69,23 @@ date_restart_qa DATETIME,
 date_restart_cache_qa DATETIME,
 date_load_cache_qa DATETIME,
 date_modified_qa DATETIME,
-nonfactual INT(6) NOT NULL,
+date_start_valid DATETIME,
+date_made_valid DATETIME,
+date_restart_valid DATETIME,
+date_modified_valid DATETIME,
+date_start_dispute DATETIME,
+date_load_dispute DATETIME,
+date_made_dispute DATETIME,
+date_restart_dispute DATETIME,
+date_restart_cache_dispute DATETIME,
+date_load_cache_dispute DATETIME,
+date_modified_dispute DATETIME,
 inserted INT(6) NOT NULL
 )";
 
 
 if ($conn->query($sql) === TRUE) {
-    echo "Table Assigned_Norms created successfully";
+    echo "Table Assigned_Disputes created successfully";
 } else {
     echo "Error creating table: " . $conn->error;
 }

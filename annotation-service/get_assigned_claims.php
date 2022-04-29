@@ -15,6 +15,7 @@ $result = $conn->query($sql);
 if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
         echo "claim_id: " . $row["claim_id"]. "<br>";
+        echo "raw_id: " . $row["raw_id"]. "<br>";
         echo "claim_text: " . $row["claim_text"]. "<br>";
         echo "web_archive: " . $row["web_archive"]. "<br>";
         echo "claim_date: " . $row["claim_date"]. "<br>";

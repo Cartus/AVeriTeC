@@ -19,13 +19,15 @@ if ($conn->connect_error) {
 }
 
 
-$id = 1;
+$id = 4;
 
 // update_table($conn, "UPDATE Annotators SET current_qa_task=0 WHERE user_id=?", 'i', $id);
 
 // update_table($conn, "UPDATE Norm_Claims SET valid_annotators_num=0 WHERE claim_norm_id=?", 'i', $id);
 
-update_table($conn, "UPDATE Claims SET user_id_norm=0, norm_taken_flag=0  WHERE claim_id=?", 'i', $id);
+// update_table($conn, "UPDATE Claims SET user_id_norm=0, norm_taken_flag=0  WHERE claim_id=?", 'i', $id);
+
+update_table($conn, "UPDATE Assigned_Valids SET inserted=0 WHERE claim_norm_id=?", 'i', $id);
 
 
 echo "reset current task!";

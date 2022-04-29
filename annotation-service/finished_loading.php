@@ -33,6 +33,10 @@ if ($phase == 1) {
     $claim_norm_id = $_POST['claim_norm_id'];
     update_table($conn, "UPDATE Assigned_Norms SET date_load_cache_qa=? WHERE claim_norm_id=?",'si', $date, $claim_norm_id);
     echo "Finished Loading!";
+} elseif ($phase == 4) {
+    $claim_norm_id = $_POST['claim_norm_id'];
+    update_table($conn, "UPDATE Assigned_Disputes SET date_load_cache_dispute=? WHERE claim_norm_id=?",'si', $date, $claim_norm_id);
+    echo "Finished Loading!";
 }
 
 

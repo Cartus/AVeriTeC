@@ -180,10 +180,7 @@ if ($req_type == "next-data"){
             $cleaned_claim, $speaker, $hyperlink, $transcription, $media_source, $check_date, $claim_types, $fact_checker_strategy, $phase_1_label, $date, $claim_loc, 
             $latest, $source, $nonfactual, $row['date_start_norm'], $row['date_load_norm'], $inserted);
         }
-
-        // update_table($conn, "UPDATE Assigned_Claims SET norm_taken_flag=0, norm_annotators_num=norm_annotators_num+1, submitted=1, date_start_norm=? WHERE claim_id=?",'si', $date, $row['claim_id']);
-
-        update_table($conn, "UPDATE Assigned_Claims SET norm_annotators_num=norm_annotators_num+1, submitted=1, date_start_norm=? WHERE claim_id=?",'si', $date, $row['claim_id']);
+        update_table($conn, "UPDATE Assigned_Claims SET norm_annotators_num=norm_annotators_num+1, date_start_norm=? WHERE claim_id=?",'si', $date, $row['claim_id']);
         $to_time = strtotime($date);
         $from_time = strtotime($row['date_start_norm']);
         $minutes = round(abs($to_time - $from_time) / 60,2);
@@ -219,10 +216,11 @@ if ($req_type == "next-data"){
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $submitted = 1;
-    $sql = "SELECT claim_id, web_archive, norm_skipped FROM Assigned_Claims WHERE user_id_norm=? AND submitted=? ORDER BY date_start_norm DESC LIMIT 1 OFFSET ?";
+    $norm_annotated_num = 0;
+    $sql = "SELECT claim_id, web_archive, norm_skipped FROM Assigned_Claims WHERE user_id_norm=? AND norm_annotators_num!=? ORDER BY date_start_norm DESC LIMIT 1 OFFSET ?";
+
     $stmt= $conn->prepare($sql);
-    $stmt->bind_param("iii", $user_id, $submitted, $offset);
+    $stmt->bind_param("iii", $user_id, $norm_annotated_num, $offset);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
@@ -402,7 +400,7 @@ if ($req_type == "next-data"){
             $row['date_restart_norm'], $row['date_load_norm'], $inserted);
         }
         $norm_skipped = 0;
-        update_table($conn, "UPDATE Assigned_Claims SET norm_annotators_num=norm_annotators_num+1, submitted=1, norm_skipped=? WHERE claim_id=?",'ii', $norm_skipped, $claim_id);
+        update_table($conn, "UPDATE Assigned_Claims SET norm_annotators_num=norm_annotators_num+1, norm_skipped=? WHERE claim_id=?",'ii', $norm_skipped, $claim_id);
 
         $to_time = strtotime($date);
         $from_time = strtotime($row['date_restart_norm']);
@@ -444,7 +442,7 @@ if ($req_type == "next-data"){
 
     $conn->begin_transaction();
     try {
-        update_table($conn, "UPDATE Assigned_Claims SET submitted=1, norm_skipped=1, norm_skipped_by=?, date_skip_norm=? WHERE claim_id=?",'isi', $user_id, $date, $claim_id);
+        update_table($conn, "UPDATE Assigned_Claims SET norm_annotators_num=1, norm_skipped=1, norm_skipped_by=?, date_skip_norm=? WHERE claim_id=?",'isi', $user_id, $date, $claim_id);
         update_table($conn, "UPDATE Annotators SET current_norm_task=0, skipped_norm_data=skipped_norm_data+1, finished_norm_annotations=finished_norm_annotations+1 WHERE user_id=?",'i', $user_id);
         $conn->commit();
         echo "Skip Successfully!";

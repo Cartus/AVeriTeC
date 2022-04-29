@@ -37,7 +37,7 @@ if ($result->num_rows > 0) {
         echo "answer_problems_third: " . $row["answer_problems_third"]. "<br>";
         echo "bool_explanation_third: " . $row["bool_explanation_third"]. "<br>";
         echo "question_problems: " . $row["question_problems"]. "<br>";
-        echo "qa_lastest: " . $row["qa_latest"]. "<br>";
+        echo "qa_latest: " . $row["qa_latest"]. "<br>";
         echo "<br>";
     }
 } else {
