@@ -141,10 +141,10 @@ class AnnotatorControl extends React.Component {
                         // total: 0
                     },
                     phase_5: {
-                        // done: response.data.phase_5.annotations_done,
-                        // total: response.data.phase_5.annotations_assigned
-                        done: 0,
-                        total: 0
+                        done: response.data.phase_5.annotations_done,
+                        total: response.data.phase_5.annotations_assigned
+                        // done: 0,
+                        // total: 0
                     },
                     phase_1_training: {
                         // done: response.data.phase_1.training_annotations_done,

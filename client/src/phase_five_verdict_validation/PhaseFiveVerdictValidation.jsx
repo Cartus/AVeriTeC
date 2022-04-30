@@ -159,7 +159,7 @@ class PhaseFiveVerdictValidation extends React.Component {
                 var request = {
                     method: "post",
                     baseURL: config.api_url,
-                    url: "/verdict_validation_reannotation.php",
+                    url: "/post_control.php",
                     data: {
                         dataset: dataset,
                         user_id: localStorage.getItem('user_id'),
@@ -193,7 +193,7 @@ class PhaseFiveVerdictValidation extends React.Component {
                 var request = {
                     method: "post",
                     baseURL: config.api_url,
-                    url: "/verdict_validation_reannotation.php",
+                    url: "/post_control.php",
                     data: {
                         dataset: dataset,
                         user_id: localStorage.getItem('user_id'),
@@ -246,7 +246,7 @@ class PhaseFiveVerdictValidation extends React.Component {
                 var request = {
                     method: "post",
                     baseURL: config.api_url,
-                    url: "/verdict_validation_reannotation.php",
+                    url: "/post_control.php",
                     data: {
                         user_id: localStorage.getItem('user_id'),
                         req_type: 'resubmit-data',
@@ -273,7 +273,7 @@ class PhaseFiveVerdictValidation extends React.Component {
                 var request = {
                     method: "post",
                     baseURL: config.api_url,
-                    url: "/verdict_validation_reannotation.php",
+                    url: "/post_control.php",
                     data: {
                         user_id: localStorage.getItem('user_id'),
                         dataset: dataset,
