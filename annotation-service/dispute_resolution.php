@@ -196,7 +196,7 @@ if ($req_type == "next-data"){
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $sql = "SELECT claim_norm_id, date_start_dispute, date_load_cache_dispute FROM Assigned_Disputes WHERE (claim_norm_id = (SELECT current_dispute_task FROM Annotators WHERE user_id=?))";
+    $sql = "SELECT * FROM Assigned_Disputes WHERE (claim_norm_id = (SELECT current_dispute_task FROM Annotators WHERE user_id=?))";
     $stmt= $conn->prepare($sql);
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
@@ -205,18 +205,6 @@ if ($req_type == "next-data"){
 
     $phase_4_label = $_POST["qa_pair_footer"]["label"];
     $added_qapairs = $_POST["added_entries"];
-
-    // if (array_key_exists('qa_pair_header', $_POST)){
-    //     if (array_key_exists('claim_correction', $_POST['qa_pair_header'])){
-    //         $correction_claim = $_POST['qa_pair_header']['claim_correction'];
-    //     }else{
-    //         $correction_claim = NULL;
-    //     }
-    // }else{
-    //     $correction_claim = NULL;
-    // }
-
-    // $question_counter = 0;
 
     $conn->begin_transaction();
     try {
@@ -326,15 +314,15 @@ if ($req_type == "next-data"){
             update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium, qa_latest, bool_explanation,
             answer_second, source_url_second, answer_type_second, source_medium_second, bool_explanation_second, answer_third, source_url_third, answer_type_third,
             source_medium_third, bool_explanation_third)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssisssssssssss', $row['claim_norm_id'], $user_id, $question, $answer,
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssisssssssssss', $row['claim_qa_id'], $user_id, $question, $answer,
             $source_url, $answer_type, $source_medium, $qa_latest, $bool_explanation, $answer_second, $source_url_second, $answer_type_second, $source_medium_second,
             $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third);
         }
         
         $added_qas = 1;
-        update_table($conn, "UPDATE Assigned_Disputes SET dispute_annotators_num=dispute_annotators_num+1, num_qapairs=num_qapairs+?, phase_4_label=?, date_made_dispute=?,
-        date_load_dispute=?, added_qas=? WHERE claim_norm_id=?",'isssii', 
-        $added_qapairs, $phase_4_label, $date, $row['date_load_cache_dispute'], $added_qas, $row['claim_norm_id']);
+        update_table($conn, "UPDATE Assigned_Disputes SET dispute_annotators_num=dispute_annotators_num+1, num_qapairs=num_qapairs+?, p4_num_qapairs=?, phase_4_label=?, date_made_dispute=?,
+        date_load_dispute=?, added_qas=? WHERE claim_norm_id=?",'iisssii', 
+        $added_qapairs, $added_qapairs, $phase_4_label, $date, $row['date_load_cache_dispute'], $added_qas, $row['claim_norm_id']);
 
         $to_time = strtotime($date);
         $from_time = strtotime($row['date_start_dispute']);
@@ -501,7 +489,7 @@ if ($req_type == "next-data"){
     }
 
     $output = (["claim_norm_id" => $row['claim_norm_id'], "web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
-    "check_date" => $row['check_date'], "country_code" => $row['claim_loc'], "claim_norm_id" => $row['claim_norm_id'], "prev_entries" => $prev_entries, "entries" => $entries,
+    "check_date" => $row['check_date'], "country_code" => $row['claim_loc'], "prev_entries" => $prev_entries, "entries" => $entries,
     "phase_two_label" => $row['phase_2_label'], "phase_three_label" => $row['phase_3_label'], "justification" => $row['justification'], "label" => $row['phase_4_label']]);
     echo(json_encode($output));
     update_table($conn, "UPDATE Assigned_Disputes SET date_restart_cache_dispute=? WHERE claim_norm_id=?", 'si', $date, $row['claim_norm_id']);
@@ -516,18 +504,18 @@ if ($req_type == "next-data"){
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $qa_latest = 0;
-    $sql_update = "UPDATE Qapair SET qa_latest=? WHERE claim_norm_id=? AND user_id_qa=?";
-    $stmt= $conn->prepare($sql_update);
-    $stmt->bind_param("iii", $qa_latest, $claim_norm_id, $user_id);
-    $stmt->execute();
-
-    $sql = "SELECT date_restart_cache_dispute, date_load_cache_dispute FROM Assigned_Disputes WHERE claim_norm_id=?";
+    $sql = "SELECT * FROM Assigned_Disputes WHERE claim_norm_id=?";
     $stmt= $conn->prepare($sql);
     $stmt->bind_param("i", $claim_norm_id);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
+
+    $qa_latest = 0;
+    $sql_update = "UPDATE Qapair SET qa_latest=? WHERE claim_norm_id=? AND user_id_qa=?";
+    $stmt= $conn->prepare($sql_update);
+    $stmt->bind_param("iii", $qa_latest, $row['claim_qa_id'], $user_id);
+    $stmt->execute();
 
     $phase_4_label = $_POST["qa_pair_footer"]["label"];
     $added_qapairs = $_POST["added_entries"];
@@ -640,15 +628,16 @@ if ($req_type == "next-data"){
 
             update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium, qa_latest, bool_explanation,
             answer_second, source_url_second, answer_type_second, source_medium_second, bool_explanation_second, answer_third, source_url_third, answer_type_third, source_medium_third, bool_explanation_third)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssisssssssssss', $claim_norm_id, $user_id, $question, $answer,
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssisssssssssss', $row['claim_qa_id'], $user_id, $question, $answer,
             $source_url, $answer_type, $source_medium, $qa_latest, $bool_explanation, $answer_second, $source_url_second, $answer_type_second, $source_medium_second,
             $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third);
         }
 
         $added_qas = 1;
-        update_table($conn, "UPDATE Assigned_Disputes SET dispute_annotators_num=dispute_annotators_num+1, num_qapairs=num_qapairs+?, phase_4_label=?,
-        date_modified_dispute=?, date_restart_dispute=?, date_load_dispute=?, added_qas=? WHERE claim_norm_id=?",'issssii',
-        $phase_4_label, $added_qapairs, $date, $row['date_restart_cache_dispute'], $row['date_load_cache_dispute'], $added_qas, $claim_norm_id);
+        $resulted_qapairs = $added_qapairs - $row['p4_num_qapairs'];
+        update_table($conn, "UPDATE Assigned_Disputes SET dispute_annotators_num=dispute_annotators_num+1, num_qapairs=num_qapairs+?, p4_num_qapairs=p4_num_qapairs+?,
+        phase_4_label=?, date_modified_dispute=?, date_restart_dispute=?, date_load_dispute=?, added_qas=? WHERE claim_norm_id=?",'iissssii', 
+        $resulted_qapairs, $resulted_qapairs, $phase_4_label, $date, $row['date_restart_cache_dispute'], $row['date_load_cache_dispute'], $added_qas, $claim_norm_id);
 
         $to_time = strtotime($date);
         $from_time = strtotime($row['date_restart_cache_dispute']);

@@ -48,7 +48,7 @@ if ($result->num_rows > 0) {
         echo "date_restart_qa: " . $row["date_restart_qa"]. "<br>";
         echo "date_modified_qa: " . $row["date_modified_qa"]. "<br>";
         echo "nonfactual: " . $row["nonfactual"]. "<br>";
-        echo "inserted_valid: " . $row["inserted"]. "<br>";
+        echo "inserted: " . $row["inserted"]. "<br>";
         echo "<br>";
     }
 } else {

@@ -381,7 +381,7 @@ if ($req_type == "next-data"){
     $stmt->bind_param("iii", $qa_latest, $claim_norm_id, $user_id);
     $stmt->execute();
 
-    $sql = "SELECT date_restart_cache_qa, date_load_cache_qa FROM Assigned_Norms WHERE claim_norm_id=?";
+    $sql = "SELECT * FROM Assigned_Norms WHERE claim_norm_id=?";
     $stmt= $conn->prepare($sql);
     $stmt->bind_param("i", $claim_norm_id);
     $stmt->execute();

@@ -11,7 +11,7 @@ if ($conn->connect_error) {
 
 
 // Create database
-$sql = "CREATE DATABASE AVDB";
+$sql = "CREATE DATABASE AVDBreal";
 if ($conn->query($sql) === TRUE) {
     echo "Database created successfully";
 } else {

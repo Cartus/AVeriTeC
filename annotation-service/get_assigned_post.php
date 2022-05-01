@@ -9,7 +9,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "SELECT * FROM Assigned_Disputes";
+$sql = "SELECT * FROM Assigned_Posts";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
@@ -23,9 +23,11 @@ if ($result->num_rows > 0) {
         echo "user_id_qa: " . $row["user_id_qa"]. "<br>";
         echo "user_id_valid: " . $row["user_id_valid"]. "<br>";
         echo "user_id_dispute: " . $row["user_id_dispute"]. "<br>";
+        echo "user_id_post: " . $row["user_id_post"]. "<br>";
         echo "qa_annotators_num: " . $row["qa_annotators_num"]. "<br>";
         echo "valid_annotators_num: " . $row["valid_annotators_num"]. "<br>";
         echo "dispute_annotators_num: " . $row["dispute_annotators_num"]. "<br>";
+        echo "post_annotators_num: " . $row["post_annotators_num"]. "<br>";
         echo "cleaned_claim: " . $row["cleaned_claim"]. "<br>";
         echo "correction_claim: " . $row["correction_claim"]. "<br>";
         echo "speaker: " . $row["speaker"]. "<br>";
@@ -41,7 +43,9 @@ if ($result->num_rows > 0) {
         echo "phase_2_label: " . $row["phase_2_label"]. "<br>";
         echo "phase_3_label: " . $row["phase_3_label"]. "<br>";
         echo "phase_4_label: " . $row["phase_4_label"]. "<br>";
+        echo "phase_5_label: " . $row["phase_5_label"]. "<br>";
 	    echo "justification: " . $row["justification"]. "<br>";
+        echo "justification_p5: " . $row["justification_p5"]. "<br>";
 	    echo "unreadable: " . $row["unreadable"]. "<br>";
         echo "qa_skipped: " . $row["qa_skipped"]. "<br>";
         echo "qa_skipped_by: " . $row["qa_skipped_by"]. "<br>";
@@ -49,6 +53,7 @@ if ($result->num_rows > 0) {
         echo "latest: " . $row["latest"]. "<br>";
         echo "valid_latest: " . $row["valid_latest"]. "<br>";
         echo "added_qas: " . $row["added_qas"]. "<br>";
+        echo "post_latest: " . $row["post_latest"]. "<br>";
         echo "date_start_norm: " . $row["date_start_norm"]. "<br>";
         echo "date_load_norm: " . $row["date_load_norm"]. "<br>";
         echo "date_made_norm: " . $row["date_made_norm"]. "<br>";
@@ -69,6 +74,10 @@ if ($result->num_rows > 0) {
         echo "date_made_dispute: " . $row["date_made_dispute"]. "<br>";
         echo "date_restart_dispute: " . $row["date_restart_dispute"]. "<br>";
         echo "date_modified_dispute: " . $row["date_modified_dispute"]. "<br>";
+        echo "date_start_post: " . $row["date_start_post"]. "<br>";
+        echo "date_made_post: " . $row["date_made_post"]. "<br>";
+        echo "date_restart_post: " . $row["date_restart_post"]. "<br>";
+        echo "date_modified_post: " . $row["date_modified_post"]. "<br>";
         echo "inserted: " . $row["inserted"]. "<br>";
         echo "<br>";
     }
