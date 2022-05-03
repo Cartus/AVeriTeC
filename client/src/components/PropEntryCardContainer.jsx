@@ -97,7 +97,7 @@ class EntryCardContainer extends React.Component {
 
     if (this.props.extra_entries) {
       let extraEntries = Object.keys(this.props.extra_entries).map(field_id => (
-        <EntryCard variant="outlined">
+        <EntryCard data-tour="prev_verdict" variant="outlined">
           <DeleteButton onClick={() => this.props.deleteExtraEntry(field_id)}><ClearIcon /></DeleteButton>
           <this.props.contentClass
             key={field_id}

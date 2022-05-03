@@ -35,7 +35,7 @@ export default function PhaseFourTopField(props) {
       {...props}
       posthocView={true}
     />
-    <EntryCard>
+    <EntryCard data-tour="prev_verdict">
       <TextDiv>
         There is a disagreement between the verdicts selected by the previous phase two and three annotators. The phase two annotator selected the following:
       </TextDiv>
