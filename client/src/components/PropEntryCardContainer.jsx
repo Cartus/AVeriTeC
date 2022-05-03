@@ -92,18 +92,21 @@ class EntryCardContainer extends React.Component {
       ));
     }
 
-    if (this.props.extraPosthocEntries) {
-      let extraEntries = Object.keys(this.props.extraPosthocEntries).map(field_id => (
+    console.log("Extra entries")
+    console.log(this.props.extraEntries)
+
+    if (this.props.extra_entries) {
+      let extraEntries = Object.keys(this.props.extra_entries).map(field_id => (
         <EntryCard variant="outlined">
+          <DeleteButton onClick={() => this.props.deleteExtraEntry(field_id)}><ClearIcon /></DeleteButton>
           <this.props.contentClass
             key={field_id}
             id={field_id}
-            onChange={this.props.handleFieldChange}
+            onChange={this.props.handleExtraFieldChange}
             valid={true}
-            data={this.props.extraPosthocEntries[field_id]}
+            data={this.props.extra_entries[field_id]}
             removeDelete={true}
             {...this.props}
-            posthocView={true}
           />
         </EntryCard>
       ));
@@ -113,6 +116,7 @@ class EntryCardContainer extends React.Component {
         ...entryFields
       ]
     }
+    
 
     if (this.props.headerClass != null) {
       var headerField = <this.props.headerClass

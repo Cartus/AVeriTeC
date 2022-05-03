@@ -9,9 +9,11 @@ import PhaseFourTopField from '../averitec_components/PhaseFourTopField';
 
 class PhaseFourQuestionGenerationBar extends React.Component {
 
-  render() {
+  render() {    
+    let entries = {
+      ...this.props.entries, 
+    };
 
-    let entries = this.props.entries;
     if (!entries) {
       console.log("warning: null entries")
       entries = {}
@@ -52,15 +54,17 @@ class PhaseFourQuestionGenerationBar extends React.Component {
           numInitialEntries={1}
           claim={claim}
           entries={entries}
-          extraPosthocEntries={this.props.previous_entries}
+          extra_entries={this.props.previous_entries}
           previous_label_data={this.props.previous_label_data}
           header={header}
           footer={footer}
           valid={this.props.valid}
           addEntry={this.props.addEntry}
           deleteEntry={this.props.deleteEntry}
+          deleteExtraEntry={this.props.deleteExtraEntry}
           doSubmit={this.props.doSubmit}
           handleFieldChange={this.props.handleFieldChange}
+          handleExtraFieldChange={this.props.handleExtraFieldChange}
           posthocView={this.props.posthocView}
         />
       </div>

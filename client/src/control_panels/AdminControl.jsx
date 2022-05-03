@@ -295,6 +295,7 @@ class AdminControl extends react.Component {
             };
     
             axios(request).then((response) => {
+                console.log("Global statistics:")
                 console.log(response)
                 this.setState({
                     availableClaimsData: [

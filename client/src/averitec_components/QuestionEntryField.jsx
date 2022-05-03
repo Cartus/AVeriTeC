@@ -9,6 +9,7 @@ import ClaimTopField from '../averitec_components/ClaimTopField';
 import { notEmptyValidator, notBooleanValidator, combinedValidator, emptyOrValidUrlValidator } from '../utils/validation.js'
 import Slider from '@mui/material/Slider';
 import Card from '@material-ui/core/Card';
+import AtLeastOneCheckboxGroup from '../components/AtLeastOneCheckboxGroup';
 
 const ContainerDiv = styled.div`
     width:100%;
@@ -159,12 +160,24 @@ class AnswerCard extends React.Component {
 
     if (boolean) {
       answer_field = <div data-tour="answer_textfield">
+        {this.props.posthocView ? 
+        <TextFieldWithTooltip InputProps={this.props.posthocView ? { readOnly: true } : undefined} variant={this.props.posthocView ? "filled" : undefined} name="answer" label="Answer" required value={this.props.data["answer"]} tooltip="Please write the answer here. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence." />
+        : 
         <SelectWithTooltip name="answer" label="Answer" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["answer"]} onChange={this.props.handleFieldChange} items={["Yes", "No"]} tooltip="Please write the answer here. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence." />
+        }
         {this.props.posthocView ? <SpacingDiv /> : ""}
         <TextFieldWithTooltip InputProps={this.props.posthocView ? { readOnly: true } : undefined} variant={this.props.posthocView ? "filled" : undefined} name='bool_explanation' label="Explanation" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["bool_explanation"]} multiline rows={5} onChange={this.props.handleFieldChange} tooltip="Please write a short explanation for your yes/no answer here." />
 
       </div>
     }
+
+    let answer_problem_items = [
+      { label: "The answer is not understandable/readable", tooltip: "Please check this box if the answer is empty, gibberish, or ungrammatical to the point where you cannot understand it." },
+      { label: "The answer is readable, but unrelated to the question", tooltip: "Please check this box if the answer cannot be used because it is unrelated to the question." },
+      { label: "Answer seems wrong, but is supported by the source", tooltip: "Please check this box if you believe the answer might be wrong, but the source supports the answer." },
+      { label: "Answer seems wrong, and is not supported by the source", tooltip: "Please check this box if you believe the answer might be wrong, and you discover that it contradicts the source." },
+      { label: "I believe the source may be biased", tooltip: "Please check this box if you believe the source is a heavily biased website." },
+    ]
 
     return <EntryCard>
       <TextLeftEntryDiv>
@@ -200,6 +213,23 @@ class AnswerCard extends React.Component {
           }
         </div>
       </TextRightEntryDiv>
+
+
+
+      {this.props.data["answer_problems"] ?
+        <TextLeftEntryDiv>
+          <AtLeastOneCheckboxGroup
+            name="answer_problems"
+            label={"Problems with this answer noted by other annotators:"}
+            data={this.props.data["answer_problems"]}
+            readOnly={true}
+            items={answer_problem_items}
+            onChange={() => { }}
+            tooltip="If you believe there are problems with this answer, please tick the appropriate boxes here. If you identify problems with an answer, please do not use it to support your verdict."
+          /><EmptySpaceDiv />
+          <MidDiv />
+        </TextLeftEntryDiv>
+        : ""}
     </EntryCard>
   }
 }
@@ -308,6 +338,25 @@ class QuestionEntryField extends React.Component {
             </ul>
           </QuestionReminderBox>
         </TextRightEntryDiv>
+
+
+        {this.props.data["question_problems"] ?
+          <MidDiv>
+            <AtLeastOneCheckboxGroup
+              name="question_problems"
+              readOnly={true}
+              label={"Problems with this question noted by other annotators:"}
+              data={this.props.data["question_problems"]}
+              items={[
+                { label: "The question is not understandable/readable", tooltip: "Please check this box if the question is empty, gibberish, or ungrammatical to the point where you cannot understand it." },
+                { label: "The question is unrelated to the claim", tooltip: "Please check this box if the question does not seem relevant to verifying the claim." },
+              ]}
+              onChange={() => { }}
+              tooltip="If you believe there are problems with this question, please tick the appropriate boxes here. If you identify problems with a question, please do not use it to support your verdict."
+            />
+          </MidDiv>
+          : ""
+        }
 
         <MidDiv data-tour="add_answers">
           <div>

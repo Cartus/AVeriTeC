@@ -158,7 +158,9 @@ class PhaseFourQuestionGeneration extends React.Component {
     this.changeLabel = this.changeLabel.bind(this);
     this.doSubmit = this.doSubmit.bind(this);
     this.handleFieldChange = this.handleFieldChange.bind(this);
+    this.handleExtraFieldChange = this.handleExtraFieldChange.bind(this);
     this.deleteEntry = this.deleteEntry.bind(this);
+    this.deleteExtraEntry = this.deleteExtraEntry.bind(this);
     this.addEntry = this.addEntry.bind(this);
     this.proceedToConfirmation = this.proceedToConfirmation.bind(this);
     this.cancelConfirmation = this.cancelConfirmation.bind(this);
@@ -170,6 +172,15 @@ class PhaseFourQuestionGeneration extends React.Component {
 
     this.setState({
       entries: entries
+    });
+  }
+  
+  deleteExtraEntry = (entryId) => {
+    let previous_entries = this.state.previous_entries
+    delete previous_entries[entryId]
+
+    this.setState({
+      previous_entries: previous_entries
     });
   }
 
@@ -263,7 +274,24 @@ class PhaseFourQuestionGeneration extends React.Component {
             // this.setState({ qa_pair_header: new_header })
             // console.log(this.state.qa_pair_header);
 
-            const prev_entries = response.data.prev_entries;
+            var prev_entries = response.data.prev_entries;
+
+            // TODO: This is dummy data
+            var n_p_d = {}
+            Object.keys(prev_entries).forEach(k => {
+              n_p_d[k] = prev_entries[k]
+        
+              n_p_d[k].question_problems = ["The question is not understandable/readable"] // expects list
+              if (prev_entries[k].answers){
+                n_p_d[k].answers = n_p_d[k].answers.map(a => {
+                  a.answer_problems = ["The answer is readable, but unrelated to the question"]
+                  return a;
+                }) 
+              }
+            })
+            prev_entries = n_p_d
+            // -----
+            
             this.setState({ previous_entries: prev_entries });
 
             const new_footer = { label: response.data.label };
@@ -327,7 +355,25 @@ class PhaseFourQuestionGeneration extends React.Component {
             }
             this.setState({ previous_label_data: label_data });
 
-            const prev_entries = response.data.prev_entries;
+            var prev_entries = response.data.prev_entries;
+
+            // TODO: This is dummy data
+            var n_p_d = {}
+            Object.keys(prev_entries).forEach(k => {
+              n_p_d[k] = prev_entries[k]
+        
+              n_p_d[k].question_problems = ["The question is not understandable/readable"] // expects list
+              if (prev_entries[k].answers){
+                n_p_d[k].answers = n_p_d[k].answers.map(a => {
+                  a.answer_problems = ["The answer is readable, but unrelated to the question"]
+                  return a;
+                }) 
+              }
+            })
+            prev_entries = n_p_d
+            // -----
+        
+
             this.setState({ previous_entries: prev_entries });
 
             const new_entries = { "qa_pair_entry_field_0": {} };
@@ -373,6 +419,18 @@ class PhaseFourQuestionGeneration extends React.Component {
         }
       }))
     }
+  }
+
+  handleExtraFieldChange(fieldId, element, value) {
+    this.setState(prevState => ({
+      previous_entries: {
+        ...prevState.previous_entries,
+        [fieldId]: {
+          ...prevState.previous_entries[fieldId],
+          [element]: value
+        }
+      }
+    }))
   }
 
   changeLabel = event => {
@@ -427,6 +485,7 @@ class PhaseFourQuestionGeneration extends React.Component {
             user_id: localStorage.getItem('user_id'),
             req_type: 'resubmit-data',
             entries: this.state.entries,
+            previous_entries: this.state.previous_entries,
             added_entries: this.state.added_entries,
             qa_pair_header: this.state.qa_pair_header,
             qa_pair_footer: this.state.qa_pair_footer,
@@ -455,6 +514,7 @@ class PhaseFourQuestionGeneration extends React.Component {
             user_id: localStorage.getItem('user_id'),
             req_type: 'submit-data',
             entries: this.state.entries,
+            previous_entries: this.state.previous_entries,
             added_entries: this.state.added_entries,
             qa_pair_header: this.state.qa_pair_header,
             qa_pair_footer: this.state.qa_pair_footer
@@ -564,6 +624,8 @@ class PhaseFourQuestionGeneration extends React.Component {
 
     var current_idx = Number(localStorage.finished_p4_annotations) + 1 - Number(localStorage.pc);
 
+    console.log(current_idx)
+
     var all_entries = {}
     Object.keys(this.state.entries).forEach(key => {
       var new_key = key + "_new"
@@ -583,6 +645,7 @@ class PhaseFourQuestionGeneration extends React.Component {
             <QADataField>
               <PhaseFourQuestionGenerationBar
                 handleFieldChange={this.handleFieldChange}
+                handleExtraFieldChange={this.handleExtraFieldChange}
                 current_idx={current_idx}
                 final_idx={this.state.final_idx}
                 claim={this.state.claim}
@@ -591,6 +654,7 @@ class PhaseFourQuestionGeneration extends React.Component {
                 previous_label_data={this.state.previous_label_data}
                 addEntry={this.addEntry}
                 deleteEntry={this.deleteEntry}
+                deleteExtraEntry={this.deleteExtraEntry}
                 doSubmit={this.proceedToConfirmation}
                 header={this.state.qa_pair_header}
                 footer={this.state.qa_pair_footer}
