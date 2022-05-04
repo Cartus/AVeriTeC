@@ -205,7 +205,7 @@ class PhaseFiveVerdictValidation extends React.Component {
                     if (response.data) {
                         console.log("Recevied response")
                         console.log(response.data);
-                        if (Number(localStorage.p5_annotations) === 0) {
+                        if (Number(localStorage.finished_p5_annotations) === 0) {
                             this.setState({ userIsFirstVisiting: true });
                         }
                         const new_claim = {
