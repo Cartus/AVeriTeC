@@ -109,6 +109,11 @@ const MidDiv = styled.div`
   margin: 20px 0px 20px 20px;
 `
 
+const SmallSpaceDiv = styled.div`
+  float:left;
+  margin: 10px 0px 0px 20px;
+`
+
 const QuestionReminderBox = styled.div`
   width: 280px;
 
@@ -227,7 +232,7 @@ class AnswerCard extends React.Component {
             onChange={() => { }}
             tooltip="If you believe there are problems with this answer, please tick the appropriate boxes here. If you identify problems with an answer, please do not use it to support your verdict."
           /><EmptySpaceDiv />
-          <MidDiv />
+          <SmallSpaceDiv />
         </TextLeftEntryDiv>
         : ""}
     </EntryCard>

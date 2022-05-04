@@ -23,6 +23,12 @@ const SepSpaceDiv = styled("div")`
   margin: 20px 0px 0px 0px;
 `
 
+const SmallSpaceDiv = styled("div")`
+  float:left;
+  width:100%;
+  margin: 10px 0px 0px 0px;
+`
+
 const TextDiv = styled("div")`
   float:left;
   width:100%;
@@ -83,6 +89,8 @@ export default function PhaseFourTopField(props) {
           variant={"filled"}
           tooltip="A short explanation for how the phase three verdict was reached."
         /></EntryDiv>
+
+        <SmallSpaceDiv/>
 
     </EntryCard>
   </div>
