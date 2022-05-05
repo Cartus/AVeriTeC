@@ -200,22 +200,22 @@ if ($phase == 1) {
 } elseif ($phase == 4) {
     foreach($user_ids as $item){
         $counter = 0;
-        $sql = "SELECT * FROM Assigned_Valids WHERE valid_latest=1";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        if ($per_user > 0) {
+            while($counter < $per_user) {
+                $sql = "SELECT * FROM Assigned_Valids WHERE inserted=0 AND valid_latest=1 AND phase_2_label != phase_3_label AND user_id_norm!=? AND user_id_qa!=? AND user_id_valid!=? ORDER BY RAND() LIMIT 1";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("iii", $item, $item, $item);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $row = $result->fetch_assoc();
 
-        while($row = $result->fetch_assoc()) {
-            $counter++;
-
-            $inserted = 0;
-            $added_qas = 0;
-            $dispute_annotators_num = 0;
-
-            echo "here";
-            echo $row['claim_id'];
-
-            update_table($conn, "INSERT INTO Assigned_Disputes (claim_id, claim_qa_id, claim_valid_id, web_archive, user_id_norm, user_id_qa, user_id_valid, 
+                $inserted = 0;
+                $added_qas = 0;
+                $dispute_annotators_num = 0;
+    
+                update_table($conn, "UPDATE Assigned_Valids SET inserted=1 WHERE claim_norm_id=?", "i", $row['claim_norm_id']);
+    
+                update_table($conn, "INSERT INTO Assigned_Disputes (claim_id, claim_qa_id, claim_valid_id, web_archive, user_id_norm, user_id_qa, user_id_valid, 
                 cleaned_claim, correction_claim, speaker, hyperlink, transcription, media_source, check_date, claim_types, fact_checker_strategy, phase_1_label, 
                 phase_2_label, qa_annotators_num, qa_skipped, valid_annotators_num, num_qapairs, claim_loc, latest, source, date_start_norm, date_load_norm, 
                 date_made_norm, date_restart_norm, date_modified_norm, date_start_qa, date_load_qa, date_made_qa, date_restart_qa, date_modified_qa, inserted, 
@@ -231,10 +231,34 @@ if ($phase == 1) {
                 $row['date_restart_qa'], $row['date_modified_qa'], $inserted, $row['date_start_valid'], $row['date_made_valid'], $row['date_restart_valid'], 
                 $row['date_modified_valid'], $row['phase_3_label'], $row['justification'], $row['unreadable'], $row['valid_latest'], 
                 $dispute_annotators_num, $item, $added_qas);
-
-        }
+    
+                $counter++;
+            } 
         update_table($conn, "UPDATE Annotators SET p4_assigned=p4_assigned+? WHERE user_id=?", "ii", $counter, $item);
         echo "Inserted successfully";
+        } else {
+            while($counter < -$per_user) {
+                $sql = "SELECT * FROM Assigned_Disputes WHERE dispute_annotators_num=0 ORDER BY RAND() LIMIT 1";
+                $stmt= $conn->prepare($sql);
+                $stmt->execute();
+                $result = $stmt->get_result();
+    
+                if (mysqli_num_rows($result)==0) { 
+                    break; 
+                }
+    
+                $row = $result->fetch_assoc();
+    
+                update_table($conn, "UPDATE Assigned_Valids SET inserted=0 WHERE claim_norm_id=?", "i", $row['claim_valid_id']);
+    
+                update_table($conn, "DELETE FROM Assigned_Disputes WHERE claim_norm_id=?", "i", $row['claim_norm_id']);
+            
+                $counter++;
+            }
+            update_table($conn, "UPDATE Annotators SET current_dispute_task=NULL, p4_assigned=p4_assigned-? WHERE user_id=?", "ii", $counter, $item);
+            echo "Removed successfully";
+        }
+        
     }
 } elseif ($phase == 5) {
     foreach($user_ids as $item){

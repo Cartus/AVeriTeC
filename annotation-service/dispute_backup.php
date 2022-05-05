@@ -60,10 +60,7 @@ if ($req_type == "next-data"){
                 $counter = $counter + 1;
                 $field_array = array();
                 $field_array['question'] = $row_qa['question'];
-                
-                if (!is_null($row_qa['question_problems'])){
-                    $field_array['question_problems'] = explode(" [SEP] ", $row_qa['question_problems']);
-                }
+                $field_array['question_problems'] = explode(" [SEP] ", $row_qa['question_problems']);
 
                 $answers = array();
                 $answers[0]['answer'] = $row_qa['answer'];
@@ -148,10 +145,8 @@ if ($req_type == "next-data"){
                 $counter = $counter + 1;
                 $field_array = array();
                 $field_array['question'] = $row_qa['question'];
-
-                if (!is_null($row_qa['question_problems'])){
-                    $field_array['question_problems'] = explode(" [SEP] ", $row_qa['question_problems']);
-                }
+                // $field_array['question'] = $row_qa['question_problems'];
+                $field_array['question_problems'] = explode(" [SEP] ", $row_qa['question_problems']);
 
                 $answers = array();
                 $answers[0]['answer'] = $row_qa['answer'];
@@ -236,124 +231,33 @@ if ($req_type == "next-data"){
 
     $conn->begin_transaction();
     try {
-        // For previous entries
-        foreach($_POST['previous_entries'] as $item) {
-            $question = $item['question'];
-            $answers = $item['answers'];
-
-            $answer = $answers[0]['answer'];
-            if (array_key_exists('source_url', $answers[0])){
-                $source_url = $answers[0]['source_url'];
-            }else{
-                $source_url = NULL;
-            }
-            if (array_key_exists('answer_type', $answers[0])){
-                $answer_type = $answers[0]['answer_type'];
-            }else{
-                $answer_type = NULL;
-            }
-            if (array_key_exists('source_medium', $answers[0])){
-                $source_medium = $answers[0]['source_medium'];
-            }else{
-                $source_medium = NULL;
-            }
-            if (array_key_exists('bool_explanation', $answers[0])){
-                $bool_explanation = $answers[0]['bool_explanation'];
-            }else{
-                $bool_explanation = NULL;
-            }
-
-            if (array_key_exists(1, $answers)){
-                $answer_second = $answers[1]['answer'];
-                if (array_key_exists('source_url', $answers[1])){
-                    $source_url_second = $answers[1]['source_url'];
-                }else{
-                    $source_url_second = NULL;
-                }
-                if (array_key_exists('answer_type', $answers[1])){
-                    $answer_type_second = $answers[1]['answer_type'];
-                }else{
-                    $answer_type_second = NULL;
-                }
-                if (array_key_exists('source_medium', $answers[1])){
-                    $source_medium_second = $answers[1]['source_medium'];
-                }else{
-                    $source_medium_second = NULL;
-                }
-                if (array_key_exists('bool_explanation', $answers[1])){
-                    $bool_explanation_second = $answers[1]['bool_explanation'];
-                }else{
-                    $bool_explanation_second = NULL;
-                }
-            }else{
-                $answer_second = NULL;
-                $source_url_second = NULL;
-                $answer_type_second = NULL;
-                $source_medium_second = NULL;
-                $bool_explanation_second = NULL;
-            }
-
-            if (array_key_exists(2, $answers)){
-                $answer_third = $answers[2]['answer'];
-                if (array_key_exists('source_url', $answers[2])){
-                    $source_url_third = $answers[2]['source_url'];
-                }else{
-                    $source_url_third = NULL;
-                }
-                if (array_key_exists('answer_type', $answers[2])){
-                    $answer_type_third = $answers[2]['answer_type'];
-                }else{
-                    $answer_type_third = NULL;
-                }
-                if (array_key_exists('source_medium', $answers[2])){
-                    $source_medium_third = $answers[2]['source_medium'];
-                }else{
-                    $source_medium_third = NULL;
-                }
-                if (array_key_exists('bool_explanation', $answers[2])){
-                    $bool_explanation_third = $answers[2]['bool_explanation'];
-                }else{
-                    $bool_explanation_third = NULL;
-                }
-            }else{
-                $answer_third = NULL;
-                $source_url_third = NULL;
-                $answer_type_third = NULL;
-                $source_medium_third = NULL;
-                $bool_explanation_third = NULL;
-            }
-
-            $edit_latest = 1;
-            $qa_latest = 0;
-            update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium, qa_latest, edit_latest, bool_explanation,
-            answer_second, source_url_second, answer_type_second, source_medium_second, bool_explanation_second, answer_third, source_url_third, answer_type_third,
-            source_medium_third, bool_explanation_third)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssiisssssssssss', $row['claim_qa_id'], $user_id, $question, $answer,
-            $source_url, $answer_type, $source_medium, $qa_latest, $edit_latest, $bool_explanation, $answer_second, $source_url_second, $answer_type_second, $source_medium_second,
-            $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third);
-        }
-
-        // For added entries
         foreach($_POST['entries'] as $item) {
+            // print_r($item);
             $question = $item['question'];
             $answers = $item['answers'];
 
             $answer = $answers[0]['answer'];
+
+            // $question_counter = $question_counter + 1;
+
             if (array_key_exists('source_url', $answers[0])){
                 $source_url = $answers[0]['source_url'];
             }else{
                 $source_url = NULL;
             }
+
             if (array_key_exists('answer_type', $answers[0])){
                 $answer_type = $answers[0]['answer_type'];
             }else{
                 $answer_type = NULL;
             }
+
             if (array_key_exists('source_medium', $answers[0])){
                 $source_medium = $answers[0]['source_medium'];
             }else{
                 $source_medium = NULL;
             }
+
             if (array_key_exists('bool_explanation', $answers[0])){
                 $bool_explanation = $answers[0]['bool_explanation'];
             }else{
@@ -362,21 +266,25 @@ if ($req_type == "next-data"){
 
             if (array_key_exists(1, $answers)){
                 $answer_second = $answers[1]['answer'];
+
                 if (array_key_exists('source_url', $answers[1])){
                     $source_url_second = $answers[1]['source_url'];
                 }else{
                     $source_url_second = NULL;
                 }
+
                 if (array_key_exists('answer_type', $answers[1])){
                     $answer_type_second = $answers[1]['answer_type'];
                 }else{
                     $answer_type_second = NULL;
                 }
+
                 if (array_key_exists('source_medium', $answers[1])){
                     $source_medium_second = $answers[1]['source_medium'];
                 }else{
                     $source_medium_second = NULL;
                 }
+
                 if (array_key_exists('bool_explanation', $answers[1])){
                     $bool_explanation_second = $answers[1]['bool_explanation'];
                 }else{
@@ -392,21 +300,25 @@ if ($req_type == "next-data"){
 
             if (array_key_exists(2, $answers)){
                 $answer_third = $answers[2]['answer'];
+
                 if (array_key_exists('source_url', $answers[2])){
                     $source_url_third = $answers[2]['source_url'];
                 }else{
                     $source_url_third = NULL;
                 }
+
                 if (array_key_exists('answer_type', $answers[2])){
                     $answer_type_third = $answers[2]['answer_type'];
                 }else{
                     $answer_type_third = NULL;
                 }
+
                 if (array_key_exists('source_medium', $answers[2])){
                     $source_medium_third = $answers[2]['source_medium'];
                 }else{
                     $source_medium_third = NULL;
                 }
+
                 if (array_key_exists('bool_explanation', $answers[2])){
                     $bool_explanation_third = $answers[2]['bool_explanation'];
                 }else{
@@ -420,24 +332,20 @@ if ($req_type == "next-data"){
                 $bool_explanation_third = NULL;
             }
 
-            $p4_latest = 1;
-            $qa_latest = 0;
-            update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium, qa_latest, p4_latest, bool_explanation,
+            $qa_latest = 1;
+
+            update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium, qa_latest, bool_explanation,
             answer_second, source_url_second, answer_type_second, source_medium_second, bool_explanation_second, answer_third, source_url_third, answer_type_third,
             source_medium_third, bool_explanation_third)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssiisssssssssss', $row['claim_qa_id'], $user_id, $question, $answer,
-            $source_url, $answer_type, $source_medium, $qa_latest, $p4_latest, $bool_explanation, $answer_second, $source_url_second, $answer_type_second, $source_medium_second,
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssisssssssssss', $row['claim_qa_id'], $user_id, $question, $answer,
+            $source_url, $answer_type, $source_medium, $qa_latest, $bool_explanation, $answer_second, $source_url_second, $answer_type_second, $source_medium_second,
             $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third);
         }
         
-        // added_qapairs need to be updated.
         $added_qas = 1;
         update_table($conn, "UPDATE Assigned_Disputes SET dispute_annotators_num=dispute_annotators_num+1, num_qapairs=num_qapairs+?, p4_num_qapairs=?, phase_4_label=?, date_made_dispute=?,
         date_load_dispute=?, added_qas=? WHERE claim_norm_id=?",'iisssii', 
         $added_qapairs, $added_qapairs, $phase_4_label, $date, $row['date_load_cache_dispute'], $added_qas, $row['claim_norm_id']);
-
-        update_table($conn, "INSERT INTO Label (claim_valid_id, user_id_dispute, phase_4_label)
-        VALUES (?, ?, ?)", 'iis', $row['claim_qa_id'], $user_id, $phase_4_label);
 
         $to_time = strtotime($date);
         $from_time = strtotime($row['date_start_dispute']);
@@ -483,20 +391,13 @@ if ($req_type == "next-data"){
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
 
-    $edit_latest = 1;
-    $sql_qa = "SELECT * FROM Qapair WHERE edit_latest=? AND claim_norm_id=? AND user_id_qa=?";
+    $qa_latest = 1;
+    $sql_qa = "SELECT * FROM Qapair WHERE qa_latest=? AND claim_norm_id=? AND user_id_qa=?";
     $stmt = $conn->prepare($sql_qa);
-    $stmt->bind_param("iii", $edit_latest, $row['claim_qa_id'], $user_id);
+    $stmt->bind_param("iii", $qa_latest, $row['claim_qa_id'], $row['user_id_qa']);
     $stmt->execute();
     $result_qa = $stmt->get_result();
     
-    $sql = "SELECT * FROM Label WHERE user_id_dispute=? AND claim_valid_id=?";
-    $stmt= $conn->prepare($sql);
-    $stmt->bind_param("ii", $user_id, $row['claim_qa_id']);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $row_label = $result->fetch_assoc();
-
     $questions = array();
     $counter = 0;
     
@@ -506,10 +407,7 @@ if ($req_type == "next-data"){
         $counter = $counter + 1;
         $field_array = array();
         $field_array['question'] = $row_qa['question'];
-        
-        if (!is_null($row_qa['question_problems'])){
-            $field_array['question_problems'] = explode(" [SEP] ", $row_qa['question_problems']);
-        }
+        $field_array['question_problems'] = explode(" [SEP] ", $row_qa['question_problems']);
 
         $answers = array();
         $answers[0]['answer'] = $row_qa['answer'];
@@ -564,10 +462,10 @@ if ($req_type == "next-data"){
         $prev_entries[$count_string] = $field_array;
     }
 
-    $p4_latest = 1;
-    $sql_qa = "SELECT * FROM Qapair WHERE p4_latest=? AND claim_norm_id=? AND user_id_qa=?";
+    $qa_latest = 1;
+    $sql_qa = "SELECT * FROM Qapair WHERE qa_latest=? AND claim_norm_id=? AND user_id_qa=?";
     $stmt = $conn->prepare($sql_qa);
-    $stmt->bind_param("iii", $p4_latest, $row['claim_qa_id'], $user_id);
+    $stmt->bind_param("iii", $qa_latest, $row['claim_qa_id'], $user_id);
     $stmt->execute();
     $result_qa = $stmt->get_result();
     
@@ -626,7 +524,7 @@ if ($req_type == "next-data"){
 
     $output = (["claim_norm_id" => $row['claim_norm_id'], "web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
     "check_date" => $row['check_date'], "country_code" => $row['claim_loc'], "prev_entries" => $prev_entries, "entries" => $entries,
-    "phase_two_label" => $row['phase_2_label'], "phase_three_label" => $row['phase_3_label'], "justification" => $row['justification'], "label" => $row_label['phase_4_label']]);
+    "phase_two_label" => $row['phase_2_label'], "phase_three_label" => $row['phase_3_label'], "justification" => $row['justification'], "label" => $row['phase_4_label']]);
     echo(json_encode($output));
     update_table($conn, "UPDATE Assigned_Disputes SET date_restart_cache_dispute=? WHERE claim_norm_id=?", 'si', $date, $row['claim_norm_id']);
 
@@ -647,138 +545,45 @@ if ($req_type == "next-data"){
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
 
-    $edit_latest = 0;
-    $sql_update = "UPDATE Qapair SET edit_latest=? WHERE claim_norm_id=? AND user_id_qa=?";
+    $qa_latest = 0;
+    $sql_update = "UPDATE Qapair SET qa_latest=? WHERE claim_norm_id=? AND user_id_qa=?";
     $stmt= $conn->prepare($sql_update);
-    $stmt->bind_param("iii", $edit_latest, $row['claim_qa_id'], $user_id);
-    $stmt->execute();
-
-    $p4_latest = 0;
-    $sql_update = "UPDATE Qapair SET p4_latest=? WHERE claim_norm_id=? AND user_id_qa=?";
-    $stmt= $conn->prepare($sql_update);
-    $stmt->bind_param("iii", $p4_latest, $row['claim_qa_id'], $user_id);
+    $stmt->bind_param("iii", $qa_latest, $row['claim_qa_id'], $user_id);
     $stmt->execute();
 
     $phase_4_label = $_POST["qa_pair_footer"]["label"];
     $added_qapairs = $_POST["added_entries"];
 
+    $question_counter = 0;
+
     $conn->begin_transaction();
     try {
-        foreach($_POST['previous_entries'] as $item) {
-            $question = $item['question'];
-            $answers = $item['answers'];
-
-            $answer = $answers[0]['answer'];
-
-            if (array_key_exists('source_url', $answers[0])){
-                $source_url = $answers[0]['source_url'];
-            }else{
-                $source_url = NULL;
-            }
-            if (array_key_exists('answer_type', $answers[0])){
-                $answer_type = $answers[0]['answer_type'];
-            }else{
-                $answer_type = NULL;
-            }
-            if (array_key_exists('source_medium', $answers[0])){
-                $source_medium = $answers[0]['source_medium'];
-            }else{
-                $source_medium = NULL;
-            }
-            if (array_key_exists('bool_explanation', $answers[0])){
-                $bool_explanation = $answers[0]['bool_explanation'];
-            }else{
-                $bool_explanation = NULL;
-            }
-            if (array_key_exists(1, $answers)){
-                $answer_second = $answers[1]['answer'];
-                if (array_key_exists('source_url', $answers[1])){
-                    $source_url_second = $answers[1]['source_url'];
-                }else{
-                    $source_url_second = NULL;
-                }
-                if (array_key_exists('answer_type', $answers[1])){
-                    $answer_type_second = $answers[1]['answer_type'];
-                }else{
-                    $answer_type_second = NULL;
-                }
-                if (array_key_exists('source_medium', $answers[1])){
-                    $source_medium_second = $answers[1]['source_medium'];
-                }else{
-                    $source_medium_second = NULL;
-                }
-                if (array_key_exists('bool_explanation', $answers[1])){
-                    $bool_explanation_second = $answers[1]['bool_explanation'];
-                }else{
-                    $bool_explanation_second = NULL;
-                }
-            }else{
-                $answer_second = NULL;
-                $source_url_second = NULL;
-                $answer_type_second = NULL;
-                $source_medium_second = NULL;
-                $bool_explanation_second = NULL;
-            }
-
-            if (array_key_exists(2, $answers)){
-                $answer_third = $answers[2]['answer'];
-                if (array_key_exists('source_url', $answers[2])){
-                    $source_url_third = $answers[2]['source_url'];
-                }else{
-                    $source_url_third = NULL;
-                }
-                if (array_key_exists('answer_type', $answers[2])){
-                    $answer_type_third = $answers[2]['answer_type'];
-                }else{
-                    $answer_type_third = NULL;
-                }
-                if (array_key_exists('source_medium', $answers[2])){
-                    $source_medium_third = $answers[2]['source_medium'];
-                }else{
-                    $source_medium_third = NULL;
-                }
-                if (array_key_exists('bool_explanation', $answers[2])){
-                    $bool_explanation_third = $answers[2]['bool_explanation'];
-                }else{
-                    $bool_explanation_third = NULL;
-                }
-            }else{
-                $answer_third = NULL;
-                $source_url_third = NULL;
-                $answer_type_third = NULL;
-                $source_medium_third = NULL;
-                $bool_explanation_third = NULL;
-            }
-
-            $edit_latest = 1;
-            $qa_latest = 0;
-            update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium, qa_latest, edit_latest, bool_explanation,
-            answer_second, source_url_second, answer_type_second, source_medium_second, bool_explanation_second, answer_third, source_url_third, answer_type_third, source_medium_third, bool_explanation_third)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssiisssssssssss', $row['claim_qa_id'], $user_id, $question, $answer,
-            $source_url, $answer_type, $source_medium, $qa_latest, $edit_latest, $bool_explanation, $answer_second, $source_url_second, $answer_type_second, $source_medium_second,
-            $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third);
-        }
-
         foreach($_POST['entries'] as $item) {
             $question = $item['question'];
             $answers = $item['answers'];
 
             $answer = $answers[0]['answer'];
+
+            $question_counter = $question_counter + 1;
+
             if (array_key_exists('source_url', $answers[0])){
                 $source_url = $answers[0]['source_url'];
             }else{
                 $source_url = NULL;
             }
+
             if (array_key_exists('answer_type', $answers[0])){
                 $answer_type = $answers[0]['answer_type'];
             }else{
                 $answer_type = NULL;
             }
+
             if (array_key_exists('source_medium', $answers[0])){
                 $source_medium = $answers[0]['source_medium'];
             }else{
                 $source_medium = NULL;
             }
+
             if (array_key_exists('bool_explanation', $answers[0])){
                 $bool_explanation = $answers[0]['bool_explanation'];
             }else{
@@ -787,21 +592,25 @@ if ($req_type == "next-data"){
 
             if (array_key_exists(1, $answers)){
                 $answer_second = $answers[1]['answer'];
+
                 if (array_key_exists('source_url', $answers[1])){
                     $source_url_second = $answers[1]['source_url'];
                 }else{
                     $source_url_second = NULL;
                 }
+
                 if (array_key_exists('answer_type', $answers[1])){
                     $answer_type_second = $answers[1]['answer_type'];
                 }else{
                     $answer_type_second = NULL;
                 }
+
                 if (array_key_exists('source_medium', $answers[1])){
                     $source_medium_second = $answers[1]['source_medium'];
                 }else{
                     $source_medium_second = NULL;
                 }
+
                 if (array_key_exists('bool_explanation', $answers[1])){
                     $bool_explanation_second = $answers[1]['bool_explanation'];
                 }else{
@@ -817,21 +626,25 @@ if ($req_type == "next-data"){
 
             if (array_key_exists(2, $answers)){
                 $answer_third = $answers[2]['answer'];
+
                 if (array_key_exists('source_url', $answers[2])){
                     $source_url_third = $answers[2]['source_url'];
                 }else{
                     $source_url_third = NULL;
                 }
+
                 if (array_key_exists('answer_type', $answers[2])){
                     $answer_type_third = $answers[2]['answer_type'];
                 }else{
                     $answer_type_third = NULL;
                 }
+
                 if (array_key_exists('source_medium', $answers[2])){
                     $source_medium_third = $answers[2]['source_medium'];
                 }else{
                     $source_medium_third = NULL;
                 }
+
                 if (array_key_exists('bool_explanation', $answers[2])){
                     $bool_explanation_third = $answers[2]['bool_explanation'];
                 }else{
@@ -845,24 +658,20 @@ if ($req_type == "next-data"){
                 $bool_explanation_third = NULL;
             }
 
-            $p4_latest = 1;
-            $qa_latest = 0;
-            update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium, qa_latest, p4_latest, bool_explanation,
+            $qa_latest = 1;
+
+            update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium, qa_latest, bool_explanation,
             answer_second, source_url_second, answer_type_second, source_medium_second, bool_explanation_second, answer_third, source_url_third, answer_type_third, source_medium_third, bool_explanation_third)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssiisssssssssss', $row['claim_qa_id'], $user_id, $question, $answer,
-            $source_url, $answer_type, $source_medium, $qa_latest, $p4_latest, $bool_explanation, $answer_second, $source_url_second, $answer_type_second, $source_medium_second,
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssisssssssssss', $row['claim_qa_id'], $user_id, $question, $answer,
+            $source_url, $answer_type, $source_medium, $qa_latest, $bool_explanation, $answer_second, $source_url_second, $answer_type_second, $source_medium_second,
             $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third);
         }
 
         $added_qas = 1;
-        // need to update the added_qapairs here.
         $resulted_qapairs = $added_qapairs - $row['p4_num_qapairs'];
         update_table($conn, "UPDATE Assigned_Disputes SET dispute_annotators_num=dispute_annotators_num+1, num_qapairs=num_qapairs+?, p4_num_qapairs=p4_num_qapairs+?,
         phase_4_label=?, date_modified_dispute=?, date_restart_dispute=?, date_load_dispute=?, added_qas=? WHERE claim_norm_id=?",'iissssii', 
         $resulted_qapairs, $resulted_qapairs, $phase_4_label, $date, $row['date_restart_cache_dispute'], $row['date_load_cache_dispute'], $added_qas, $claim_norm_id);
-
-        update_table($conn, "INSERT INTO Label (claim_valid_id, user_id_dispute, phase_4_label)
-        VALUES (?, ?, ?)", 'iis', $row['claim_qa_id'], $user_id, $phase_4_label);
 
         $to_time = strtotime($date);
         $from_time = strtotime($row['date_restart_cache_dispute']);

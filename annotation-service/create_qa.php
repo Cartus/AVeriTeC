@@ -46,6 +46,8 @@ answer_problems_third VARCHAR(500),
 bool_explanation_third VARCHAR(1500),
 question_problems VARCHAR(200),
 qa_latest INT(6) NOT NULL,
+p4_latest INT(6),
+edit_latest INT(6),
 date_made DATETIME,
 date_modified DATETIME
 )";
