@@ -280,13 +280,13 @@ class PhaseFourQuestionGeneration extends React.Component {
             var n_p_d = {}
             Object.keys(prev_entries).forEach(k => {
               n_p_d[k] = prev_entries[k]
-        
-              n_p_d[k].question_problems = ["The question is not understandable/readable"] // expects list
+
+              // n_p_d[k].question_problems = ["The question is not understandable/readable"] // expects list
               if (prev_entries[k].answers){
                 n_p_d[k].answers = n_p_d[k].answers.map(a => {
-                  a.answer_problems = ["The answer is readable, but unrelated to the question"]
+                  // a.answer_problems = ["The answer is readable, but unrelated to the question"]
                   return a;
-                }) 
+                })
               }
             })
             prev_entries = n_p_d
@@ -362,10 +362,10 @@ class PhaseFourQuestionGeneration extends React.Component {
             Object.keys(prev_entries).forEach(k => {
               n_p_d[k] = prev_entries[k]
         
-              n_p_d[k].question_problems = ["The question is not understandable/readable"] // expects list
+              // n_p_d[k].question_problems = ["The question is not understandable/readable"] // expects list
               if (prev_entries[k].answers){
                 n_p_d[k].answers = n_p_d[k].answers.map(a => {
-                  a.answer_problems = ["The answer is readable, but unrelated to the question"]
+                  // a.answer_problems = ["The answer is readable, but unrelated to the question"]
                   return a;
                 }) 
               }
