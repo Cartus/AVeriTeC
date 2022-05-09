@@ -78,7 +78,7 @@ class EntryCardContainer extends React.Component {
     if (entry_count > 0) {
       entryFields = Object.keys(this.props.entries).map(field_id => (
         <EntryCard variant="outlined">
-          {!this.props.posthocView && entry_count > 1 ? <DeleteButton onClick={() => this.props.deleteEntry(field_id)}><ClearIcon /></DeleteButton> : ""}
+          {!this.props.posthocView && (entry_count > 1 || this.props.extra_entries)? <DeleteButton onClick={() => this.props.deleteEntry(field_id)}><ClearIcon /></DeleteButton> : ""}
           <this.props.contentClass
             key={field_id}
             id={field_id}
