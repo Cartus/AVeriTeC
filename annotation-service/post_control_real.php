@@ -47,10 +47,9 @@ if ($req_type == "next-data"){
             $row = $result->fetch_assoc();
             
             $latest=1;
-            $user_id_qa=8;
-            $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=? AND user_id_qa=? AND (edit_latest=? OR p4_latest=?)";
+            $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=? AND (edit_latest=? OR p4_latest=?)";
             $stmt = $conn->prepare($sql_qa);
-            $stmt->bind_param("iiii", $row['claim_qa_id'], $user_id_qa, $latest, $latest);
+            $stmt->bind_param("iii", $row['claim_qa_id'], $latest, $latest);
             $stmt->execute();
             $result_qa = $stmt->get_result();
 
@@ -139,10 +138,9 @@ if ($req_type == "next-data"){
                 $row = $result->fetch_assoc();
                 
                 $latest = 1;
-                $user_id_qa=8;
-                $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=? AND user_id_qa=? AND (edit_latest=? OR p4_latest=?)";
+                $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=? AND (edit_latest=? OR p4_latest=?)";
                 $stmt =  $conn->prepare($sql_qa);
-                $stmt->bind_param("iiii", $row['claim_qa_id'], $user_id_qa, $latest, $latest);
+                $stmt->bind_param("iii", $row['claim_qa_id'], $latest, $latest);
                 $stmt->execute();
                 $result_qa = $stmt->get_result();
 
@@ -253,9 +251,8 @@ if ($req_type == "next-data"){
     $phase_5_label = $_POST["annotation"]["label"];
     $justification = $_POST["annotation"]["justification"];
 
-    $unreadable = 0;
     if (array_key_exists("unreadable", $_POST["annotation"])) {
-        if ($_POST["annotation"]["unreadable"] == 1) {
+        if ($_POST["annotation"]["unreadable"] == "on") {
             $unreadable = 1;
         } else {
             $unreadable = 0;
@@ -272,10 +269,9 @@ if ($req_type == "next-data"){
     // $result_qa = $stmt->get_result();
 
     $latest=1;
-    $user_id_qa=8;
-    $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=? AND user_id_qa=? AND (edit_latest=? OR p4_latest=?)";
+    $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=? AND (edit_latest=? OR p4_latest=?)";
     $stmt = $conn->prepare($sql_qa);
-    $stmt->bind_param("iiii", $row['claim_qa_id'], $user_id_qa, $latest, $latest);
+    $stmt->bind_param("iii", $row['claim_qa_id'], $latest, $latest);
     $stmt->execute();
     $result_qa = $stmt->get_result();
 
@@ -321,13 +317,9 @@ if ($req_type == "next-data"){
                     $answer_problems_third = NULL;
                 }
 
-                // update_table($conn, "UPDATE Qapair SET question_problems=?, answer_problems=?, answer_problems_second=?,
-                // answer_problems_third=? WHERE qa_id=?",'ssssi', $question_problems, $answer_problems, $answer_problems_second, $answer_problems_third, $row_qa['qa_id']);
-                
-                update_table($conn, "INSERT INTO Post_Problem (qa_id, claim_norm_id, user_id_post, question_problems, answer_problems, answer_problems_second, answer_problems_third)
-                VALUES (?, ?, ?, ?, ?, ?, ?)", 'iiissss', $row_qa['qa_id'], $row_qa['claim_norm_id'], $user_id, $question_problems, $answer_problems, $answer_problems_second, $answer_problems_third);
-        
-        }
+                update_table($conn, "UPDATE Qapair SET question_problems=?, answer_problems=?, answer_problems_second=?,
+                answer_problems_third=? WHERE qa_id=?",'ssssi', $question_problems, $answer_problems, $answer_problems_second, $answer_problems_third, $row_qa['qa_id']);
+            }
         }else {
             echo "0 Results";
         }
@@ -336,6 +328,9 @@ if ($req_type == "next-data"){
         update_table($conn, "UPDATE Assigned_Posts SET post_annotators_num=post_annotators_num+1, phase_5_label=?, justification_p5=?, date_made_post=?, 
         date_start_post=?, post_latest=? WHERE claim_norm_id=?",'ssssii', 
         $phase_5_label, $justification, $date, $row['date_start_post'], $post_latest, $row['claim_norm_id']);
+
+        // update_table($conn, "INSERT INTO Post_Label (claim_post_id, user_id_post, justification_p5, phase_5_label)
+        // VALUES (?, ?, ?, ?)", 'iiss', $row['claim_norm_id'], $user_id, $justification, $phase_5_label);
 
         $to_time = strtotime($date);
         $from_time = strtotime($row['date_start_post']);
@@ -377,12 +372,18 @@ if ($req_type == "next-data"){
     $row = $result->fetch_assoc();
 
     $latest = 1;
-    $user_id_qa=8;
-    $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=? AND user_id_qa=? AND (edit_latest=? OR p4_latest=?)";
+    $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=? AND (edit_latest=? OR p4_latest=?)";
     $stmt = $conn->prepare($sql_qa);
-    $stmt->bind_param("iiii", $row['claim_qa_id'], $user_id_qa, $latest, $latest);
+    $stmt->bind_param("iii", $row['claim_qa_id'], $latest, $latest);
     $stmt->execute();
     $result_qa = $stmt->get_result();
+
+    // $sql = "SELECT * FROM Post_Label WHERE user_id_post=? AND claim_post_id=?";
+    // $stmt= $conn->prepare($sql);
+    // $stmt->bind_param("ii", $user_id, $row['claim_post_id']);
+    // $stmt->execute();
+    // $result = $stmt->get_result();
+    // $row_label = $result->fetch_assoc();
 
     $questions = array();
     $counter = 0;
@@ -393,14 +394,7 @@ if ($req_type == "next-data"){
             $question_array = array();
             $question_array['text'] = $row_qa['question'];
 
-            $sql = "SELECT * FROM Post_Problem WHERE qa_id=? AND user_id_post=?";
-            $stmt= $conn->prepare($sql);
-            $stmt->bind_param("ii", $row_qa['qa_id'], $user_id);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $row_problem = $result->fetch_assoc();
-
-            $question_array['question_problems'] = explode(" [SEP] ", $row_problem['question_problems']);
+            $question_array['question_problems'] = explode(" [SEP] ", $row_qa['question_problems']);
 
             $answers = array();
             $answers[0]['answer'] = $row_qa['answer'];
@@ -412,8 +406,8 @@ if ($req_type == "next-data"){
                 $answers[0]['explanation'] = $row_qa['bool_explanation'];
             }
 
-            if (!is_null($row_problem['answer_problems'])){
-                $answers[0]['answer_problems'] = explode(" [SEP] ", $row_problem['answer_problems']);
+            if (!is_null($row_qa['answer_problems'])){
+                $answers[0]['answer_problems'] = explode(" [SEP] ", $row_qa['answer_problems']);
             }
 
             if (!is_null($row_qa['answer_second'])){
@@ -432,8 +426,8 @@ if ($req_type == "next-data"){
                 $answers[1]['explanation'] = $row_qa['bool_explanation_second'];
             }
 
-            if (!is_null($row_problem['answer_problems_second'])){
-                $answers[1]['answer_problems'] = explode(" [SEP] ", $row_problem['answer_problems_second']);
+            if (!is_null($row_qa['answer_problems_second'])){
+                $answers[1]['answer_problems'] = explode(" [SEP] ", $row_qa['answer_problems_second']);
             }
 
             if (!is_null($row_qa['answer_third'])){
@@ -452,8 +446,8 @@ if ($req_type == "next-data"){
                 $answers[2]['explanation'] = $row_qa['bool_explanation_third'];
             }
 
-            if (!is_null($row_problem['answer_problems_third'])){
-                $answers[2]['answer_problems'] = explode(" [SEP] ", $row_problem['answer_problems_third']);
+            if (!is_null($row_qa['answer_problems_third'])){
+                $answers[2]['answer_problems'] = explode(" [SEP] ", $row_qa['answer_problems_third']);
             }
 
             $question_array['answers'] = $answers;
@@ -462,7 +456,7 @@ if ($req_type == "next-data"){
         $annotation = array();
         $annotation['justification'] = $row['justification_p5'];
         $annotation['label'] = $row['phase_5_label'];
-        $annotation['unreadable'] = $row['unreadable_p5'];
+        $annotation['unreadable'] = $row['unreadable'];
 
         if (!is_null($row["correction_claim"])){
             $claim_text = $row['correction_claim'];
@@ -506,10 +500,8 @@ if ($req_type == "next-data"){
 
     $phase_5_label = $_POST["annotation"]["label"];
     $justification = $_POST["annotation"]["justification"];
-
-    $unreadable = 0;
     if (array_key_exists("unreadable", $_POST["annotation"])) {
-        if ($_POST["annotation"]["unreadable"] == 1) {
+        if ($_POST["annotation"]["unreadable"] == "on") {
             $unreadable = 1;
         } else {
             $unreadable = 0;
@@ -525,11 +517,10 @@ if ($req_type == "next-data"){
     // $stmt->execute();
     // $result_qa = $stmt->get_result();
 
-    $latest=1;
-    $user_id_qa=8;
-    $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=? AND user_id_qa=? AND (edit_latest=? OR p4_latest=?)";
-    $stmt = $conn->prepare($sql_qa);
-    $stmt->bind_param("iiii", $row['claim_qa_id'], $user_id_qa, $latest, $latest);
+    $latest = 1;
+    $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=? AND (edit_latest=? OR p4_latest=?)";
+    $stmt =  $conn->prepare($sql_qa);
+    $stmt->bind_param("iii", $row['claim_qa_id'], $latest, $latest);
     $stmt->execute();
     $result_qa = $stmt->get_result();
 
@@ -575,9 +566,8 @@ if ($req_type == "next-data"){
                     $answer_problems_third = NULL;
                 }
 
-                update_table($conn, "UPDATE Post_Problem SET question_problems=?, answer_problems=?, answer_problems_second=?,
-                answer_problems_third=? WHERE qa_id=? AND user_id_post=?",'ssssii', $question_problems, $answer_problems, $answer_problems_second, 
-                $answer_problems_third, $row_qa['qa_id'], $user_id);   
+                update_table($conn, "UPDATE Qapair SET question_problems=?, answer_problems=?, answer_problems_second=?,
+                answer_problems_third=? WHERE qa_id=?",'ssssi', $question_problems, $answer_problems, $answer_problems_second, $answer_problems_third, $row_qa['qa_id']);
             }
         }else {
             echo "0 Results";
@@ -601,7 +591,7 @@ if ($req_type == "next-data"){
         user_id_qa, user_id_valid,  cleaned_claim, correction_claim, speaker, hyperlink, transcription, media_source, check_date, claim_types, fact_checker_strategy, 
         phase_1_label, phase_2_label, qa_annotators_num, qa_skipped, valid_annotators_num, num_qapairs, claim_loc, latest, source, date_start_norm, date_load_norm, 
         date_made_norm, date_restart_norm, date_modified_norm, date_start_qa, date_load_qa, date_made_qa, date_restart_qa, date_modified_qa, inserted, 
-        date_start_valid, date_made_valid, date_restart_valid, date_modified_valid, phase_3_label, phase_4_label, justification, unreadable_p5, valid_latest, 
+        date_start_valid, date_made_valid, date_restart_valid, date_modified_valid, phase_3_label, phase_4_label, justification, unreadable, valid_latest, 
         dispute_annotators_num, added_qas, user_id_dispute, post_annotators_num, user_id_post, date_modified_post, phase_5_label, justification_p5, post_latest) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
         'iiiisiiisssssssssssiiiisisssssssssssisssssssiiiiiiisssi', 
@@ -611,9 +601,13 @@ if ($req_type == "next-data"){
         $row['valid_annotators_num'], $row['num_qapairs'],  $row['claim_loc'], $row['latest'], $row['source'], $row['date_start_norm'], $row['date_load_norm'], 
         $row['date_made_norm'], $row['date_restart_norm'], $row['date_modified_norm'], $row['date_start_qa'], $row['date_load_qa'], $row['date_made_qa'], 
         $row['date_restart_qa'], $row['date_modified_qa'], $inserted, $row['date_start_valid'], $row['date_made_valid'], $row['date_restart_valid'], 
-        $row['date_modified_valid'], $row['phase_3_label'], $row['phase_4_label'], $row['justification'], $unreadable, $row['valid_latest'], 
+        $row['date_modified_valid'], $row['phase_3_label'], $row['phase_4_label'], $row['justification'], $row['unreadable'], $row['valid_latest'], 
         $row['dispute_annotators_num'], $row['added_qas'], $row['user_id_dispute'], $post_annotators_num, $row['user_id_post'],  
         $date, $phase_5_label, $justification, $post_latest);
+
+        // update_table($conn, "INSERT INTO Post_Label (claim_post_id, user_id_post, justification_p5, phase_5_label)
+        // VALUES (?, ?, ?, ?)", 'iiss', $row['claim_norm_id'], $user_id, $justification, $phase_5_label);
+
     
         $conn->commit();
         echo "Resubmit Successfully!";

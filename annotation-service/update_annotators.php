@@ -23,7 +23,7 @@ $id = 4;
 
 //update_table($conn, "UPDATE Annotators SET current_norm_task=NULL WHERE user_id=?", 'i', $id);
 
-update_table($conn, "UPDATE Annotators SET p4_assigned=0, finished_dispute_annotations=0 WHERE user_id=?", 'i', $id);
+update_table($conn, "UPDATE Annotators SET p5_assigned=0, finished_post_annotations=0 WHERE user_id=?", 'i', $id);
 
 $conn->close();
 ?>

@@ -47,6 +47,7 @@ if ($result->num_rows > 0) {
 	    echo "justification: " . $row["justification"]. "<br>";
         echo "justification_p5: " . $row["justification_p5"]. "<br>";
 	    echo "unreadable: " . $row["unreadable"]. "<br>";
+        echo "unreadable_p5: " . $row["unreadable_p5"]. "<br>";
         echo "qa_skipped: " . $row["qa_skipped"]. "<br>";
         echo "qa_skipped_by: " . $row["qa_skipped_by"]. "<br>";
         echo "num_qapairs: " . $row["num_qapairs"]. "<br>";
