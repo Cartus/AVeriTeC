@@ -558,7 +558,7 @@ class PhaseFourQuestionGeneration extends React.Component {
       },
       {
         selector: '[data-tour="prev_verdict"]',
-        content: "Read the verdicts given by the previous annotators, along with the explanation from the quality control phase. This should help you understand why a disagreement between the two annotators appeared. You can use this to guide your own thoughts on which additional questions should be added."
+        content: "Read the verdicts given by the previous annotators, along with the explanation from the quality control phase. This should help you understand why a disagreement between the two annotators appeared. You can use this to guide your own thoughts on how to resolve the disagreement, whether any questions should be updated, or if additional questions should be added."
       },
       {
         selector: '[data-tour="prev_questions"]',
@@ -566,7 +566,7 @@ class PhaseFourQuestionGeneration extends React.Component {
       },
       {
         selector: '[data-tour="question_textfield"]',
-        content: "Based on the approach taken by the fact-checkers, formulate a question that will help you determine the truth of the claim. This should be a real question rather than a search engine query, e.g. \"Who is the prime minister of Britain?\" rather than \"prime minister Britain\"."
+        content: "Based on the approach taken by the fact-checkers, you can formulate questions that will help you determine the truth of the claim. This should be a real question rather than a search engine query, e.g. \"Who is the prime minister of Britain?\" rather than \"prime minister Britain\"."
       },
       {
         selector: '[data-tour="answer_textfield"]',
