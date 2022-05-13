@@ -74,6 +74,7 @@ class EntryCardContainer extends React.Component {
     }
 
     console.log("Rendering " + entry_count + " entries.")
+    console.log(this.props.entries)
 
     if (entry_count > 0) {
       entryFields = Object.keys(this.props.entries).map(field_id => (
@@ -93,7 +94,7 @@ class EntryCardContainer extends React.Component {
     }
 
     console.log("Extra entries")
-    console.log(this.props.extraEntries)
+    console.log(this.props.extra_entries)
 
     if (this.props.extra_entries) {
       let extraEntries = Object.keys(this.props.extra_entries).map(field_id => (
