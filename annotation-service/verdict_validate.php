@@ -252,8 +252,9 @@ if ($req_type == "next-data"){
     $phase_3_label = $_POST["annotation"]["label"];
     $justification = $_POST["annotation"]["justification"];
 
+    $unreadable = 0;
     if (array_key_exists("unreadable", $_POST["annotation"])) {
-        if ($_POST["annotation"]["unreadable"] == "on") {
+        if ($_POST["annotation"]["unreadable"] == 1) {
             $unreadable = 1;
         } else {
             $unreadable = 0;
@@ -484,8 +485,10 @@ if ($req_type == "next-data"){
 
     $phase_3_label = $_POST["annotation"]["label"];
     $justification = $_POST["annotation"]["justification"];
+
+    $unreadable = 0;
     if (array_key_exists("unreadable", $_POST["annotation"])) {
-        if ($_POST["annotation"]["unreadable"] == "on") {
+        if ($_POST["annotation"]["unreadable"] == 1) {
             $unreadable = 1;
         } else {
             $unreadable = 0;
@@ -493,6 +496,9 @@ if ($req_type == "next-data"){
     } else {
         $unreadable = 0;
     }
+
+    echo "first here";
+    echo $unreadable;
 
     $qa_latest=1;
     $sql_qa = "SELECT * FROM Qapair WHERE claim_norm_id=? AND user_id_qa=? AND qa_latest=?";
@@ -563,6 +569,9 @@ if ($req_type == "next-data"){
         $valid_latest = 1;
         $inserted = 0;
         $valid_annotators_num = $row['valid_annotators_num']+1;
+
+        echo "here";
+        echo $unreadable;
         
         update_table($conn, "INSERT INTO Assigned_Valids (claim_id, claim_qa_id, web_archive, user_id_norm, user_id_qa, user_id_valid, cleaned_claim, 
         correction_claim, speaker, hyperlink, transcription, media_source, check_date, claim_types, fact_checker_strategy, phase_1_label, phase_2_label, qa_annotators_num, 

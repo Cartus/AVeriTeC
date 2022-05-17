@@ -18,12 +18,12 @@ if ($conn->connect_error) {
 }
 
 
-$id = 3;
+$id = 4;
 
 
 //update_table($conn, "UPDATE Annotators SET current_norm_task=NULL WHERE user_id=?", 'i', $id);
 
-update_table($conn, "UPDATE Annotators SET p3_assigned=0, finished_valid_annotations=0 WHERE user_id=?", 'i', $id);
+update_table($conn, "UPDATE Annotators SET p5_assigned=0, finished_post_annotations=0 WHERE user_id=?", 'i', $id);
 
 $conn->close();
 ?>

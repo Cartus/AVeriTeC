@@ -26,9 +26,11 @@ if (empty($_POST['name']) && empty($_POST['password_md5'])) die();
 $name = $_POST['name'];
 $pw_md5 = $_POST['password_md5'];
 
-$sql = "SELECT * FROM Annotators WHERE password_md5 = ? AND user_name = ?";
+$is_active = 1;
+
+$sql = "SELECT * FROM Annotators WHERE password_md5=? AND user_name=? AND is_active=?";
 $stmt= $conn->prepare($sql);
-$stmt->bind_param("ss", $pw_md5, $name);
+$stmt->bind_param("ssi", $pw_md5, $name, $is_active);
 $stmt->execute();
 
 $result = $stmt->get_result();

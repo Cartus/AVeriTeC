@@ -83,7 +83,7 @@ function validate(content) {
         }
 
         if (!("source_url" in answer) || notEmptyValidator(answer["source_url"]).error || emptyOrValidUrlValidator(answer["source_url"]).error) {
-          if (!("answer_type" in answer) || (answer["answer_type"] != "Unanswerable" && answer["answer_type"] != "Metadata")) {
+          if (!("answer_type" in answer) || (answer["answer_type"] != "Unanswerable" && answer["source_medium"] != "Metadata")) {
             console.log("no source url and not unanswerable");
             valid = false;
           }
@@ -280,13 +280,13 @@ class PhaseFourQuestionGeneration extends React.Component {
             var n_p_d = {}
             Object.keys(prev_entries).forEach(k => {
               n_p_d[k] = prev_entries[k]
-        
-              n_p_d[k].question_problems = ["The question is not understandable/readable"] // expects list
+
+              // n_p_d[k].question_problems = ["The question is not understandable/readable"] // expects list
               if (prev_entries[k].answers){
                 n_p_d[k].answers = n_p_d[k].answers.map(a => {
-                  a.answer_problems = ["The answer is readable, but unrelated to the question"]
+                  // a.answer_problems = ["The answer is readable, but unrelated to the question"]
                   return a;
-                }) 
+                })
               }
             })
             prev_entries = n_p_d
@@ -362,10 +362,10 @@ class PhaseFourQuestionGeneration extends React.Component {
             Object.keys(prev_entries).forEach(k => {
               n_p_d[k] = prev_entries[k]
         
-              n_p_d[k].question_problems = ["The question is not understandable/readable"] // expects list
+              // n_p_d[k].question_problems = ["The question is not understandable/readable"] // expects list
               if (prev_entries[k].answers){
                 n_p_d[k].answers = n_p_d[k].answers.map(a => {
-                  a.answer_problems = ["The answer is readable, but unrelated to the question"]
+                  // a.answer_problems = ["The answer is readable, but unrelated to the question"]
                   return a;
                 }) 
               }
@@ -558,7 +558,7 @@ class PhaseFourQuestionGeneration extends React.Component {
       },
       {
         selector: '[data-tour="prev_verdict"]',
-        content: "Read the verdicts given by the previous annotators, along with the explanation from the quality control phase. This should help you understand why a disagreement between the two annotators appeared. You can use this to guide your own thoughts on which additional questions should be added."
+        content: "Read the verdicts given by the previous annotators, along with the explanation from the quality control phase. This should help you understand why a disagreement between the two annotators appeared. You can use this to guide your own thoughts on how to resolve the disagreement, whether any questions should be updated, or if additional questions should be added."
       },
       {
         selector: '[data-tour="prev_questions"]',
@@ -566,7 +566,7 @@ class PhaseFourQuestionGeneration extends React.Component {
       },
       {
         selector: '[data-tour="question_textfield"]',
-        content: "Based on the approach taken by the fact-checkers, formulate a question that will help you determine the truth of the claim. This should be a real question rather than a search engine query, e.g. \"Who is the prime minister of Britain?\" rather than \"prime minister Britain\"."
+        content: "Based on the approach taken by the fact-checkers, you can formulate questions that will help you determine the truth of the claim. This should be a real question rather than a search engine query, e.g. \"Who is the prime minister of Britain?\" rather than \"prime minister Britain\"."
       },
       {
         selector: '[data-tour="answer_textfield"]',
