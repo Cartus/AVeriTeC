@@ -376,6 +376,7 @@ class PhaseFiveVerdictValidation extends React.Component {
                         doPrevious={this.doPrevious}
                         doSubmit={this.doSubmit}
                         doNext={this.doNext}
+                        shouldUseVagueLabel={true}
                     />
                     {this.state.userIsFirstVisiting ? <TourWrapper /> : ""}
                 </TourProvider>

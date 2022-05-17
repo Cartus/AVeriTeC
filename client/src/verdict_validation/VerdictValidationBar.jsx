@@ -93,11 +93,11 @@ class VerdictValidationBar extends React.Component {
                         <RightPhaseControl current_idx={this.props.current_idx} final_idx={this.props.final_idx} phaseName="Quality Control" phaseInstructions="Please read the claim and the question-answer pairs. Then, give your verdict on the claim. Do not look at any external information; make your verdict based ONLY on the question-answer pairs. If there are any problems with a question-answer pair, please use the form to report it. Do not use the information in any question-answer pair you report to make your verdict." />
                     </RightBox>
                     <LeftBox>
-                        <ValidationClaimTopField posthocView={this.props.posthocView} claim={claim} valid={this.props.valid} data={annotation} ask_for_justification onChange={this.props.handleFieldChange} id="annotation" />
+                        <ValidationClaimTopField shouldUseVagueLabel={this.props.shouldUseVagueLabel} posthocView={this.props.posthocView} claim={claim} valid={this.props.valid} data={annotation} ask_for_justification onChange={this.props.handleFieldChange} id="annotation" />
                     </LeftBox>
                 </div>
 
-                : <ValidationClaimTopField posthocView={this.props.posthocView} claim={claim} valid={this.props.valid} data={annotation} ask_for_justification onChange={this.props.handleFieldChange} id="annotation" />
+                : <ValidationClaimTopField shouldUseVagueLabel={this.props.shouldUseVagueLabel} posthocView={this.props.posthocView} claim={claim} valid={this.props.valid} data={annotation} ask_for_justification onChange={this.props.handleFieldChange} id="annotation" />
             }
             <QABox >
                 <div data-tour="question_view">

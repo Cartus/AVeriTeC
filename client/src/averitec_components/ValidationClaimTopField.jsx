@@ -130,6 +130,29 @@ class ClaimTopField extends React.Component {
       location = country_by_code_dict[this.props.claim.country_code].name + " (" + country_by_code_dict[this.props.claim.country_code].code + ")"
     }
 
+    let label_items = ["Supported", "Refuted", "Not Enough Evidence", "Conflicting Evidence/Cherrypicking"]
+    let label_tooltip =  <ul>
+      <li>Supported: The claim is fully supported by the arguments and evidence presented.</li>
+      <li>Refuted: The claim is fully contradicted by the arguments and evidence presented.</li>
+      <li>Not Enough Evidence: There is not enough information to support or refute the claim. The evidence either directly argues that appropriate evidence cannot be found, or leaves some aspect of the claim neither supported nor refuted.</li>
+      <li>Conflicting Evidence/Cherrypicking: Both supporting and refuting evidence was found for this claim. This includes cherry-picking, i.e. true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found.</li>
+    </ul>
+
+    if (this.props.shouldUseVagueLabel){
+      label_items = [
+        ...label_items,
+        "Claim Too Vague"
+      ]
+
+      label_tooltip =  <ul>
+        <li>Supported: The claim is fully supported by the arguments and evidence presented.</li>
+        <li>Refuted: The claim is fully contradicted by the arguments and evidence presented.</li>
+        <li>Not Enough Evidence: There is not enough information to support or refute the claim. The evidence either directly argues that appropriate evidence cannot be found, or leaves some aspect of the claim neither supported nor refuted.</li>
+        <li>Conflicting Evidence/Cherrypicking: Both supporting and refuting evidence was found for this claim. This includes cherry-picking, i.e. true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found.</li>
+        <li>Claim Too Vague: The claim is readable, but too vague to be given a conclusive verdict. </li>
+      </ul>
+    }
+
     return (
       <EntryCard>
         <ContainerDiv>
@@ -147,30 +170,18 @@ class ClaimTopField extends React.Component {
             <div data-tour="verdict">
               {this.props.data["unreadable"] ?
 
-                <SelectWithTooltip readOnly={this.props.posthocView} name="label" disabled value={this.props.data["label"]} label="Claim Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Evidence", "Conflicting Evidence/Cherrypicking"]} tooltip={
-                  <ul>
-                    <li>Supported: The claim is fully supported by the arguments and evidence presented.</li>
-                    <li>Refuted: The claim is fully contradicted by the arguments and evidence presented.</li>
-                    <li>Not Enough Evidence: There is not enough information to support or refute the claim. The evidence either directly argues that appropriate evidence cannot be found, or leaves some aspect of the claim neither supported nor refuted.</li>
-                    <li>Conflicting Evidence/Cherrypicking: Both supporting and refuting evidence was found for this claim. This includes cherry-picking, i.e. true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found.</li>
-                  </ul>}
+                <SelectWithTooltip readOnly={this.props.posthocView} name="label" disabled value={this.props.data["label"]} label="Claim Label" onChange={this.handleFieldChange} items={label_items} tooltip={label_tooltip}
                 />
 
                 :
 
-                <SelectWithTooltip readOnly={this.props.posthocView} name="label" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["label"]} label="Claim Label" onChange={this.handleFieldChange} items={["Supported", "Refuted", "Not Enough Evidence", "Conflicting Evidence/Cherrypicking"]} tooltip={
-                  <ul>
-                    <li>Supported: The claim is fully supported by the arguments and evidence presented.</li>
-                    <li>Refuted: The claim is fully contradicted by the arguments and evidence presented.</li>
-                    <li>Not Enough Evidence: There is not enough information to support or refute the claim. The evidence either directly argues that appropriate evidence cannot be found, or leaves some aspect of the claim neither supported nor refuted.</li>
-                    <li>Conflicting Evidence/Cherrypicking: Both supporting and refuting evidence was found for this claim. This includes cherry-picking, i.e. true-but-misleading claims, as well as cases where conflicting or internally contradictory evidence can be found.</li>
-                  </ul>}
+                <SelectWithTooltip readOnly={this.props.posthocView} name="label" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["label"]} label="Claim Label" onChange={this.handleFieldChange} items={label_items} tooltip={label_tooltip}
                 />
 
               }
             </div>
 
-            <CheckboxBox data-tour="unreadable" control={<Checkbox name="unreadable" checked={this.props.data["unreadable"] ? this.props.data["unreadable"] : false} onChange={this.props.posthocView ? () => { } : this.handleFieldChange} />} label="The claim is vague, unreadable, or otherwise impossible to understand." />
+            <CheckboxBox data-tour="unreadable" control={<Checkbox name="unreadable" checked={this.props.data["unreadable"] ? this.props.data["unreadable"] : false} onChange={this.props.posthocView ? () => { } : this.handleFieldChange} />} label="The claim is unreadable or otherwise impossible to understand." />
 
           </TextEntryDiv>
           {justification}
