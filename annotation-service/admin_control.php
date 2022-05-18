@@ -174,7 +174,7 @@ if ($req_type == "add-user") {
         $conn->close();
     } else if ($target_field == "is_admin") {
         echo $target_value;
-        update_table($conn, "UPDATE Annotators SET is_admin=? WHERE user_id=?", 'si', $target_value, $user_id_to_edit);
+        update_table($conn, "UPDATE Annotators SET is_admin=? WHERE user_id=?", 'ii', $target_value, $user_id_to_edit);
         $conn->close();
     }
 } 

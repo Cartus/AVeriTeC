@@ -9,15 +9,15 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "SELECT * FROM Label";
+$sql = "SELECT * FROM Train_Claims";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
         echo "claim_id: " . $row["claim_id"]. "<br>";
-        echo "claim_valid_id: " . $row["claim_valid_id"]. "<br>";
-        echo "user_id_dispute: " . $row["user_id_dispute"]. "<br>";
-        echo "phase_4_label: " . $row["phase_4_label"]. "<br>";
+        echo "claim_text: " . $row["claim_text"]. "<br>";
+        echo "web_archive: " . $row["web_archive"]. "<br>";
+        echo "claim_date: " . $row["claim_date"]. "<br>";
         echo "<br>";
     }
 } else {

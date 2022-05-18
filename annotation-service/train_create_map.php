@@ -11,7 +11,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "DROP TABLE Label";
+$sql = "DROP TABLE Claim_Map";
 
 if ($conn->query($sql) === TRUE) {
     echo "Table dropped successfully";
@@ -19,18 +19,18 @@ if ($conn->query($sql) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
-
 // sql to create table
-$sql = "CREATE TABLE Label (
-claim_id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-claim_valid_id INT(6) NOT NULL,
-user_id_dispute INT(6) NOT NULL,
-phase_4_label VARCHAR(50) NOT NULL
+$sql = "CREATE TABLE Claim_Map (
+map_id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+user_id INT(6) NOT NULL,
+claim_id INT(6) NOT NULL,
+skipped INT(6) NOT NULL,
+date_made DATETIME NOT NULL,
+date_modified DATETIME
 )";
 
-
 if ($conn->query($sql) === TRUE) {
-    echo "Table Label created successfully";
+    echo "Table Claim_Map created successfully";
 } else {
     echo "Error creating table: " . $conn->error;
 }
