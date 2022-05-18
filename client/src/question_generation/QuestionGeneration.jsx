@@ -303,7 +303,12 @@ class QuestionGeneration extends React.Component {
 
         axios(request).then((response) => {
           if (response.data) {
-            if (Number(localStorage.finished_qa_annotations) === 0) {
+            let finished_annotations = Number(localStorage.finished_qa_annotations)
+            if (dataset === "training"){
+                finished_annotations = Number(localStorage.train_finished_qa_annotations)
+            }
+
+            if (finished_annotations === 0) {
               this.setState({ userIsFirstVisiting: true });
             }
             console.log(response.data);
@@ -412,7 +417,12 @@ class QuestionGeneration extends React.Component {
         dataset = this.props.dataset
     }
 
-    var current_idx = Number(localStorage.finished_qa_annotations) + 1 - Number(localStorage.pc);
+    let finished_annotations = Number(localStorage.finished_norm_annotations)
+    if (dataset === "training"){
+        finished_annotations = Number(localStorage.train_finished_norm_annotations)
+    }
+
+    var current_idx = finished_annotations + 1 - Number(localStorage.pc);
 
     let is_at_last_claim = current_idx === this.final_idx;
     let should_use_finish_path = this.props.finish_path && is_at_last_claim
@@ -469,7 +479,11 @@ class QuestionGeneration extends React.Component {
         };
 
         await axios(request).then((response) => {
-          localStorage.finished_qa_annotations = Number(localStorage.finished_qa_annotations) + 1;
+          if (dataset === "training"){
+            localStorage.train_finished_qa_annotations = Number(localStorage.train_finished_qa_annotations) + 1;
+          } else {
+            localStorage.finished_qa_annotations = Number(localStorage.finished_qa_annotations) + 1;
+          }          
           console.log(response.data);
 
           if (should_use_finish_path) {
@@ -569,7 +583,16 @@ class QuestionGeneration extends React.Component {
       },
     ];
 
-    var current_idx = Number(localStorage.finished_qa_annotations) + 1 - Number(localStorage.pc);
+    var dataset = "annotation"
+    if (this.props.dataset){
+      dataset = this.props.dataset
+    }
+    let finished_annotations = Number(localStorage.finished_qa_annotations)
+    if (dataset === "training"){
+      finished_annotations = Number(localStorage.train_finished_qa_annotations)
+    }
+
+    var current_idx = finished_annotations + 1 - Number(localStorage.pc);
 
     return (
       <QAPageDiv>

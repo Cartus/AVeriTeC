@@ -57,6 +57,9 @@ class Login extends React.Component{
           localStorage.finished_norm_annotations = response.data.finished_norm_annotations;
           localStorage.finished_qa_annotations = response.data.finished_qa_annotations;
           localStorage.finished_valid_annotations = response.data.finished_valid_annotations;
+          localStorage.train_finished_norm_annotations = response.data.train_finished_norm_annotations? response.data.train_finished_norm_annotations : 0;;
+          localStorage.train_finished_qa_annotations = response.data.train_finished_qa_annotations? response.data.train_finished_qa_annotations : 0;
+          localStorage.train_finished_valid_annotations = response.data.train_finished_valid_annotations? response.data.train_finished_valid_annotations : 0;
           localStorage.finished_p4_annotations = response.data.finished_p4_annotations? response.data.finished_p4_annotations : 0;
           localStorage.finished_p5_annotations = response.data.finished_p5_annotations? response.data.finished_p5_annotations : 0;
           localStorage.pc = 0;

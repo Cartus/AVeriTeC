@@ -205,7 +205,12 @@ class VerdictValidation extends React.Component {
                     if (response.data) {
                         console.log("Recevied response")
                         console.log(response.data);
-                        if (Number(localStorage.finished_valid_annotations) === 0) {
+                        let finished_annotations = Number(localStorage.finished_valid_annotations)
+                        if (dataset === "training"){
+                            finished_annotations = Number(localStorage.train_finished_valid_annotations)
+                        }
+
+                        if (finished_annotations === 0) {
                             this.setState({ userIsFirstVisiting: true });
                         }
                         const new_claim = {
@@ -234,7 +239,12 @@ class VerdictValidation extends React.Component {
             dataset = this.props.dataset
         }
 
-        var current_idx = Number(localStorage.finished_valid_annotations) + 1 - Number(localStorage.pc);
+        let finished_annotations = Number(localStorage.finished_valid_annotations)
+        if (dataset === "training"){
+            finished_annotations = Number(localStorage.train_finished_valid_annotations)
+        }
+
+        var current_idx = finished_annotations + 1 - Number(localStorage.pc);
 
         let is_at_last_claim = current_idx === this.final_idx;
         let should_use_finish_path = this.props.finish_path && is_at_last_claim
@@ -285,7 +295,11 @@ class VerdictValidation extends React.Component {
 
                 await axios(request).then((response) => {
                     console.log(response.data);
-                    localStorage.finished_valid_annotations = Number(localStorage.finished_valid_annotations) + 1;
+                    if (dataset === "training"){
+                        localStorage.train_finished_valid_annotations = Number(localStorage.train_finished_valid_annotations) + 1;
+                    } else {
+                        localStorage.finished_valid_annotations = Number(localStorage.finished_valid_annotations) + 1;
+                    }                    
 
                     if (should_use_finish_path) {
                         window.location.assign(this.props.finish_path);
@@ -361,7 +375,17 @@ class VerdictValidation extends React.Component {
             ));
         }
 
-        var current_idx = Number(localStorage.finished_valid_annotations) + 1 - Number(localStorage.pc);
+        var dataset = "annotation"
+        if (this.props.dataset){
+            dataset = this.props.dataset
+        }
+
+        let finished_annotations = Number(localStorage.finished_valid_annotations)
+        if (dataset === "training"){
+            finished_annotations = Number(localStorage.train_finished_valid_annotations)
+        }
+
+        var current_idx = finished_annotations + 1 - Number(localStorage.pc);
 
         return (
             <div>

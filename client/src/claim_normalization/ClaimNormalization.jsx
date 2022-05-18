@@ -72,7 +72,7 @@ class ClaimNormalization extends React.Component {
             userIsFirstVisiting: false,
             added_entries: 1,
             valid: true,
-            final_idx: 0
+            final_idx: 0,
         }
 
         this.doSubmit = this.doSubmit.bind(this);
@@ -156,6 +156,10 @@ class ClaimNormalization extends React.Component {
         }
 
         var current_idx = Number(localStorage.finished_norm_annotations) + 1 - Number(localStorage.pc);
+
+        if (dataset === "training"){
+            current_idx = Number(localStorage.train_finished_norm_annotations) + 1 - Number(localStorage.pc);
+        }     
     
         let is_at_last_claim = current_idx === this.final_idx;
         let should_use_finish_path = this.props.finish_path && is_at_last_claim
@@ -204,7 +208,12 @@ class ClaimNormalization extends React.Component {
                 };
 
                 await axios(request).then((response) => {
-                    localStorage.finished_norm_annotations = Number(localStorage.finished_norm_annotations) + 1;
+
+                    if (dataset === "training"){
+                        localStorage.train_finished_norm_annotations = Number(localStorage.train_finished_norm_annotations) + 1;
+                    } else {
+                        localStorage.finished_norm_annotations = Number(localStorage.finished_norm_annotations) + 1;
+                    }
                     console.log(response.data);
                     
                     if (should_use_finish_path){
@@ -321,7 +330,12 @@ class ClaimNormalization extends React.Component {
                 axios(request).then((response) => {
                     console.log(response.data);
                     if (response.data) {
-                        if (Number(localStorage.finished_norm_annotations) === 0) {
+                        let finished_annotations = Number(localStorage.finished_norm_annotations)
+                        if (dataset === "training"){
+                            finished_annotations = Number(localStorage.train_finished_norm_annotations)
+                        }
+
+                        if (finished_annotations === 0) {
                             this.setState({ userIsFirstVisiting: true });
                         }
                         const new_claim = { web_archive: response.data.web_archive };
@@ -340,8 +354,16 @@ class ClaimNormalization extends React.Component {
     }
 
     render() {
+        var dataset = "annotation"
+        if (this.props.dataset){
+            dataset = this.props.dataset
+        }
+        let finished_annotations = Number(localStorage.finished_norm_annotations)
+        if (dataset === "training"){
+            finished_annotations = Number(localStorage.train_finished_norm_annotations)
+        }
 
-        var current_idx = Number(localStorage.finished_norm_annotations) + 1 - Number(localStorage.pc);
+        var current_idx = finished_annotations + 1 - Number(localStorage.pc);
 
         if (!localStorage.getItem('login')) {
             return <Redirect to='/' />;
