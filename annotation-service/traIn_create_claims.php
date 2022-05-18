@@ -11,30 +11,25 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "DROP TABLE Post_Problem";
-
+$sql = "DROP TABLE Train_Claims";
+ 
 if ($conn->query($sql) === TRUE) {
     echo "Table dropped successfully";
 } else {
     echo "Error creating table: " . $conn->error;
 }
-
+ 
 
 // sql to create table
-$sql = "CREATE TABLE Post_Problem (
-pp_id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-qa_id INT(6) NOT NULL,
-claim_norm_id INT(6) NOT NULL,
-user_id_post INT(6) NOT NULL,
-answer_problems VARCHAR(500),
-answer_problems_second VARCHAR(500),
-answer_problems_third VARCHAR(500),
-question_problems VARCHAR(200)
+$sql = "CREATE TABLE Train_Claims (
+claim_id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+claim_text VARCHAR(500) NOT NULL,
+web_archive VARCHAR(500) NOT NULL,
+claim_date VARCHAR(50)
 )";
 
-
 if ($conn->query($sql) === TRUE) {
-    echo "Table Post_Problem created successfully";
+    echo "Table Train_Claims created successfully";
 } else {
     echo "Error creating table: " . $conn->error;
 }

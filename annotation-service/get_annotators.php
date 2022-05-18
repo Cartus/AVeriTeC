@@ -29,6 +29,9 @@ if ($result->num_rows > 0) {
         echo "finished_valid_annotations: " . $row["finished_valid_annotations"]. "<br>";
         echo "finished_dispute_annotations: " . $row["finished_dispute_annotations"]. "<br>";
         echo "finished_post_annotations: " . $row["finished_post_annotations"]. "<br>";
+        echo "train_finished_norm_annotations: " . $row["train_finished_norm_annotations"]. "<br>";
+        echo "train_finished_qa_annotations: " . $row["train_finished_qa_annotations"]. "<br>";
+        echo "train_finished_valid_annotations: " . $row["train_finished_valid_annotations"]. "<br>";
         echo "questions_p2: " . $row["questions_p2"]. "<br>";
         echo "questions_p4: " . $row["questions_p4"]. "<br>";
         echo "skipped_norm_data: " . $row["skipped_norm_data"]. "<br>";
@@ -55,6 +58,9 @@ if ($result->num_rows > 0) {
         echo "p3_assigned: " . $row["p3_assigned"]. "<br>";
         echo "p4_assigned: " . $row["p4_assigned"]. "<br>";
         echo "p5_assigned: " . $row["p5_assigned"]. "<br>";
+        echo "train_p1_assigned: " . $row["train_p1_assigned"]. "<br>";
+        echo "train_p2_assigned: " . $row["train_p2_assigned"]. "<br>";
+        echo "train_p3_assigned: " . $row["train_p3_assigned"]. "<br>";
         echo "<br>";
     }
 } else {

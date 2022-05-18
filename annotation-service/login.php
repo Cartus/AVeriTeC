@@ -41,6 +41,9 @@ if ($credentials_match) {
     // update_table($conn, "UPDATE Annotators SET number_logins=number_logins+1, annotation_phase=? WHERE user_id=?", 'si', $phase, $row['user_id']);
     update_table($conn, "UPDATE Annotators SET number_logins=number_logins+1 WHERE user_id=?", 'i', $row['user_id']);
     echo(json_encode(["login" => true, "user_id" => $row['user_id'], "user_name" => $name, "is_admin" => $row['is_admin'],
+    "train_finished_norm_annotations" => $row['train_finished_norm_annotations'],
+    "train_finished_qa_annotations" => $row['train_finished_qa_annotations'],
+    "train_finished_valid_annotations" => $row['train_finished_valid_annotations'],
     "finished_norm_annotations"=> $row['finished_norm_annotations'], "finished_qa_annotations"=> $row['finished_qa_annotations'],
     "finished_valid_annotations"=> $row['finished_valid_annotations'], "finished_p4_annotations" => $row['finished_dispute_annotations'],
     "finished_p5_annotations" => $row['finished_post_annotations']]));
