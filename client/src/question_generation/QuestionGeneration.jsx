@@ -425,7 +425,7 @@ class QuestionGeneration extends React.Component {
 
     var current_idx = finished_annotations + 1 - Number(localStorage.pc);
 
-    let is_at_last_claim = current_idx === this.final_idx;
+    let is_at_last_claim = current_idx === this.state.final_idx;
     let should_use_finish_path = this.props.finish_path && is_at_last_claim
 
     // e.preventDefault();

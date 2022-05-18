@@ -161,8 +161,14 @@ class ClaimNormalization extends React.Component {
             current_idx = Number(localStorage.train_finished_norm_annotations) + 1 - Number(localStorage.pc);
         }     
     
-        let is_at_last_claim = current_idx === this.final_idx;
+        let is_at_last_claim = current_idx === this.state.final_idx;
         let should_use_finish_path = this.props.finish_path && is_at_last_claim
+
+        console.log("Submit stuff")
+        console.log(should_use_finish_path)
+        console.log(this.props.finish_path)
+        console.log(current_idx)
+        console.log(this.state.final_idx)
 
         // e.preventDefault();
         console.log("Valid: " + validate(this.state));
