@@ -200,6 +200,7 @@ class QuestionGeneration extends React.Component {
   }
 
   componentDidMount() {
+    localStorage.setItem('phase', "phase_2");
     var dataset = "annotation"
     if (this.props.dataset){
         dataset = this.props.dataset

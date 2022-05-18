@@ -231,6 +231,7 @@ class ClaimNormalization extends React.Component {
     }
 
     componentDidMount() {
+        localStorage.setItem('phase', "phase_1");
         var dataset = "annotation"
         if (this.props.dataset){
             dataset = this.props.dataset
@@ -364,6 +365,9 @@ class ClaimNormalization extends React.Component {
         }
 
         var current_idx = finished_annotations + 1 - Number(localStorage.pc);
+
+        console.log("Current idx:")
+        console.log(current_idx)
 
         if (!localStorage.getItem('login')) {
             return <Redirect to='/' />;

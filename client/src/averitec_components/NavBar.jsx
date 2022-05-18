@@ -58,6 +58,10 @@ class NavBar extends React.Component {
         }
         }
 
+        console.log("Dataset")
+        console.log(this.props.dataset)
+        console.log(phase)
+
         return (
             <EntryCard>
                 <PrevButton variant="contained" color="secondary" disabled={Number(localStorage.pc) === finished_num} onClick={this.props.onPrevious}>

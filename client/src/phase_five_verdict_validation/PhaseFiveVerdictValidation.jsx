@@ -123,6 +123,7 @@ class PhaseFiveVerdictValidation extends React.Component {
     }
 
     componentDidMount() {
+        localStorage.setItem('phase', "phase_5");
         var dataset = "annotation"
         if (this.props.dataset){
             dataset = this.props.dataset
