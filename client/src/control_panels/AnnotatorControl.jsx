@@ -147,22 +147,22 @@ class AnnotatorControl extends React.Component {
                         // total: 0
                     },
                     phase_1_training: {
-                        // done: response.data.phase_1.training_annotations_done,
-                        // total: response.data.phase_1.training_annotations_assigned
-                        done: 0,
-                        total: 0
+                        done: response.data.phase_1.training_annotations_done,
+                        total: response.data.phase_1.training_annotations_assigned
+                        // done: 0,
+                        // total: 0
                     },
                     phase_2_training: {
-                        // done: response.data.phase_2.training_annotations_done,
-                        // total: response.data.phase_2.training_annotations_assigned
-                        done: 0,
-                        total: 0
+                        done: response.data.phase_2.training_annotations_done,
+                        total: response.data.phase_2.training_annotations_assigned
+                        // done: 0,
+                        // total: 0
                     },
                     phase_3_training: {
-                        // done: response.data.phase_3.training_annotations_done,
-                        // total: response.data.phase_3.training_annotations_assigned
-                        done: 0,
-                        total: 0
+                        done: response.data.phase_3.training_annotations_done,
+                        total: response.data.phase_3.training_annotations_assigned
+                        // done: 0,
+                        // total: 0
                     },
                 }
             })
