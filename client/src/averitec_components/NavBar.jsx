@@ -48,6 +48,16 @@ class NavBar extends React.Component {
             finished_num = Number(localStorage.finished_p5_annotations);
         }
 
+        if (this.props.dataset === "training"){
+          if (phase === 'phase_1') {
+            finished_num = Number(localStorage.train_finished_norm_annotations);
+        } else if (phase === 'phase_2') {
+            finished_num = Number(localStorage.train_finished_qa_annotations);
+        } else if (phase === 'phase_3') {
+            finished_num = Number(localStorage.train_finished_valid_annotations);
+        }
+        }
+
         return (
             <EntryCard>
                 <PrevButton variant="contained" color="secondary" disabled={Number(localStorage.pc) === finished_num} onClick={this.props.onPrevious}>

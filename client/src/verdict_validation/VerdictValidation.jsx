@@ -400,6 +400,7 @@ class VerdictValidation extends React.Component {
                         doPrevious={this.doPrevious}
                         doSubmit={this.doSubmit}
                         doNext={this.doNext}
+                        dataset={dataset}
                     />
                     {this.state.userIsFirstVisiting ? <TourWrapper /> : ""}
                 </TourProvider>

@@ -104,7 +104,7 @@ class VerdictValidationBar extends React.Component {
                     {questionPairs}
                 </div>
                 {!this.props.posthocView ?
-                    <NavBar onPrevious={this.props.doPrevious} onSubmit={this.props.doSubmit} onNext={this.props.doNext} />
+                    <NavBar onPrevious={this.props.doPrevious} onSubmit={this.props.doSubmit} onNext={this.props.doNext} dataset={this.props.dataset} />
                     : ""
                 }
             </QABox>

@@ -612,6 +612,7 @@ class QuestionGeneration extends React.Component {
                 header={this.state.qa_pair_header}
                 footer={this.state.qa_pair_footer}
                 valid={this.state.valid}
+                dataset={dataset}
               />
               <SearchField claim_date={this.state.claim.claim_date} country_code={this.state.claim.country_code} />
             </QADataField>

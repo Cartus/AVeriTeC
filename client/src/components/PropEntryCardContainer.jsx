@@ -156,7 +156,7 @@ class EntryCardContainer extends React.Component {
         }
         {footerField}
         {!this.props.posthocView ?
-          <NavBar onPrevious={this.doPrevious} onSubmit={this.props.doSubmit} onNext={this.doNext} /> : ""
+          <NavBar onPrevious={this.doPrevious} onSubmit={this.props.doSubmit} onNext={this.doNext} dataset={this.props.dataset} /> : ""
         }
       </div>
     );

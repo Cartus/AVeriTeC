@@ -324,6 +324,7 @@ class MetadataEntryBar extends React.Component {
           doSubmit={this.props.doSubmit}
           handleFieldChange={this.props.handleFieldChange}
           posthocView={this.props.posthocView}
+          dataset={this.props.dataset}
         />
       </div>
     );
