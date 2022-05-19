@@ -29,6 +29,10 @@ if (mysqli_num_rows($result) > 0) {
     $stmt->execute();
     $result = $stmt->get_result();
 
+    $train_p1_assigned=20;
+    $train_p2_assigned=20; 
+    $train_p3_assigned=20; 
+
     if(mysqli_num_rows($result) > 0) {
         echo json_encode(["duplicated" => true]);
     } else {
@@ -42,7 +46,8 @@ if (mysqli_num_rows($result) > 0) {
                 p1_assigned, p2_assigned, p3_assigned, p4_assigned, p5_assigned,
                 train_p1_assigned, train_p2_assigned, train_p3_assigned, 
                 questions_p2, questions_p4) 
-                VALUES('$name', '$password', '$password_md5', 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 20, 20, 0, 0)";
+                VALUES('$name', '$password', '$password_md5', 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+                $train_p1_assigned, $train_p2_assigned, $train_p3_assigned, 0, 0)";
 
 
         if ($conn->query($sql) === TRUE) {
@@ -53,6 +58,10 @@ if (mysqli_num_rows($result) > 0) {
     }
 }
 else {
+    $train_p1_assigned=20;
+    $train_p2_assigned=20; 
+    $train_p3_assigned=20; 
+
     $sql2 = "INSERT INTO Annotators (user_name, password_cleartext, password_md5, is_admin, is_active, number_logins,
             finished_norm_annotations, finished_qa_annotations, finished_valid_annotations, finished_dispute_annotations, finished_post_annotations, 
             train_finished_norm_annotations, train_finished_qa_annotations, train_finished_valid_annotations, 
@@ -63,7 +72,8 @@ else {
             p1_assigned, p2_assigned, p3_assigned, p4_assigned, p5_assigned, 
             train_p1_assigned, train_p2_assigned, train_p3_assigned, 
             questions_p2, questions_p4) 
-            VALUES('$name', '$password', '$password_md5', 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 20, 20, 0, 0)";
+            VALUES('$name', '$password', '$password_md5', 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+            $train_p1_assigned, $train_p2_assigned, $train_p3_assigned, 0, 0)";
 
 
     if ($conn->query($sql2) === TRUE) {

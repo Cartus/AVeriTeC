@@ -54,7 +54,7 @@ if ($is_train == "training") {
                 $user_id_norm = 1;
 
                 $sql = "SELECT * FROM Train_Norm_Claims WHERE user_id_norm=? AND 
-                latest=1 AND nonfactual=0 AND Train_Norm_Claims.claim_norm_id NOT IN (SELECT QA_Map.claim_id FROM QA_Map WHERE user_id=?)";
+                latest=1 AND Train_Norm_Claims.claim_norm_id NOT IN (SELECT QA_Map.claim_id FROM QA_Map WHERE user_id=?)";
                 
                 $stmt= $conn->prepare($sql);
                 $stmt->bind_param("ii", $user_id_norm, $user_id);
@@ -215,12 +215,14 @@ if ($is_train == "training") {
     
                 $qa_latest = 1;
     
-                update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium, qa_latest, bool_explanation,
+                update_table($conn, "INSERT INTO Train_Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium, qa_latest, bool_explanation,
                 answer_second, source_url_second, answer_type_second, source_medium_second, bool_explanation_second, answer_third, source_url_third, answer_type_third,
-                source_medium_third, bool_explanation_third)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssisssssssssss', $row['claim_norm_id'], $user_id, $question, $answer,
+                source_medium_third, bool_explanation_third, phase_2_label, correction_claim)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssisssssssssssss', $row['claim_norm_id'], $user_id, $question, $answer,
                 $source_url, $answer_type, $source_medium, $qa_latest, $bool_explanation, $answer_second, $source_url_second, $answer_type_second, $source_medium_second,
-                $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third);
+                $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third,
+                $phase_2_label, $correction_claim);
+
             }
             
             $skipped = 0;
@@ -242,16 +244,22 @@ if ($is_train == "training") {
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
         }
-    
-        $qa_annotated_num = 0;
-        $sql = "SELECT * FROM Train_Norm_Claims WHERE user_id_qa=? AND qa_annotators_num!=? ORDER BY date_start_qa DESC LIMIT 1 OFFSET ?";
+
+        $sql = "SELECT claim_id, skipped FROM QA_Map WHERE user_id=? ORDER BY date_made DESC LIMIT 1 OFFSET ?";
         $stmt= $conn->prepare($sql);
-        $stmt->bind_param("iii", $user_id, $qa_annotated_num, $offset);
+        $stmt->bind_param("ii", $user_id, $offset);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row_map = $result->fetch_assoc();
+    
+        $sql_norm = "SELECT * FROM Train_Norm_Claims WHERE claim_norm_id=?";
+        $stmt = $conn->prepare($sql_norm);
+        $stmt->bind_param("i", $row_map['claim_id']);
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
     
-        if ($row['qa_skipped'] == 1) {
+        if ($row_map['skipped'] == 1) {
             $entries = array();
     
             $field_array['question'] = NULL;
@@ -271,11 +279,10 @@ if ($is_train == "training") {
                 "check_date" => $row['check_date'], "hyperlink" => $row['hyperlink'], "entries" => $entries, "label" => $row['phase_2_label'], "country_code" => $row['claim_loc'],
                 "claim_correction" => $row['correction_claim'], "should_correct" => $should_correct]);
             echo(json_encode($output));
-            update_table($conn, "UPDATE Assigned_Norms SET date_restart_cache_qa=? WHERE claim_norm_id=?", 'si', $date, $row['claim_norm_id']);
             $conn->close();
         } else {
             $qa_latest = 1;
-            $sql_qa = "SELECT * FROM Qapair WHERE qa_latest=? AND claim_norm_id=? AND user_id_qa=?";
+            $sql_qa = "SELECT * FROM Train_Qapair WHERE qa_latest=? AND claim_norm_id=? AND user_id_qa=?";
             $stmt = $conn->prepare($sql_qa);
             $stmt->bind_param("iii", $qa_latest, $row['claim_norm_id'], $user_id);
             $stmt->execute();
@@ -287,6 +294,8 @@ if ($is_train == "training") {
             $entries = array();
             if ($result_qa->num_rows > 0) {
                 while($row_qa = $result_qa->fetch_assoc()) {
+                    $label = $row_qa['phase_2_label'];
+                    $correction_claim = $row_qa['correction_claim'];
                     $count_string = "qa_pair_entry_field_" . (string)$counter;
                     $counter = $counter + 1;
                     $field_array = array();
@@ -334,18 +343,19 @@ if ($is_train == "training") {
                     $field_array['answers'] = $answers;
                     $entries[$count_string] = $field_array;
                 }
-    
-                if (empty($row['correction_claim'])){
+                
+                // echo "cao!";
+                // echo $correction_claim;
+                if (is_null($correction_claim)){
                     $should_correct = 0;
                 } else {
                     $should_correct = 1;
                 }
     
                 $output = (["claim_norm_id" => $row['claim_norm_id'], "web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
-                "check_date" => $row['check_date'], "hyperlink" => $row['hyperlink'], "entries" => $entries, "label" => $row['phase_2_label'], "country_code" => $row['claim_loc'],
-                "claim_correction" => $row['correction_claim'], "should_correct" => $should_correct]);
+                "check_date" => $row['check_date'], "hyperlink" => $row['hyperlink'], "entries" => $entries, "label" => $label, "country_code" => $row['claim_loc'],
+                "claim_correction" => $correction_claim, "should_correct" => $should_correct]);
                 echo(json_encode($output));
-                update_table($conn, "UPDATE Assigned_Norms SET date_restart_cache_qa=? WHERE claim_norm_id=?", 'si', $date, $row['claim_norm_id']);
             } else {
                 echo "0 Results";
             }
@@ -360,7 +370,7 @@ if ($is_train == "training") {
         }
     
         $qa_latest = 0;
-        $sql_update = "UPDATE Qapair SET qa_latest=? WHERE claim_norm_id=? AND user_id_qa=?";
+        $sql_update = "UPDATE Train_Qapair SET qa_latest=? WHERE claim_norm_id=? AND user_id_qa=?";
         $stmt= $conn->prepare($sql_update);
         $stmt->bind_param("iii", $qa_latest, $claim_norm_id, $user_id);
         $stmt->execute();
@@ -491,14 +501,15 @@ if ($is_train == "training") {
     
                 $qa_latest = 1;
     
-                update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium, qa_latest, bool_explanation,
-                answer_second, source_url_second, answer_type_second, source_medium_second, bool_explanation_second, answer_third, source_url_third, answer_type_third, source_medium_third, bool_explanation_third)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssisssssssssss', $claim_norm_id, $user_id, $question, $answer,
+                update_table($conn, "INSERT INTO Train_Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium, qa_latest, bool_explanation,
+                answer_second, source_url_second, answer_type_second, source_medium_second, bool_explanation_second, answer_third, source_url_third, answer_type_third, source_medium_third, 
+                bool_explanation_third, phase_2_label, correction_claim)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssisssssssssssss', $claim_norm_id, $user_id, $question, $answer,
                 $source_url, $answer_type, $source_medium, $qa_latest, $bool_explanation, $answer_second, $source_url_second, $answer_type_second, $source_medium_second,
-                $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third);
+                $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third, $phase_2_label, $correction_claim);
+        
             }
-    
-            update_table($conn, "UPDATE QA_Map SET skipped=0, date_made=? WHERE user_id=? AND claim_id=?", 'ssii', $date, $user_id, $claim_norm_id);
+            update_table($conn, "UPDATE QA_Map SET skipped=0, date_modified=? WHERE user_id=? AND claim_id=?", 'sii', $date, $user_id, $claim_norm_id);
         
             $conn->commit();
             echo "Resubmit Successfully!";

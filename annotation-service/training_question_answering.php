@@ -12,69 +12,145 @@ function update_table($conn, $sql_command, $types, ...$vars)
 
 $date = date("Y-m-d H:i:s");
 
-$db_params = parse_ini_file( dirname(__FILE__).'/train_params.ini', false);
+$db_params = parse_ini_file( dirname(__FILE__).'/db_params.ini', false);
 
 $json_result = file_get_contents("php://input");
 $_POST = json_decode($json_result, true);
 
-$user_id = $_POST['user_id'];
+
 $req_type = $_POST['req_type'];
 
-if ($req_type == "next-data"){
-
+if ($req_type == "load-data"){
+    $offset = $_POST['offset'];
+    
     $conn = new mysqli($db_params['servername'], $db_params['user'], $db_params['password'], $db_params['database']);
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
-
-    $sql = "SELECT user_id, current_qa_task, finished_qa_annotations FROM Annotators WHERE user_id = ?";
+    
+    $user_id = 1;
+    $sql = "SELECT * FROM VV_Map WHERE user_id=? ORDER BY date_made DESC LIMIT 1 OFFSET ?";
     $stmt= $conn->prepare($sql);
-    $stmt->bind_param("i", $user_id);
+    $stmt->bind_param("ii", $user_id, $offset);
     $stmt->execute();
     $result = $stmt->get_result();
+    $row_map = $result->fetch_assoc();
 
+    $justification = $row_map['justification'];
+    $label = $row_map['phase_3_label'];
+    $unreadable = $row_map['unreadable'];
+
+    $sql_norm = "SELECT * FROM Train_Norm_Claims WHERE claim_norm_id=?";
+    $stmt = $conn->prepare($sql_norm);
+    $stmt->bind_param("i", $row_map['claim_id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
     $row = $result->fetch_assoc();
 
-    if($result->num_rows > 0){
-        if ($row['current_qa_task'] != 0) {
-            $sql = "SELECT claim_norm_id, web_archive, cleaned_claim, speaker, source, check_date, claim_loc FROM Assigned_Norms WHERE claim_norm_id=?";
-            $stmt= $conn->prepare($sql);
-            $stmt->bind_param("i", $row['current_qa_task']);
+    $qa_latest = 1;
+    $user_id_qa = 1;
+    $sql_qa = "SELECT * FROM Train_Qapair WHERE qa_latest=? AND claim_norm_id=? AND user_id_qa=?";
+    $stmt = $conn->prepare($sql_qa);
+    $stmt->bind_param("iii", $qa_latest, $row['claim_norm_id'], $user_id_qa);
+    $stmt->execute();
+    $result_qa = $stmt->get_result();
+    
+    $questions = array();
+    $counter = 0;
+    if ($result_qa->num_rows > 0) {
+        while($row_qa = $result_qa->fetch_assoc()) {
+
+            $correction_claim = $row_qa['correction_claim'];
+
+            $counter = $counter + 1;
+            $count_string = "question_" . (string)$counter;
+            $question_array = array();
+            $question_array['text'] = $row_qa['question'];
+
+            $sql_problem = "SELECT * FROM Qaproblem WHERE qa_id=?";
+            $stmt = $conn->prepare($sql_problem);
+            $stmt->bind_param("i", $row_qa['qa_id']);
             $stmt->execute();
-            $result = $stmt->get_result();
-            $row = $result->fetch_assoc();
-            $output = (["web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
-            "check_date" => $row['check_date'], "country_code" => $row['claim_loc'], "claim_norm_id" => $row['claim_norm_id']]);
-            echo(json_encode($output));
-            update_table($conn, "UPDATE Assigned_Norms SET date_start_qa=? WHERE claim_norm_id=?", 'si', $date, $row['claim_norm_id']);
+            $result_problem = $stmt->get_result();
+            $row_problem = $result_problem->fetch_assoc();
 
-        } else {
-            $sql = "SELECT claim_norm_id, web_archive, cleaned_claim, speaker, source, check_date, claim_loc, user_id_norm FROM Assigned_Norms
-            WHERE user_id_qa=? AND qa_annotators_num=0 AND qa_skipped=0 ORDER BY RAND() LIMIT 1";
-            $stmt= $conn->prepare($sql);
-            $stmt->bind_param("i", $user_id);
-            $stmt->execute();
-            $result = $stmt->get_result();
+            $question_array['question_problems'] = explode(" [SEP] ", $row_problem['question_problems']);
 
-            $conn->begin_transaction();
-            try {
-                if(mysqli_num_rows($result) > 0) {
-                    $row = $result->fetch_assoc();
-                    $output = (["web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
-                    "check_date" => $row['check_date'], "country_code" => $row['claim_loc'], "claim_norm_id" => $row['claim_norm_id'], "user_id_norm" => $row['user_id_norm']]);
-                    echo(json_encode($output));
+            $answers = array();
+            $answers[0]['answer'] = $row_qa['answer'];
+            $answers[0]['source_url'] = $row_qa['source_url'];
+            $answers[0]['answer_type'] = $row_qa['answer_type'];
+            $answers[0]['source_medium'] = $row_qa['source_medium'];
 
-                    update_table($conn, "UPDATE Assigned_Norms SET date_start_qa=? WHERE claim_norm_id=?", 'si', $date, $row['claim_norm_id']);
-                    update_table($conn, "UPDATE Annotators SET current_qa_task=? WHERE user_id=?", 'ii', $row['claim_norm_id'], $user_id);
-                    $conn->commit();
-                }
-            }catch (mysqli_sql_exception $exception) {
-                $conn->rollback();
-                throw $exception;
+            if (!is_null($row_qa["bool_explanation"])){
+                $answers[0]['explanation'] = $row_qa['bool_explanation'];
             }
+
+            if (!is_null($row_problem['answer_problems'])){
+                $answers[0]['answer_problems'] = explode(" [SEP] ", $row_problem['answer_problems']);
+            }
+
+            if (!is_null($row_qa['answer_second'])){
+                $answers[1]['answer'] = $row_qa['answer_second'];
+            }
+            if (!is_null($row_qa['source_url_second'])){
+                $answers[1]['source_url'] = $row_qa['source_url_second'];
+            }
+            if (!is_null($row_qa['answer_type_second'])){
+                $answers[1]['answer_type'] = $row_qa['answer_type_second'];
+            }
+            if (!is_null($row_qa['source_medium_second'])){
+                $answers[1]['source_medium'] = $row_qa['source_medium_second'];
+            }
+            if (!is_null($row_qa["bool_explanation_second"])){
+                $answers[1]['explanation'] = $row_qa['bool_explanation_second'];
+            }
+
+            if (!is_null($row_problem['answer_problems_second'])){
+                $answers[1]['answer_problems'] = explode(" [SEP] ", $row_problem['answer_problems_second']);
+            }
+
+            if (!is_null($row_qa['answer_third'])){
+                $answers[2]['answer'] = $row_qa['answer_third'];
+            }
+            if (!is_null($row_qa['source_url_third'])){
+                $answers[2]['source_url'] = $row_qa['source_url_third'];
+            }
+            if (!is_null($row_qa['answer_type_third'])){
+                $answers[2]['answer_type'] = $row_qa['answer_type_third'];
+            }
+            if (!is_null($row_qa['source_medium_third'])){
+                $answers[2]['source_medium'] = $row_qa['source_medium_third'];
+            }
+            if (!is_null($row_qa["bool_explanation_third"])){
+                $answers[2]['explanation'] = $row_qa['bool_explanation_third'];
+            }
+
+            if (!is_null($row_problem['answer_problems_third'])){
+                $answers[2]['answer_problems'] = explode(" [SEP] ", $row_problem['answer_problems_third']);
+            }
+
+            $question_array['answers'] = $answers;
+            $questions[$count_string] = $question_array;
         }
+        $annotation = array();
+        $annotation['justification'] = $row_map['justification'];
+        $annotation['label'] = $row_map['phase_3_label'];
+        $annotation['unreadable'] = $row_map['unreadable'];
+
+        if (!is_null($correction_claim)){
+            $claim_text = $correction_claim;
+        } else {
+            $claim_text = $row['cleaned_claim'];
+        }
+
+        $output = (["claim_norm_id" => $row['claim_norm_id'], "claim_text" => $claim_text, "speaker" => $row['speaker'], "claim_source" => $row['source'],
+        "claim_date" => $row['check_date'], "hyperlink" => $row['hyperlink'],  "questions" => $questions, "annotation" => $annotation, "country_code" => $row['claim_loc']]);
+        echo(json_encode($output));
+    } else {
+        echo "0 Results";
     }
     $conn->close();
-} 
+}
 
 ?>

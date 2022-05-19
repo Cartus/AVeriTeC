@@ -263,10 +263,10 @@ if ($is_train == "training") {
 
                 $output = (["claim_id" => $row['claim_id'], "web_archive" => $web_archive, "entries" => $entries]);
                 echo(json_encode($output));
-        } else {
-            echo "0 Results";
-        }
-        $conn->close();
+            } else {
+                echo "0 Results";
+            }
+            $conn->close();
         }
     } else if ($req_type == "resubmit-data") {
         $claim_id = $_POST['claim_id'];
