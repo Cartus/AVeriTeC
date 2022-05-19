@@ -124,7 +124,18 @@ class TrainingOverlay extends React.Component {
   }
 
   canMoveForward() {
-    let trainingClaimsInPhase = 5 // TODO: Just hardcode the actual number of training claims here individually for each phase, it's a bit hacky but it'll save so much time
+    let trainingClaimsInPhase = 0
+    if (this.props.phase == 1) {
+      trainingClaimsInPhase = Number(localStorage.train_finished_norm_annotations)
+    } else if (this.props.phase == 2) {
+      trainingClaimsInPhase = Number(localStorage.train_finished_qa_annotations)
+    } else if (this.props.phase == 3) {
+      trainingClaimsInPhase = Number(localStorage.train_finished_valid_annotations)
+    }
+
+    console.log("training claims:")
+    console.log(trainingClaimsInPhase)
+
     return this.state.shown_annotation_id + 1 < trainingClaimsInPhase
   }
 
@@ -572,7 +583,7 @@ class TrainingOverlay extends React.Component {
                 <NextButton onClick={this.moveForward}><NavigateNextIcon fontSize="large" style={{ color: 'white' }} /></NextButton>
                 :
                 this.props.finish_path? 
-                <WhiteLink href={this.props.finish_path}><ContinueTypographBox variant="h6" component="div">Continue</ContinueTypographBox></WhiteLink> : 
+                <WhiteLink href={this.props.finish_path}><ContinueTypographBox variant="h6" component="div">Continue Training</ContinueTypographBox></WhiteLink> : 
                 <NextButton onClick={() => { }}><NavigateNextIcon fontSize="large" disabled style={{ color: 'grey' }} /></NextButton>
               }
             </BarPartBox>

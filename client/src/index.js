@@ -120,6 +120,9 @@ const routing = (
           <Route path="/training/phase_1/complete">
             <PostTrainingControl phase={1}/>
           </Route>
+          <Route path="/training/phase_1/review">
+            <TrainingOverlay phase={1}/>
+          </Route>
 
           <Route path="/training/phase_2/task_1_start">
             <PreTrainingControl phase={2} taskLink="/training/phase_2/task_1"/>
@@ -142,6 +145,9 @@ const routing = (
           <Route path="/training/phase_2/complete">
             <PostTrainingControl phase={2}/>
           </Route>
+          <Route path="/training/phase_2/review">
+            <TrainingOverlay phase={2}/>
+          </Route>
 
           <Route path="/training/phase_3/task_1_start">
             <PreTrainingControl phase={3} taskLink="/training/phase_3/task_1"/>
@@ -163,6 +169,9 @@ const routing = (
           </Route>
           <Route path="/training/phase_3/complete">
             <PostTrainingControl phase={3}/>
+          </Route>
+          <Route path="/training/phase_2/review">
+            <TrainingOverlay phase={2}/>
           </Route>
       </Switch>
   </Router>
