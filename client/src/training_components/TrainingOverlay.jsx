@@ -172,7 +172,7 @@ class TrainingOverlay extends React.Component {
           user_id: localStorage.getItem('user_id'),
           dataset: 'training', // I set it up like this to make code reuse easier. Is it right?
           req_type: 'reload-data',
-          offset: this.state.shown_annotation_id
+          offset: Number(localStorage.train_finished_valid_annotations) - 1 - this.state.shown_annotation_id
         }
       };
 
@@ -215,7 +215,7 @@ class TrainingOverlay extends React.Component {
         data: {
           user_id: localStorage.getItem('user_id'),
           req_type: 'load-data',
-          offset: this.state.shown_annotation_id
+          offset: Number(localStorage.train_finished_valid_annotations) - 1 - this.state.shown_annotation_id
         }
       };
 
@@ -271,7 +271,7 @@ class TrainingOverlay extends React.Component {
           user_id: localStorage.getItem('user_id'),
           dataset: 'training', // I set it up like this to make code reuse easier. Is it right?
           req_type: 'reload-data',
-          offset: this.state.shown_annotation_id
+          offset: Number(localStorage.train_finished_qa_annotations) - 1 - this.state.shown_annotation_id
         }
       };
 
@@ -336,7 +336,7 @@ class TrainingOverlay extends React.Component {
         data: {
           user_id: localStorage.getItem('user_id'),
           req_type: 'load-data',
-          offset: this.state.shown_annotation_id
+          offset: Number(localStorage.train_finished_qa_annotations) - 1 - this.state.shown_annotation_id
         }
       };
 
@@ -387,7 +387,9 @@ class TrainingOverlay extends React.Component {
 
   fillPhaseOneData() {
     if (localStorage.getItem('login')) {
+      console.log("Claim id")
       console.log(this.state.shown_annotation_id);
+      console.log(Number(localStorage.train_finished_norm_annotations) - 1 - this.state.shown_annotation_id);
 
       // Load annotator training data:
 
@@ -399,7 +401,7 @@ class TrainingOverlay extends React.Component {
           user_id: localStorage.getItem('user_id'),
           dataset: 'training', // I set it up like this to make code reuse easier. Is it right?
           req_type: 'reload-data',
-          offset: this.state.shown_annotation_id
+          offset: Number(localStorage.train_finished_norm_annotations) - 1 - this.state.shown_annotation_id
         }
       };
 
@@ -451,7 +453,7 @@ class TrainingOverlay extends React.Component {
         data: {
           user_id: localStorage.getItem('user_id'),
           req_type: 'load-data',
-          offset: this.state.shown_annotation_id
+          offset: Number(localStorage.train_finished_norm_annotations) - 1 - this.state.shown_annotation_id
         }
       };
 
