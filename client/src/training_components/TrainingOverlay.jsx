@@ -221,8 +221,9 @@ class TrainingOverlay extends React.Component {
 
       axios(request).then((response) => {
         if (response.data) {
-          console.log("Recevied response")
+          console.log("Recevied p3 response")
           console.log(response.data);
+          console.log(response.data.annotations)
           
 
           var gold_annotations = response.data.annotations.map(a => {

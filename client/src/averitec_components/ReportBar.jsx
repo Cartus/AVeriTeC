@@ -40,6 +40,11 @@ class ReportBar extends React.Component {
   }
 
   async onReport() {
+    var dataset = "annotation"
+    if (this.props.dataset){
+        dataset = this.props.dataset
+    }
+
     let phase = localStorage.getItem('phase');
     if (phase === 'phase_1') {
       var request = {
@@ -47,6 +52,7 @@ class ReportBar extends React.Component {
         baseURL: config.api_url,
         url: "/claim_norm.php",
         data: {
+          dataset: dataset,
           user_id: localStorage.getItem('user_id'),
           req_type: 'skip-data',
           claim_id: localStorage.claim_id
@@ -64,6 +70,7 @@ class ReportBar extends React.Component {
         baseURL: config.api_url,
         url: "/question_answering.php",
         data: {
+          dataset: dataset,
           user_id: localStorage.getItem('user_id'),
           req_type: 'skip-data',
           claim_norm_id: localStorage.claim_norm_id
