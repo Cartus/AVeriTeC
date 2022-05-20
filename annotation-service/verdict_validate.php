@@ -391,9 +391,9 @@ if ($is_train == "training") {
                 $question_array = array();
                 $question_array['text'] = $row_qa['question'];
 
-                $sql_problem = "SELECT * FROM Qaproblem WHERE qa_id=?";
+                $sql_problem = "SELECT * FROM Qaproblem WHERE qa_id=? AND user_id_qa=?";
                 $stmt = $conn->prepare($sql_problem);
-                $stmt->bind_param("i", $row_qa['qa_id']);
+                $stmt->bind_param("i", $row_qa['qa_id'], $user_id);
                 $stmt->execute();
                 $result_problem = $stmt->get_result();
                 $row_problem = $result_problem->fetch_assoc();

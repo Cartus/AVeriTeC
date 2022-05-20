@@ -69,9 +69,9 @@ if ($req_type == "load-data"){
             $question_array = array();
             $question_array['text'] = $row_qa['question'];
 
-            $sql_problem = "SELECT * FROM Qaproblem WHERE qa_id=?";
+            $sql_problem = "SELECT * FROM Qaproblem WHERE qa_id=? and user_id_qa=?";
             $stmt = $conn->prepare($sql_problem);
-            $stmt->bind_param("i", $row_qa['qa_id']);
+            $stmt->bind_param("i", $row_qa['qa_id'], $user_id);
             $stmt->execute();
             $result_problem = $stmt->get_result();
             $row_problem = $result_problem->fetch_assoc();
@@ -148,10 +148,7 @@ if ($req_type == "load-data"){
 
         array_push($gold_array, ["claim_norm_id" => $row['claim_norm_id'], "claim_text" => $claim_text, "speaker" => $row['speaker'], "claim_source" => $row['source'],
         "claim_date" => $row['check_date'], "hyperlink" => $row['hyperlink'],  "questions" => $questions, "annotation" => $annotation, "country_code" => $row['claim_loc']]);
-
-    } else {
-        echo "0 Results";
-    }
+    } 
 
     $user_id = 2;
 
@@ -193,9 +190,9 @@ if ($req_type == "load-data"){
             $question_array = array();
             $question_array['text'] = $row_qa['question'];
 
-            $sql_problem = "SELECT * FROM Qaproblem WHERE qa_id=?";
+            $sql_problem = "SELECT * FROM Qaproblem WHERE qa_id=? AND user_id_qa=?";
             $stmt = $conn->prepare($sql_problem);
-            $stmt->bind_param("i", $row_qa['qa_id']);
+            $stmt->bind_param("i", $row_qa['qa_id'], $user_id);
             $stmt->execute();
             $result_problem = $stmt->get_result();
             $row_problem = $result_problem->fetch_assoc();
@@ -273,9 +270,7 @@ if ($req_type == "load-data"){
         array_push($gold_array, ["claim_norm_id" => $row['claim_norm_id'], "claim_text" => $claim_text, "speaker" => $row['speaker'], "claim_source" => $row['source'],
         "claim_date" => $row['check_date'], "hyperlink" => $row['hyperlink'],  "questions" => $questions, "annotation" => $annotation, "country_code" => $row['claim_loc']]);
 
-    } else {
-        echo "0 Results";
-    }
+    } 
 
     $gold = (["annotations" => $gold_array]);
     echo(json_encode($gold));
