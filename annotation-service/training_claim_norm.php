@@ -39,11 +39,14 @@ if ($req_type == "load-data"){
     $row = $result->fetch_assoc();
 
     $latest = 1;
-    $sql_norm = "SELECT * FROM Train_Norm_Claims WHERE latest=? AND claim_id=? AND user_id_norm=?";
+    $user_id2 = 2;
+    $sql_norm = "SELECT * FROM Train_Norm_Claims WHERE latest=? AND claim_id=? AND (user_id_norm=? OR user_id_norm=?)";
     $stmt = $conn->prepare($sql_norm);
-    $stmt->bind_param("iii", $latest, $row['claim_id'], $user_id);
+    $stmt->bind_param("iiii", $latest, $row['claim_id'], $user_id, $user_id2);
     $stmt->execute();
     $result_norm = $stmt->get_result();
+
+    $gold_array = array();
 
     $entries = array();
     $counter = 0;
@@ -65,10 +68,13 @@ if ($req_type == "load-data"){
             $norm_array['location'] = $row_norm['claim_loc'];
             $entries[$count_string] = $norm_array;
             $web_archive = $row_norm['web_archive'];
+
+            // array_push($gold_array, ["claim_id" => $row['claim_id'], "web_archive" => $web_archive, "entries" => $entries]);
         }
 
-        $output = (["claim_id" => $row['claim_id'], "web_archive" => $web_archive, "entries" => $entries]);
-        echo(json_encode($output));
+        $output = array(["claim_id" => $row['claim_id'], "web_archive" => $web_archive, "entries" => $entries]);
+        $gold = (["annotations" => $output]);
+        echo(json_encode($gold));
     } else {
         echo "0 Results";
     }

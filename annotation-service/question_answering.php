@@ -344,8 +344,6 @@ if ($is_train == "training") {
                     $entries[$count_string] = $field_array;
                 }
                 
-                // echo "cao!";
-                // echo $correction_claim;
                 if (is_null($correction_claim)){
                     $should_correct = 0;
                 } else {
