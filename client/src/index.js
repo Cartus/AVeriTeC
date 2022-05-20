@@ -170,8 +170,8 @@ const routing = (
           <Route path="/training/phase_3/complete">
             <PostTrainingControl phase={3}/>
           </Route>
-          <Route path="/training/phase_2/review">
-            <TrainingOverlay phase={2}/>
+          <Route path="/training/phase_3/review">
+            <TrainingOverlay phase={3}/>
           </Route>
       </Switch>
   </Router>
