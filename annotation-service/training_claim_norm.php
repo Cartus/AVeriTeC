@@ -31,7 +31,7 @@ if ($req_type == "load-data"){
     // TODO: gold user id
     $user_id = 1;
 
-    $sql = "SELECT claim_id FROM Claim_Map WHERE user_id=? ORDER BY date_made DESC LIMIT 1 OFFSET ?";
+    $sql = "SELECT claim_id FROM Claim_Map WHERE user_id=? ORDER BY date_made ASC LIMIT 1 OFFSET ?";
     $stmt= $conn->prepare($sql);
     $stmt->bind_param("ii", $user_id, $offset);
     $stmt->execute();
@@ -39,10 +39,12 @@ if ($req_type == "load-data"){
     $row = $result->fetch_assoc();
 
     $latest = 1;
-    $user_id2 = 2;
-    $sql_norm = "SELECT * FROM Train_Norm_Claims WHERE latest=? AND claim_id=? AND (user_id_norm=? OR user_id_norm=?)";
+//     $user_id2 = 2;
+    $sql_norm = "SELECT * FROM Train_Norm_Claims WHERE latest=? AND claim_id=? AND user_id_norm=?";
+//     $sql_norm = "SELECT * FROM Train_Norm_Claims WHERE latest=? AND claim_id=? AND (user_id_norm=? OR user_id_norm=?)";
     $stmt = $conn->prepare($sql_norm);
-    $stmt->bind_param("iiii", $latest, $row['claim_id'], $user_id, $user_id2);
+//     $stmt->bind_param("iiii", $latest, $row['claim_id'], $user_id, $user_id2);
+    $stmt->bind_param("iii", $latest, $row['claim_id'], $user_id);
     $stmt->execute();
     $result_norm = $stmt->get_result();
 

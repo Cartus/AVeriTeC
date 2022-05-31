@@ -31,7 +31,7 @@ if ($req_type == "load-data"){
     // TODO: gold claim
     $user_id = 1;
 
-    $sql = "SELECT claim_id, skipped FROM QA_Map WHERE user_id=? ORDER BY date_made DESC LIMIT 1 OFFSET ?";
+    $sql = "SELECT claim_id, skipped FROM QA_Map WHERE user_id=? ORDER BY date_made ASC LIMIT 1 OFFSET ?";
     $stmt= $conn->prepare($sql);
     $stmt->bind_param("ii", $user_id, $offset);
     $stmt->execute();
