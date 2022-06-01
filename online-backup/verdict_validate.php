@@ -129,8 +129,8 @@ if ($is_train == "training") {
                     echo "0 Results";
                 }
     
-            } else {
-                $user_id_norm = 2;
+	    } else {
+		    $user_id_norm = 2;
                 $sql = "SELECT * FROM Train_Norm_Claims WHERE user_id_norm=? AND Train_Norm_Claims.claim_norm_id NOT IN (SELECT VV_Map.claim_id FROM VV_Map WHERE user_id=?)";
     
                 $stmt= $conn->prepare($sql);
