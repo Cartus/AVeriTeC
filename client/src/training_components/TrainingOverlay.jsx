@@ -159,7 +159,9 @@ class TrainingOverlay extends React.Component {
 
   fillPhaseThreeData() {
     if (localStorage.getItem('login')) {
+      console.log("p3 info")
       console.log(this.state.shown_annotation_id);
+      console.log(Number(localStorage.train_finished_valid_annotations) - 1 - this.state.shown_annotation_id)
 
       // Load annotator data:
       // TODO
@@ -215,7 +217,7 @@ class TrainingOverlay extends React.Component {
         data: {
           user_id: localStorage.getItem('user_id'),
           req_type: 'load-data',
-          offset: Number(localStorage.train_finished_valid_annotations) - 1 - this.state.shown_annotation_id
+          offset: this.state.shown_annotation_id
         }
       };
 
@@ -223,8 +225,7 @@ class TrainingOverlay extends React.Component {
         if (response.data) {
           console.log("Recevied p3 response")
           console.log(response.data);
-          console.log(response.data.annotations)
-          
+          console.log(response.data.annotations)          
 
           var gold_annotations = response.data.annotations.map(a => {
             let new_claim = {
@@ -337,7 +338,7 @@ class TrainingOverlay extends React.Component {
         data: {
           user_id: localStorage.getItem('user_id'),
           req_type: 'load-data',
-          offset: Number(localStorage.train_finished_qa_annotations) - 1 - this.state.shown_annotation_id
+          offset: this.state.shown_annotation_id
         }
       };
 
@@ -408,7 +409,7 @@ class TrainingOverlay extends React.Component {
 
       axios(request).then((response) => {
         if (response.data) {
-          console.log("Received response:")
+          console.log("Received p1 user response:")
           console.log(response.data);
           const new_claim = {
             web_archive: response.data.web_archive
@@ -454,7 +455,7 @@ class TrainingOverlay extends React.Component {
         data: {
           user_id: localStorage.getItem('user_id'),
           req_type: 'load-data',
-          offset: Number(localStorage.train_finished_norm_annotations) - 1 - this.state.shown_annotation_id
+          offset: this.state.shown_annotation_id
         }
       };
 
