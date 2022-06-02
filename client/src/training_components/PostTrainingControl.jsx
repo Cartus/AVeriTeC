@@ -18,10 +18,10 @@ export default function PostTrainingControl(props) {
 
 
     desc_text += "You can now close this window. "
-    desc_text += "Your annotations will be reviewed, and TODO."
+    desc_text += "Your annotations will be reviewed by our team. You can also review your full set of annotations using the button below, or by accessing the review function from the control panel."
 
     return <NoteScreen header={header_text}>
-        <TaskSummaryBox>
+        <TaskSummaryBox taskLink={props.reviewLink} continue={true}>
             {desc_text}
         </TaskSummaryBox>
     </NoteScreen>;
