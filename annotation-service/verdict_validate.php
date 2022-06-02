@@ -562,7 +562,7 @@ if ($is_train == "training") {
             }
     
             update_table($conn, "UPDATE VV_Map SET date_modified=?, phase_3_label=?, justification=?, unreadable=?
-            WHERE claim_id=?",'sssii', $date, $phase_3_label, $justification, $unreadable, $claim_norm_id);
+            WHERE claim_id=? and user_id=?",'sssiii', $date, $phase_3_label, $justification, $unreadable, $claim_norm_id, $user_id);
 
             $conn->commit();
             echo "Resubmit Successfully!";
