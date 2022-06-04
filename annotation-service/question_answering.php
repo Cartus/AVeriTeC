@@ -524,6 +524,7 @@ if ($is_train == "training") {
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
         }
+        $skipped = 1;
     
         $conn->begin_transaction();
         try {
