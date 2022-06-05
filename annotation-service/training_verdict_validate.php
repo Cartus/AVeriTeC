@@ -154,7 +154,7 @@ if ($req_type == "load-data"){
 
     $sql = "SELECT * FROM VV_Map WHERE user_id=? AND claim_id=?";
     $stmt= $conn->prepare($sql);
-    $stmt->bind_param("iii", $user_id, $row_map['claim_id']);
+    $stmt->bind_param("ii", $user_id, $row_map['claim_id']);
     $stmt->execute();
     $result = $stmt->get_result();
     $row_map = $result->fetch_assoc();
