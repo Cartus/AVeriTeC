@@ -29,7 +29,7 @@ if ($req_type == "load-data"){
     }
 
     // TODO: gold claim
-    $user_id = 1;
+    $user_id = 2;
 
     $sql = "SELECT claim_id, skipped FROM QA_Map WHERE user_id=? ORDER BY date_made ASC LIMIT 1 OFFSET ?";
     $stmt= $conn->prepare($sql);
@@ -121,7 +121,7 @@ if ($req_type == "load-data"){
         "claim_correction" => $correction_claim, "should_correct" => $should_correct]);
     } 
 
-    $user_id = 2;
+    $user_id = 9;
     $sql_qa = "SELECT * FROM Train_Qapair WHERE qa_latest=? AND claim_norm_id=? AND user_id_qa=?";
     $stmt = $conn->prepare($sql_qa);
     $stmt->bind_param("iii", $qa_latest, $row['claim_norm_id'], $user_id);
