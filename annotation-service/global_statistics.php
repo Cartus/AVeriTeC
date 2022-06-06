@@ -118,11 +118,17 @@ $row_p5 = $result->fetch_assoc();
 $pending_claims_p5 = $row_p5['COUNT(*)'];
 
 if ($result->num_rows > 0) {
-    $p1_assigned = round($row['SUM(p1_assigned)'] / max($active_users_p1, 1), 2);
-    $p2_assigned = round($row['SUM(p2_assigned)'] / max($active_users_p2, 1), 2);
-    $p3_assigned = round($row['SUM(p3_assigned)'] / max($active_users_p3, 1), 2);
-    $p4_assigned = round($row['SUM(p4_assigned)'] / max($active_users_p4, 1), 2);
-    $p5_assigned = round($row['SUM(p5_assigned)'] / max($active_users_p5, 1), 2);
+    // $p1_assigned = round($row['SUM(p1_assigned)'] / max($active_users_p1, 1), 2);
+    // $p2_assigned = round($row['SUM(p2_assigned)'] / max($active_users_p2, 1), 2);
+    // $p3_assigned = round($row['SUM(p3_assigned)'] / max($active_users_p3, 1), 2);
+    // $p4_assigned = round($row['SUM(p4_assigned)'] / max($active_users_p4, 1), 2);
+    // $p5_assigned = round($row['SUM(p5_assigned)'] / max($active_users_p5, 1), 2);
+
+    $p1_assigned = $row['SUM(p1_assigned)'];
+    $p2_assigned = $row['SUM(p2_assigned)'];
+    $p3_assigned = $row['SUM(p3_assigned)'];
+    $p4_assigned = $row['SUM(p4_assigned)'];
+    $p5_assigned = $row['SUM(p5_assigned)'];
 
     $p1_annotations_done = round($row['SUM(finished_norm_annotations)'] / max($active_users_p1, 1), 2);
     $p2_annotations_done = round($row['SUM(finished_qa_annotations)'] / max($active_users_p2, 1), 2);
