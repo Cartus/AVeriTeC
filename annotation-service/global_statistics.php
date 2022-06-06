@@ -61,15 +61,15 @@ $row = $result->fetch_assoc();
 $active_users_p5 = $row['COUNT(*)'];
 // echo $active_users_p3;
 
-$sql = "SELECT SUM(p1_time_sum), SUM(p2_time_sum), SUM(p3_time_sum), SUM(p4_time_sum), SUM(p5_time_sum), 
+$sql = "SELECT SUM(p1_time_sum), SUM(p2_time_sum), SUM(p3_time_sum), SUM(p4_time_sum), SUM(p5_time_sum),
         SUM(p1_load_sum), SUM(p2_load_sum), SUM(p4_load_sum),
         SUM(finished_norm_annotations), SUM(finished_qa_annotations), SUM(finished_valid_annotations),
         SUM(finished_dispute_annotations), SUM(finished_post_annotations),
-        SUM(skipped_norm_data), SUM(skipped_qa_data), 
-        SUM(p1_timed_out), SUM(p2_timed_out), SUM(p4_timed_out), 
+        SUM(skipped_norm_data), SUM(skipped_qa_data),
+        SUM(p1_timed_out), SUM(p2_timed_out), SUM(p4_timed_out),
         SUM(p1_speed_trap), SUM(p2_speed_trap), SUM(p3_speed_trap), SUM(p4_speed_trap), SUM(p5_speed_trap),
-        SUM(p1_assigned), SUM(p2_assigned), SUM(p3_assigned), SUM(p4_assigned), SUM(p5_assigned), 
-        SUM(questions_p2), SUM(questions_p4) 
+        SUM(p1_assigned), SUM(p2_assigned), SUM(p3_assigned), SUM(p4_assigned), SUM(p5_assigned),
+        SUM(questions_p2), SUM(questions_p4)
         FROM Annotators";
 
 $stmt= $conn->prepare($sql);
@@ -130,8 +130,11 @@ if ($result->num_rows > 0) {
     $p4_annotations_done = round($row['SUM(finished_dispute_annotations)'] / max($active_users_p4, 1), 2);
     $p5_annotations_done = round($row['SUM(finished_post_annotations)'] / max($active_users_p5, 1), 2);
 
-    $p1_claims_skipped = round($row['SUM(skipped_norm_data)'] / max($active_users_p1, 1), 2);
-    $p2_claims_skipped = round($row['SUM(skipped_qa_data)'] / max($active_users_p2, 1), 2);
+    $p1_skipped_percent = round($row['SUM(skipped_norm_data)'] / max($active_users_p1, 1), 2);
+    $p2_skipped_percent = round($row['SUM(skipped_qa_data)'] / max($active_users_p2, 1), 2);
+
+    $p1_claims_skipped = $row['SUM(skipped_norm_data)'];
+    $p2_claims_skipped = $row['SUM(skipped_qa_data)'];
 
     $p1_timed_out = round($row['SUM(p1_timed_out)'] / max($active_users_p1, 1), 2);
     $p2_timed_out = round($row['SUM(p2_timed_out)'] / max($active_users_p2, 1), 2);
@@ -156,8 +159,8 @@ if ($result->num_rows > 0) {
     $p2_average_questions = round($row['SUM(questions_p2)'] / max($row['SUM(finished_dispute_annotations)'], 1), 2);
     $p4_average_questions = round($row['SUM(questions_p4)'] / max($row['SUM(finished_post_annotations)'], 1), 2);
 
-    $phase1 = (["pending_claims" => $pending_claims_p1, "assigned_claims" => $p1_assigned, "speed_traps_hit" => $p1_speed_trap, "annotations_timed_out" => $p1_timed_out, "skipped_claims" => $p1_claims_skipped, "completed_claims" => $p1_annotations_done, "average_load_time" => $p1_average_load_time, "average_task_time" => $p1_average_task_time]);
-    $phase2 = (["average_questions_p2" => $p2_average_questions, "pending_claims" => $pending_claims_p2, "assigned_claims" => $p2_assigned, "speed_traps_hit" => $p2_speed_trap, "annotations_timed_out" => $p2_timed_out, "skipped_claims" => $p2_claims_skipped, "completed_claims" => $p2_annotations_done, "average_load_time" => $p2_average_load_time, "average_task_time" => $p2_average_task_time]);
+    $phase1 = (["skipped_claims_percentage" => $p1_skipped_percent, "pending_claims" => $pending_claims_p1, "assigned_claims" => $p1_assigned, "speed_traps_hit" => $p1_speed_trap, "annotations_timed_out" => $p1_timed_out, "skipped_claims" => $p1_claims_skipped, "completed_claims" => $p1_annotations_done, "average_load_time" => $p1_average_load_time, "average_task_time" => $p1_average_task_time]);
+    $phase2 = (["skipped_claims_percentage" => $p2_skipped_percent, "average_questions_p2" => $p2_average_questions, "pending_claims" => $pending_claims_p2, "assigned_claims" => $p2_assigned, "speed_traps_hit" => $p2_speed_trap, "annotations_timed_out" => $p2_timed_out, "skipped_claims" => $p2_claims_skipped, "completed_claims" => $p2_annotations_done, "average_load_time" => $p2_average_load_time, "average_task_time" => $p2_average_task_time]);
     $phase3 = (["pending_claims" => $pending_claims_p3, "assigned_claims" => $p3_assigned, "speed_traps_hit" => $p3_speed_trap, "completed_claims" => $p3_annotations_done, "average_task_time" => $p3_average_task_time]);
     $phase4 = (["average_questions_p4" => $p4_average_questions, "pending_claims" => $pending_claims_p4, "assigned_claims" => $p4_assigned, "speed_traps_hit" => $p4_speed_trap, "annotations_timed_out" => $p4_timed_out, "completed_claims" => $p4_annotations_done, "average_load_time" => $p4_average_load_time, "average_task_time" => $p4_average_task_time]);
     $phase5 = (["pending_claims" => $pending_claims_p5, "assigned_claims" => $p5_assigned, "speed_traps_hit" => $p5_speed_trap, "completed_claims" => $p5_annotations_done, "average_task_time" => $p5_average_task_time]);
