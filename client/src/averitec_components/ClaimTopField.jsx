@@ -152,7 +152,7 @@ class ClaimTopField extends React.Component {
                 <TextRightEntryDiv>
                 <CheckboxBox data-tour="should_correct" control={<Checkbox  name="should_correct" checked={this.props.data["should_correct"]? this.props.data["should_correct"] : false} onChange={this.props.posthocView ? () => { } : this.handleCheckboxChange} />} label="I think the claim has been formatted wrong. It should be:" />
                 {
-                  (this.props.data["should_correct"] && !this.props.posthoc_view)?
+                  (this.props.data["should_correct"] && !this.props.posthocView)?
                   <TextFieldWithTooltip name='claim_correction' label="Correction" multiline rows={3} value={this.props.data["claim_correction"]} validator={notEmptyValidator} valid={this.props.valid} onChange={this.handleFieldChange} required tooltip="A correction for the claim text, if you think it is necessary"/>
                   :
                   <TextFieldWithTooltip name='claim_correction' label="Correction" multiline rows={3} value={this.props.data["claim_correction"]} InputProps={{readOnly: true}} variant="filled" tooltip="A correction for the claim text, if you think it is necessary."/>

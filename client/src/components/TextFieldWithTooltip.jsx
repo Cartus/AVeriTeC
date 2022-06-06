@@ -53,7 +53,7 @@ export default function TextFieldWithTooltip(props){
         var error = false
       }
 
-    var maxCharacters = props.maxCharacters? props.maxCharacters : (props.rows && props.rows > 1? 2500: 500);
+    var maxCharacters = props.maxCharacters? props.maxCharacters : (props.rows && props.rows > 1? 2000: 500);
     var tooltip = props.tooltip
 
     if (tooltip.endsWith(".")){

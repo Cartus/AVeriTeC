@@ -165,10 +165,10 @@ class AnswerCard extends React.Component {
 
     if (boolean) {
       answer_field = <div data-tour="answer_textfield">
-        {this.props.posthocView ? 
-        <TextFieldWithTooltip InputProps={this.props.posthocView ? { readOnly: true } : undefined} variant={this.props.posthocView ? "filled" : undefined} name="answer" label="Answer" required value={this.props.data["answer"]} tooltip="Please write the answer here. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence." />
-        : 
-        <SelectWithTooltip name="answer" label="Answer" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["answer"]} onChange={this.props.handleFieldChange} items={["Yes", "No"]} tooltip="Please write the answer here. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence." />
+        {this.props.posthocView ?
+          <TextFieldWithTooltip InputProps={this.props.posthocView ? { readOnly: true } : undefined} variant={this.props.posthocView ? "filled" : undefined} name="answer" label="Answer" required value={this.props.data["answer"]} tooltip="Please write the answer here. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence." />
+          :
+          <SelectWithTooltip name="answer" label="Answer" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["answer"]} onChange={this.props.handleFieldChange} items={["Yes", "No"]} tooltip="Please write the answer here. Use the links in the fact checking article, or any article you find using our search engine below, to support your answer with evidence." />
         }
         {this.props.posthocView ? <SpacingDiv /> : ""}
         <TextFieldWithTooltip InputProps={this.props.posthocView ? { readOnly: true } : undefined} variant={this.props.posthocView ? "filled" : undefined} name='bool_explanation' label="Explanation" validator={notEmptyValidator} valid={this.props.valid} required value={this.props.data["bool_explanation"]} multiline rows={5} onChange={this.props.handleFieldChange} tooltip="Please write a short explanation for your yes/no answer here." />
@@ -202,10 +202,15 @@ class AnswerCard extends React.Component {
           {this.props.posthocView ? <SpacingDiv /> : ""}
           <EmptySpaceDiv />
 
-          {unanswerable || answer_from_metadata ?
+          {unanswerable || (answer_from_metadata && !this.props.posthocView ) ?
             <TextFieldWithTooltip name='source_url' label="Source URL" disabled value={this.props.data["source_url"]} onChange={this.props.handleFieldChange} tooltip="Please copy-paste the URL where you found the answer here. Try to avoid using other fact-checking articles as sources." />
-            :
-            <TextFieldWithTooltip InputProps={this.props.posthocView ? { readOnly: true } : undefined} variant={this.props.posthocView ? "filled" : undefined} name='source_url' label="Source URL" validator={combinedValidator(notEmptyValidator, emptyOrValidUrlValidator)} valid={this.props.valid} required value={this.props.data["source_url"]} onChange={this.props.handleFieldChange} tooltip="Please copy-paste the URL where you found the answer here. Try to avoid using other fact-checking articles as sources." />
+            : <>
+              {this.props.posthocView && !unanswerable?
+                <TextFieldWithTooltip InputProps={this.props.posthocView ? { readOnly: true } : undefined} variant={this.props.posthocView ? "filled" : undefined} name='source_url' label="Source URL" required value={this.props.data["source_url"]} onChange={this.props.handleFieldChange} tooltip="Please copy-paste the URL where you found the answer here. Try to avoid using other fact-checking articles as sources." />
+                : 
+                <TextFieldWithTooltip InputProps={this.props.posthocView ? { readOnly: true } : undefined} variant={this.props.posthocView ? "filled" : undefined} name='source_url' label="Source URL" validator={combinedValidator(notEmptyValidator, emptyOrValidUrlValidator)} valid={this.props.valid} required value={this.props.data["source_url"]} onChange={this.props.handleFieldChange} tooltip="Please copy-paste the URL where you found the answer here. Try to avoid using other fact-checking articles as sources." />
+              }
+            </>
           }
 
           {this.props.posthocView && !unanswerable ? <SpacingDiv /> : ""}
@@ -329,7 +334,7 @@ class QuestionEntryField extends React.Component {
     return (
       <ContainerDiv>
         <TextLeftEntryDiv>
-          <TextFieldWithTooltip InputProps={this.props.posthocView ? { readOnly: true } : undefined} variant={this.props.posthocView ? "filled" : undefined} data-tour="question_textfield" validator={notEmptyValidator} valid={this.props.valid} maxCharacters={1000} required value={this.props.data["question"]} name='question' label="Question" multiline rows={7} onChange={this.handleFieldChange} tooltip="Please write a question that will help you gather evidence for or against the claim." />
+          <TextFieldWithTooltip InputProps={this.props.posthocView ? { readOnly: true } : undefined} variant={this.props.posthocView ? "filled" : undefined} data-tour="question_textfield" validator={notEmptyValidator} valid={this.props.valid} maxCharacters={500} required value={this.props.data["question"]} name='question' label="Question" multiline rows={7} onChange={this.handleFieldChange} tooltip="Please write a question that will help you gather evidence for or against the claim." />
           <PaddingDiv />
         </TextLeftEntryDiv>
 

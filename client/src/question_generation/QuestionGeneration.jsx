@@ -418,9 +418,9 @@ class QuestionGeneration extends React.Component {
         dataset = this.props.dataset
     }
 
-    let finished_annotations = Number(localStorage.finished_norm_annotations)
+    let finished_annotations = Number(localStorage.finished_qa_annotations)
     if (dataset === "training"){
-        finished_annotations = Number(localStorage.train_finished_norm_annotations)
+        finished_annotations = Number(localStorage.train_finished_qa_annotations)
     }
 
     var current_idx = finished_annotations + 1 - Number(localStorage.pc);
