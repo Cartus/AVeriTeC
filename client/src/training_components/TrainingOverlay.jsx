@@ -53,10 +53,10 @@ const BarPartBox = styled("div")`
 `
 
 const PaddingTypographBox = styled(Typography)`
-  padding: 10px 24px;
-  width: -webkit-calc(100% - 258px)!important;
-  width:    -moz-calc(100% - 258px)!important;
-  width:         calc(100% - 258px)!important;
+  padding: 10px 24px 10px 134px;
+  width: -webkit-calc(100% - 398px)!important;
+  width:    -moz-calc(100% - 398px)!important;
+  width:         calc(100% - 398px)!important;
   float:left;
   text-align:center;
 `
@@ -587,8 +587,8 @@ class TrainingOverlay extends React.Component {
                 <NextButton onClick={this.moveForward}><NavigateNextIcon fontSize="large" style={{ color: 'white' }} /></NextButton>
                 :
                 this.props.finish_path? 
-                <WhiteLink href={this.props.finish_path}><ContinueTypographBox variant="h6" component="div">Continue Training</ContinueTypographBox></WhiteLink> : 
-                <NextButton onClick={() => { }}><NavigateNextIcon fontSize="large" disabled style={{ color: 'grey' }} /></NextButton>
+                <WhiteLink href={this.props.finish_path}><ContinueTypographBox variant="h6" component="div">Continue</ContinueTypographBox></WhiteLink> : 
+                <WhiteLink href={"/control"}><ContinueTypographBox variant="h6" component="div">Exit</ContinueTypographBox></WhiteLink>
               }
             </BarPartBox>
           </Toolbar>
