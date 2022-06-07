@@ -50,17 +50,17 @@ if ($req_type == "next-data"){
             $stmt->bind_param("iii", $qa_latest, $row['claim_qa_id'], $row['user_id_qa']);
             $stmt->execute();
             $result_qa = $stmt->get_result();
-    
+
             $questions = array();
             $counter = 0;
-    
+
             $entries = array();
             while($row_qa = $result_qa->fetch_assoc()) {
                 $count_string = "qa_pair_entry_field_" . (string)$counter;
                 $counter = $counter + 1;
                 $field_array = array();
                 $field_array['question'] = $row_qa['question'];
-                
+
                 if (!is_null($row_qa['question_problems'])){
                     $field_array['question_problems'] = explode(" [SEP] ", $row_qa['question_problems']);
                 }
@@ -71,7 +71,7 @@ if ($req_type == "next-data"){
                 $answers[0]['answer_type'] = $row_qa['answer_type'];
                 $answers[0]['source_medium'] = $row_qa['source_medium'];
                 $answers[0]['bool_explanation'] = $row_qa['bool_explanation'];
-                
+
                 if (!is_null($row_qa['answer_problems'])){
                     $answers[0]['answer_problems'] = explode(" [SEP] ", $row_qa['answer_problems']);
                 }
@@ -119,7 +119,7 @@ if ($req_type == "next-data"){
             }
 
             $output = (["web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
-            "check_date" => $row['check_date'], "country_code" => $row['claim_loc'], "claim_norm_id" => $row['claim_norm_id'], "prev_entries" => $entries, 
+            "check_date" => $row['check_date'], "country_code" => $row['claim_loc'], "claim_norm_id" => $row['claim_norm_id'], "prev_entries" => $entries,
             "phase_two_label" => $row['phase_2_label'], "phase_three_label" => $row['phase_3_label'], "justification" => $row['justification']]);
             echo(json_encode($output));
             update_table($conn, "UPDATE Assigned_Disputes SET date_start_dispute=? WHERE claim_norm_id=?", 'si', $date, $row['claim_norm_id']);
@@ -138,10 +138,10 @@ if ($req_type == "next-data"){
             $stmt->bind_param("iii", $qa_latest, $row['claim_qa_id'], $row['user_id_qa']);
             $stmt->execute();
             $result_qa = $stmt->get_result();
-    
+
             $questions = array();
             $counter = 0;
-    
+
             $entries = array();
             while($row_qa = $result_qa->fetch_assoc()) {
                 $count_string = "qa_pair_entry_field_" . (string)$counter;
@@ -207,7 +207,7 @@ if ($req_type == "next-data"){
             }
 
             $output = (["web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
-            "check_date" => $row['check_date'], "country_code" => $row['claim_loc'], "claim_norm_id" => $row['claim_norm_id'], "prev_entries" => $entries, 
+            "check_date" => $row['check_date'], "country_code" => $row['claim_loc'], "claim_norm_id" => $row['claim_norm_id'], "prev_entries" => $entries,
             "phase_two_label" => $row['phase_2_label'], "phase_three_label" => $row['phase_3_label'], "justification" => $row['justification']]);
             echo(json_encode($output));
             update_table($conn, "UPDATE Assigned_Disputes SET date_start_dispute=? WHERE claim_norm_id=?", 'si', $date, $row['claim_norm_id']);
@@ -251,6 +251,7 @@ if ($req_type == "next-data"){
             $answer = $answers[0]['answer'];
             if (array_key_exists('source_url', $answers[0])){
                 $source_url = $answers[0]['source_url'];
+                update_table($conn, "INSERT INTO Cache (link) VALUES (?)", 's', $source_url);
             }else{
                 $source_url = NULL;
             }
@@ -274,6 +275,7 @@ if ($req_type == "next-data"){
                 $answer_second = $answers[1]['answer'];
                 if (array_key_exists('source_url', $answers[1])){
                     $source_url_second = $answers[1]['source_url'];
+                    update_table($conn, "INSERT INTO Cache (link) VALUES (?)", 's', $source_url_second);
                 }else{
                     $source_url_second = NULL;
                 }
@@ -304,6 +306,7 @@ if ($req_type == "next-data"){
                 $answer_third = $answers[2]['answer'];
                 if (array_key_exists('source_url', $answers[2])){
                     $source_url_third = $answers[2]['source_url'];
+                    update_table($conn, "INSERT INTO Cache (link) VALUES (?)", 's', $source_url_third);
                 }else{
                     $source_url_third = NULL;
                 }
@@ -329,7 +332,7 @@ if ($req_type == "next-data"){
                 $source_medium_third = NULL;
                 $bool_explanation_third = NULL;
             }
-            
+
             $edit_latest = 1;
             $qa_latest = 0;
             update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium, qa_latest, edit_latest, bool_explanation,
@@ -338,7 +341,7 @@ if ($req_type == "next-data"){
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssiisssssssssss', $row['claim_qa_id'], $user_id, $question, $answer,
             $source_url, $answer_type, $source_medium, $qa_latest, $edit_latest, $bool_explanation, $answer_second, $source_url_second, $answer_type_second, $source_medium_second,
             $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third);
-        
+
         }
         // For added entries
         foreach($_POST['entries'] as $item) {
@@ -348,6 +351,7 @@ if ($req_type == "next-data"){
             $answer = $answers[0]['answer'];
             if (array_key_exists('source_url', $answers[0])){
                 $source_url = $answers[0]['source_url'];
+                update_table($conn, "INSERT INTO Cache (link) VALUES (?)", 's', $source_url);
             }else{
                 $source_url = NULL;
             }
@@ -371,6 +375,7 @@ if ($req_type == "next-data"){
                 $answer_second = $answers[1]['answer'];
                 if (array_key_exists('source_url', $answers[1])){
                     $source_url_second = $answers[1]['source_url'];
+                    update_table($conn, "INSERT INTO Cache (link) VALUES (?)", 's', $source_url_second);
                 }else{
                     $source_url_second = NULL;
                 }
@@ -401,6 +406,7 @@ if ($req_type == "next-data"){
                 $answer_third = $answers[2]['answer'];
                 if (array_key_exists('source_url', $answers[2])){
                     $source_url_third = $answers[2]['source_url'];
+                    update_table($conn, "INSERT INTO Cache (link) VALUES (?)", 's', $source_url_third);
                 }else{
                     $source_url_third = NULL;
                 }
@@ -436,11 +442,11 @@ if ($req_type == "next-data"){
             $source_url, $answer_type, $source_medium, $qa_latest, $p4_latest, $bool_explanation, $answer_second, $source_url_second, $answer_type_second, $source_medium_second,
             $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third);
         }
-        
+
         // added_qapairs need to be updated.
         $added_qas = 1;
         update_table($conn, "UPDATE Assigned_Disputes SET dispute_annotators_num=dispute_annotators_num+1, num_qapairs=num_qapairs+?, p4_num_qapairs=?, phase_4_label=?, date_made_dispute=?,
-        date_load_dispute=?, added_qas=? WHERE claim_norm_id=?",'iisssii', 
+        date_load_dispute=?, added_qas=? WHERE claim_norm_id=?",'iisssii',
         $added_qapairs, $added_qapairs, $phase_4_label, $date, $row['date_load_cache_dispute'], $added_qas, $row['claim_norm_id']);
 
         $to_time = strtotime($date);
@@ -461,8 +467,8 @@ if ($req_type == "next-data"){
             $p4_speed_trap = 1;
         }
 
-        update_table($conn, "UPDATE Annotators SET current_dispute_task=0, finished_dispute_annotations=finished_dispute_annotations+1, p4_time_sum=p4_time_sum+?, p4_load_sum=p4_load_sum+?, 
-        p4_speed_trap=p4_speed_trap+?, questions_p4=questions_p4+? 
+        update_table($conn, "UPDATE Annotators SET current_dispute_task=0, finished_dispute_annotations=finished_dispute_annotations+1, p4_time_sum=p4_time_sum+?, p4_load_sum=p4_load_sum+?,
+        p4_speed_trap=p4_speed_trap+?, questions_p4=questions_p4+?
         WHERE user_id=?",'dddii', $minutes, $load_minutes, $p4_speed_trap, $added_qapairs, $user_id);
         $conn->commit();
         echo "Submit Successfully!";
@@ -493,17 +499,17 @@ if ($req_type == "next-data"){
     $stmt->bind_param("iii", $edit_latest, $row['claim_qa_id'], $user_id);
     $stmt->execute();
     $result_qa = $stmt->get_result();
-    
+
     $questions = array();
     $counter = 0;
-    
+
     $prev_entries = array();
     while($row_qa = $result_qa->fetch_assoc()) {
         $count_string = "qa_pair_entry_field_" . (string)$counter;
         $counter = $counter + 1;
         $field_array = array();
         $field_array['question'] = $row_qa['question'];
-        
+
         if (!is_null($row_qa['question_problems'])){
             $field_array['question_problems'] = explode(" [SEP] ", $row_qa['question_problems']);
         }
@@ -567,10 +573,10 @@ if ($req_type == "next-data"){
     $stmt->bind_param("iii", $p4_latest, $row['claim_qa_id'], $user_id);
     $stmt->execute();
     $result_qa = $stmt->get_result();
-    
+
     $questions = array();
     $counter = 0;
-    
+
     $entries = array();
     while($row_qa = $result_qa->fetch_assoc()) {
         $count_string = "qa_pair_entry_field_" . (string)$counter;
@@ -669,6 +675,7 @@ if ($req_type == "next-data"){
 
             if (array_key_exists('source_url', $answers[0])){
                 $source_url = $answers[0]['source_url'];
+                update_table($conn, "INSERT INTO Cache (link) VALUES (?)", 's', $source_url);
             }else{
                 $source_url = NULL;
             }
@@ -691,6 +698,7 @@ if ($req_type == "next-data"){
                 $answer_second = $answers[1]['answer'];
                 if (array_key_exists('source_url', $answers[1])){
                     $source_url_second = $answers[1]['source_url'];
+                    update_table($conn, "INSERT INTO Cache (link) VALUES (?)", 's', $source_url_second);
                 }else{
                     $source_url_second = NULL;
                 }
@@ -721,6 +729,7 @@ if ($req_type == "next-data"){
                 $answer_third = $answers[2]['answer'];
                 if (array_key_exists('source_url', $answers[2])){
                     $source_url_third = $answers[2]['source_url'];
+                    update_table($conn, "INSERT INTO Cache (link) VALUES (?)", 's', $source_url_third);
                 }else{
                     $source_url_third = NULL;
                 }
@@ -754,7 +763,7 @@ if ($req_type == "next-data"){
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssiisssssssssss', $row['claim_qa_id'], $user_id, $question, $answer,
             $source_url, $answer_type, $source_medium, $qa_latest, $edit_latest, $bool_explanation, $answer_second, $source_url_second, $answer_type_second, $source_medium_second,
             $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third);
-        
+
         }
 
         foreach($_POST['entries'] as $item) {
@@ -764,6 +773,7 @@ if ($req_type == "next-data"){
             $answer = $answers[0]['answer'];
             if (array_key_exists('source_url', $answers[0])){
                 $source_url = $answers[0]['source_url'];
+                update_table($conn, "INSERT INTO Cache (link) VALUES (?)", 's', $source_url);
             }else{
                 $source_url = NULL;
             }
@@ -787,6 +797,7 @@ if ($req_type == "next-data"){
                 $answer_second = $answers[1]['answer'];
                 if (array_key_exists('source_url', $answers[1])){
                     $source_url_second = $answers[1]['source_url'];
+                    update_table($conn, "INSERT INTO Cache (link) VALUES (?)", 's', $source_url_second);
                 }else{
                     $source_url_second = NULL;
                 }
@@ -817,6 +828,7 @@ if ($req_type == "next-data"){
                 $answer_third = $answers[2]['answer'];
                 if (array_key_exists('source_url', $answers[2])){
                     $source_url_third = $answers[2]['source_url'];
+                    update_table($conn, "INSERT INTO Cache (link) VALUES (?)", 's', $source_url_third);
                 }else{
                     $source_url_third = NULL;
                 }
@@ -856,7 +868,7 @@ if ($req_type == "next-data"){
         // need to update the added_qapairs here.
         $resulted_qapairs = $added_qapairs - $row['p4_num_qapairs'];
         update_table($conn, "UPDATE Assigned_Disputes SET dispute_annotators_num=dispute_annotators_num+1, num_qapairs=num_qapairs+?, p4_num_qapairs=p4_num_qapairs+?,
-        phase_4_label=?, date_modified_dispute=?, date_restart_dispute=?, date_load_dispute=?, added_qas=? WHERE claim_norm_id=?",'iissssii', 
+        phase_4_label=?, date_modified_dispute=?, date_restart_dispute=?, date_load_dispute=?, added_qas=? WHERE claim_norm_id=?",'iissssii',
         $resulted_qapairs, $resulted_qapairs, $phase_4_label, $date, $row['date_restart_cache_dispute'], $row['date_load_cache_dispute'], $added_qas, $claim_norm_id);
 
         $to_time = strtotime($date);
@@ -878,6 +890,6 @@ if ($req_type == "next-data"){
         throw $exception;
     }
     $conn->close();
-} 
+}
 
 ?>

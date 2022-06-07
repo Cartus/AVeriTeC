@@ -540,6 +540,7 @@ if ($is_train == "training") {
     }
     
 } else {
+    // For real annotations.
     if ($req_type == "next-data"){
 
         $conn = new mysqli($db_params['servername'], $db_params['user'], $db_params['password'], $db_params['database']);
@@ -639,6 +640,7 @@ if ($is_train == "training") {
     
                 if (array_key_exists('source_url', $answers[0])){
                     $source_url = $answers[0]['source_url'];
+                    update_table($conn, "INSERT INTO Cache (link) VALUES (?)", 's', $source_url);
                 }else{
                     $source_url = NULL;
                 }
@@ -666,6 +668,7 @@ if ($is_train == "training") {
     
                     if (array_key_exists('source_url', $answers[1])){
                         $source_url_second = $answers[1]['source_url'];
+                        update_table($conn, "INSERT INTO Cache (link) VALUES (?)", 's', $source_url_second);
                     }else{
                         $source_url_second = NULL;
                     }
@@ -700,6 +703,7 @@ if ($is_train == "training") {
     
                     if (array_key_exists('source_url', $answers[2])){
                         $source_url_third = $answers[2]['source_url'];
+                        update_table($conn, "INSERT INTO Cache (link) VALUES (?)", 's', $source_url_third);
                     }else{
                         $source_url_third = NULL;
                     }
@@ -935,6 +939,7 @@ if ($is_train == "training") {
     
                 if (array_key_exists('source_url', $answers[0])){
                     $source_url = $answers[0]['source_url'];
+                    update_table($conn, "INSERT INTO Cache (link) VALUES (?)", 's', $source_url);
                 }else{
                     $source_url = NULL;
                 }
@@ -962,6 +967,7 @@ if ($is_train == "training") {
     
                     if (array_key_exists('source_url', $answers[1])){
                         $source_url_second = $answers[1]['source_url'];
+                        update_table($conn, "INSERT INTO Cache (link) VALUES (?)", 's', $source_url_second);
                     }else{
                         $source_url_second = NULL;
                     }
@@ -996,6 +1002,7 @@ if ($is_train == "training") {
     
                     if (array_key_exists('source_url', $answers[2])){
                         $source_url_third = $answers[2]['source_url'];
+                        update_table($conn, "INSERT INTO Cache (link) VALUES (?)", 's', $source_url_third);
                     }else{
                         $source_url_third = NULL;
                     }

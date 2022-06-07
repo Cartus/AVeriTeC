@@ -408,6 +408,7 @@ if ($is_train == "training") {
     }
 
 } else {
+    // For real annotation
     $db_params = parse_ini_file(dirname(__FILE__).'/db_params.ini', false);
 
     if ($req_type == "next-data"){
@@ -493,6 +494,7 @@ if ($is_train == "training") {
     
                 if (array_key_exists('hyperlink', $item)){
                     $hyperlink = $item['hyperlink'];
+                    update_table($conn, "INSERT INTO Cache (link) VALUES (?)", 's', $hyperlink);
                 }else{
                     $hyperlink = NULL;
                 }
@@ -511,6 +513,7 @@ if ($is_train == "training") {
     
                 if (array_key_exists('media_source', $item)){
                     $media_source = $item['media_source'];
+                    update_table($conn, "INSERT INTO Cache (link) VALUES (?)", 's', $media_source);
                 }else{
                     $media_source = NULL;
                 }
@@ -570,6 +573,7 @@ if ($is_train == "training") {
                 $cleaned_claim, $speaker, $hyperlink, $transcription, $media_source, $check_date, $claim_types, $fact_checker_strategy, $phase_1_label, $date, $claim_loc, 
                 $latest, $source, $nonfactual, $row['date_start_norm'], $row['date_load_norm'], $inserted);
             }
+
             update_table($conn, "UPDATE Assigned_Claims SET norm_annotators_num=norm_annotators_num+1, date_start_norm=? WHERE claim_id=?",'si', $date, $row['claim_id']);
             $to_time = strtotime($date);
             $from_time = strtotime($row['date_start_norm']);
@@ -712,6 +716,7 @@ if ($is_train == "training") {
     
                 if (array_key_exists('hyperlink', $item)){
                     $hyperlink = $item['hyperlink'];
+                    update_table($conn, "INSERT INTO Cache (link) VALUES (?)", 's', $hyperlink);
                 }else{
                     $hyperlink = NULL;
                 }
@@ -730,6 +735,7 @@ if ($is_train == "training") {
     
                 if (array_key_exists('media_source', $item)){
                     $media_source = $item['media_source'];
+                    update_table($conn, "INSERT INTO Cache (link) VALUES (?)", 's', $media_source);
                 }else{
                     $media_source = NULL;
                 }
