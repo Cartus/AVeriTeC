@@ -196,8 +196,8 @@ class AnnotatorControl extends React.Component {
                     <PhaseStatsControl phase={1} name={"Analysis | Claim Normalization"}/>
                     <PhaseStatsControl phase={2} name={"Analysis | Question Generation"}/>
                     <PhaseStatsControl phase={3} name={"Analysis | Quality Control"}/>
-                    <PhaseStatsControl phase={2} name={"Analysis | Dispute Resolution"}/>
-                    <PhaseStatsControl phase={3} name={"Analysis | Post-Resolution Quality Control"}/>
+                    <PhaseStatsControl phase={4} name={"Analysis | Dispute Resolution"}/>
+                    <PhaseStatsControl phase={5} name={"Analysis | Post-Resolution Quality Control"}/>
                 </AdminPanel> : ""}
             </div>
         );

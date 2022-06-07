@@ -140,6 +140,41 @@ class PhaseStatsControl extends react.Component {
                                 },
                             ]
                     })
+                } else if (this.props.phase == 4) {
+                    this.setState({
+                        phase_eval_stats: response.data.phase_4,
+                        avg_times: {
+                            finish: response.data.phase_4.average_task_time,
+                            load: response.data.phase_4.average_load_time
+                        },
+                        annotation_data: 
+                            [
+                                {
+                                    name: "Assignment Status",
+                                    pending: response.data.phase_4.pending_claims,
+                                    assigned: response.data.phase_4.assigned_claims,
+                                    completed: response.data.phase_4.completed_claims,
+                                    skipped: response.data.phase_4.skipped_claims,
+                                },
+                            ]
+                    })
+                } else if (this.props.phase == 5) {
+                    this.setState({
+                        phase_eval_stats: response.data.phase_5,
+                        avg_times: {
+                            finish: response.data.phase_5.average_task_time
+                        },
+                        annotation_data: 
+                            [
+                                {
+                                    name: "Assignment Status",
+                                    pending: response.data.phase_5.pending_claims,
+                                    assigned: response.data.phase_5.assigned_claims,
+                                    completed: response.data.phase_5.completed_claims,
+                                    skipped: response.data.phase_5.skipped_claims,
+                                },
+                            ]
+                    })
                 }
 
 
@@ -184,7 +219,7 @@ class PhaseStatsControl extends react.Component {
 
         var timeData = []
         if (this.state.avg_times) {
-            if (this.props.phase == 3){
+            if (this.props.phase == 3 || this.props.phase == 5){
                 timeData = [
                     {
                         name: "Average task time",
