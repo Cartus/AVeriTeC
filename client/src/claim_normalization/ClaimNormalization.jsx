@@ -49,7 +49,9 @@ function validate(content) {
             valid = false;
         } else if(emptyOrValidUrlValidator(entry["hyperlink"]).error){
             valid = false;
-        }
+        } else if(emptyOrValidUrlValidator(entry["media_source"]).error){
+            valid = false;
+        }       
     });
 
     return valid;
