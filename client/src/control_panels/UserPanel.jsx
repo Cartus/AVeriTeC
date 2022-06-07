@@ -46,7 +46,7 @@ class UserPanel extends React.Component {
             <EntryCard>
                 <Header>Welcome, {this.props.user.username}!</Header>
                 <LogoutBox>
-                    <a href={config.api_url + "/guideline.pdf"} >Guidelines</a> | <a href="/change_password">Change Password</a> | <a href="#" onClick={this.onLogout}>Log out</a>
+                    <a target="_blank" rel="noopener noreferrer" href={config.api_url + "/guideline.pdf"} >Guidelines</a> | <a href="/change_password">Change Password</a> | <a href="#" onClick={this.onLogout}>Log out</a>
                 </LogoutBox>
             </EntryCard>
         );

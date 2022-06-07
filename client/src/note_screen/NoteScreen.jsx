@@ -72,7 +72,7 @@ class NoteScreen extends React.Component {
                             </PaddingTypographBox>
                         </BarPartBox>
                         <LogoutBox>
-                        <WhiteLink href={config.api_url + "/guideline.pdf"} >Guidelines</WhiteLink> | <WhiteLink href="/control" >Control Panel</WhiteLink> | <WhiteLink href="#" onClick={() => {}}>Log out</WhiteLink>
+                        <WhiteLink target="_blank" rel="noopener noreferrer" href={config.api_url + "/guideline.pdf"} >Guidelines</WhiteLink> | <WhiteLink href="/control" >Control Panel</WhiteLink> | <WhiteLink href="#" onClick={() => {}}>Log out</WhiteLink>
                         </LogoutBox>
                     </Toolbar>
                 </AppBar>

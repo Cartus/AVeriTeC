@@ -82,17 +82,27 @@ export default function UserTaskPerformanceOverview(props) {
 
     var timeData = []
     if (props.userStats) {
-        timeData = [
-            {
-                name: "Average load time",
-                user: props.userStats.average_load_time,
-                average: props.averageStats.average_load_time,
-            }, {
-                name: "Average task time",
-                user: props.userStats.average_task_time,
-                average: props.averageStats.average_task_time
-            }
-        ]
+        if (props.name === "Phase 3" || props.name === "Phase 5"){
+            timeData = [
+                {
+                    name: "Average task time",
+                    user: props.userStats.average_task_time,
+                    average: props.averageStats.average_task_time
+                }
+            ]
+        } else {
+            timeData = [
+                {
+                    name: "Average load time",
+                    user: props.userStats.average_load_time,
+                    average: props.averageStats.average_load_time,
+                }, {
+                    name: "Average task time",
+                    user: props.userStats.average_task_time,
+                    average: props.averageStats.average_task_time
+                }
+            ]
+        }
     }
 
 
