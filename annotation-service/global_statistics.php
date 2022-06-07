@@ -175,14 +175,14 @@ if ($result->num_rows > 0) {
     "speed_traps_hit" => $p1_speed_trap, "annotations_timed_out" => $p1_timed_out, "skipped_claims" => $p1_claims_skipped, "completed_claims" => $p1_completed, "annotations_done" => $p1_annotations_done,
     "average_load_time" => $p1_average_load_time, "average_task_time" => $p1_average_task_time]);
 
-    $phase2 = (["skipped_claims_percentage" => $p2_skipped_percent, "average_questions_p2" => $p2_average_questions, "pending_claims" => $pending_claims_p2, "assigned_claims" => $p2_assigned, "annotations_assigned" => $p2_assigned_avg,
+    $phase2 = (["skipped_claims_percentage" => $p2_skipped_percent, "average_questions" => $p2_average_questions, "pending_claims" => $pending_claims_p2, "assigned_claims" => $p2_assigned, "annotations_assigned" => $p2_assigned_avg,
     "speed_traps_hit" => $p2_speed_trap, "annotations_timed_out" => $p2_timed_out, "skipped_claims" => $p2_claims_skipped, "completed_claims" => $p2_completed, "annotations_done" => $p2_annotations_done,
     "average_load_time" => $p2_average_load_time, "average_task_time" => $p2_average_task_time]);
 
     $phase3 = (["pending_claims" => $pending_claims_p3, "assigned_claims" => $p3_assigned, "annotations_assigned" => $p3_assigned_avg,
      "speed_traps_hit" => $p3_speed_trap, "completed_claims" => $p3_completed, "annotations_done" => $p3_annotations_done, "average_task_time" => $p3_average_task_time]);
 
-    $phase4 = (["average_questions_p4" => $p4_average_questions, "pending_claims" => $pending_claims_p4, "assigned_claims" => $p4_assigned, "annotations_assigned" => $p4_assigned_avg,
+    $phase4 = (["average_questions" => $p4_average_questions, "pending_claims" => $pending_claims_p4, "assigned_claims" => $p4_assigned, "annotations_assigned" => $p4_assigned_avg,
     "speed_traps_hit" => $p4_speed_trap, "annotations_timed_out" => $p4_timed_out, "completed_claims" => $p4_completed, "annotations_done" => $p4_annotations_done,  "average_load_time" => $p4_average_load_time, "average_task_time" => $p4_average_task_time]);
 
     $phase5 = (["pending_claims" => $pending_claims_p5, "assigned_claims" => $p5_assigned, "annotations_assigned" => $p5_assigned_avg,
