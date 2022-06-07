@@ -118,11 +118,11 @@ $row_p5 = $result->fetch_assoc();
 $pending_claims_p5 = $row_p5['COUNT(*)'];
 
 if ($result->num_rows > 0) {
-    // $p1_assigned = round($row['SUM(p1_assigned)'] / max($active_users_p1, 1), 2);
-    // $p2_assigned = round($row['SUM(p2_assigned)'] / max($active_users_p2, 1), 2);
-    // $p3_assigned = round($row['SUM(p3_assigned)'] / max($active_users_p3, 1), 2);
-    // $p4_assigned = round($row['SUM(p4_assigned)'] / max($active_users_p4, 1), 2);
-    // $p5_assigned = round($row['SUM(p5_assigned)'] / max($active_users_p5, 1), 2);
+    $p1_assigned_avg = round($row['SUM(p1_assigned)'] / max($active_users_p1, 1), 2);
+    $p2_assigned_avg = round($row['SUM(p2_assigned)'] / max($active_users_p2, 1), 2);
+    $p3_assigned_avg = round($row['SUM(p3_assigned)'] / max($active_users_p3, 1), 2);
+    $p4_assigned_avg = round($row['SUM(p4_assigned)'] / max($active_users_p4, 1), 2);
+    $p5_assigned_avg = round($row['SUM(p5_assigned)'] / max($active_users_p5, 1), 2);
 
     $p1_assigned = $row['SUM(p1_assigned)'];
     $p2_assigned = $row['SUM(p2_assigned)'];
@@ -135,6 +135,12 @@ if ($result->num_rows > 0) {
     $p3_annotations_done = round($row['SUM(finished_valid_annotations)'] / max($active_users_p3, 1), 2);
     $p4_annotations_done = round($row['SUM(finished_dispute_annotations)'] / max($active_users_p4, 1), 2);
     $p5_annotations_done = round($row['SUM(finished_post_annotations)'] / max($active_users_p5, 1), 2);
+
+    $p1_completed = $row['SUM(finished_norm_annotations)'];
+    $p2_completed = $row['SUM(finished_qa_annotations)'];
+    $p3_completed = $row['SUM(finished_valid_annotations)'];
+    $p4_completed = $row['SUM(finished_dispute_annotations)'];
+    $p5_completed = $row['SUM(finished_post_annotations)'];
 
     $p1_skipped_percent = round($row['SUM(skipped_norm_data)'] / max($active_users_p1, 1), 2);
     $p2_skipped_percent = round($row['SUM(skipped_qa_data)'] / max($active_users_p2, 1), 2);
@@ -165,11 +171,23 @@ if ($result->num_rows > 0) {
     $p2_average_questions = round($row['SUM(questions_p2)'] / max($row['SUM(finished_dispute_annotations)'], 1), 2);
     $p4_average_questions = round($row['SUM(questions_p4)'] / max($row['SUM(finished_post_annotations)'], 1), 2);
 
-    $phase1 = (["skipped_claims_percentage" => $p1_skipped_percent, "pending_claims" => $pending_claims_p1, "assigned_claims" => $p1_assigned, "speed_traps_hit" => $p1_speed_trap, "annotations_timed_out" => $p1_timed_out, "skipped_claims" => $p1_claims_skipped, "completed_claims" => $p1_annotations_done, "average_load_time" => $p1_average_load_time, "average_task_time" => $p1_average_task_time]);
-    $phase2 = (["skipped_claims_percentage" => $p2_skipped_percent, "average_questions_p2" => $p2_average_questions, "pending_claims" => $pending_claims_p2, "assigned_claims" => $p2_assigned, "speed_traps_hit" => $p2_speed_trap, "annotations_timed_out" => $p2_timed_out, "skipped_claims" => $p2_claims_skipped, "completed_claims" => $p2_annotations_done, "average_load_time" => $p2_average_load_time, "average_task_time" => $p2_average_task_time]);
-    $phase3 = (["pending_claims" => $pending_claims_p3, "assigned_claims" => $p3_assigned, "speed_traps_hit" => $p3_speed_trap, "completed_claims" => $p3_annotations_done, "average_task_time" => $p3_average_task_time]);
-    $phase4 = (["average_questions_p4" => $p4_average_questions, "pending_claims" => $pending_claims_p4, "assigned_claims" => $p4_assigned, "speed_traps_hit" => $p4_speed_trap, "annotations_timed_out" => $p4_timed_out, "completed_claims" => $p4_annotations_done, "average_load_time" => $p4_average_load_time, "average_task_time" => $p4_average_task_time]);
-    $phase5 = (["pending_claims" => $pending_claims_p5, "assigned_claims" => $p5_assigned, "speed_traps_hit" => $p5_speed_trap, "completed_claims" => $p5_annotations_done, "average_task_time" => $p5_average_task_time]);
+    $phase1 = (["skipped_claims_percentage" => $p1_skipped_percent, "pending_claims" => $pending_claims_p1, "assigned_claims" => $p1_assigned, "annotations_assigned" => $p1_assigned_avg,
+    "speed_traps_hit" => $p1_speed_trap, "annotations_timed_out" => $p1_timed_out, "skipped_claims" => $p1_claims_skipped, "completed_claims" => $p1_completed, "annotations_done" => $p1_annotations_done,
+    "average_load_time" => $p1_average_load_time, "average_task_time" => $p1_average_task_time]);
+
+    $phase2 = (["skipped_claims_percentage" => $p2_skipped_percent, "average_questions" => $p2_average_questions, "pending_claims" => $pending_claims_p2, "assigned_claims" => $p2_assigned, "annotations_assigned" => $p2_assigned_avg,
+    "speed_traps_hit" => $p2_speed_trap, "annotations_timed_out" => $p2_timed_out, "skipped_claims" => $p2_claims_skipped, "completed_claims" => $p2_completed, "annotations_done" => $p2_annotations_done,
+    "average_load_time" => $p2_average_load_time, "average_task_time" => $p2_average_task_time]);
+
+    $phase3 = (["pending_claims" => $pending_claims_p3, "assigned_claims" => $p3_assigned, "annotations_assigned" => $p3_assigned_avg,
+     "speed_traps_hit" => $p3_speed_trap, "completed_claims" => $p3_completed, "annotations_done" => $p3_annotations_done, "average_task_time" => $p3_average_task_time]);
+
+    $phase4 = (["average_questions" => $p4_average_questions, "pending_claims" => $pending_claims_p4, "assigned_claims" => $p4_assigned, "annotations_assigned" => $p4_assigned_avg,
+    "speed_traps_hit" => $p4_speed_trap, "annotations_timed_out" => $p4_timed_out, "completed_claims" => $p4_completed, "annotations_done" => $p4_annotations_done,  "average_load_time" => $p4_average_load_time, "average_task_time" => $p4_average_task_time]);
+
+    $phase5 = (["pending_claims" => $pending_claims_p5, "assigned_claims" => $p5_assigned, "annotations_assigned" => $p5_assigned_avg,
+    "speed_traps_hit" => $p5_speed_trap, "completed_claims" => $p5_completed, "annotations_done" => $p5_annotations_done, "average_task_time" => $p5_average_task_time]);
+
     $output = (["phase_1" => $phase1, "phase_2" => $phase2, "phase_3" => $phase3, "phase_4" => $phase4, "phase_5" => $phase5]);
     echo(json_encode($output));
 
