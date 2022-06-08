@@ -34,7 +34,8 @@ foreach($data as $item) {
     // $fix_date = substr_replace($claim_date, '20', 6, 0);
     // echo $fix_date;
 
-    $new_text=mysqli_real_escape_string($conn, $claim_text);
+    $new_text = mysqli_real_escape_string($conn, $claim_text);
+    $new_text = substr($string, 0, 499);
     // echo $new_text;
     // echo "<br>";
 
