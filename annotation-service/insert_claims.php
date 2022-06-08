@@ -35,7 +35,7 @@ foreach($data as $item) {
     // echo $fix_date;
 
     $new_text = mysqli_real_escape_string($conn, $claim_text);
-    $new_text = substr($string, 0, 499);
+    $new_text = substr($new_text, 0, 499);
     // echo $new_text;
     // echo "<br>";
 
