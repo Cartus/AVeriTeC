@@ -68,6 +68,10 @@ class Login extends React.Component{
           this.setState({login: response.data.login})
           console.log(this.state);
           console.log(localStorage.getItem('login'));
+
+          if (!response.data.login && response.data.message){
+            window.alert(response.data.message)
+          }
       }).catch((error) => {window.alert(error)})	
   }
 
