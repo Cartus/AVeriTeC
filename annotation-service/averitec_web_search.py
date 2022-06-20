@@ -5,11 +5,11 @@ import json
 from urllib.parse import urlparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--query', default='alex jones gay frogs infowars')
+parser.add_argument('--query', default='works?')
 parser.add_argument('--page', default=1, type=int)
 parser.add_argument('--results_per_page', default=10, type=int)
 parser.add_argument('--claim_date', default="30/09/2021")
-parser.add_argument('--country_code', default="gb")
+parser.add_argument('--country_code', default="us")
 args = parser.parse_args()
 
 api_key = " AIzaSyAzGwvRt9C8KfdxcNtdXIsEGvI0hYTdo2g"
@@ -64,7 +64,7 @@ try:
         final_string += "<"
         final_string += str(result["title"])
         final_string += "<"
-        final_string += str(result["snippet"])
+        final_string += str(result["snippet"]) if "snippet" in result else ""
         final_string += "<"
         domain = get_domain_name(result["link"])
         final_string += str(domain in misinfo_list)
