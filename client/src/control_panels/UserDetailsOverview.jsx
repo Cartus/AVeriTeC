@@ -28,7 +28,7 @@ export default function UserDetailsOverview(props) {
         };
 
         axios(request).then((response) => {
-            if (response.data.is_admin === false) {
+            if (!response.data.is_admin) {
                 window.alert("Error: Access denied.")
             } else {
                 // Replace with:
@@ -86,7 +86,7 @@ export default function UserDetailsOverview(props) {
         };
 
         axios(request).then((response) => {
-            if (response.data.is_admin === false) {
+            if (!response.data.is_admin) {
                 window.alert("Error: Access denied.")
             } else {
                 // Replace with:

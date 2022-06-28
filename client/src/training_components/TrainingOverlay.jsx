@@ -163,15 +163,42 @@ class TrainingOverlay extends React.Component {
       console.log(this.state.shown_annotation_id);
       console.log(Number(localStorage.train_finished_valid_annotations) - 1 - this.state.shown_annotation_id)
 
+      var otherUserId = new URLSearchParams(window.location.search).get("id")
+      var shownUserId = localStorage.getItem('user_id');
+      if (otherUserId){
+        console.log("Getting data for user with ID \'" + otherUserId + "\'.")
+
+        // Use this to test if we're logged in with an admin account:
+        var request = {
+          method: "post",
+          baseURL: config.api_url,
+          url: "/user_statistics.php",
+          data: {
+              logged_in_user_id: localStorage.getItem('user_id'),
+              req_type: 'get-statistics',
+              get_by_user_id: otherUserId
+          }
+        };
+
+        axios(request).then((response) => {
+          console.log(response.data)
+          if (!response.data.is_admin) {
+            window.alert("Error: Access denied.")
+            window.location.replace("/control");
+          }else{
+            shownUserId = otherUserId;
+          }}
+        );
+      }         
+
       // Load annotator data:
-      // TODO
 
       var request = {
         method: "post",
         baseURL: config.api_url,
         url: "/verdict_validate.php",
         data: {
-          user_id: localStorage.getItem('user_id'),
+          user_id: shownUserId,
           dataset: 'training', // I set it up like this to make code reuse easier. Is it right?
           req_type: 'reload-data',
           offset: Number(localStorage.train_finished_valid_annotations) - 1 - this.state.shown_annotation_id
@@ -215,7 +242,7 @@ class TrainingOverlay extends React.Component {
         baseURL: config.api_url,
         url: "/training_verdict_validate.php",
         data: {
-          user_id: localStorage.getItem('user_id'),
+          user_id: shownUserId,
           req_type: 'load-data',
           offset: this.state.shown_annotation_id
         }
@@ -263,6 +290,34 @@ class TrainingOverlay extends React.Component {
     if (localStorage.getItem('login')) {
       console.log(this.state.shown_annotation_id);
 
+      var otherUserId = new URLSearchParams(window.location.search).get("id")
+      var shownUserId = localStorage.getItem('user_id');
+      if (otherUserId){
+        console.log("Getting data for user with ID \'" + otherUserId + "\'.")
+
+        // Use this to test if we're logged in with an admin account:
+        var request = {
+          method: "post",
+          baseURL: config.api_url,
+          url: "/user_statistics.php",
+          data: {
+              logged_in_user_id: localStorage.getItem('user_id'),
+              req_type: 'get-statistics',
+              get_by_user_id: otherUserId
+          }
+        };
+
+        axios(request).then((response) => {
+          console.log(response.data)
+          if (!response.data.is_admin) {
+            window.alert("Error: Access denied.")
+            window.location.replace("/control");
+          }else{
+            shownUserId = otherUserId;
+          }}
+        );
+      }     
+
       // Load annotator data for training examples:
 
       var request = {
@@ -270,7 +325,7 @@ class TrainingOverlay extends React.Component {
         baseURL: config.api_url,
         url: "/question_answering.php",
         data: {
-          user_id: localStorage.getItem('user_id'),
+          user_id: shownUserId,
           dataset: 'training', // I set it up like this to make code reuse easier. Is it right?
           req_type: 'reload-data',
           offset: Number(localStorage.train_finished_qa_annotations) - 1 - this.state.shown_annotation_id
@@ -336,7 +391,7 @@ class TrainingOverlay extends React.Component {
         baseURL: config.api_url,
         url: "/training_question_answering.php",
         data: {
-          user_id: localStorage.getItem('user_id'),
+          user_id: shownUserId,
           req_type: 'load-data',
           offset: this.state.shown_annotation_id
         }
@@ -393,6 +448,34 @@ class TrainingOverlay extends React.Component {
       console.log(this.state.shown_annotation_id);
       console.log(Number(localStorage.train_finished_norm_annotations) - 1 - this.state.shown_annotation_id);
 
+      var otherUserId = new URLSearchParams(window.location.search).get("id")
+      var shownUserId = localStorage.getItem('user_id');
+      if (otherUserId){
+        console.log("Getting data for user with ID \'" + otherUserId + "\'.")
+
+        // Use this to test if we're logged in with an admin account:
+        var request = {
+          method: "post",
+          baseURL: config.api_url,
+          url: "/user_statistics.php",
+          data: {
+              logged_in_user_id: localStorage.getItem('user_id'),
+              req_type: 'get-statistics',
+              get_by_user_id: otherUserId
+          }
+        };
+
+        axios(request).then((response) => {
+          console.log(response.data)
+          if (!response.data.is_admin) {
+            window.alert("Error: Access denied.")
+            window.location.replace("/control");
+          }else{
+            shownUserId = otherUserId;
+          }}
+        );
+      }     
+
       // Load annotator training data:
 
       var request = {
@@ -400,7 +483,7 @@ class TrainingOverlay extends React.Component {
         baseURL: config.api_url,
         url: "/claim_norm.php",
         data: {
-          user_id: localStorage.getItem('user_id'),
+          user_id: shownUserId,
           dataset: 'training', // I set it up like this to make code reuse easier. Is it right?
           req_type: 'reload-data',
           offset: Number(localStorage.train_finished_norm_annotations) - 1 - this.state.shown_annotation_id
@@ -453,7 +536,7 @@ class TrainingOverlay extends React.Component {
         baseURL: config.api_url,
         url: "/training_claim_norm.php",
         data: {
-          user_id: localStorage.getItem('user_id'),
+          user_id: shownUserId,
           req_type: 'load-data',
           offset: this.state.shown_annotation_id
         }
