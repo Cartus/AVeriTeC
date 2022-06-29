@@ -57,7 +57,7 @@ if ($result->num_rows > 0) {
 
     $phase_5 = (["annotations_done" => $row['finished_post_annotations'], "annotations_assigned" => $row['p5_assigned'], "speed_traps_hit" => $row['p5_speed_trap'], "average_task_time" => $average_task5_time]);
 
-    $output = (["username" => $row['user_name'], "phase_1" => $phase_1, "phase_2" => $phase_2, "phase_3" => $phase_3, "phase_4" => $phase_4, "phase_5" => $phase_5]);
+    $output = (["username" => $row['user_name'], "is_admin" => $row['is_admin'], "phase_1" => $phase_1, "phase_2" => $phase_2, "phase_3" => $phase_3, "phase_4" => $phase_4, "phase_5" => $phase_5]);
 
     echo(json_encode($output));
 

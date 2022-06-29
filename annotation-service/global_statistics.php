@@ -15,6 +15,14 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+$sql = "SELECT * FROM Annotators WHERE user_id=?";
+$stmt= $conn->prepare($sql);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+
+$is_admin = $row['is_admin'];
 
 $sql = "SELECT COUNT(*) FROM Annotators WHERE finished_norm_annotations>0";
 $stmt= $conn->prepare($sql);
@@ -188,7 +196,7 @@ if ($result->num_rows > 0) {
     $phase5 = (["pending_claims" => $pending_claims_p5, "assigned_claims" => $p5_assigned, "annotations_assigned" => $p5_assigned_avg,
     "speed_traps_hit" => $p5_speed_trap, "completed_claims" => $p5_completed, "annotations_done" => $p5_annotations_done, "average_task_time" => $p5_average_task_time]);
 
-    $output = (["phase_1" => $phase1, "phase_2" => $phase2, "phase_3" => $phase3, "phase_4" => $phase4, "phase_5" => $phase5]);
+    $output = (["is_admin" => $is_admin, "phase_1" => $phase1, "phase_2" => $phase2, "phase_3" => $phase3, "phase_4" => $phase4, "phase_5" => $phase5]);
     echo(json_encode($output));
 
 } else {

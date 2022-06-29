@@ -18,12 +18,23 @@ if ($conn->connect_error) {
 }
 
 
-$id = 4;
+$id = 42;
+$pd = 'user131';
+$pd_md5='d0732364726e6527d17965baa1973f1f';
 
+$sql = 'UPDATE Annotators SET password_md5="599b60f343e0cd5d7623c0e586b44ab6" WHERE user_id=42';
+// update_table($conn, "UPDATE Annotators SET password_cleartext=? AND password_md5=? WHERE user_id=?", 'ssi', $pd, $pd_md5, $id);
 
-//update_table($conn, "UPDATE Annotators SET current_norm_task=NULL WHERE user_id=?", 'i', $id);
+// update_table($conn, "UPDATE Annotators SET train_finished_valid_annotations=20 WHERE user_id=?", 'i', $id);
 
-update_table($conn, "UPDATE Annotators SET p5_assigned=0, finished_post_annotations=0 WHERE user_id=?", 'i', $id);
+// update_table($conn, "UPDATE Annotators SET p5_assigned=0, finished_post_annotations=0 WHERE user_id=?", 'i', $id);
+
+if ($conn->query($sql) === TRUE) {
+    echo "Table Annotators updated successfully";
+} else {
+    echo "Error updating table: " . $conn->error;
+}
 
 $conn->close();
 ?>
+

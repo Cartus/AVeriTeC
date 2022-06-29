@@ -48,10 +48,11 @@ if ($result->num_rows > 0) {
 $json = json_encode($gold_array);
 
 //write json to file
-if (file_put_contents("norms.json", $json))
+if (file_put_contents("results/norms.json", $json))
     echo "JSON file created successfully...";
 else
     echo "Oops! Error creating json file...";
 
 $conn->close();
 ?>
+

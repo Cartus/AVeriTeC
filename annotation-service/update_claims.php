@@ -1,0 +1,29 @@
+<?php
+
+function update_table($conn, $sql_command, $types, ...$vars)
+{
+    $sql2 = $sql_command;
+    $stmt = $conn->prepare($sql2);
+    $stmt->bind_param($types, ...$vars);
+    $stmt->execute();
+}
+
+$db_params = parse_ini_file( dirname(__FILE__).'/db_params.ini', false);
+
+// Create connection
+$conn = new mysqli($db_params['servername'], $db_params['user'], $db_params['password'], $db_params['database']);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+
+
+$claim_id = 31;
+
+update_table($conn, "DELETE FROM Train_Claims WHERE claim_id=?", 'i', $claim_id);
+
+echo "reset current task!";
+
+$conn->close();
+?>

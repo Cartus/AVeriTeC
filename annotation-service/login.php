@@ -48,7 +48,7 @@ if ($credentials_match) {
     "finished_valid_annotations"=> $row['finished_valid_annotations'], "finished_p4_annotations" => $row['finished_dispute_annotations'],
     "finished_p5_annotations" => $row['finished_post_annotations']]));
   }else{
-    echo(json_encode(["login" => false, "message" => "Something went wrong"]));
+    echo(json_encode(["login" => false, "message" => "Incorrect password!"]));
   }
  
 $conn->close();
