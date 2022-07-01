@@ -67,6 +67,34 @@ class EntryCardContainer extends React.Component {
   }
 
   render() {
+    let phase = localStorage.getItem('phase');
+
+    let finished_num = 0;
+    if (phase === 'phase_1') {
+        finished_num = Number(localStorage.finished_norm_annotations);
+    } else if (phase === 'phase_2') {
+        finished_num = Number(localStorage.finished_qa_annotations);
+    } else if (phase === 'phase_3') {
+        finished_num = Number(localStorage.finished_valid_annotations);
+    } else if (phase === 'phase_4') {
+        finished_num = Number(localStorage.finished_p4_annotations);
+    } else if (phase === 'phase_5') {
+        finished_num = Number(localStorage.finished_p5_annotations);
+    }
+
+    if (this.props.dataset === "training"){
+      if (phase === 'phase_1') {
+        finished_num = Number(localStorage.train_finished_norm_annotations);
+      } else if (phase === 'phase_2') {
+        finished_num = Number(localStorage.train_finished_qa_annotations);
+      } else if (phase === 'phase_3') {
+        finished_num = Number(localStorage.train_finished_valid_annotations);
+      }
+    }
+
+    console.log("finished num")
+    console.log(finished_num)
+
     let entry_count = 0;
     let entryFields = ""
     if (this.props.entries) {
