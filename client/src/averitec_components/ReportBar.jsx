@@ -44,9 +44,12 @@ class ReportBar extends React.Component {
     if (this.props.dataset){
         dataset = this.props.dataset
     }
+    console.log("I'm skipping for dataset: " + dataset)
 
     let phase = localStorage.getItem('phase');
     if (phase === 'phase_1') {
+      console.log("Claim id:")
+      console.log(localStorage.claim_id)
       var request = {
         method: "post",
         baseURL: config.api_url,
@@ -81,6 +84,8 @@ class ReportBar extends React.Component {
         }
       };
 
+      console.log("I'm skipping the claim with norm id "+localStorage.claim_norm_id)
+
       await axios(request).then((response) => {
         console.log(response.data);
         
@@ -100,10 +105,10 @@ class ReportBar extends React.Component {
       <EntryCard>
         <ReportDiv data-tour="report">
           <ReportTextDiv>
-            If the fact checking article displays an error, is behind a paywall, or if it takes more than three minutes to load, please let us know and skip the claim.
+            If the fact checking article displays an error, is behind a paywall, or if it takes more than three minutes to load, please let us know and skip the claim. Please be aware you cannot report a claim if you have already submitted an annotation for it.
           </ReportTextDiv>
 
-          <ReportButton variant="contained" color="error" onClick={this.onReport}>
+          <ReportButton variant="contained" disabled={Number(localStorage.pc) > 0} color="error" onClick={this.onReport}>
             Report &amp; Skip
           </ReportButton>
         </ReportDiv>

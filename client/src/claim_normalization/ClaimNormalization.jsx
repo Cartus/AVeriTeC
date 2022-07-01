@@ -295,6 +295,7 @@ class ClaimNormalization extends React.Component {
                         const new_claim = { web_archive: response.data.web_archive };
 
                         localStorage.claim_id = response.data.claim_id;
+                        console.log("I'm seeing a claim with id "+response.data.claim_id)
                         this.setState({ claim: new_claim });
 
                         var new_entries = response.data.entries;
@@ -325,6 +326,7 @@ class ClaimNormalization extends React.Component {
                     window.alert(error)
                 })
             } else {
+                console.log("I'm getting new data for dataset " + dataset)
                 var request = {
                     method: "post",
                     baseURL: config.api_url,
@@ -349,6 +351,7 @@ class ClaimNormalization extends React.Component {
                         }
                         const new_claim = { web_archive: response.data.web_archive };
                         localStorage.claim_id = response.data.claim_id;
+                        console.log("I'm seeing a claim with id "+response.data.claim_id)
                         this.setState({ claim: new_claim });
                         const new_entries = { "claim_entry_field_0": {} };
                         this.setState({ entries: new_entries });
