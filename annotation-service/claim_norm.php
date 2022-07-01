@@ -378,6 +378,8 @@ if ($is_train == "training") {
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'isisssssssssssis', $claim_id, $row['web_archive'], $user_id, $cleaned_claim, $speaker,
                 $hyperlink, $transcription, $media_source, $check_date, $claim_types, $fact_checker_strategy, $phase_1_label, $date, $claim_loc, $latest, $source);
             }
+            update_table($conn, "UPDATE Claim_Map SET skipped=0, date_modified=? WHERE user_id=? AND claim_id=?", 'sii', $date, $user_id, $claim_id);
+
             $conn->commit();
             echo "Resubmit Successfully!";
         }catch (mysqli_sql_exception $exception) {
@@ -393,6 +395,7 @@ if ($is_train == "training") {
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
         }
+        $skipped = 1;
     
         $conn->begin_transaction();
         try {
