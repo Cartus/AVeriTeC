@@ -61,7 +61,11 @@ class ReportBar extends React.Component {
 
       await axios(request).then((response) => {
         console.log(response.data);
-        localStorage.finished_norm_annotations = Number(localStorage.finished_norm_annotations) + 1;
+        if (dataset === "training"){
+          localStorage.train_finished_norm_annotations = Number(localStorage.train_finished_norm_annotations) + 1;
+        } else {
+          localStorage.finished_norm_annotations = Number(localStorage.finished_norm_annotations) + 1;
+        }  
         window.location.reload(false);
       }).catch((error) => { window.alert(error) })
     } else if (phase === 'phase_2') {
@@ -79,7 +83,13 @@ class ReportBar extends React.Component {
 
       await axios(request).then((response) => {
         console.log(response.data);
-        localStorage.finished_qa_annotations = Number(localStorage.finished_qa_annotations) + 1;
+        
+        if (dataset === "training"){
+          localStorage.train_finished_qa_annotations = Number(localStorage.train_finished_qa_annotations) + 1;
+        } else {
+          localStorage.finished_qa_annotations = Number(localStorage.finished_qa_annotations) + 1;
+        }    
+        
         window.location.reload(false);
       }).catch((error) => { window.alert(error) })
     }
