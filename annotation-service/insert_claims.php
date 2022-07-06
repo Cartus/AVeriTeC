@@ -39,10 +39,9 @@ foreach($data as $item) {
     // echo $new_text;
     // echo "<br>";
 
-    // $sql = "INSERT INTO Claims (claim_text, source_claim, source_claim_url, verdict_article, web_archive, norm_annotators_num, taken_flag, skipped)
-    // VALUES('$new_text', '$source_claim', '$source_claim_url', '$verdict_article', '$web_archive', 0, 0, 0)";
+    $sql = "INSERT INTO Claims (claim_text, web_archive, claim_date, inserted) VALUES('$new_text', '$web_archive', '$claim_date', 0)";
 
-    $sql = 'INSERT INTO Claims (claim_text, web_archive, claim_date, inserted) VALUES("$new_text", "$web_archive", "$claim_date", 0)';
+    // $sql = 'INSERT INTO Claims (claim_text, web_archive, claim_date, inserted) VALUES("$new_text", "$web_archive", "$claim_date", 0)';
 
     if ($conn->query($sql) === TRUE) {
         echo "Inserted successfully";
