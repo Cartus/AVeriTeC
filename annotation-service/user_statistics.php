@@ -10,11 +10,21 @@ $_POST = json_decode($json_result, true);
 
 $user_id = $_POST['get_by_user_id'];
 $req_type = $_POST['req_type'];
+$log_id = $_POST['logged_in_user_id'];
 
 $conn = new mysqli($db_params['servername'], $db_params['user'], $db_params['password'], $db_params['database']);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+
+$sql = "SELECT is_admin FROM Annotators WHERE user_id=?";
+$stmt= $conn->prepare($sql);
+$stmt->bind_param("i", $log_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+
+$is_admin = $row['is_admin'];
 
 $sql = "SELECT * FROM Annotators WHERE user_id=?";
 $stmt= $conn->prepare($sql);
@@ -57,7 +67,7 @@ if ($result->num_rows > 0) {
 
     $phase_5 = (["annotations_done" => $row['finished_post_annotations'], "annotations_assigned" => $row['p5_assigned'], "speed_traps_hit" => $row['p5_speed_trap'], "average_task_time" => $average_task5_time]);
 
-    $output = (["username" => $row['user_name'], "is_admin" => $row['is_admin'], "phase_1" => $phase_1, "phase_2" => $phase_2, "phase_3" => $phase_3, "phase_4" => $phase_4, "phase_5" => $phase_5]);
+    $output = (["username" => $row['user_name'], "is_admin" => $is_admin, "phase_1" => $phase_1, "phase_2" => $phase_2, "phase_3" => $phase_3, "phase_4" => $phase_4, "phase_5" => $phase_5]);
 
     echo(json_encode($output));
 
