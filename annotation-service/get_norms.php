@@ -47,7 +47,7 @@ if ($result->num_rows > 0) {
         "transcription"=> $row['transcription'], "media_source"=> $row['media_source'], "check_date"=> $row['check_date'], "claim_loc"=> $row['claim_loc'], "claim_types"=> $row['claim_types'],
         "fact_checker_strategy"=> $row['fact_checker_strategy'], "phase_1_label"=> $row['phase_1_label'], "latest"=> $row['latest'], "date_start_norm"=> $row['date_start_norm'], ""=> $row[''],
         "date_load_norm"=> $row['date_load_norm'], "date_made_norm"=> $row['date_made_norm'], "date_restart_norm"=> $row['date_restart_norm'], "date_modified_norm"=> $row['date_modified_norm'],
-        "nonfactual"=> $row['nonfactual'], "inserted"=> $row['inserted']])
+        "nonfactual"=> $row['nonfactual'], "inserted"=> $row['inserted']]);
     }
 } else {
     echo "0 Results";
