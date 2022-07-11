@@ -45,7 +45,7 @@ if ($result->num_rows > 0) {
         array_push($gold_array, ["claim_norm_id"=> $row['claim_norm_id'], "claim_id"=> $row['claim_id'], "web_archive"=> $row['web_archive'], "user_id_norm"=> $row['user_id_norm'],
         "cleaned_claim"=> $row['cleaned_claim'], "correction_claim"=> $row['correction_claim'], "speaker"=> $row['speaker'], "hyperlink"=> $row['hyperlink'], "source"=> $row['source'],
         "transcription"=> $row['transcription'], "media_source"=> $row['media_source'], "check_date"=> $row['check_date'], "claim_loc"=> $row['claim_loc'], "claim_types"=> $row['claim_types'],
-        "fact_checker_strategy"=> $row['fact_checker_strategy'], "phase_1_label"=> $row['phase_1_label'], "latest"=> $row['latest'], "date_start_norm"=> $row['date_start_norm'], ""=> $row[''],
+        "fact_checker_strategy"=> $row['fact_checker_strategy'], "phase_1_label"=> $row['phase_1_label'], "latest"=> $row['latest'], "date_start_norm"=> $row['date_start_norm'],
         "date_load_norm"=> $row['date_load_norm'], "date_made_norm"=> $row['date_made_norm'], "date_restart_norm"=> $row['date_restart_norm'], "date_modified_norm"=> $row['date_modified_norm'],
         "nonfactual"=> $row['nonfactual'], "inserted"=> $row['inserted']]);
     }
