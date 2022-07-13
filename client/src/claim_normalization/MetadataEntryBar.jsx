@@ -243,7 +243,7 @@ class ClaimEntryField extends React.Component {
                   validator={atLeastOneValidator}
                   required
                   items={[
-                    { label: "Written Evidence", tooltip: "The fact checking process involved finding contradicting written evidence, e.g. a news article directly refuting the claim, or evidence that the speaker has retracted the claim. This category also includes evidence that is mentioned, but not directly linked to, or evidence which is no longer available on the internet." },
+                    { label: "Written Evidence", tooltip: "The fact checking process involved finding contradicting or supporting written evidence, e.g. a news article directly refuting or supporting the claim, or evidence that the speaker has retracted the claim. This category also includes evidence that is mentioned, but not directly linked to, or evidence which is no longer available on the internet." },
                     { label: "Numerical Comparison", tooltip: "The fact checking process involved numerical comparisons, such as verifying that one number is greater than another." },
                     { label: "Consultation", tooltip: "The fact checkers directly reached out to relevant experts or people involved with the story, reporting new information from such sources as part of the fact checking article." },
                     { label: "Satirical Source Identification", tooltip: "The fact checking process involved identifying the source of the claim as satire, e.g. The Onion." },
