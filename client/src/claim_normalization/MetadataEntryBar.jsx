@@ -247,7 +247,7 @@ class ClaimEntryField extends React.Component {
                     { label: "Numerical Comparison", tooltip: "The fact checking process involved numerical comparisons, such as verifying that one number is greater than another." },
                     { label: "Consultation", tooltip: "The fact checkers directly reached out to relevant experts or people involved with the story, reporting new information from such sources as part of the fact checking article." },
                     { label: "Satirical Source Identification", tooltip: "The fact checking process involved identifying the source of the claim as satire, e.g. The Onion. We will discard all claims that were refuted only through satirical source identification." },
-                    { label: "Media Source Discovery", tooltip: "The fact checking process involved finding the original source of a (potentially doctored) image, video, or soundbite." },
+                    { label: "Media Source Discovery", tooltip: "The fact checking process involved finding the original source of a (potentially doctored) image, video, or soundbite. If the source is TEXT, e.g. a social media post, the strategy is NOT media source discovery." },
                     { label: "Image Analysis", tooltip: "The fact checking process involved image analysis other than finding the original source of an image, such as comparing two images." },
                     { label: "Video Analysis", tooltip: "The fact checking process involved analysing video. Transcription does NOT count as video analysis." },
                     { label: "Audio Analysis", tooltip: "The fact checking process involved analysing audio. Transcription does NOT count as video analysis." },
