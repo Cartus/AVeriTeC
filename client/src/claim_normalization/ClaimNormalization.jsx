@@ -8,6 +8,7 @@ import axios from "axios";
 import { Redirect } from "react-router-dom";
 import config from "../config.json"
 import { notEmptyValidator, atLeastOneValidator, emptyOrValidUrlValidator } from '../utils/validation.js'
+import ClaimNormalizationConfirmation from './ClaimNormalizationConfirmation'
 
 const NEntryBar = styled(MetadataEntryBar)`
     width: -webkit-calc(40% - 10px)!important;
@@ -47,11 +48,11 @@ function validate(content) {
             valid = false;
         } else if (!("phase_1_label" in entry) || notEmptyValidator(entry["claim_types"]).error) {
             valid = false;
-        } else if(emptyOrValidUrlValidator(entry["hyperlink"]).error){
+        } else if (emptyOrValidUrlValidator(entry["hyperlink"]).error) {
             valid = false;
-        } else if(emptyOrValidUrlValidator(entry["media_source"]).error){
+        } else if (emptyOrValidUrlValidator(entry["media_source"]).error) {
             valid = false;
-        }       
+        }
     });
 
     return valid;
@@ -75,9 +76,12 @@ class ClaimNormalization extends React.Component {
             added_entries: 1,
             valid: true,
             final_idx: 0,
+            confirmation: false
         }
 
         this.doSubmit = this.doSubmit.bind(this);
+        this.proceedToConfirmation = this.proceedToConfirmation.bind(this);
+        this.cancelConfirmation = this.cancelConfirmation.bind(this);
         this.handleFieldChange = this.handleFieldChange.bind(this);
         this.deleteEntry = this.deleteEntry.bind(this);
         this.addEntry = this.addEntry.bind(this);
@@ -151,18 +155,18 @@ class ClaimNormalization extends React.Component {
         })
     }
 
-    async doSubmit() {    
+    async doSubmit() {
         var dataset = "annotation"
-        if (this.props.dataset){
+        if (this.props.dataset) {
             dataset = this.props.dataset
         }
 
         var current_idx = Number(localStorage.finished_norm_annotations) + 1 - Number(localStorage.pc);
 
-        if (dataset === "training"){
+        if (dataset === "training") {
             current_idx = Number(localStorage.train_finished_norm_annotations) + 1 - Number(localStorage.pc);
-        }     
-    
+        }
+
         let is_at_last_claim = current_idx === this.state.final_idx;
         let should_use_finish_path = this.props.finish_path && is_at_last_claim
 
@@ -196,9 +200,9 @@ class ClaimNormalization extends React.Component {
                     console.log(response.data);
                     localStorage.claim_id = 0;
 
-                    if (should_use_finish_path){
+                    if (should_use_finish_path) {
                         window.location.assign(this.props.finish_path);
-                    }else {
+                    } else {
                         window.location.reload(false);
                     }
                 }).catch((error) => { window.alert(error) })
@@ -217,16 +221,16 @@ class ClaimNormalization extends React.Component {
 
                 await axios(request).then((response) => {
 
-                    if (dataset === "training"){
+                    if (dataset === "training") {
                         localStorage.train_finished_norm_annotations = Number(localStorage.train_finished_norm_annotations) + 1;
                     } else {
                         localStorage.finished_norm_annotations = Number(localStorage.finished_norm_annotations) + 1;
                     }
                     console.log(response.data);
-                    
-                    if (should_use_finish_path){
+
+                    if (should_use_finish_path) {
                         window.location.assign(this.props.finish_path);
-                    }else {
+                    } else {
                         window.location.reload(false);
                     }
                 }).catch((error) => { window.alert(error) })
@@ -241,38 +245,38 @@ class ClaimNormalization extends React.Component {
     componentDidMount() {
         localStorage.setItem('phase', "phase_1");
         var dataset = "annotation"
-        if (this.props.dataset){
+        if (this.props.dataset) {
             dataset = this.props.dataset
         }
 
         console.log(dataset)
 
         if (localStorage.getItem('login')) {
-            if (this.props.finish_at){
+            if (this.props.finish_at) {
                 this.setState({
-                  final_idx: this.props.finish_at
+                    final_idx: this.props.finish_at
                 })
-              } else {  
-            var request = {
-                method: "post",
-                baseURL: config.api_url,
-                url: "/user_statistics.php",
-                data: {
-                    logged_in_user_id: localStorage.getItem('user_id'),
-                    dataset: dataset,
-                    req_type: 'get-statistics',
-                    get_by_user_id: localStorage.getItem('user_id')
-                }
-            };
-    
-            axios(request).then((response) => {
-                console.log(response)
-                this.setState({
-                    final_idx: response.data.phase_1.annotations_assigned
-                })
-    
-            }).catch((error) => { window.alert(error) });
-        }
+            } else {
+                var request = {
+                    method: "post",
+                    baseURL: config.api_url,
+                    url: "/user_statistics.php",
+                    data: {
+                        logged_in_user_id: localStorage.getItem('user_id'),
+                        dataset: dataset,
+                        req_type: 'get-statistics',
+                        get_by_user_id: localStorage.getItem('user_id')
+                    }
+                };
+
+                axios(request).then((response) => {
+                    console.log(response)
+                    this.setState({
+                        final_idx: response.data.phase_1.annotations_assigned
+                    })
+
+                }).catch((error) => { window.alert(error) });
+            }
 
             let pc = Number(localStorage.pc);
             console.log(pc);
@@ -295,7 +299,7 @@ class ClaimNormalization extends React.Component {
                         const new_claim = { web_archive: response.data.web_archive };
 
                         localStorage.claim_id = response.data.claim_id;
-                        console.log("I'm seeing a claim with id "+response.data.claim_id)
+                        console.log("I'm seeing a claim with id " + response.data.claim_id)
                         this.setState({ claim: new_claim });
 
                         var new_entries = response.data.entries;
@@ -342,7 +346,7 @@ class ClaimNormalization extends React.Component {
                     console.log(response.data);
                     if (response.data) {
                         let finished_annotations = Number(localStorage.finished_norm_annotations)
-                        if (dataset === "training"){
+                        if (dataset === "training") {
                             finished_annotations = Number(localStorage.train_finished_norm_annotations)
                         }
 
@@ -351,7 +355,7 @@ class ClaimNormalization extends React.Component {
                         }
                         const new_claim = { web_archive: response.data.web_archive };
                         localStorage.claim_id = response.data.claim_id;
-                        console.log("I'm seeing a claim with id "+response.data.claim_id)
+                        console.log("I'm seeing a claim with id " + response.data.claim_id)
                         this.setState({ claim: new_claim });
                         const new_entries = { "claim_entry_field_0": {} };
                         this.setState({ entries: new_entries });
@@ -365,13 +369,50 @@ class ClaimNormalization extends React.Component {
         }
     }
 
+    proceedToConfirmation() {
+        console.log("Valid: " + validate(this.state));
+
+        if (validate(this.state)) {
+            if (this.needsConfirmation()) {
+                this.setState({
+                    confirmation: true
+                });
+            } else {
+                this.doSubmit()
+            }
+        } else {
+            this.setState({
+                valid: false
+            });
+        }
+    }
+
+    cancelConfirmation() {
+        this.setState({
+            confirmation: false
+        });
+    }
+
+    needsConfirmation() {
+        let should_confirm = false;
+        Object.keys(this.state.entries).forEach(claim_id =>
+            should_confirm = should_confirm || this.state.entries[claim_id].transcription
+            || (this.state.entries[claim_id].claim_types
+                && (this.state.entries[claim_id].claim_types.includes("Speculative Claim") || this.state.entries[claim_id].claim_types.includes("Opinion Claim")))
+            || (this.state.entries[claim_id].fact_checker_strategy
+                && this.state.entries[claim_id].fact_checker_strategy.includes("Media Source Discovery"))
+        )
+
+        return should_confirm
+    }
+
     render() {
         var dataset = "annotation"
-        if (this.props.dataset){
+        if (this.props.dataset) {
             dataset = this.props.dataset
         }
         let finished_annotations = Number(localStorage.finished_norm_annotations)
-        if (dataset === "training"){
+        if (dataset === "training") {
             finished_annotations = Number(localStorage.train_finished_norm_annotations)
         }
 
@@ -421,24 +462,28 @@ class ClaimNormalization extends React.Component {
 
         return (
             <PageDiv>
-                <TourProvider steps={steps}>
-                    <NPageView claim={this.state.claim} phase={1}/>
-                    <NEntryBar
-                        handleFieldChange={this.handleFieldChange}
-                        current_idx={current_idx}
-                        final_idx={this.state.final_idx}
-                        claim={this.state.claim}
-                        entries={this.state.entries}
-                        addEntry={this.addEntry}
-                        deleteEntry={this.deleteEntry}
-                        doSubmit={this.doSubmit}
-                        header={this.state.claim_header}
-                        footer={this.state.claim_footer}
-                        valid={this.state.valid}
-                        dataset={dataset}
-                    />
-                    {this.state.userIsFirstVisiting ? <TourWrapper /> : ""}
-                </TourProvider>
+                {!this.state.confirmation ?
+                    <TourProvider steps={steps}>
+                        <NPageView claim={this.state.claim} phase={1} />
+                        <NEntryBar
+                            handleFieldChange={this.handleFieldChange}
+                            current_idx={current_idx}
+                            final_idx={this.state.final_idx}
+                            claim={this.state.claim}
+                            entries={this.state.entries}
+                            addEntry={this.addEntry}
+                            deleteEntry={this.deleteEntry}
+                            doSubmit={this.proceedToConfirmation}
+                            header={this.state.claim_header}
+                            footer={this.state.claim_footer}
+                            valid={this.state.valid}
+                            dataset={dataset}
+                        />
+                        {this.state.userIsFirstVisiting ? <TourWrapper /> : ""}
+                    </TourProvider>
+                    :
+                    <ClaimNormalizationConfirmation confirmFunction={this.doSubmit} cancelFunction={this.cancelConfirmation} current_idx={current_idx} final_idx={this.state.final_idx} entries={this.state.entries} />
+                }
             </PageDiv>
         );
     }
