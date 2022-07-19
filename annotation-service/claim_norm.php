@@ -577,7 +577,7 @@ if ($is_train == "training") {
                 $latest, $source, $nonfactual, $row['date_start_norm'], $row['date_load_norm'], $inserted);
             }
 
-            update_table($conn, "UPDATE Assigned_Claims SET norm_annotators_num=norm_annotators_num+1, date_start_norm=? WHERE claim_id=?",'si', $date, $row['claim_id']);
+            update_table($conn, "UPDATE Assigned_Claims SET norm_annotators_num=norm_annotators_num+1 WHERE claim_id=?",'i', $row['claim_id']);
             $to_time = strtotime($date);
             $from_time = strtotime($row['date_start_norm']);
             $minutes = round(abs($to_time - $from_time) / 60,2);

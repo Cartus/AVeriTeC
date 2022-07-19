@@ -51,7 +51,6 @@ if ($result->num_rows > 0) {
     $average_questions_p2 = round($row['questions_p2'] / max($row['finished_qa_annotations'], 1), 2);
     $average_questions_p4 = round($row['questions_p4'] / max($row['finished_dispute_annotations'], 1), 2);
 
-
     $phase_1 = (["training_annotations_done" => $row['train_finished_norm_annotations'], "training_annotations_assigned" => $row['train_p1_assigned'],
         "annotations_done" => $row['finished_norm_annotations'], "annotations_assigned" => $row['p1_assigned'], "skipped_claims_percentage" => $p1_skipped_percent,
         "skipped_claims" => $row['skipped_norm_data'], "annotations_timed_out" => $row['p1_timed_out'], "speed_traps_hit" => $row['p1_speed_trap'], "average_task_time" => $average_task1_time, "average_load_time" => $average_task1_load]);
