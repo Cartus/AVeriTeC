@@ -76,7 +76,8 @@ class ClaimNormalization extends React.Component {
             added_entries: 1,
             valid: true,
             final_idx: 0,
-            confirmation: false
+            confirmation: false,
+            startTime: new Date()
         }
 
         this.doSubmit = this.doSubmit.bind(this);
@@ -192,7 +193,9 @@ class ClaimNormalization extends React.Component {
                         req_type: 'resubmit-data',
                         dataset: dataset,
                         entries: this.state.entries,
-                        claim_id: localStorage.claim_id
+                        claim_id: localStorage.claim_id,
+                        startTime: this.state.startTime,
+                        submitTime: new Date()
                     }
                 };
 
@@ -215,7 +218,9 @@ class ClaimNormalization extends React.Component {
                         user_id: localStorage.getItem('user_id'),
                         dataset: dataset,
                         req_type: 'submit-data',
-                        entries: this.state.entries
+                        entries: this.state.entries,
+                        startTime: this.state.startTime,
+                        submitTime: new Date()
                     }
                 };
 

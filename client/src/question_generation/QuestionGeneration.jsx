@@ -143,7 +143,8 @@ class QuestionGeneration extends React.Component {
       added_entries: 1,
       valid: true,
       confirmation: false,
-      final_idx: 0
+      final_idx: 0,
+      startTime: new Date()
     }
 
     this.changeLabel = this.changeLabel.bind(this);
@@ -447,7 +448,9 @@ class QuestionGeneration extends React.Component {
             added_entries: this.state.added_entries,
             qa_pair_header: this.state.qa_pair_header,
             qa_pair_footer: this.state.qa_pair_footer,
-            claim_norm_id: localStorage.claim_norm_id
+            claim_norm_id: localStorage.claim_norm_id,
+            startTime: this.state.startTime,
+            submitTime: new Date()
           }
         };
 
@@ -475,7 +478,9 @@ class QuestionGeneration extends React.Component {
             entries: this.state.entries,
             added_entries: this.state.added_entries,
             qa_pair_header: this.state.qa_pair_header,
-            qa_pair_footer: this.state.qa_pair_footer
+            qa_pair_footer: this.state.qa_pair_footer,
+            startTime: this.state.startTime,
+            submitTime: new Date()
           }
         };
 

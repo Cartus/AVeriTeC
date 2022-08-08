@@ -18,22 +18,22 @@ const EntryCard = styled(Card)`
 `
 
 const RightPhaseControl = styled(PhaseControl)`
-@media (max-width: 1290px)  {
+@media (max-width: 1300px)  {
   margin: 10px 10px 0px 10px;
 }
 
-@media (min-width: 1291px)  {
+@media (min-width: 1299px)  {
   height:260px;
   margin: 10px 10px 10px 0px;
 }
 `
 
 const RightBox = styled.div`
-  @media (max-width: 1290px)  {
+  @media (max-width: 1300px)  {
     width:100%;
   }
 
-  @media (min-width: 1291px)  {
+  @media (min-width: 1299px)  {
     width:30%;
   }
 
@@ -41,11 +41,11 @@ const RightBox = styled.div`
 `
 
 const LeftBox = styled.div`
-  @media (max-width: 1290px)  {
+  @media (max-width: 1300px)  {
     width:100%;
   }
 
-  @media (min-width: 1291px)  {
+  @media (min-width: 1299px)  {
     width:70%;
   }
 

@@ -68,8 +68,8 @@ class LoadingIFrame extends React.Component {
         user_id: localStorage.getItem('user_id'),
         claim_id: localStorage.claim_id,
         claim_norm_id: localStorage.claim_norm_id,
-        // loading_start_time: loading_start_time,
-        // loading_stop_time: loading_stop_time,
+        loadingStartTime: loading_start_time,
+        loadingStopTime: loading_stop_time,
         // seconds_taken: seconds_taken,
         phase: this.props.phase
       }
