@@ -752,7 +752,7 @@ if ($is_train == "training") {
             echo("The annotation time is: $minutes minutes.");
     
             $load_time = strtotime($row['date_load_cache_qa']);
-            if ($load_time == 0) {
+            if (empty($load_time)) {
                 $load_minutes = $minutes;
             } else {
                 $load_minutes = round(abs($load_time - $from_time) / 60,2);
@@ -1051,7 +1051,11 @@ if ($is_train == "training") {
             echo("The annotation time is: $minutes minutes.");
     
             $load_time = strtotime($row['date_load_cache_qa']);
-            $load_minutes = round(abs($load_time - $from_time) / 60,2);
+            if (empty($load_time)) {
+                $load_minutes = $minutes;
+            } else {
+                $load_minutes = round(abs($load_time - $from_time) / 60,2);
+            }
             echo("The loading time is: $load_minutes minutes.");
     
             update_table($conn, "UPDATE Annotators SET p2_time_sum=p2_time_sum+?, p2_load_sum=p2_load_sum+?, questions_p2=questions_p2+?
@@ -1081,7 +1085,7 @@ if ($is_train == "training") {
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
     
-        if(is_null($row['date_load_cache_qa'])){
+        if(empty($row['date_load_cache_qa'])){
             update_table($conn, "UPDATE Annotators SET p2_timed_out=p2_timed_out+1 WHERE user_id=?", 'i', $user_id);
         }
     

@@ -582,9 +582,9 @@ if ($is_train == "training") {
             $from_time = strtotime($row['date_start_norm']);
             $minutes = round(abs($to_time - $from_time) / 60,2);
             echo("The annotation time is: $minutes minutes.");
-    
+
             $load_time = strtotime($row['date_load_norm']);
-            if ($load_time == 0) {
+            if(empty($load_time)){
                 $load_minutes = $minutes;
             } else {
                 $load_minutes = round(abs($load_time - $from_time) / 60,2);
@@ -800,16 +800,20 @@ if ($is_train == "training") {
             }
             $norm_skipped = 0;
             update_table($conn, "UPDATE Assigned_Claims SET norm_annotators_num=norm_annotators_num+1, norm_skipped=? WHERE claim_id=?",'ii', $norm_skipped, $claim_id);
-    
+
             $to_time = strtotime($date);
             $from_time = strtotime($row['date_restart_norm']);
             $minutes = round(abs($to_time - $from_time) / 60,2);
             echo("The annotation time is: $minutes minutes.");
-    
+
             $load_time = strtotime($row['date_load_norm']);
-            $load_minutes = round(abs($load_time - $from_time) / 60,2);
+            if(empty($load_time)){
+                $load_minutes = $minutes;
+            } else {
+                $load_minutes = round(abs($load_time - $from_time) / 60,2);
+            }
             echo("The loading time is: $load_minutes minutes.");
-    
+
             update_table($conn, "UPDATE Annotators SET p1_time_sum=p1_time_sum+?, p1_load_sum=p1_load_sum+? WHERE user_id=?",'ddi', $minutes, $load_minutes, $user_id);
     
             $conn->commit();
@@ -835,7 +839,7 @@ if ($is_train == "training") {
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
     
-        if(is_null($row['date_load_norm'])){
+        if(empty($row['date_load_norm'])){
             update_table($conn, "UPDATE Annotators SET p1_timed_out=p1_timed_out+1 WHERE user_id=?", 'i', $user_id);
         }
     
