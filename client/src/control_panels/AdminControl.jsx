@@ -171,7 +171,11 @@ class AdminControl extends react.Component {
         }
 
         if (this.state.table) {
-            var user_count = this.state.table.length // TODO: count non-admins
+            var user_count = this.state.table.length
+
+            if (this.state.assignment && this.state.assignment.assignment_type === "non_admin") {
+                user_count = this.state.table.filter(user => !user.is_admin).length;
+            }
 
             if (this.state.assignment && this.state.assignment.assignment_type === "all") {
                 user_count = this.state.table.length
