@@ -1040,21 +1040,30 @@ if ($is_train == "training") {
                 $source_url, $answer_type, $source_medium, $qa_latest, $bool_explanation, $answer_second, $source_url_second, $answer_type_second, $source_medium_second,
                 $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third);
             }
+
+            $from_time = strtotime($row['date_restart_cache_qa']);
+            $load_time = strtotime($row['date_load_cache_qa']);
+
+            if ($from_time > $load_time) {
+                $load_time_updated = NULL;
+            }
     
             update_table($conn, "UPDATE Assigned_Norms SET qa_skipped=0, qa_annotators_num=qa_annotators_num+1, phase_2_label=?,
             num_qapairs=?, date_modified_qa=?, correction_claim=?, date_restart_qa=?, date_load_qa=? WHERE claim_norm_id=?",'sissssi',
-            $phase_2_label, $num_qapairs, $date, $correction_claim, $row['date_restart_cache_qa'], $row['date_load_cache_qa'], $claim_norm_id);
+            $phase_2_label, $num_qapairs, $date, $correction_claim, $row['date_restart_cache_qa'], $load_time_updated, $claim_norm_id);
     
             $to_time = strtotime($date);
-            $from_time = strtotime($row['date_restart_cache_qa']);
             $minutes = round(abs($to_time - $from_time) / 60,2);
             echo("The annotation time is: $minutes minutes.");
-    
-            $load_time = strtotime($row['date_load_cache_qa']);
+
             if (empty($load_time)) {
                 $load_minutes = $minutes;
             } else {
-                $load_minutes = round(abs($load_time - $from_time) / 60,2);
+                if ($from_time > $load_time) {
+                    $load_minutes = $minutes;
+                } else {
+                    $load_minutes = round(abs($load_time - $from_time) / 60,2);
+                }
             }
             echo("The loading time is: $load_minutes minutes.");
     

@@ -791,12 +791,19 @@ if ($is_train == "training") {
                 $fact_checker_strategy = implode(" [SEP] ", $fact_checker_strategy);
                 $latest = 1;
                 $inserted = 0;
+
+                $from_time = strtotime($row['date_restart_norm']);
+                $load_time = strtotime($row['date_load_norm']);
+
+                if ($from_time > $load_time) {
+                    $load_time_updated = NULL;
+                }
     
                 update_table($conn, "INSERT INTO Norm_Claims (claim_id, web_archive, user_id_norm, cleaned_claim, speaker, hyperlink, transcription, media_source,
                 check_date, claim_types, fact_checker_strategy, phase_1_label, date_modified_norm, claim_loc, latest, source, nonfactual, date_restart_norm, date_load_norm, inserted)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'isisssssssssssisissi', $claim_id, $row['web_archive'], $user_id, $cleaned_claim, $speaker,
                 $hyperlink, $transcription, $media_source, $check_date, $claim_types, $fact_checker_strategy, $phase_1_label, $date, $claim_loc, $latest, $source, $nonfactual, 
-                $row['date_restart_norm'], $row['date_load_norm'], $inserted);
+                $row['date_restart_norm'], $load_time_updated, $inserted);
             }
             $norm_skipped = 0;
             update_table($conn, "UPDATE Assigned_Claims SET norm_annotators_num=norm_annotators_num+1, norm_skipped=? WHERE claim_id=?",'ii', $norm_skipped, $claim_id);
@@ -810,7 +817,11 @@ if ($is_train == "training") {
             if(empty($load_time)){
                 $load_minutes = $minutes;
             } else {
-                $load_minutes = round(abs($load_time - $from_time) / 60,2);
+                if ($from_time > $load_time) {
+                    $load_minutes = $minutes;
+                } else {
+                    $load_minutes = round(abs($load_time - $from_time) / 60,2);
+                }
             }
             echo("The loading time is: $load_minutes minutes.");
 
