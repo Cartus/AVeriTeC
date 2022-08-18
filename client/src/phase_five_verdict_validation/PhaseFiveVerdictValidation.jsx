@@ -89,7 +89,8 @@ class PhaseFiveVerdictValidation extends React.Component {
             valid: true,
             submitted: false,
             userIsFirstVisiting: false,
-            final_idx: 0
+            final_idx: 0,
+            startTime: new Date()
         }
 
         this.handleFieldChange = this.handleFieldChange.bind(this);
@@ -254,7 +255,9 @@ class PhaseFiveVerdictValidation extends React.Component {
                         dataset: dataset,
                         annotation: this.state.annotation,
                         questions: this.state.claim.questions,
-                        claim_norm_id: localStorage.claim_norm_id
+                        claim_norm_id: localStorage.claim_norm_id,
+                        startTime: this.state.startTime.toUTCString(),
+                        submitTime: new Date().toUTCString()
                     }
                 };
 
@@ -280,7 +283,9 @@ class PhaseFiveVerdictValidation extends React.Component {
                         dataset: dataset,
                         req_type: 'submit-data',
                         annotation: this.state.annotation,
-                        questions: this.state.claim.questions
+                        questions: this.state.claim.questions,
+                        startTime: this.state.startTime.toUTCString(),
+                        submitTime: new Date().toUTCString()
                     }
                 };
 

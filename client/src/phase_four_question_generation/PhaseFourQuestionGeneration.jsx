@@ -152,7 +152,8 @@ class PhaseFourQuestionGeneration extends React.Component {
         phase_three_label: "",
         justification: ""
       },
-      final_idx: 0
+      final_idx: 0,
+      startTime: new Date()
     }
 
     this.changeLabel = this.changeLabel.bind(this);
@@ -490,7 +491,9 @@ class PhaseFourQuestionGeneration extends React.Component {
             added_entries: this.state.added_entries,
             qa_pair_header: this.state.qa_pair_header,
             qa_pair_footer: this.state.qa_pair_footer,
-            claim_norm_id: localStorage.claim_norm_id
+            claim_norm_id: localStorage.claim_norm_id,
+            startTime: this.state.startTime.toUTCString(),
+            submitTime: new Date().toUTCString()
           }
         };
 
@@ -518,7 +521,9 @@ class PhaseFourQuestionGeneration extends React.Component {
             previous_entries: this.state.previous_entries,
             added_entries: this.state.added_entries,
             qa_pair_header: this.state.qa_pair_header,
-            qa_pair_footer: this.state.qa_pair_footer
+            qa_pair_footer: this.state.qa_pair_footer,
+            startTime: this.state.startTime.toUTCString(),
+            submitTime: new Date().toUTCString()
           }
         };
 

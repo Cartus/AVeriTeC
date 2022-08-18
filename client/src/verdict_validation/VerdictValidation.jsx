@@ -266,8 +266,8 @@ class VerdictValidation extends React.Component {
                         annotation: this.state.annotation,
                         questions: this.state.claim.questions,
                         claim_norm_id: localStorage.claim_norm_id,
-                        startTime: this.state.startTime,
-                        submitTime: new Date()
+                        startTime: this.state.startTime.toUTCString(),
+                        submitTime: new Date().toUTCString()
                     }
                 };
 
@@ -294,8 +294,8 @@ class VerdictValidation extends React.Component {
                         req_type: 'submit-data',
                         annotation: this.state.annotation,
                         questions: this.state.claim.questions,
-                        startTime: this.state.startTime,
-                        submitTime: new Date()
+                        startTime: this.state.startTime.toUTCString(),
+                        submitTime: new Date().toUTCString()
                     }
                 };
 

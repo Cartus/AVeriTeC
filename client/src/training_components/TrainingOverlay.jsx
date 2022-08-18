@@ -161,7 +161,7 @@ class TrainingOverlay extends React.Component {
     if (localStorage.getItem('login')) {
       console.log("p3 info")
       console.log(this.state.shown_annotation_id);
-      console.log(Number(localStorage.train_finished_valid_annotations) - 1 - this.state.shown_annotation_id)
+      console.log(Number(localStorage.train_finished_valid_annotations) - 1 - this.state.shown_annotation_id) //TODO this is off for other users
 
       var otherUserId = new URLSearchParams(window.location.search).get("id")
       var shownUserId = localStorage.getItem('user_id');
@@ -186,7 +186,7 @@ class TrainingOverlay extends React.Component {
             window.alert("Error: Access denied.")
             window.location.replace("/control");
           }else{
-            shownUserId = otherUserId;
+            shownUserId = otherUserId; //TODO this is never shown as the next axios call executes before this finishes
           }}
         );
       }         

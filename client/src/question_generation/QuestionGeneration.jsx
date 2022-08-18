@@ -449,8 +449,8 @@ class QuestionGeneration extends React.Component {
             qa_pair_header: this.state.qa_pair_header,
             qa_pair_footer: this.state.qa_pair_footer,
             claim_norm_id: localStorage.claim_norm_id,
-            startTime: this.state.startTime,
-            submitTime: new Date()
+            startTime: this.state.startTime.toUTCString(),
+            submitTime: new Date().toUTCString()
           }
         };
 
@@ -479,8 +479,8 @@ class QuestionGeneration extends React.Component {
             added_entries: this.state.added_entries,
             qa_pair_header: this.state.qa_pair_header,
             qa_pair_footer: this.state.qa_pair_footer,
-            startTime: this.state.startTime,
-            submitTime: new Date()
+            startTime: this.state.startTime.toUTCString(),
+            submitTime: new Date().toUTCString()
           }
         };
 
