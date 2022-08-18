@@ -1,5 +1,5 @@
 <?php
-
+date_default_timezone_set('UTC');
 $db_params = parse_ini_file( dirname(__FILE__).'/db_params.ini', false);
 
 // Create connection
@@ -11,6 +11,8 @@ if ($conn->connect_error) {
 
 $sql = "SELECT * FROM Qapair";
 $result = $conn->query($sql);
+
+$gold_array = array();
 
 if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
@@ -40,11 +42,27 @@ if ($result->num_rows > 0) {
         echo "qa_latest: " . $row["qa_latest"]. "<br>";
         echo "edit_latest: " . $row["edit_latest"]. "<br>";
         echo "p4_latest: " . $row["p4_latest"]. "<br>";
+        echo "date_start: " . $row["date_start"]. "<br>";
+        echo "date_load: " . $row["date_load"]. "<br>";
+        echo "date_made: " . $row["date_made"]. "<br>";
         echo "<br>";
+
+        array_push($gold_array, ["qa_id"=>$row['qa_id'], "claim_norm_id"=>$row['claim_norm_id'], "user_id_qa"=>$row['user_id_qa'], "question"=>$row['question'], "answer"=>$row['answer'], "source_url"=>$row['source_url'],
+        "answer_problems"=>$row['answer_problems'], "bool_explanation"=>$row['bool_explanation'], "answer_second"=>$row['answer_second'], "source_url_second"=>$row['source_url_second'], "answer_type_second"=>$row['answer_type_second'],
+        "source_medium_second"=>$row['source_medium_second'], "answer_problems_second"=>$row['answer_problems_second'], "bool_explanation_second"=>$row['bool_explanation_second'], "answer_third"=>$row['answer_third'],
+        "source_url_third"=>$row['source_url_third'], "answer_type_third"=>$row['answer_type_third'], "source_medium_third"=>$row['source_medium_third'], "answer_problems_third"=>$row['answer_problems_third'],
+        "bool_explanation_third"=>$row['bool_explanation_third'], "question_problems"=>$row['question_problems'], "qa_latest"=>$row['qa_latest'], "edit_latest"=>$row['edit_latest'], "p4_latest"=>$row['p4_latest'],
+        "date_start"=>$row['date_start'], "date_load"=>$row['date_load'], "date_made"=>$row['date_made']]);
     }
 } else {
     echo "0 Results";
 }
+
+//write json to file
+if (file_put_contents("results/p2_qas.json", $json))
+    echo "JSON file created successfully...";
+else
+    echo "Oops! Error creating json file...";
 
 $conn->close();
 ?>

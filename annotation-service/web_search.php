@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('UTC');
 header("Access-Control-Allow-Origin: *");
 header('Access-Control-Allow-Headers: Content-Type');
 header('Content-Type: application/json: charset=utf-8');
