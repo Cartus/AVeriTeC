@@ -127,7 +127,7 @@ export default function UserTaskPerformanceOverview(props) {
                     <Tooltip />
                     <Legend />
                     <Bar name="User" dataKey="user" fill="#8884d8" />
-                    <Bar name="Average" dataKey="average" fill="#82ca9d" />
+                    <Bar name="Average (active)" dataKey="average" fill="#82ca9d" />
                 </BarChart>
             </ChartBox>
             :
@@ -151,7 +151,7 @@ export default function UserTaskPerformanceOverview(props) {
                     <Tooltip />
                     <Legend />
                     <Bar name="User" dataKey="user" fill="#8884d8" />
-                    <Bar name="Average" dataKey="average" fill="#82ca9d" />
+                    <Bar name="Average (active)" dataKey="average" fill="#82ca9d" />
                 </BarChart>
             </ChartBox>
             :
@@ -174,8 +174,8 @@ export default function UserTaskPerformanceOverview(props) {
                     <YAxis unit=" s" />
                     <Tooltip />
                     <Legend />
-                    <Bar name="User" dataKey="user" fill="#8884d8" unit=" s" />
-                    <Bar name="Average" dataKey="average" fill="#82ca9d" unit=" s" />
+                    <Bar name="User" dataKey="user" fill="#8884d8" unit=" m" />
+                    <Bar name="Average (active)" dataKey="average" fill="#82ca9d" unit=" m" />
                 </BarChart>
             </ChartBox>
             :
