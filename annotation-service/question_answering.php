@@ -736,8 +736,10 @@ if ($is_train == "training") {
     
                 $qa_latest = 1;
 
-                $start_time = $_POST['startTime'];
-                $submit_time = $_POST['submitTime'];
+                $start_time_string = $_POST['startTime'];
+                $start_time = date("Y-m-d H:i:s", strtotime($start_time_string));
+                $submit_time_string = $_POST['submitTime'];
+                $submit_time = date("Y-m-d H:i:s", strtotime($submit_time_string));
 
                 update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium, qa_latest, bool_explanation,
                 answer_second, source_url_second, answer_type_second, source_medium_second, bool_explanation_second, answer_third, source_url_third, answer_type_third,
@@ -1046,8 +1048,10 @@ if ($is_train == "training") {
     
                 $qa_latest = 1;
 
-                $start_time = $_POST['startTime'];
-                $submit_time = $_POST['submitTime'];
+                $start_time_string = $_POST['startTime'];
+                $start_time = date("Y-m-d H:i:s", strtotime($start_time_string));
+                $submit_time_string = $_POST['submitTime'];
+                $submit_time = date("Y-m-d H:i:s", strtotime($submit_time_string));
 
                 $from_time = strtotime($start_time);
                 $load_time = strtotime($row['date_load_cache_qa']);

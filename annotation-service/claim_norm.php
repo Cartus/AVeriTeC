@@ -571,12 +571,13 @@ if ($is_train == "training") {
                 $latest = 1;
                 $inserted = 0;
 
-                $start_time = $_POST['startTime'];
+                $start_time_string = $_POST['startTime'];
+                $start_time = date("Y-m-d H:i:s", strtotime($start_time_string));
     
                 update_table($conn, "INSERT INTO Norm_Claims (claim_id, web_archive, user_id_norm, cleaned_claim, speaker, hyperlink, transcription, media_source,
                 check_date, claim_types, fact_checker_strategy, phase_1_label, date_made_norm, claim_loc, latest, source, nonfactual, date_start_norm, date_load_norm, inserted)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'isisssssssssssisissi', $row['claim_id'], $row['web_archive'], $user_id, 
-                $cleaned_claim, $speaker, $hyperlink, $transcription, $media_source, $check_date, $claim_types, $fact_checker_strategy, $phase_1_label, $date, $claim_loc, 
+                $cleaned_claim, $speaker, $hyperlink, $transcription, $media_source, $check_date, $claim_types, $fact_checker_strategy, $phase_1_label, $date, $claim_loc,
                 $latest, $source, $nonfactual, $start_time, $row['date_load_norm'], $inserted);
             }
 
@@ -806,9 +807,10 @@ if ($is_train == "training") {
 //                 $from_time = strtotime($row['date_restart_norm']);
 //                 $load_time = strtotime($row['date_load_norm']);
 
-                $start_time = $_POST['startTime'];
-                $from_time = strtotime($start_time);
+                $start_time_string = $_POST['startTime'];
+                $start_time = date("Y-m-d H:i:s", strtotime($start_time_string));
 
+                $from_time = strtotime($start_time);
                 $load_time = strtotime($row['date_load_norm']);
 
                 if ($from_time > $load_time) {
