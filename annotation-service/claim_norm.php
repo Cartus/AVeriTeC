@@ -573,12 +573,21 @@ if ($is_train == "training") {
 
                 $start_time_string = $_POST['startTime'];
                 $start_time = date("Y-m-d H:i:s", strtotime($start_time_string));
+
+                $from_time = strtotime($start_time);
+                $load_time = strtotime($row['date_load_norm']);
+
+                if ($from_time > $load_time) {
+                    $load_time = NULL;
+                } else {
+                    $load_time = $row['date_load_norm'];
+                }
     
                 update_table($conn, "INSERT INTO Norm_Claims (claim_id, web_archive, user_id_norm, cleaned_claim, speaker, hyperlink, transcription, media_source,
                 check_date, claim_types, fact_checker_strategy, phase_1_label, date_made_norm, claim_loc, latest, source, nonfactual, date_start_norm, date_load_norm, inserted)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'isisssssssssssisissi', $row['claim_id'], $row['web_archive'], $user_id, 
                 $cleaned_claim, $speaker, $hyperlink, $transcription, $media_source, $check_date, $claim_types, $fact_checker_strategy, $phase_1_label, $date, $claim_loc,
-                $latest, $source, $nonfactual, $start_time, $row['date_load_norm'], $inserted);
+                $latest, $source, $nonfactual, $start_time, $load_time, $inserted);
             }
 
             update_table($conn, "UPDATE Assigned_Claims SET norm_annotators_num=norm_annotators_num+1 WHERE claim_id=?",'i', $row['claim_id']);

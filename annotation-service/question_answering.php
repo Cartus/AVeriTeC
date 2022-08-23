@@ -741,14 +741,22 @@ if ($is_train == "training") {
                 $submit_time_string = $_POST['submitTime'];
                 $submit_time = date("Y-m-d H:i:s", strtotime($submit_time_string));
 
+                $from_time = strtotime($start_time);
+                $load_time = strtotime($row['date_load_cache_qa']);
+
+                if ($from_time > $load_time) {
+                    $load_time = NULL;
+                } else {
+                    $load_time = $row['date_load_cache_qa'];
+                }
+
                 update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium, qa_latest, bool_explanation,
                 answer_second, source_url_second, answer_type_second, source_medium_second, bool_explanation_second, answer_third, source_url_third, answer_type_third,
                 source_medium_third, bool_explanation_third, date_start, date_load, date_made)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssissssssssssssss', $row['claim_norm_id'], $user_id, $question, $answer,
                 $source_url, $answer_type, $source_medium, $qa_latest, $bool_explanation, $answer_second, $source_url_second, $answer_type_second, $source_medium_second,
                 $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third,
-                $start_time, $row['date_load_cache_qa'], $submit_time);
-
+                $start_time, $load_time, $submit_time);
             }
             
             update_table($conn, "UPDATE Assigned_Norms SET qa_annotators_num=qa_annotators_num+1, phase_2_label=?, num_qapairs=?, date_made_qa=?,
