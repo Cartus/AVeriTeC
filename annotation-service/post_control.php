@@ -319,13 +319,22 @@ if ($req_type == "next-data"){
             echo "0 Results";
         }
 
+        $start_time_string = $_POST['startTime'];
+        $start_time = date("Y-m-d H:i:s", strtotime($start_time_string));
+        $submit_time_string = $_POST['submitTime'];
+        $submit_time = date("Y-m-d H:i:s", strtotime($submit_time_string));
+
         $post_latest = 1;
         update_table($conn, "UPDATE Assigned_Posts SET post_annotators_num=post_annotators_num+1, phase_5_label=?, justification_p5=?, date_made_post=?,
         date_start_post=?, post_latest=? WHERE claim_norm_id=?",'ssssii',
-        $phase_5_label, $justification, $date, $row['date_start_post'], $post_latest, $row['claim_norm_id']);
+        $phase_5_label, $justification, $submit_time, $start_time, $post_latest, $row['claim_norm_id']);
 
-        $to_time = strtotime($date);
-        $from_time = strtotime($row['date_start_post']);
+        $start_time = $_POST['startTime'];
+        $submit_time = $_POST['submitTime'];
+
+        $from_time = strtotime($start_time);
+        $to_time = strtotime($submit_time);
+
         $minutes = round(abs($to_time - $from_time) / 60,2);
         echo("The annotation time is: $minutes minutes.");
 
@@ -553,8 +562,12 @@ if ($req_type == "next-data"){
             echo "0 Results";
         }
 
-        $to_time = strtotime($date);
-        $from_time = strtotime($row['date_restart_post']);
+        $start_time = $_POST['startTime'];
+        $submit_time = $_POST['submitTime'];
+
+        $from_time = strtotime($start_time);
+        $to_time = strtotime($submit_time);
+
         $minutes = round(abs($to_time - $from_time) / 60,2);
         echo("The annotation time is: $minutes minutes.");
 
@@ -567,23 +580,28 @@ if ($req_type == "next-data"){
         $inserted = 0;
         $post_annotators_num = $row['post_annotators_num']+1;
 
+        $start_time_string = $_POST['startTime'];
+        $start_time = date("Y-m-d H:i:s", strtotime($start_time_string));
+        $submit_time_string = $_POST['submitTime'];
+        $submit_time = date("Y-m-d H:i:s", strtotime($submit_time_string));
+
         update_table($conn, "INSERT INTO Assigned_Posts (claim_id, claim_qa_id, claim_valid_id, claim_dispute_id, web_archive, user_id_norm,
         user_id_qa, user_id_valid,  cleaned_claim, correction_claim, speaker, hyperlink, transcription, media_source, check_date, claim_types, fact_checker_strategy,
         phase_1_label, phase_2_label, qa_annotators_num, qa_skipped, valid_annotators_num, num_qapairs, claim_loc, latest, source, date_start_norm, date_load_norm,
         date_made_norm, date_restart_norm, date_modified_norm, date_start_qa, date_load_qa, date_made_qa, date_restart_qa, date_modified_qa, inserted,
         date_start_valid, date_made_valid, date_restart_valid, date_modified_valid, phase_3_label, phase_4_label, justification, unreadable, valid_latest,
-        dispute_annotators_num, added_qas, user_id_dispute, post_annotators_num, user_id_post, date_modified_post, phase_5_label, justification_p5, post_latest)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        'iiiisiiisssssssssssiiiisisssssssssssisssssssiiiiiiisssi',
+        dispute_annotators_num, added_qas, user_id_dispute, post_annotators_num, user_id_post, date_restart_post, date_modified_post, phase_5_label, justification_p5, post_latest)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        'iiiisiiisssssssssssiiiisisssssssssssisssssssiiiiiiissssi',
         $row['claim_id'], $row['claim_qa_id'], $row['claim_valid_id'], $row['claim_dispute_id'], $row['web_archive'], $row['user_id_norm'],
         $row['user_id_qa'], $row['user_id_valid'], $row['cleaned_claim'], $row['correction_claim'], $row['speaker'], $row['hyperlink'], $row['transcription'], $row['media_source'],
         $row['check_date'], $row['claim_types'], $row['fact_checker_strategy'], $row['phase_1_label'], $row['phase_2_label'], $row['qa_annotators_num'], $row['qa_skipped'],
         $row['valid_annotators_num'], $row['num_qapairs'],  $row['claim_loc'], $row['latest'], $row['source'], $row['date_start_norm'], $row['date_load_norm'],
         $row['date_made_norm'], $row['date_restart_norm'], $row['date_modified_norm'], $row['date_start_qa'], $row['date_load_qa'], $row['date_made_qa'],
-        $row['date_restart_qa'], $row['date_modified_qa'], $inserted, $row['date_start_valid'], $row['date_made_valid'], $row['date_restart_valid'],
+        $row['date_restart_qa'], $row['date_modified_qa'], $inserted, $row['date_start_valid'], $row['date_made_valid'], $start_time,
         $row['date_modified_valid'], $row['phase_3_label'], $row['phase_4_label'], $row['justification'], $row['unreadable'], $row['valid_latest'],
-        $row['dispute_annotators_num'], $row['added_qas'], $row['user_id_dispute'], $post_annotators_num, $row['user_id_post'],
-        $date, $phase_5_label, $justification, $post_latest);
+        $row['dispute_annotators_num'], $row['added_qas'], $row['user_id_dispute'], $post_annotators_num, $row['user_id_post'], $row['date_restart_post'],
+        $submit_time, $phase_5_label, $justification, $post_latest);
 
         $conn->commit();
         echo "Resubmit Successfully!";

@@ -559,20 +559,41 @@ if ($is_train == "training") {
     
         if($result->num_rows > 0){
             if ($row['current_qa_task'] != 0) {
-                $sql = "SELECT claim_norm_id, web_archive, cleaned_claim, speaker, source, check_date, claim_loc FROM Assigned_Norms WHERE claim_norm_id=?";
+                $sql = "SELECT * FROM Assigned_Norms WHERE claim_norm_id=?";
                 $stmt= $conn->prepare($sql);
                 $stmt->bind_param("i", $row['current_qa_task']);
                 $stmt->execute();
                 $result = $stmt->get_result();
                 $row = $result->fetch_assoc();
-                $output = (["web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
+
+                $sql_claim = "SELECT claim_id FROM Norm_Claims WHERE claim_norm_id=?";
+                $stmt= $conn->prepare($sql_claim);
+                $stmt->bind_param("i", $row['claim_id']);
+                $stmt->execute();
+                $result_claim = $stmt->get_result();
+                $row_claim = $result_claim->fetch_assoc();
+
+                $sql_text = "SELECT cleaned_claim FROM Norm_Claims WHERE claim_id=? AND claim_norm_id != ?";
+                $stmt= $conn->prepare($sql_text);
+                $stmt->bind_param("ii", $row_claim['claim_id'], $row['claim_id']);
+                $stmt->execute();
+                $result_text = $stmt->get_result();
+
+                $text_array = array();
+
+                if ($result_text->num_rows > 0) {
+                    while($row_text = $result_text->fetch_assoc()) {
+                        array_push($text_array, $row_text['cleaned_claim']);
+                    }
+                }
+
+                $output = (["web_archive" => $row['web_archive'], "other_extracted_claims" => $text_array, "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
                 "check_date" => $row['check_date'], "country_code" => $row['claim_loc'], "claim_norm_id" => $row['claim_norm_id']]);
                 echo(json_encode($output));
                 update_table($conn, "UPDATE Assigned_Norms SET date_start_qa=? WHERE claim_norm_id=?", 'si', $date, $row['claim_norm_id']);
     
             } else {
-                $sql = "SELECT claim_norm_id, web_archive, cleaned_claim, speaker, source, check_date, claim_loc, user_id_norm FROM Assigned_Norms
-                WHERE user_id_qa=? AND qa_annotators_num=0 AND qa_skipped=0 ORDER BY RAND() LIMIT 1";
+                $sql = "SELECT * FROM Assigned_Norms WHERE user_id_qa=? AND qa_annotators_num=0 AND qa_skipped=0 ORDER BY RAND() LIMIT 1";
                 $stmt= $conn->prepare($sql);
                 $stmt->bind_param("i", $user_id);
                 $stmt->execute();
@@ -582,7 +603,29 @@ if ($is_train == "training") {
                 try {
                     if(mysqli_num_rows($result) > 0) {
                         $row = $result->fetch_assoc();
-                        $output = (["web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
+
+                        $sql_claim = "SELECT claim_id FROM Norm_Claims WHERE claim_norm_id=?";
+                        $stmt= $conn->prepare($sql_claim);
+                        $stmt->bind_param("i", $row['claim_id']);
+                        $stmt->execute();
+                        $result_claim = $stmt->get_result();
+                        $row_claim = $result_claim->fetch_assoc();
+
+                        $sql_text = "SELECT cleaned_claim FROM Norm_Claims WHERE claim_id=? AND claim_norm_id != ?";
+                        $stmt= $conn->prepare($sql_text);
+                        $stmt->bind_param("ii", $row_claim['claim_id'], $row['claim_id']);
+                        $stmt->execute();
+                        $result_text = $stmt->get_result();
+
+                        $text_array = array();
+
+                        if ($result_text->num_rows > 0) {
+                            while($row_text = $result_text->fetch_assoc()) {
+                                array_push($text_array, $row_text['cleaned_claim']);
+                            }
+                        }
+
+                        $output = (["web_archive" => $row['web_archive'], "other_extracted_claims" => $text_array, "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
                         "check_date" => $row['check_date'], "country_code" => $row['claim_loc'], "claim_norm_id" => $row['claim_norm_id'], "user_id_norm" => $row['user_id_norm']]);
                         echo(json_encode($output));
     
@@ -612,6 +655,20 @@ if ($is_train == "training") {
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
+
+        $start_time_string = $_POST['startTime'];
+        $start_time = date("Y-m-d H:i:s", strtotime($start_time_string));
+        $submit_time_string = $_POST['submitTime'];
+        $submit_time = date("Y-m-d H:i:s", strtotime($submit_time_string));
+
+        $from_time = strtotime($start_time);
+        $load_time = strtotime($row['date_load_cache_qa']);
+
+        if ($from_time > $load_time) {
+            $load_time = NULL;
+        } else {
+            $load_time = $row['date_load_cache_qa'];
+        }
     
         $phase_2_label = $_POST["qa_pair_footer"]["label"];
         $num_qapairs = $_POST["added_entries"];
@@ -736,20 +793,6 @@ if ($is_train == "training") {
     
                 $qa_latest = 1;
 
-                $start_time_string = $_POST['startTime'];
-                $start_time = date("Y-m-d H:i:s", strtotime($start_time_string));
-                $submit_time_string = $_POST['submitTime'];
-                $submit_time = date("Y-m-d H:i:s", strtotime($submit_time_string));
-
-                $from_time = strtotime($start_time);
-                $load_time = strtotime($row['date_load_cache_qa']);
-
-                if ($from_time > $load_time) {
-                    $load_time = NULL;
-                } else {
-                    $load_time = $row['date_load_cache_qa'];
-                }
-
                 update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium, qa_latest, bool_explanation,
                 answer_second, source_url_second, answer_type_second, source_medium_second, bool_explanation_second, answer_third, source_url_third, answer_type_third,
                 source_medium_third, bool_explanation_third, date_start, date_load, date_made)
@@ -762,22 +805,21 @@ if ($is_train == "training") {
             update_table($conn, "UPDATE Assigned_Norms SET qa_annotators_num=qa_annotators_num+1, phase_2_label=?, num_qapairs=?, date_made_qa=?,
             correction_claim=?, date_load_qa=? WHERE claim_norm_id=?",'sisssi', $phase_2_label, $num_qapairs, $date, $correction_claim, $row['date_load_cache_qa'], $row['claim_norm_id']);
 
-            $start_time = $_POST['startTime'];
-            $submit_time = $_POST['submitTime'];
-
             $from_time = strtotime($start_time);
             $to_time = strtotime($submit_time);
 
-//             $to_time = strtotime($date);
-//             $from_time = strtotime($row['date_start_qa']);
             $minutes = round(abs($to_time - $from_time) / 60,2);
             echo("The annotation time is: $minutes minutes.");
-    
-            $load_time = strtotime($row['date_load_cache_qa']);
+
+            $load_time = strtotime($load_time);
             if (empty($load_time)) {
                 $load_minutes = $minutes;
             } else {
-                $load_minutes = round(abs($load_time - $from_time) / 60,2);
+                if ($from_time > $load_time) {
+                    $load_minutes = $minutes;
+                } else {
+                    $load_minutes = round(abs($load_time - $from_time) / 60,2);
+                }
             }
             echo("The loading time is: $load_minutes minutes.");
     
@@ -805,13 +847,33 @@ if ($is_train == "training") {
         }
     
         $qa_annotated_num = 0;
-        $sql = "SELECT qa_skipped, claim_norm_id, web_archive, cleaned_claim, source, speaker, check_date, hyperlink, phase_2_label, claim_loc, correction_claim
-        FROM Assigned_Norms WHERE user_id_qa=? AND qa_annotators_num!=? ORDER BY date_start_qa DESC LIMIT 1 OFFSET ?";
+        $sql = "SELECT * FROM Assigned_Norms WHERE user_id_qa=? AND qa_annotators_num!=? ORDER BY date_start_qa DESC LIMIT 1 OFFSET ?";
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("iii", $user_id, $qa_annotated_num, $offset);
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
+
+        $sql_claim = "SELECT claim_id FROM Norm_Claims WHERE claim_norm_id=?";
+        $stmt= $conn->prepare($sql_claim);
+        $stmt->bind_param("i", $row['claim_id']);
+        $stmt->execute();
+        $result_claim = $stmt->get_result();
+        $row_claim = $result_claim->fetch_assoc();
+
+        $sql_text = "SELECT cleaned_claim FROM Norm_Claims WHERE claim_id=? AND claim_norm_id != ?";
+        $stmt= $conn->prepare($sql_text);
+        $stmt->bind_param("ii", $row_claim['claim_id'], $row['claim_id']);
+        $stmt->execute();
+        $result_text = $stmt->get_result();
+
+        $text_array = array();
+
+        if ($result_text->num_rows > 0) {
+            while($row_text = $result_text->fetch_assoc()) {
+                array_push($text_array, $row_text['cleaned_claim']);
+            }
+        }
     
         if ($row['qa_skipped'] == 1) {
             $entries = array();
@@ -829,7 +891,7 @@ if ($is_train == "training") {
     
             $should_correct = 0;
     
-            $output = (["claim_norm_id" => $row['claim_norm_id'], "web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
+            $output = (["claim_norm_id" => $row['claim_norm_id'], "other_extracted_claims" => $text_array, "web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
                 "check_date" => $row['check_date'], "hyperlink" => $row['hyperlink'], "entries" => $entries, "label" => $row['phase_2_label'], "country_code" => $row['claim_loc'],
                 "claim_correction" => $row['correction_claim'], "should_correct" => $should_correct]);
             echo(json_encode($output));
@@ -903,7 +965,7 @@ if ($is_train == "training") {
                     $should_correct = 1;
                 }
     
-                $output = (["claim_norm_id" => $row['claim_norm_id'], "web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
+                $output = (["claim_norm_id" => $row['claim_norm_id'], "other_extracted_claims" => $text_array, "web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
                 "check_date" => $row['check_date'], "hyperlink" => $row['hyperlink'], "entries" => $entries, "label" => $row['phase_2_label'], "country_code" => $row['claim_loc'],
                 "claim_correction" => $row['correction_claim'], "should_correct" => $should_correct]);
                 echo(json_encode($output));
@@ -933,6 +995,20 @@ if ($is_train == "training") {
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
+
+        $start_time_string = $_POST['startTime'];
+        $start_time = date("Y-m-d H:i:s", strtotime($start_time_string));
+        $submit_time_string = $_POST['submitTime'];
+        $submit_time = date("Y-m-d H:i:s", strtotime($submit_time_string));
+
+        $from_time = strtotime($start_time);
+        $load_time = strtotime($row['date_load_cache_qa']);
+
+        if ($from_time > $load_time) {
+            $load_time = NULL;
+        } else {
+            $load_time = $row['date_load_cache_qa'];
+        }
     
         $phase_2_label = $_POST["qa_pair_footer"]["label"];
         $num_qapairs = $_POST["added_entries"];
@@ -1056,20 +1132,6 @@ if ($is_train == "training") {
     
                 $qa_latest = 1;
 
-                $start_time_string = $_POST['startTime'];
-                $start_time = date("Y-m-d H:i:s", strtotime($start_time_string));
-                $submit_time_string = $_POST['submitTime'];
-                $submit_time = date("Y-m-d H:i:s", strtotime($submit_time_string));
-
-                $from_time = strtotime($start_time);
-                $load_time = strtotime($row['date_load_cache_qa']);
-
-                if ($from_time > $load_time) {
-                    $load_time = NULL;
-                } else {
-                    $load_time = $row['date_load_cache_qa'];
-                }
-
                 update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium, qa_latest, bool_explanation,
                 answer_second, source_url_second, answer_type_second, source_medium_second, bool_explanation_second, answer_third, source_url_third, answer_type_third,
                 source_medium_third, bool_explanation_third, date_start, date_load, date_made)
@@ -1079,28 +1141,17 @@ if ($is_train == "training") {
                 $start_time, $load_time, $submit_time);
             }
 
-            // $from_time = strtotime($row['date_restart_cache_qa']);
-            $start_time = $_POST['startTime'];
-            $submit_time = $_POST['submitTime'];
-
-            $from_time = strtotime($start_time);
-            $to_time = strtotime($submit_time);
-
-            $load_time = strtotime($row['date_load_cache_qa']);
-
-            if ($from_time > $load_time) {
-                $load_time = NULL;
-            } else {
-                $load_time = $row['date_load_cache_qa'];
-            }
-    
             update_table($conn, "UPDATE Assigned_Norms SET qa_skipped=0, qa_annotators_num=qa_annotators_num+1, phase_2_label=?,
             num_qapairs=?, date_modified_qa=?, correction_claim=?, date_restart_qa=?, date_load_qa=? WHERE claim_norm_id=?",'sissssi',
             $phase_2_label, $num_qapairs, $date, $correction_claim, $start_time, $load_time, $claim_norm_id);
 
+            $from_time = strtotime($start_time);
+            $to_time = strtotime($submit_time);
+
             $minutes = round(abs($to_time - $from_time) / 60,2);
             echo("The annotation time is: $minutes minutes.");
 
+            $load_time = strtotime($load_time);
             if (empty($load_time)) {
                 $load_minutes = $minutes;
             } else {
@@ -1125,6 +1176,7 @@ if ($is_train == "training") {
     } else if ($req_type == "skip-data") {
     
         $claim_norm_id = $_POST['claim_norm_id'];
+        $reason = $_POST['skip_reason'];
     
         $conn = new mysqli($db_params['servername'], $db_params['user'], $db_params['password'], $db_params['database']);
         if ($conn->connect_error) {
@@ -1145,7 +1197,7 @@ if ($is_train == "training") {
     
         $conn->begin_transaction();
         try {
-            update_table($conn, "UPDATE Assigned_Norms SET qa_annotators_num=1, qa_skipped=1, qa_skipped_by=? WHERE claim_norm_id=?",'ii', $user_id, $claim_norm_id);
+            update_table($conn, "UPDATE Assigned_Norms SET qa_annotators_num=1, qa_skipped=1, skipped_reason=?, qa_skipped_by=? WHERE claim_norm_id=?",'sii', $reason, $user_id, $claim_norm_id);
             update_table($conn, "UPDATE Annotators SET current_qa_task=0, skipped_qa_data=skipped_qa_data+1, finished_qa_annotations=finished_qa_annotations+1 WHERE user_id=?",'i', $user_id);
             $conn->commit();
             echo "Skip Successfully!";

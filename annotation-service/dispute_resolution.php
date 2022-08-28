@@ -45,6 +45,27 @@ if ($req_type == "next-data"){
             $result = $stmt->get_result();
             $row = $result->fetch_assoc();
 
+            $sql_claim = "SELECT claim_id FROM Norm_Claims WHERE claim_norm_id=?";
+            $stmt= $conn->prepare($sql_claim);
+            $stmt->bind_param("i", $row['claim_id']);
+            $stmt->execute();
+            $result_claim = $stmt->get_result();
+            $row_claim = $result_claim->fetch_assoc();
+
+            $sql_text = "SELECT cleaned_claim FROM Norm_Claims WHERE claim_id=? AND claim_norm_id != ?";
+            $stmt= $conn->prepare($sql_text);
+            $stmt->bind_param("ii", $row_claim['claim_id'], $row['claim_id']);
+            $stmt->execute();
+            $result_text = $stmt->get_result();
+
+            $text_array = array();
+
+            if ($result_text->num_rows > 0) {
+                while($row_text = $result_text->fetch_assoc()) {
+                    array_push($text_array, $row_text['cleaned_claim']);
+                }
+            }
+
             $qa_latest = 1;
             $sql_qa = "SELECT * FROM Qapair WHERE qa_latest=? AND claim_norm_id=? AND user_id_qa=?";
             $stmt = $conn->prepare($sql_qa);
@@ -119,7 +140,7 @@ if ($req_type == "next-data"){
                 $entries[$count_string] = $field_array;
             }
 
-            $output = (["web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
+            $output = (["web_archive" => $row['web_archive'], "other_extracted_claims" => $text_array, "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
             "check_date" => $row['check_date'], "country_code" => $row['claim_loc'], "claim_norm_id" => $row['claim_norm_id'], "prev_entries" => $entries,
             "phase_two_label" => $row['phase_2_label'], "phase_three_label" => $row['phase_3_label'], "justification" => $row['justification']]);
             echo(json_encode($output));
@@ -133,6 +154,27 @@ if ($req_type == "next-data"){
             $result = $stmt->get_result();
             $row = $result->fetch_assoc();
 
+            $sql_claim = "SELECT claim_id FROM Norm_Claims WHERE claim_norm_id=?";
+            $stmt= $conn->prepare($sql_claim);
+            $stmt->bind_param("i", $row['claim_id']);
+            $stmt->execute();
+            $result_claim = $stmt->get_result();
+            $row_claim = $result_claim->fetch_assoc();
+
+            $sql_text = "SELECT cleaned_claim FROM Norm_Claims WHERE claim_id=? AND claim_norm_id != ?";
+            $stmt= $conn->prepare($sql_text);
+            $stmt->bind_param("ii", $row_claim['claim_id'], $row['claim_id']);
+            $stmt->execute();
+            $result_text = $stmt->get_result();
+
+            $text_array = array();
+
+            if ($result_text->num_rows > 0) {
+            while($row_text = $result_text->fetch_assoc()) {
+                array_push($text_array, $row_text['cleaned_claim']);
+                }
+            }
+
             $qa_latest = 1;
             $sql_qa = "SELECT * FROM Qapair WHERE qa_latest=? AND claim_norm_id=? AND user_id_qa=?";
             $stmt = $conn->prepare($sql_qa);
@@ -207,7 +249,7 @@ if ($req_type == "next-data"){
                 $entries[$count_string] = $field_array;
             }
 
-            $output = (["web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
+            $output = (["web_archive" => $row['web_archive'], "other_extracted_claims" => $text_array, "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
             "check_date" => $row['check_date'], "country_code" => $row['claim_loc'], "claim_norm_id" => $row['claim_norm_id'], "prev_entries" => $entries,
             "phase_two_label" => $row['phase_2_label'], "phase_three_label" => $row['phase_3_label'], "justification" => $row['justification']]);
             echo(json_encode($output));
@@ -231,6 +273,20 @@ if ($req_type == "next-data"){
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
+
+    $start_time_string = $_POST['startTime'];
+    $start_time = date("Y-m-d H:i:s", strtotime($start_time_string));
+    $submit_time_string = $_POST['submitTime'];
+    $submit_time = date("Y-m-d H:i:s", strtotime($submit_time_string));
+
+    $from_time = strtotime($start_time);
+    $load_time = strtotime($row['date_load_cache_dispute']);
+
+    if ($from_time > $load_time) {
+        $load_time = NULL;
+    } else {
+        $load_time = $row['date_load_cache_dispute'];
+    }
 
     $qa_latest = 0;
     $sql_update = "UPDATE Qapair SET qa_latest=? WHERE claim_norm_id=? AND user_id_qa=?";
@@ -338,10 +394,11 @@ if ($req_type == "next-data"){
             $qa_latest = 0;
             update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium, qa_latest, edit_latest, bool_explanation,
             answer_second, source_url_second, answer_type_second, source_medium_second, bool_explanation_second, answer_third, source_url_third, answer_type_third,
-            source_medium_third, bool_explanation_third)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssiisssssssssss', $row['claim_qa_id'], $user_id, $question, $answer,
+            source_medium_third, bool_explanation_third, date_start, date_load, date_made)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssiissssssssssssss', $row['claim_qa_id'], $user_id, $question, $answer,
             $source_url, $answer_type, $source_medium, $qa_latest, $edit_latest, $bool_explanation, $answer_second, $source_url_second, $answer_type_second, $source_medium_second,
-            $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third);
+            $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third,
+            $start_time, $load_time, $submit_time);
 
         }
         // For added entries
@@ -438,28 +495,34 @@ if ($req_type == "next-data"){
             $qa_latest = 0;
             update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium, qa_latest, p4_latest, bool_explanation,
             answer_second, source_url_second, answer_type_second, source_medium_second, bool_explanation_second, answer_third, source_url_third, answer_type_third,
-            source_medium_third, bool_explanation_third)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssiisssssssssss', $row['claim_qa_id'], $user_id, $question, $answer,
+            source_medium_third, bool_explanation_third, date_start, date_load, date_made)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssiissssssssssssss', $row['claim_qa_id'], $user_id, $question, $answer,
             $source_url, $answer_type, $source_medium, $qa_latest, $p4_latest, $bool_explanation, $answer_second, $source_url_second, $answer_type_second, $source_medium_second,
-            $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third);
+            $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third,
+            $start_time, $load_time, $submit_time);
         }
 
         // added_qapairs need to be updated.
         $added_qas = 1;
         update_table($conn, "UPDATE Assigned_Disputes SET dispute_annotators_num=dispute_annotators_num+1, num_qapairs=num_qapairs+?, p4_num_qapairs=?, phase_4_label=?, date_made_dispute=?,
         date_load_dispute=?, added_qas=? WHERE claim_norm_id=?",'iisssii',
-        $added_qapairs, $added_qapairs, $phase_4_label, $date, $row['date_load_cache_dispute'], $added_qas, $row['claim_norm_id']);
+        $added_qapairs, $added_qapairs, $phase_4_label, $submit_time, $load_time, $added_qas, $row['claim_norm_id']);
 
-        $to_time = strtotime($date);
-        $from_time = strtotime($row['date_start_dispute']);
+        $to_time = strtotime($submit_time);
+        $from_time = strtotime($start_time);
+
         $minutes = round(abs($to_time - $from_time) / 60,2);
         echo("The annotation time is: $minutes minutes.");
 
-        $load_time = strtotime($row['date_load_cache_dispute']);
-        if ($load_time == 0) {
+        $load_time = strtotime($load_time);
+        if (empty($load_time)) {
             $load_minutes = $minutes;
         } else {
-            $load_minutes = round(abs($load_time - $from_time) / 60,2);
+            if ($from_time > $load_time) {
+                $load_minutes = $minutes;
+            } else {
+                $load_minutes = round(abs($load_time - $from_time) / 60,2);
+            }
         }
         echo("The loading time is: $load_minutes minutes.");
 
@@ -493,6 +556,27 @@ if ($req_type == "next-data"){
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
+
+    $sql_claim = "SELECT claim_id FROM Norm_Claims WHERE claim_norm_id=?";
+    $stmt= $conn->prepare($sql_claim);
+    $stmt->bind_param("i", $row['claim_id']);
+    $stmt->execute();
+    $result_claim = $stmt->get_result();
+    $row_claim = $result_claim->fetch_assoc();
+
+    $sql_text = "SELECT cleaned_claim FROM Norm_Claims WHERE claim_id=? AND claim_norm_id != ?";
+    $stmt= $conn->prepare($sql_text);
+    $stmt->bind_param("ii", $row_claim['claim_id'], $row['claim_id']);
+    $stmt->execute();
+    $result_text = $stmt->get_result();
+
+    $text_array = array();
+
+    if ($result_text->num_rows > 0) {
+        while($row_text = $result_text->fetch_assoc()) {
+            array_push($text_array, $row_text['cleaned_claim']);
+        }
+    }
 
     $edit_latest = 1;
     $sql_qa = "SELECT * FROM Qapair WHERE edit_latest=? AND claim_norm_id=? AND user_id_qa=?";
@@ -628,7 +712,7 @@ if ($req_type == "next-data"){
         $entries[$count_string] = $field_array;
     }
 
-    $output = (["claim_norm_id" => $row['claim_norm_id'], "web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
+    $output = (["claim_norm_id" => $row['claim_norm_id'], "other_extracted_claims" => $text_array, "web_archive" => $row['web_archive'], "cleaned_claim" => $row['cleaned_claim'], "speaker" => $row['speaker'], "claim_source" => $row['source'],
     "check_date" => $row['check_date'], "country_code" => $row['claim_loc'], "prev_entries" => $prev_entries, "entries" => $entries,
     "phase_two_label" => $row['phase_2_label'], "phase_three_label" => $row['phase_3_label'], "justification" => $row['justification'], "label" => $row['phase_4_label']]);
     echo(json_encode($output));
@@ -650,6 +734,20 @@ if ($req_type == "next-data"){
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
+
+    $start_time_string = $_POST['startTime'];
+    $start_time = date("Y-m-d H:i:s", strtotime($start_time_string));
+    $submit_time_string = $_POST['submitTime'];
+    $submit_time = date("Y-m-d H:i:s", strtotime($submit_time_string));
+
+    $from_time = strtotime($start_time);
+    $load_time = strtotime($row['date_load_cache_dispute']);
+
+    if ($from_time > $load_time) {
+        $load_time = NULL;
+    } else {
+        $load_time = $row['date_load_cache_dispute'];
+    }
 
     $edit_latest = 0;
     $sql_update = "UPDATE Qapair SET edit_latest=? WHERE claim_norm_id=? AND user_id_qa=?";
@@ -760,10 +858,12 @@ if ($req_type == "next-data"){
             $edit_latest = 1;
             $qa_latest = 0;
             update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium, qa_latest, edit_latest, bool_explanation,
-            answer_second, source_url_second, answer_type_second, source_medium_second, bool_explanation_second, answer_third, source_url_third, answer_type_third, source_medium_third, bool_explanation_third)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssiisssssssssss', $row['claim_qa_id'], $user_id, $question, $answer,
+            answer_second, source_url_second, answer_type_second, source_medium_second, bool_explanation_second, answer_third, source_url_third, answer_type_third,
+            source_medium_third, bool_explanation_third, date_start, date_load, date_made)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssiissssssssssssss', $row['claim_qa_id'], $user_id, $question, $answer,
             $source_url, $answer_type, $source_medium, $qa_latest, $edit_latest, $bool_explanation, $answer_second, $source_url_second, $answer_type_second, $source_medium_second,
-            $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third);
+            $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third,
+            $start_time, $load_time, $submit_time);
 
         }
 
@@ -859,10 +959,12 @@ if ($req_type == "next-data"){
             $p4_latest = 1;
             $qa_latest = 0;
             update_table($conn, "INSERT INTO Qapair (claim_norm_id, user_id_qa, question, answer, source_url, answer_type, source_medium, qa_latest, p4_latest, bool_explanation,
-            answer_second, source_url_second, answer_type_second, source_medium_second, bool_explanation_second, answer_third, source_url_third, answer_type_third, source_medium_third, bool_explanation_third)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssiisssssssssss', $row['claim_qa_id'], $user_id, $question, $answer,
+            answer_second, source_url_second, answer_type_second, source_medium_second, bool_explanation_second, answer_third, source_url_third, answer_type_third,
+            source_medium_third, bool_explanation_third, date_start, date_load, date_made)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'iisssssiissssssssssssss', $row['claim_qa_id'], $user_id, $question, $answer,
             $source_url, $answer_type, $source_medium, $qa_latest, $p4_latest, $bool_explanation, $answer_second, $source_url_second, $answer_type_second, $source_medium_second,
-            $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third);
+            $bool_explanation_second, $answer_third, $source_url_third, $answer_type_third, $source_medium_third, $bool_explanation_third,
+            $start_time, $load_time, $submit_time);
         }
 
         $added_qas = 1;
@@ -870,15 +972,24 @@ if ($req_type == "next-data"){
         $resulted_qapairs = $added_qapairs - $row['p4_num_qapairs'];
         update_table($conn, "UPDATE Assigned_Disputes SET dispute_annotators_num=dispute_annotators_num+1, num_qapairs=num_qapairs+?, p4_num_qapairs=p4_num_qapairs+?,
         phase_4_label=?, date_modified_dispute=?, date_restart_dispute=?, date_load_dispute=?, added_qas=? WHERE claim_norm_id=?",'iissssii',
-        $resulted_qapairs, $resulted_qapairs, $phase_4_label, $date, $row['date_restart_cache_dispute'], $row['date_load_cache_dispute'], $added_qas, $claim_norm_id);
+        $resulted_qapairs, $resulted_qapairs, $phase_4_label, $submit_time, $start_time, $load_time, $added_qas, $claim_norm_id);
 
-        $to_time = strtotime($date);
-        $from_time = strtotime($row['date_restart_cache_dispute']);
+        $from_time = strtotime($start_time);
+        $to_time = strtotime($submit_time);
+
         $minutes = round(abs($to_time - $from_time) / 60,2);
         echo("The annotation time is: $minutes minutes.");
 
-        $load_time = strtotime($row['date_load_cache_dispute']);
-        $load_minutes = round(abs($load_time - $from_time) / 60,2);
+        $load_time = strtotime($load_time);
+        if (empty($load_time)) {
+            $load_minutes = $minutes;
+        } else {
+            if ($from_time > $load_time) {
+                $load_minutes = $minutes;
+            } else {
+                $load_minutes = round(abs($load_time - $from_time) / 60,2);
+            }
+        }
         echo("The loading time is: $load_minutes minutes.");
 
         update_table($conn, "UPDATE Annotators SET p4_time_sum=p4_time_sum+?, p4_load_sum=p4_load_sum+?, questions_p4=questions_p4+?
