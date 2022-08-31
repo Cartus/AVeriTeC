@@ -603,6 +603,9 @@ class QuestionGeneration extends React.Component {
 
     var current_idx = finished_annotations + 1 - Number(localStorage.pc);
 
+    console.log("Norm id:")
+    console.log(localStorage.claim_norm_id)
+
     return (
       <QAPageDiv>
         {!this.state.confirmation ?
@@ -622,6 +625,7 @@ class QuestionGeneration extends React.Component {
                 footer={this.state.qa_pair_footer}
                 valid={this.state.valid}
                 dataset={dataset}
+                finish_path={this.props.finish_path}
               />
               <SearchField claim_date={this.state.claim.claim_date} country_code={this.state.claim.country_code} />
             </QADataField>

@@ -70,7 +70,16 @@ class ReportBar extends React.Component {
         } else {
           localStorage.finished_norm_annotations = Number(localStorage.finished_norm_annotations) + 1;
         }
-        window.location.reload(false);
+        
+        let is_at_last_claim = this.props.current_idx === this.props.final_idx;
+        let should_use_finish_path = this.props.finish_path && is_at_last_claim
+
+        if (should_use_finish_path) {
+          console.log("redirect")
+          window.location.assign(this.props.finish_path);
+        } else {
+          window.location.reload(false);
+        }
       }).catch((error) => { window.alert(error) })
     } else if (phase === 'phase_2') {
       var request = {
@@ -97,7 +106,15 @@ class ReportBar extends React.Component {
           localStorage.finished_qa_annotations = Number(localStorage.finished_qa_annotations) + 1;
         }
 
-        window.location.reload(false);
+        let is_at_last_claim = this.props.current_idx === this.props.final_idx;
+        let should_use_finish_path = this.props.finish_path && is_at_last_claim
+
+        if (should_use_finish_path) {
+          console.log("redirect")
+          window.location.assign(this.props.finish_path);
+        } else {
+          window.location.reload(false);
+        }
       }).catch((error) => { window.alert(error) })
     }
   };

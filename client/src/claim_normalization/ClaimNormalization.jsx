@@ -482,7 +482,8 @@ class ClaimNormalization extends React.Component {
                             header={this.state.claim_header}
                             footer={this.state.claim_footer}
                             valid={this.state.valid}
-                            dataset={dataset}
+                            dataset={dataset} 
+                            finish_path={this.props.finish_path}
                         />
                         {this.state.userIsFirstVisiting ? <TourWrapper /> : ""}
                     </TourProvider>
