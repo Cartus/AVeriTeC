@@ -95,7 +95,7 @@ class DisagreementResolutionTopField extends React.Component {
     }
 
     var other_claims_field = ""
-    if (this.props.claim && this.props.claim.other_extracted_claims) {
+    if (this.props.claim && this.props.claim.other_extracted_claims && this.props.claim.other_extracted_claims.length > 0) {
       var other_claims_items = this.props.claim.other_extracted_claims.map(claim =>
         <li>
           {claim}
