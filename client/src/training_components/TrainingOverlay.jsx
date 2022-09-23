@@ -212,7 +212,7 @@ class TrainingOverlay extends React.Component {
           const new_claim = {
             web_archive: response.data.web_archive,
             claim_text: response.data.claim_text,
-            claim_speaker: response.data.claim_speaker,
+            claim_speaker: response.data.speaker,
             claim_source: response.data.claim_source,
             claim_hyperlink: response.data.claim_hyperlink,
             claim_date: response.data.claim_date,
@@ -258,7 +258,7 @@ class TrainingOverlay extends React.Component {
             let new_claim = {
               web_archive: a.web_archive,
               claim_text: a.claim_text,
-              claim_speaker: a.claim_speaker,
+              claim_speaker: a.speaker,
               claim_source: a.claim_source,
               claim_hyperlink: a.claim_hyperlink,
               claim_date: a.claim_date,
