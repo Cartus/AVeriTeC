@@ -662,12 +662,19 @@ if ($is_train == "training") {
         $submit_time = date("Y-m-d H:i:s", strtotime($submit_time_string));
 
         $from_time = strtotime($start_time);
+        $made_time = strtotime($submit_time);
         $load_time = strtotime($row['date_load_cache_qa']);
 
         if ($from_time > $load_time) {
             $load_time = NULL;
         } else {
             $load_time = $row['date_load_cache_qa'];
+        }
+
+        if ($load_time > $made_time) {
+             $load_time = NULL;
+        } else {
+             $load_time = $row['date_load_cache_qa'];
         }
     
         $phase_2_label = $_POST["qa_pair_footer"]["label"];
@@ -1002,9 +1009,16 @@ if ($is_train == "training") {
         $submit_time = date("Y-m-d H:i:s", strtotime($submit_time_string));
 
         $from_time = strtotime($start_time);
+        $made_time = strtotime($submit_time);
         $load_time = strtotime($row['date_load_cache_qa']);
 
         if ($from_time > $load_time) {
+            $load_time = NULL;
+        } else {
+            $load_time = $row['date_load_cache_qa'];
+        }
+
+        if ($load_time > $made_time) {
             $load_time = NULL;
         } else {
             $load_time = $row['date_load_cache_qa'];
