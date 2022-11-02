@@ -103,7 +103,7 @@ const routing = (
             <PreTrainingControl phase={1} taskLink="/training/phase_1/task_1"/>
           </Route>
           <Route path="/training/phase_1/task_1">
-            <ClaimNormalization dataset="training" finish_at={10} finish_path="/training/phase_1/mid"/>
+            <ClaimNormalization dataset="training" finish_at={10} finish_path="/training/phase_1/complete"/>
           </Route>
           <Route path="/training/phase_1/mid">
             <MidTrainingControl phase={1} taskLink="/training/phase_1/mid_review"/>
