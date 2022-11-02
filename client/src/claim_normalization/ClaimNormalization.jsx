@@ -194,8 +194,8 @@ class ClaimNormalization extends React.Component {
                         dataset: dataset,
                         entries: this.state.entries,
                         claim_id: localStorage.claim_id,
-                        startTime: this.state.startTime,
-                        submitTime: new Date()
+                        startTime: this.state.startTime.toUTCString(),
+                        submitTime: new Date().toUTCString()
                     }
                 };
 
@@ -219,8 +219,8 @@ class ClaimNormalization extends React.Component {
                         dataset: dataset,
                         req_type: 'submit-data',
                         entries: this.state.entries,
-                        startTime: this.state.startTime,
-                        submitTime: new Date()
+                        startTime: this.state.startTime.toUTCString(),
+                        submitTime: new Date().toUTCString()
                     }
                 };
 
@@ -482,7 +482,8 @@ class ClaimNormalization extends React.Component {
                             header={this.state.claim_header}
                             footer={this.state.claim_footer}
                             valid={this.state.valid}
-                            dataset={dataset}
+                            dataset={dataset} 
+                            finish_path={this.props.finish_path}
                         />
                         {this.state.userIsFirstVisiting ? <TourWrapper /> : ""}
                     </TourProvider>

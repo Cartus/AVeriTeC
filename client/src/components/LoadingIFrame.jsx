@@ -52,32 +52,32 @@ class LoadingIFrame extends React.Component {
       console.log("Finished loading: " + event.target.src)
       console.log("Phase: " + this.props.phase)
       console.log(
-        "Loading started at " + loading_start_time + " and finished at " + loading_stop_time + ". Loading took " + seconds_taken + " seconds."
+        "Loading started at " + loading_start_time.toUTCString() + " and finished at " + loading_stop_time.toUTCString() + ". Loading took " + seconds_taken + " seconds."
       )
       this.setState({
         loading: false
       });
+
+      // let phase = localStorage.getItem('phase');
+      var request = {
+        method: "post",
+        baseURL: config.api_url,
+        url: "/finished_loading.php",
+        data: {
+          user_id: localStorage.getItem('user_id'),
+          claim_id: localStorage.claim_id,
+          claim_norm_id: localStorage.claim_norm_id,
+          loadingStartTime: loading_start_time.toUTCString(),
+          loadingStopTime: loading_stop_time.toUTCString(),
+          // seconds_taken: seconds_taken,
+          phase: this.props.phase
+        }
+      };
+
+      axios(request).then((response) => {
+        console.log(response.data);
+      }).catch((error) => { console.log(error) })
     }
-
-    // let phase = localStorage.getItem('phase');
-    var request = {
-      method: "post",
-      baseURL: config.api_url,
-      url: "/finished_loading.php",
-      data: {
-        user_id: localStorage.getItem('user_id'),
-        claim_id: localStorage.claim_id,
-        claim_norm_id: localStorage.claim_norm_id,
-        loadingStartTime: loading_start_time,
-        loadingStopTime: loading_stop_time,
-        // seconds_taken: seconds_taken,
-        phase: this.props.phase
-      }
-    };
-
-    axios(request).then((response) => {
-      console.log(response.data);
-    }).catch((error) => { console.log(error) })
   };
 
   render() {

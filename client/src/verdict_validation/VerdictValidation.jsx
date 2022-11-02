@@ -177,7 +177,7 @@ class VerdictValidation extends React.Component {
                         const new_claim = {
                             web_archive: response.data.web_archive,
                             claim_text: response.data.claim_text,
-                            claim_speaker: response.data.claim_speaker,
+                            claim_speaker: response.data.speaker,
                             claim_source: response.data.claim_source,
                             claim_hyperlink: response.data.claim_hyperlink,
                             claim_date: response.data.claim_date,
@@ -218,7 +218,7 @@ class VerdictValidation extends React.Component {
                         const new_claim = {
                             web_archive: response.data.web_archive,
                             claim_text: response.data.claim_text,
-                            claim_speaker: response.data.claim_speaker,
+                            claim_speaker: response.data.speaker,
                             claim_source: response.data.claim_source,
                             claim_hyperlink: response.data.claim_hyperlink,
                             claim_date: response.data.claim_date,
@@ -266,8 +266,8 @@ class VerdictValidation extends React.Component {
                         annotation: this.state.annotation,
                         questions: this.state.claim.questions,
                         claim_norm_id: localStorage.claim_norm_id,
-                        startTime: this.state.startTime,
-                        submitTime: new Date()
+                        startTime: this.state.startTime.toUTCString(),
+                        submitTime: new Date().toUTCString()
                     }
                 };
 
@@ -294,8 +294,8 @@ class VerdictValidation extends React.Component {
                         req_type: 'submit-data',
                         annotation: this.state.annotation,
                         questions: this.state.claim.questions,
-                        startTime: this.state.startTime,
-                        submitTime: new Date()
+                        startTime: this.state.startTime.toUTCString(),
+                        submitTime: new Date().toUTCString()
                     }
                 };
 

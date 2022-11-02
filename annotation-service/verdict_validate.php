@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('UTC');
 header("Access-Control-Allow-Origin: *");
 header('Access-Control-Allow-Headers: Content-Type');
 
@@ -871,14 +872,23 @@ if ($is_train == "training") {
             }else {
                 echo "0 Results";
             }
+
+            $start_time_string = $_POST['startTime'];
+            $start_time = date("Y-m-d H:i:s", strtotime($start_time_string));
+            $submit_time_string = $_POST['submitTime'];
+            $submit_time = date("Y-m-d H:i:s", strtotime($submit_time_string));
     
             $valid_latest = 1;
             update_table($conn, "UPDATE Assigned_Valids SET valid_annotators_num=valid_annotators_num+1, phase_3_label=?, justification=?, date_made_valid=?, 
             date_start_valid=?, unreadable=?, valid_latest=?
-            WHERE claim_norm_id=?",'ssssiii', $phase_3_label, $justification, $date, $row['date_start_valid'], $unreadable, $valid_latest, $row['claim_norm_id']);
+            WHERE claim_norm_id=?",'ssssiii', $phase_3_label, $justification, $submit_time, $start_time, $unreadable, $valid_latest, $row['claim_norm_id']);
     
-            $to_time = strtotime($date);
-            $from_time = strtotime($row['date_start_valid']);
+            $start_time = $_POST['startTime'];
+            $submit_time = $_POST['submitTime'];
+
+            $from_time = strtotime($start_time);
+            $to_time = strtotime($submit_time);
+
             $minutes = round(abs($to_time - $from_time) / 60,2);
             echo("The annotation time is: $minutes minutes.");
     
@@ -1109,8 +1119,12 @@ if ($is_train == "training") {
                 echo "0 Results";
             }
     
-            $to_time = strtotime($date);
-            $from_time = strtotime($row['date_restart_valid']);
+            $start_time = $_POST['startTime'];
+            $submit_time = $_POST['submitTime'];
+
+            $from_time = strtotime($start_time);
+            $to_time = strtotime($submit_time);
+
             $minutes = round(abs($to_time - $from_time) / 60,2);
             echo("The annotation time is: $minutes minutes.");
     
@@ -1123,8 +1137,10 @@ if ($is_train == "training") {
             $inserted = 0;
             $valid_annotators_num = $row['valid_annotators_num']+1;
     
-            echo "here";
-            echo $unreadable;
+            $start_time_string = $_POST['startTime'];
+            $start_time = date("Y-m-d H:i:s", strtotime($start_time_string));
+            $submit_time_string = $_POST['submitTime'];
+            $submit_time = date("Y-m-d H:i:s", strtotime($submit_time_string));
             
             update_table($conn, "INSERT INTO Assigned_Valids (claim_id, claim_qa_id, web_archive, user_id_norm, user_id_qa, user_id_valid, cleaned_claim, 
             correction_claim, speaker, hyperlink, transcription, media_source, check_date, claim_types, fact_checker_strategy, phase_1_label, phase_2_label, qa_annotators_num, 
@@ -1139,7 +1155,7 @@ if ($is_train == "training") {
             $row['phase_1_label'], $row['phase_2_label'], $row['qa_annotators_num'], $row['qa_skipped'], $valid_annotators_num, $row['num_qapairs'],  
             $row['claim_loc'], $row['latest'], $row['source'], $row['date_start_norm'], $row['date_load_norm'], $row['date_made_norm'], $row['date_restart_norm'], 
             $row['date_modified_norm'], $row['date_start_qa'], $row['date_load_qa'], $row['date_made_qa'], $row['date_restart_qa'], $row['date_modified_qa'], $inserted, 
-            $row['date_start_valid'], $row['date_made_valid'], $row['date_restart_valid'], $date,
+            $row['date_start_valid'], $row['date_made_valid'], $start_time, $submit_time,
             $phase_3_label, $justification, $unreadable, $valid_latest);
     
             $conn->commit();

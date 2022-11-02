@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('UTC');
 header("Access-Control-Allow-Origin: *");
 header('Access-Control-Allow-Headers: Content-Type');
 header('Content-Type: application/json: charset=utf-8');
@@ -18,7 +19,11 @@ $page = $_POST['page'];
 $claim_date = $_POST['claim_date'];
 $country_code = $_POST['country_code'];
 
-$command = "{$pythonpath} {$scriptpath} --query \"{$query}\" --page {$page} --claim_date {$claim_date} --country_code {$country_code} 2>&1";
+if ($claim_date  === null || trim($claim_date ) === ''){
+    $command = "{$pythonpath} {$scriptpath} --query \"{$query}\" --page {$page} --country_code {$country_code} 2>&1";
+} else{
+    $command = "{$pythonpath} {$scriptpath} --query \"{$query}\" --page {$page} --claim_date {$claim_date} --country_code {$country_code} 2>&1";
+}
 
 exec($command, $output);
 //print_r($output);
@@ -79,4 +84,3 @@ try {
 echo(json_encode($result));
 $conn->close();
 ?>
-

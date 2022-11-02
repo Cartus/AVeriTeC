@@ -161,7 +161,7 @@ class TrainingOverlay extends React.Component {
     if (localStorage.getItem('login')) {
       console.log("p3 info")
       console.log(this.state.shown_annotation_id);
-      console.log(Number(localStorage.train_finished_valid_annotations) - 1 - this.state.shown_annotation_id)
+      console.log(Number(localStorage.train_finished_valid_annotations) - 1 - this.state.shown_annotation_id) //TODO this is off for other users
 
       var otherUserId = new URLSearchParams(window.location.search).get("id")
       var shownUserId = localStorage.getItem('user_id');
@@ -186,7 +186,7 @@ class TrainingOverlay extends React.Component {
             window.alert("Error: Access denied.")
             window.location.replace("/control");
           }else{
-            shownUserId = otherUserId;
+            shownUserId = otherUserId; //TODO this is never shown as the next axios call executes before this finishes
           }}
         );
       }         
@@ -212,7 +212,7 @@ class TrainingOverlay extends React.Component {
           const new_claim = {
             web_archive: response.data.web_archive,
             claim_text: response.data.claim_text,
-            claim_speaker: response.data.claim_speaker,
+            claim_speaker: response.data.speaker,
             claim_source: response.data.claim_source,
             claim_hyperlink: response.data.claim_hyperlink,
             claim_date: response.data.claim_date,
@@ -258,7 +258,7 @@ class TrainingOverlay extends React.Component {
             let new_claim = {
               web_archive: a.web_archive,
               claim_text: a.claim_text,
-              claim_speaker: a.claim_speaker,
+              claim_speaker: a.speaker,
               claim_source: a.claim_source,
               claim_hyperlink: a.claim_hyperlink,
               claim_date: a.claim_date,

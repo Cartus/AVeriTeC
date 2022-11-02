@@ -305,7 +305,7 @@ class MetadataEntryBar extends React.Component {
             phaseName="Claim Normalization" 
             phaseInstructions="Please read the fact checking article to the left, then fill out the information about the discussed claim below. If the article discusses more than one claim, you can add additional entry boxes for each claim. Some claims consist of multiple, easily separable, independent parts (e.g. &quot;The productivity rate in Scotland rose in 2017, and similarly productivity rose in Wales that year.&quot;). Please split these claims into their parts. When entering a claim, please make sure that it can be understood without reading the article - if necessary, you can add context to the claim to ensure this." 
             />
-            <ReportBar dataset={this.props.dataset}/>
+            <ReportBar dataset={this.props.dataset} current_idx={this.props.current_idx} final_idx={this.props.final_idx} finish_path={this.props.finish_path}/>
           </div>
           : ""
         }

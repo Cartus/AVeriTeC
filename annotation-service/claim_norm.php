@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('UTC');
 header("Access-Control-Allow-Origin: *");
 header('Access-Control-Allow-Headers: Content-Type');
 
@@ -569,22 +570,42 @@ if ($is_train == "training") {
                 $fact_checker_strategy = implode(" [SEP] ", $fact_checker_strategy);
                 $latest = 1;
                 $inserted = 0;
+
+                $start_time_string = $_POST['startTime'];
+                $start_time = date("Y-m-d H:i:s", strtotime($start_time_string));
+
+                $from_time = strtotime($start_time);
+                $load_time = strtotime($row['date_load_norm']);
+
+                if ($from_time > $load_time) {
+                    $load_time = NULL;
+                } else {
+                    $load_time = $row['date_load_norm'];
+                }
     
                 update_table($conn, "INSERT INTO Norm_Claims (claim_id, web_archive, user_id_norm, cleaned_claim, speaker, hyperlink, transcription, media_source,
                 check_date, claim_types, fact_checker_strategy, phase_1_label, date_made_norm, claim_loc, latest, source, nonfactual, date_start_norm, date_load_norm, inserted)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'isisssssssssssisissi', $row['claim_id'], $row['web_archive'], $user_id, 
-                $cleaned_claim, $speaker, $hyperlink, $transcription, $media_source, $check_date, $claim_types, $fact_checker_strategy, $phase_1_label, $date, $claim_loc, 
-                $latest, $source, $nonfactual, $row['date_start_norm'], $row['date_load_norm'], $inserted);
+                $cleaned_claim, $speaker, $hyperlink, $transcription, $media_source, $check_date, $claim_types, $fact_checker_strategy, $phase_1_label, $date, $claim_loc,
+                $latest, $source, $nonfactual, $start_time, $load_time, $inserted);
             }
 
             update_table($conn, "UPDATE Assigned_Claims SET norm_annotators_num=norm_annotators_num+1 WHERE claim_id=?",'i', $row['claim_id']);
-            $to_time = strtotime($date);
-            $from_time = strtotime($row['date_start_norm']);
+
+            $start_time = $_POST['startTime'];
+            $submit_time = $_POST['submitTime'];
+
+            $to_time = strtotime($submit_time);
+            $from_time = strtotime($start_time);
+
+//             $to_time = strtotime($date);
+//             $from_time = strtotime($row['date_start_norm']);
+
             $minutes = round(abs($to_time - $from_time) / 60,2);
             echo("The annotation time is: $minutes minutes.");
-    
+
             $load_time = strtotime($row['date_load_norm']);
-            if ($load_time == 0) {
+            if(empty($load_time)){
                 $load_minutes = $minutes;
             } else {
                 $load_minutes = round(abs($load_time - $from_time) / 60,2);
@@ -791,25 +812,54 @@ if ($is_train == "training") {
                 $fact_checker_strategy = implode(" [SEP] ", $fact_checker_strategy);
                 $latest = 1;
                 $inserted = 0;
+
+//                 $from_time = strtotime($row['date_restart_norm']);
+//                 $load_time = strtotime($row['date_load_norm']);
+
+                $start_time_string = $_POST['startTime'];
+                $start_time = date("Y-m-d H:i:s", strtotime($start_time_string));
+
+                $from_time = strtotime($start_time);
+                $load_time = strtotime($row['date_load_norm']);
+
+                if ($from_time > $load_time) {
+                    $load_time = NULL;
+                } else {
+                    $load_time = $row['date_load_norm'];
+                }
     
                 update_table($conn, "INSERT INTO Norm_Claims (claim_id, web_archive, user_id_norm, cleaned_claim, speaker, hyperlink, transcription, media_source,
                 check_date, claim_types, fact_checker_strategy, phase_1_label, date_modified_norm, claim_loc, latest, source, nonfactual, date_restart_norm, date_load_norm, inserted)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 'isisssssssssssisissi', $claim_id, $row['web_archive'], $user_id, $cleaned_claim, $speaker,
                 $hyperlink, $transcription, $media_source, $check_date, $claim_types, $fact_checker_strategy, $phase_1_label, $date, $claim_loc, $latest, $source, $nonfactual, 
-                $row['date_restart_norm'], $row['date_load_norm'], $inserted);
+                $start_time, $load_time, $inserted);
             }
             $norm_skipped = 0;
             update_table($conn, "UPDATE Assigned_Claims SET norm_annotators_num=norm_annotators_num+1, norm_skipped=? WHERE claim_id=?",'ii', $norm_skipped, $claim_id);
-    
-            $to_time = strtotime($date);
-            $from_time = strtotime($row['date_restart_norm']);
+
+            $start_time = $_POST['startTime'];
+            $submit_time = $_POST['submitTime'];
+
+            $from_time = strtotime($start_time);
+            $to_time = strtotime($submit_time);
+
+//             $to_time = strtotime($date);
+//             $from_time = strtotime($row['date_restart_norm']);
             $minutes = round(abs($to_time - $from_time) / 60,2);
             echo("The annotation time is: $minutes minutes.");
-    
+
             $load_time = strtotime($row['date_load_norm']);
-            $load_minutes = round(abs($load_time - $from_time) / 60,2);
+            if(empty($load_time)){
+                $load_minutes = $minutes;
+            } else {
+                if ($from_time > $load_time) {
+                    $load_minutes = $minutes;
+                } else {
+                    $load_minutes = round(abs($load_time - $from_time) / 60,2);
+                }
+            }
             echo("The loading time is: $load_minutes minutes.");
-    
+
             update_table($conn, "UPDATE Annotators SET p1_time_sum=p1_time_sum+?, p1_load_sum=p1_load_sum+? WHERE user_id=?",'ddi', $minutes, $load_minutes, $user_id);
     
             $conn->commit();
@@ -835,7 +885,7 @@ if ($is_train == "training") {
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
     
-        if(is_null($row['date_load_norm'])){
+        if(empty($row['date_load_norm'])){
             update_table($conn, "UPDATE Annotators SET p1_timed_out=p1_timed_out+1 WHERE user_id=?", 'i', $user_id);
         }
     

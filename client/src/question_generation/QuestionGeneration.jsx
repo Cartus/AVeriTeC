@@ -132,7 +132,8 @@ class QuestionGeneration extends React.Component {
         claim_text: "",
         claim_speaker: "",
         claim_date: "",
-        country_code: ""
+        country_code: "",
+        other_extracted_claims: []
       },
       entries: {
         "qa_pair_entry_field_0": {}
@@ -256,7 +257,8 @@ class QuestionGeneration extends React.Component {
               claim_speaker: response.data.speaker,
               claim_date: response.data.check_date,
               country_code: response.data.country_code,
-              claim_source: response.data.claim_source
+              claim_source: response.data.claim_source,
+              other_extracted_claims: response.data.other_extracted_claims
             };
 
             if (new_claim.claim_date) {
@@ -320,7 +322,8 @@ class QuestionGeneration extends React.Component {
               claim_speaker: response.data.speaker,
               claim_date: response.data.check_date,
               country_code: response.data.country_code,
-              claim_source: response.data.claim_source
+              claim_source: response.data.claim_source,
+              other_extracted_claims: response.data.other_extracted_claims
             };
 
             if (new_claim.claim_date) {
@@ -449,8 +452,8 @@ class QuestionGeneration extends React.Component {
             qa_pair_header: this.state.qa_pair_header,
             qa_pair_footer: this.state.qa_pair_footer,
             claim_norm_id: localStorage.claim_norm_id,
-            startTime: this.state.startTime,
-            submitTime: new Date()
+            startTime: this.state.startTime.toUTCString(),
+            submitTime: new Date().toUTCString()
           }
         };
 
@@ -479,8 +482,8 @@ class QuestionGeneration extends React.Component {
             added_entries: this.state.added_entries,
             qa_pair_header: this.state.qa_pair_header,
             qa_pair_footer: this.state.qa_pair_footer,
-            startTime: this.state.startTime,
-            submitTime: new Date()
+            startTime: this.state.startTime.toUTCString(),
+            submitTime: new Date().toUTCString()
           }
         };
 
@@ -600,6 +603,9 @@ class QuestionGeneration extends React.Component {
 
     var current_idx = finished_annotations + 1 - Number(localStorage.pc);
 
+    console.log("Norm id:")
+    console.log(localStorage.claim_norm_id)
+
     return (
       <QAPageDiv>
         {!this.state.confirmation ?
@@ -619,6 +625,7 @@ class QuestionGeneration extends React.Component {
                 footer={this.state.qa_pair_footer}
                 valid={this.state.valid}
                 dataset={dataset}
+                finish_path={this.props.finish_path}
               />
               <SearchField claim_date={this.state.claim.claim_date} country_code={this.state.claim.country_code} />
             </QADataField>

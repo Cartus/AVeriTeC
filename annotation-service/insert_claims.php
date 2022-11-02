@@ -1,5 +1,5 @@
 <?php
-
+date_default_timezone_set('UTC');
 $json_string = file_get_contents('all.json');
 $data = json_decode($json_string, true);
 

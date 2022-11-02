@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('UTC');
 header("Access-Control-Allow-Origin: *");
 header('Access-Control-Allow-Headers: Content-Type');
 
@@ -31,7 +32,14 @@ $result = $stmt->get_result();
 $row = $result->fetch_assoc();
 
 $active_users_p1 = $row['COUNT(*)'];
-// echo $active_users_p1;
+
+$sql = "SELECT COUNT(*) FROM Annotators WHERE p1_assigned>0";
+$stmt= $conn->prepare($sql);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+
+$assigned_users_p1 = $row['COUNT(*)'];
 
 $sql = "SELECT COUNT(*) FROM Annotators WHERE finished_qa_annotations>0";
 $stmt= $conn->prepare($sql);
@@ -40,7 +48,14 @@ $result = $stmt->get_result();
 $row = $result->fetch_assoc();
 
 $active_users_p2 = $row['COUNT(*)'];
-// echo $active_users_p2;
+
+$sql = "SELECT COUNT(*) FROM Annotators WHERE p2_assigned>0";
+$stmt= $conn->prepare($sql);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+
+$assigned_users_p2 = $row['COUNT(*)'];
 
 $sql = "SELECT COUNT(*) FROM Annotators WHERE finished_valid_annotations>0";
 $stmt= $conn->prepare($sql);
@@ -49,7 +64,14 @@ $result = $stmt->get_result();
 $row = $result->fetch_assoc();
 
 $active_users_p3 = $row['COUNT(*)'];
-// echo $active_users_p3;
+
+$sql = "SELECT COUNT(*) FROM Annotators WHERE p3_assigned>0";
+$stmt= $conn->prepare($sql);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+
+$assigned_users_p3 = $row['COUNT(*)'];
 
 $sql = "SELECT COUNT(*) FROM Annotators WHERE finished_dispute_annotations>0";
 $stmt= $conn->prepare($sql);
@@ -58,7 +80,14 @@ $result = $stmt->get_result();
 $row = $result->fetch_assoc();
 
 $active_users_p4 = $row['COUNT(*)'];
-// echo $active_users_p3;
+
+$sql = "SELECT COUNT(*) FROM Annotators WHERE p4_assigned>0";
+$stmt= $conn->prepare($sql);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+
+$assigned_users_p4 = $row['COUNT(*)'];
 
 $sql = "SELECT COUNT(*) FROM Annotators WHERE finished_post_annotations>0";
 $stmt= $conn->prepare($sql);
@@ -67,7 +96,14 @@ $result = $stmt->get_result();
 $row = $result->fetch_assoc();
 
 $active_users_p5 = $row['COUNT(*)'];
-// echo $active_users_p3;
+
+$sql = "SELECT COUNT(*) FROM Annotators WHERE p5_assigned>0";
+$stmt= $conn->prepare($sql);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+
+$assigned_users_p5 = $row['COUNT(*)'];
 
 $sql = "SELECT SUM(p1_time_sum), SUM(p2_time_sum), SUM(p3_time_sum), SUM(p4_time_sum), SUM(p5_time_sum),
         SUM(p1_load_sum), SUM(p2_load_sum), SUM(p4_load_sum),
@@ -126,11 +162,11 @@ $row_p5 = $result->fetch_assoc();
 $pending_claims_p5 = $row_p5['COUNT(*)'];
 
 if ($result->num_rows > 0) {
-    $p1_assigned_avg = round($row['SUM(p1_assigned)'] / max($active_users_p1, 1), 2);
-    $p2_assigned_avg = round($row['SUM(p2_assigned)'] / max($active_users_p2, 1), 2);
-    $p3_assigned_avg = round($row['SUM(p3_assigned)'] / max($active_users_p3, 1), 2);
-    $p4_assigned_avg = round($row['SUM(p4_assigned)'] / max($active_users_p4, 1), 2);
-    $p5_assigned_avg = round($row['SUM(p5_assigned)'] / max($active_users_p5, 1), 2);
+    $p1_assigned_avg = round($row['SUM(p1_assigned)'] / max($assigned_users_p1, 1), 2);
+    $p2_assigned_avg = round($row['SUM(p2_assigned)'] / max($assigned_users_p2, 1), 2);
+    $p3_assigned_avg = round($row['SUM(p3_assigned)'] / max($assigned_users_p3, 1), 2);
+    $p4_assigned_avg = round($row['SUM(p4_assigned)'] / max($assigned_users_p4, 1), 2);
+    $p5_assigned_avg = round($row['SUM(p5_assigned)'] / max($assigned_users_p5, 1), 2);
 
     $p1_assigned = $row['SUM(p1_assigned)'];
     $p2_assigned = $row['SUM(p2_assigned)'];
@@ -176,8 +212,8 @@ if ($result->num_rows > 0) {
     $p2_average_load_time = round($row['SUM(p2_load_sum)'] / max($row['SUM(finished_qa_annotations)'], 1), 2);
     $p4_average_load_time = round($row['SUM(p4_load_sum)'] / max($row['SUM(finished_dispute_annotations)'], 1), 2);
 
-    $p2_average_questions = round($row['SUM(questions_p2)'] / max($row['SUM(finished_dispute_annotations)'], 1), 2);
-    $p4_average_questions = round($row['SUM(questions_p4)'] / max($row['SUM(finished_post_annotations)'], 1), 2);
+    $p2_average_questions = round($row['SUM(questions_p2)'] / max($row['SUM(finished_qa_annotations)'], 1), 2);
+    $p4_average_questions = round($row['SUM(questions_p4)'] / max($row['SUM(finished_dispute_annotations)'], 1), 2);
 
     $phase1 = (["skipped_claims_percentage" => $p1_skipped_percent, "pending_claims" => $pending_claims_p1, "assigned_claims" => $p1_assigned, "annotations_assigned" => $p1_assigned_avg,
     "speed_traps_hit" => $p1_speed_trap, "annotations_timed_out" => $p1_timed_out, "skipped_claims" => $p1_claims_skipped, "completed_claims" => $p1_completed, "annotations_done" => $p1_annotations_done,

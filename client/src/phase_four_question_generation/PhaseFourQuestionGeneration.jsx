@@ -133,7 +133,8 @@ class PhaseFourQuestionGeneration extends React.Component {
         claim_text: "",
         claim_speaker: "",
         claim_date: "",
-        country_code: ""
+        country_code: "",
+        other_extracted_claims: []
       },
       entries: {
         "qa_pair_entry_field_0": {}
@@ -152,7 +153,8 @@ class PhaseFourQuestionGeneration extends React.Component {
         phase_three_label: "",
         justification: ""
       },
-      final_idx: 0
+      final_idx: 0,
+      startTime: new Date()
     }
 
     this.changeLabel = this.changeLabel.bind(this);
@@ -252,7 +254,8 @@ class PhaseFourQuestionGeneration extends React.Component {
               claim_speaker: response.data.speaker,
               claim_date: response.data.check_date,
               country_code: response.data.country_code,
-              claim_source: response.data.claim_source
+              claim_source: response.data.claim_source,
+              other_extracted_claims: response.data.other_extracted_claims
             };
 
             if (new_claim.claim_date) {
@@ -338,7 +341,8 @@ class PhaseFourQuestionGeneration extends React.Component {
               claim_speaker: response.data.speaker,
               claim_date: response.data.check_date,
               country_code: response.data.country_code,
-              claim_source: response.data.claim_source
+              claim_source: response.data.claim_source,
+              other_extracted_claims: response.data.other_extracted_claims
             };
 
             if (new_claim.claim_date) {
@@ -490,7 +494,9 @@ class PhaseFourQuestionGeneration extends React.Component {
             added_entries: this.state.added_entries,
             qa_pair_header: this.state.qa_pair_header,
             qa_pair_footer: this.state.qa_pair_footer,
-            claim_norm_id: localStorage.claim_norm_id
+            claim_norm_id: localStorage.claim_norm_id,
+            startTime: this.state.startTime.toUTCString(),
+            submitTime: new Date().toUTCString()
           }
         };
 
@@ -518,7 +524,9 @@ class PhaseFourQuestionGeneration extends React.Component {
             previous_entries: this.state.previous_entries,
             added_entries: this.state.added_entries,
             qa_pair_header: this.state.qa_pair_header,
-            qa_pair_footer: this.state.qa_pair_footer
+            qa_pair_footer: this.state.qa_pair_footer,
+            startTime: this.state.startTime.toUTCString(),
+            submitTime: new Date().toUTCString()
           }
         };
 

@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('UTC');
 $db_params = parse_ini_file( dirname(__FILE__).'/db_params.ini', false);
 
 $servername = "localhost";
