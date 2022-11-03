@@ -32,7 +32,7 @@ if (mysqli_num_rows($result) > 0) {
     $stmt->execute();
     $result = $stmt->get_result();
 
-    $train_p1_assigned=20;
+    $train_p1_assigned=10;
     $train_p2_assigned=20; 
     $train_p3_assigned=20; 
 
@@ -60,7 +60,7 @@ if (mysqli_num_rows($result) > 0) {
     }
 }
 else {
-    $train_p1_assigned=20;
+    $train_p1_assigned=10;
     $train_p2_assigned=20; 
     $train_p3_assigned=20; 
 
