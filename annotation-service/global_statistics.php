@@ -3,6 +3,8 @@ date_default_timezone_set('UTC');
 header("Access-Control-Allow-Origin: *");
 header('Access-Control-Allow-Headers: Content-Type');
 
+// This file aims to get the statistics of all the annototars.
+
 $db_params = parse_ini_file( dirname(__FILE__).'/db_params.ini', false);
 
 $json_result = file_get_contents("php://input");
@@ -25,6 +27,8 @@ $row = $result->fetch_assoc();
 
 $is_admin = $row['is_admin'];
 
+# Get the number of annotators have finished more than 0 P1 claim.
+
 $sql = "SELECT COUNT(*) FROM Annotators WHERE finished_norm_annotations>0";
 $stmt= $conn->prepare($sql);
 $stmt->execute();
@@ -32,6 +36,8 @@ $result = $stmt->get_result();
 $row = $result->fetch_assoc();
 
 $active_users_p1 = $row['COUNT(*)'];
+
+# Get the number of annotators have been assigned more than 0 P1 claim.
 
 $sql = "SELECT COUNT(*) FROM Annotators WHERE p1_assigned>0";
 $stmt= $conn->prepare($sql);
@@ -41,6 +47,8 @@ $row = $result->fetch_assoc();
 
 $assigned_users_p1 = $row['COUNT(*)'];
 
+# Get the number of annotators have finished more than 0 P2 claim.
+
 $sql = "SELECT COUNT(*) FROM Annotators WHERE finished_qa_annotations>0";
 $stmt= $conn->prepare($sql);
 $stmt->execute();
@@ -48,6 +56,8 @@ $result = $stmt->get_result();
 $row = $result->fetch_assoc();
 
 $active_users_p2 = $row['COUNT(*)'];
+
+# Get the number of annotators have been assigned more than 0 P2 claim.
 
 $sql = "SELECT COUNT(*) FROM Annotators WHERE p2_assigned>0";
 $stmt= $conn->prepare($sql);
@@ -57,6 +67,8 @@ $row = $result->fetch_assoc();
 
 $assigned_users_p2 = $row['COUNT(*)'];
 
+# Get the number of annotators have finished more than 0 P3 claim.
+
 $sql = "SELECT COUNT(*) FROM Annotators WHERE finished_valid_annotations>0";
 $stmt= $conn->prepare($sql);
 $stmt->execute();
@@ -64,6 +76,8 @@ $result = $stmt->get_result();
 $row = $result->fetch_assoc();
 
 $active_users_p3 = $row['COUNT(*)'];
+
+# Get the number of annotators have been assigned more than 0 P3 claim.
 
 $sql = "SELECT COUNT(*) FROM Annotators WHERE p3_assigned>0";
 $stmt= $conn->prepare($sql);
@@ -73,6 +87,8 @@ $row = $result->fetch_assoc();
 
 $assigned_users_p3 = $row['COUNT(*)'];
 
+# Get the number of annotators have finished more than 0 P4 claim.
+
 $sql = "SELECT COUNT(*) FROM Annotators WHERE finished_dispute_annotations>0";
 $stmt= $conn->prepare($sql);
 $stmt->execute();
@@ -80,6 +96,8 @@ $result = $stmt->get_result();
 $row = $result->fetch_assoc();
 
 $active_users_p4 = $row['COUNT(*)'];
+
+# Get the number of annotators have been assigned more than 0 P4 claim.
 
 $sql = "SELECT COUNT(*) FROM Annotators WHERE p4_assigned>0";
 $stmt= $conn->prepare($sql);
@@ -89,6 +107,8 @@ $row = $result->fetch_assoc();
 
 $assigned_users_p4 = $row['COUNT(*)'];
 
+# Get the number of annotators have finished more than 0 P5 claim.
+
 $sql = "SELECT COUNT(*) FROM Annotators WHERE finished_post_annotations>0";
 $stmt= $conn->prepare($sql);
 $stmt->execute();
@@ -96,6 +116,8 @@ $result = $stmt->get_result();
 $row = $result->fetch_assoc();
 
 $active_users_p5 = $row['COUNT(*)'];
+
+# Get the number of annotators have been assigned more than 0 P5 claim.
 
 $sql = "SELECT COUNT(*) FROM Annotators WHERE p5_assigned>0";
 $stmt= $conn->prepare($sql);
@@ -121,6 +143,8 @@ $stmt->execute();
 $result = $stmt->get_result();
 $row = $result->fetch_assoc();
 
+// Get the number of claims that have not been assigned to P1
+
 $pending_claims_p1 = 0;
 $sql_p1 = "SELECT COUNT(*) FROM Claims WHERE inserted=0";
 $stmt= $conn->prepare($sql_p1);
@@ -128,6 +152,8 @@ $stmt->execute();
 $result = $stmt->get_result();
 $row_p1 = $result->fetch_assoc();
 $pending_claims_p1 = $row_p1['COUNT(*)'];
+
+// Get the number of claims that have not been assigned to P2 (nonfactual means claims should be enter P2 and latest means if the claim has been modified, we only considered the recently resubmitted claim)
 
 $pending_claims_p2 = 0;
 $sql_p2 = "SELECT COUNT(*) FROM Norm_Claims WHERE inserted=0 AND nonfactual=0 AND latest=1";
@@ -137,6 +163,8 @@ $result = $stmt->get_result();
 $row_p2 = $result->fetch_assoc();
 $pending_claims_p2 = $row_p2['COUNT(*)'];
 
+// Get the number of claims that have not been assigned to P3.
+
 $pending_claims_p3 = 0;
 $sql_p3 = "SELECT COUNT(*) FROM Assigned_Norms WHERE inserted=0 AND num_qapairs!=0";
 $stmt= $conn->prepare($sql_p3);
@@ -145,6 +173,8 @@ $result = $stmt->get_result();
 $row_p3 = $result->fetch_assoc();
 $pending_claims_p3 = $row_p3['COUNT(*)'];
 
+// Get the number of claims that have not been assigned to P4 (only p2 labels are different from p3 labels will be enter p4)
+
 $pending_claims_p4 = 0;
 $sql_p4 = "SELECT COUNT(*) FROM Assigned_Valids WHERE inserted=0 AND phase_2_label != phase_3_label AND valid_latest=1";
 $stmt= $conn->prepare($sql_p4);
@@ -152,6 +182,8 @@ $stmt->execute();
 $result = $stmt->get_result();
 $row_p4 = $result->fetch_assoc();
 $pending_claims_p4 = $row_p4['COUNT(*)'];
+
+// Get the number of claims that have not been assigned to P5
 
 $pending_claims_p5 = 0;
 $sql_p5 = "SELECT COUNT(*) FROM Assigned_Disputes WHERE inserted=0 AND added_qas=1";

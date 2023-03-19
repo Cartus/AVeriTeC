@@ -3,6 +3,8 @@ date_default_timezone_set('UTC');
 header("Access-Control-Allow-Origin: *");
 header('Access-Control-Allow-Headers: Content-Type');
 
+// This function aims to get the time stamp from the front end when the fact-checking article has finished loading.
+
 function update_table($conn, $sql_command, $types, ...$vars)
 {
     $sql2 = $sql_command;

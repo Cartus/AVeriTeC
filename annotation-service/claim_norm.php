@@ -3,6 +3,10 @@ date_default_timezone_set('UTC');
 header("Access-Control-Allow-Origin: *");
 header('Access-Control-Allow-Headers: Content-Type');
 
+// This file provides 5 main functions for training and real annotations.
+// 5 main functions include getting next claim, submitting the current claim, reloading the previous annotated claim,
+// resubmitting the reloaded claim and skipping the current claim.
+
 function update_table($conn, $sql_command, $types, ...$vars)
 {
     $sql2 = $sql_command;
@@ -24,7 +28,7 @@ $db_params = parse_ini_file(dirname(__FILE__).'/db_params.ini', false);
 
 
 if ($is_train == "training") {
-    
+    // Getting the next claim: select the training claim based on the annotators table. 
     if ($req_type == "next-data"){
         $conn = new mysqli($db_params['servername'], $db_params['user'], $db_params['password'], $db_params['database']);
         if ($conn->connect_error) {
@@ -40,6 +44,7 @@ if ($is_train == "training") {
         if(mysqli_num_rows($result) > 0){
             $row = $result->fetch_assoc();
             if ($row['train_current_norm_task'] != 0) {
+                // If the claim has been assigned, then get it based on the claim id.
                 $sql = "SELECT claim_id, web_archive FROM Train_Claims WHERE claim_id=?";
                 $stmt= $conn->prepare($sql);
                 $stmt->bind_param("i", $row['train_current_norm_task']);
@@ -50,6 +55,7 @@ if ($is_train == "training") {
                 echo(json_encode($output));
     
             } else {
+                // If the claim has not been assigned, then randomly select one claim that based on the claim map.
                 $sql = "SELECT Train_Claims.claim_id, web_archive FROM Train_Claims WHERE Train_Claims.claim_id NOT IN (SELECT Claim_Map.claim_id FROM Claim_Map WHERE user_id=?)";
                 $stmt= $conn->prepare($sql);
                 $stmt->bind_param("i", $user_id);
@@ -75,13 +81,14 @@ if ($is_train == "training") {
             }
         }
         $conn->close();
-    
+    // Submit the current annotated claim: insert the claim with the annotated fields into the table.
     } else if ($req_type == "submit-data") {
         $conn = new mysqli($db_params['servername'], $db_params['user'], $db_params['password'], $db_params['database']);
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
         }
-    
+        
+        // Get the current claim assigned to the user.
         $sql = "SELECT * FROM Train_Claims WHERE (claim_id = (SELECT train_current_norm_task FROM Annotators WHERE user_id=?))";
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i", $user_id);
@@ -139,6 +146,8 @@ if ($is_train == "training") {
                 }else{
                     $claim_loc = NULL;
                 }
+
+                // If the claim belongs to the following type, it should be classified into non-factual claim, which will not be considered in later phases.
     
                 $claim_types = $item['claim_types'];
                 $nonfactual = 0;
@@ -191,6 +200,8 @@ if ($is_train == "training") {
             throw $exception;
         }
         $conn->close();
+    
+    // Reload the annotated claims based on their annotated dates and the mapping table.
     } else if ($req_type == "reload-data") {
         $offset = $_POST['offset'];
     
@@ -269,6 +280,7 @@ if ($is_train == "training") {
             }
             $conn->close();
         }
+    // Resubmit the reloaded claim but does not remove the previous annotated claim (simply set the latest field=0).
     } else if ($req_type == "resubmit-data") {
         $claim_id = $_POST['claim_id'];
     
@@ -388,6 +400,7 @@ if ($is_train == "training") {
             throw $exception;
         }
         $conn->close();
+    // Skip the current claim:
     } else if ($req_type == "skip-data") {
     
         $claim_id = $_POST['claim_id'];
@@ -415,13 +428,15 @@ if ($is_train == "training") {
     // For real annotation
     $db_params = parse_ini_file(dirname(__FILE__).'/db_params.ini', false);
 
+    // Getting the next claim: select the training claim based on the annotators table. 
     if ($req_type == "next-data"){
 
         $conn = new mysqli($db_params['servername'], $db_params['user'], $db_params['password'], $db_params['database']);
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
         }
-    
+        
+        // Get the user_id and currently assigned claim for the annotator.
         $sql = "SELECT user_id, current_norm_task FROM Annotators WHERE user_id=?";
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i", $user_id);
@@ -431,6 +446,7 @@ if ($is_train == "training") {
         if(mysqli_num_rows($result) > 0){
             $row = $result->fetch_assoc();
             if ($row['current_norm_task'] != 0) {
+                 // If the claim has been assigned, then get it based on the claim id.
                 $sql = "SELECT claim_id, web_archive FROM Assigned_Claims WHERE claim_id=?";
                 $stmt= $conn->prepare($sql);
                 $stmt->bind_param("i", $row['current_norm_task']);
@@ -443,7 +459,7 @@ if ($is_train == "training") {
                 update_table($conn, "UPDATE Assigned_Claims SET date_start_norm=? WHERE claim_id=?", 'si', $date, $row['claim_id']);
     
             } else {
-                // $sql = "SELECT claim_id, web_archive FROM Assigned_Claims WHERE user_id_norm=? AND norm_annotators_num=0 AND norm_taken_flag=0 AND norm_skipped=0 ORDER BY RAND() LIMIT 1";
+                // If the claim has not been assigned, then randomly select one claim that based on the claim map.
                 $sql = "SELECT claim_id, web_archive FROM Assigned_Claims WHERE user_id_norm=? AND norm_annotators_num=0 AND norm_skipped=0 ORDER BY RAND() LIMIT 1";
                 $stmt= $conn->prepare($sql);
                 $stmt->bind_param("i", $user_id);
@@ -471,13 +487,14 @@ if ($is_train == "training") {
             }
         }
         $conn->close();
-    
+    // Submit the current annotated claim: insert the claim with the annotated fields into the table.
     } else if ($req_type == "submit-data") {
         $conn = new mysqli($db_params['servername'], $db_params['user'], $db_params['password'], $db_params['database']);
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
         }
-    
+        
+        // Get the current claim assigned to the user.
         $sql = "SELECT claim_id, web_archive, claim_date, date_start_norm, date_load_norm FROM Assigned_Claims WHERE (claim_id = (SELECT current_norm_task FROM Annotators WHERE user_id=?))";
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i", $user_id);
@@ -537,7 +554,9 @@ if ($is_train == "training") {
                 }else{
                     $claim_loc = NULL;
                 }
-    
+                
+                // If the claim belongs to the following type, it should be classified into non-factual claim, which will not be considered in later phases.
+
                 $claim_types = $item['claim_types'];
                 $nonfactual = 0;
                 if (in_array("Speculative Claim", $claim_types)) {
@@ -598,8 +617,7 @@ if ($is_train == "training") {
             $to_time = strtotime($submit_time);
             $from_time = strtotime($start_time);
 
-//             $to_time = strtotime($date);
-//             $from_time = strtotime($row['date_start_norm']);
+            // Calculate the loading time.
 
             $minutes = round(abs($to_time - $from_time) / 60,2);
             echo("The annotation time is: $minutes minutes.");
@@ -626,6 +644,7 @@ if ($is_train == "training") {
             throw $exception;
         }
         $conn->close();
+    // Reload the annotated claims based on their annotated dates and the mapping table.
     } else if ($req_type == "reload-data") {
         $offset = $_POST['offset'];
     
@@ -642,7 +661,8 @@ if ($is_train == "training") {
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
-    
+        
+        // If the previous claim was skipped, then the annotations are null.
         if ($row['norm_skipped'] == 1) {
             $web_archive = $row['web_archive'];
             $entries = array();
@@ -705,6 +725,7 @@ if ($is_train == "training") {
             }
             $conn->close();
         }
+    // Resubmit the reloaded claim but does not remove the previous annotated claim (simply set the latest field=0).
     } else if ($req_type == "resubmit-data") {
         $claim_id = $_POST['claim_id'];
     
@@ -869,6 +890,7 @@ if ($is_train == "training") {
             throw $exception;
         }
         $conn->close();
+    // Skip the current claim:
     } else if ($req_type == "skip-data") {
     
         $claim_id = $_POST['claim_id'];

@@ -3,6 +3,9 @@ date_default_timezone_set('UTC');
 header("Access-Control-Allow-Origin: *");
 header('Access-Control-Allow-Headers: Content-Type');
 
+
+// This php file contains the admin functions: adding the user, removing the user, geting the statistics of each user, and editing the user (change the name, upgrade to admin)
+
 function update_table($conn, $sql_command, $types, ...$vars)
 {
     $sql2 = $sql_command;

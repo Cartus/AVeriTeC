@@ -5,6 +5,9 @@ import waybackpy
 import time
 from datetime import datetime, timedelta
 
+
+# This python file is used to archive the websites used as the evidence. 
+
 archive_sites = [
     "archive.org",
     "archive.is",

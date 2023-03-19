@@ -3,6 +3,8 @@ date_default_timezone_set('UTC');
 header("Access-Control-Allow-Origin: *");
 header('Access-Control-Allow-Headers: Content-Type');
 
+// This php file is used to assigned unannotated claims to certain users, and unassigned unannotated claims from users.
+
 function update_table($conn, $sql_command, $types, ...$vars)
 {
     $sql2 = $sql_command;
@@ -30,11 +32,14 @@ if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
 }
 
+// For P1: claim normalization
 if ($phase == 1) {
     foreach($user_ids as $item){
         $counter = 0;
+        // Assign claims
         if ($per_user > 0) {
             while($counter < $per_user) {
+                // Randomly select a claim that has not been assigned (inserted to the assigned_table)
                 $sql = "SELECT * FROM Claims WHERE inserted=0 ORDER BY RAND() LIMIT 1";
                 $stmt= $conn->prepare($sql);
                 $stmt->execute();
@@ -46,8 +51,10 @@ if ($phase == 1) {
 
                 $row = $result->fetch_assoc();
 
+                // Set the selected claim as inserted, then we will not select such claims next time.
                 update_table($conn, "UPDATE Claims SET inserted=1 WHERE claim_id=?", "i", $row['claim_id']);
-
+                
+                // Insert the selected claim into the assigned claims table (for P1)
                 update_table($conn, "INSERT INTO Assigned_Claims (raw_id, claim_text, web_archive, claim_date, user_id_norm, norm_annotators_num, norm_skipped)
                 VALUES (?, ?, ?, ?, ?, ?, ?)", "isssiii", $row['claim_id'], $row['claim_text'], $row['web_archive'], $row['claim_date'], $item, 0, 0);
 
@@ -55,6 +62,7 @@ if ($phase == 1) {
             }
             update_table($conn, "UPDATE Annotators SET p1_assigned=p1_assigned+? WHERE user_id=?", "ii", $counter, $item);
             echo "Inserted successfully";
+        // Unassign claims
         } else {
             while($counter < -$per_user) {
                 $sql = "SELECT * FROM Assigned_Claims WHERE norm_annotators_num=0 ORDER BY RAND() LIMIT 1";
@@ -78,6 +86,7 @@ if ($phase == 1) {
             echo "Removed successfully";
         }
     }
+// For P2: question answering
 } elseif ($phase == 2) {
     foreach($user_ids as $item){
         $counter = 0;
@@ -139,6 +148,7 @@ if ($phase == 1) {
             echo "Removed successfully";
         }
     }
+// For P3: verdict validation
 } elseif ($phase == 3) {
     foreach($user_ids as $item){
         $counter = 0;
@@ -202,6 +212,7 @@ if ($phase == 1) {
             echo "Removed successfully";
         }
     }
+// For P4: Distpute Resolution
 } elseif ($phase == 4) {
     foreach($user_ids as $item){
         $counter = 0;
@@ -270,6 +281,7 @@ if ($phase == 1) {
         }
 
     }
+// For P5: Post Claim Validation
 } elseif ($phase == 5) {
     foreach($user_ids as $item){
         $counter = 0;

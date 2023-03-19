@@ -4,6 +4,8 @@ header("Access-Control-Allow-Origin: *");
 header('Access-Control-Allow-Headers: Content-Type');
 
 
+// Get the statistics of a certain annotator.
+
 $db_params = parse_ini_file( dirname(__FILE__).'/db_params.ini', false);
 
 $json_result = file_get_contents("php://input");
@@ -34,6 +36,8 @@ $stmt->execute();
 $result = $stmt->get_result();
 $row = $result->fetch_assoc();
 // print_r($row);
+
+// Use the max function to prevent the underflow, since some annotators did not annotate any claims.
 
 if ($result->num_rows > 0) {
     $average_task1_time =  round($row['p1_time_sum'] / max($row['finished_norm_annotations'], 1), 2);

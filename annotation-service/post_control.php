@@ -3,6 +3,11 @@ date_default_timezone_set('UTC');
 header("Access-Control-Allow-Origin: *");
 header('Access-Control-Allow-Headers: Content-Type');
 
+// This file provides 5 main functions for training and real annotations. 
+// 5 main functions include getting next claim, submitting the current claim, reloading the previous annotated claim,
+// resubmitting the reloaded claim and skipping the current claim.
+// The logic of these five functions are similar to claim_norm.php
+
 function update_table($conn, $sql_command, $types, ...$vars)
 {
     $sql2 = $sql_command;
