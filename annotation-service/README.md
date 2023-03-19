@@ -2,10 +2,15 @@
 The backend of the AVeriTec is based on PHP. 
 
 There are 5 phases of annotations:
+
 P1: claim nomarlization
+
 P2: question answering
+
 P3: verdict validation
+
 P4: dispute resolution
+
 P5: post control
 
 There are two modes: training and real annotation.
