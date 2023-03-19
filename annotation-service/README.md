@@ -22,17 +22,29 @@ Training only covers P1, P2 and P3.
 ## Create table for real annotation
 
 create_database.php: table for creating the SQL database to store the annotations;
+
 registration_create.php: table for creating the registrated users;
+
 create_cache.php: table for caching the URLs for evidence;
+
 create_record.php: table for storing search records in P2;
+
 create_claims.php: table for storing all the claims;
+
 create_annotators.php: table for storing details for annotators;
+
 create_norm.php: table for annotated claims in P1;
+
 create_qa.php: table for question answer pairs for P2 and P4;
+
 create_assigned_claims.php: table for storing claims assigned to P1;
+
 create_assigned_valids.php:table for storing claims assigned to P3;
+
 create_assigned_norms.php: table for storing claims assigned to P2;
+
 create_assigned_dispute.php: table for storing claims assigned to P4;
+
 create_assigned_post.php: table for storing claims assigned to P5;
 
 ## Create table for training
