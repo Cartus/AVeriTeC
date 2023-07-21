@@ -5,7 +5,7 @@ import Divider from '@material-ui/core/Divider';
 import TextFieldWithTooltip from '../components/TextFieldWithTooltip';
 import SelectWithTooltip from '../components/SelectWithTooltip';
 import ClaimTopField from '../averitec_components/ClaimTopField';
-import { notEmptyValidator, notBooleanValidator, combinedValidator, emptyOrValidUrlValidator } from '../utils/validation.js'
+import { notEmptyValidator, notBooleanValidator, combinedValidator, emptyOrValidUrlValidator, noUrlOverlapValidator } from '../utils/validation.js'
 import Slider from '@mui/material/Slider';
 import Card from '@material-ui/core/Card';
 import AtLeastOneCheckboxGroup from '../components/AtLeastOneCheckboxGroup';
@@ -147,6 +147,7 @@ class AnswerCard extends React.Component {
   }
 
   render() {
+    console.log(this.props.data)
     var unanswerable = this.props.data["answer_type"] == "Unanswerable"
     var answer_from_metadata = this.props.data["source_medium"] == "Metadata"
     var boolean = this.props.data["answer_type"] == "Boolean"
@@ -207,7 +208,7 @@ class AnswerCard extends React.Component {
               {this.props.posthocView && !unanswerable?
                 <TextFieldWithTooltip InputProps={this.props.posthocView ? { readOnly: true } : undefined} variant={this.props.posthocView ? "filled" : undefined} name='source_url' label="Source URL" required value={this.props.data["source_url"]} onChange={this.props.handleFieldChange} tooltip="Please copy-paste the URL where you found the answer here. Try to avoid using other fact-checking articles as sources." />
                 : 
-                <TextFieldWithTooltip InputProps={this.props.posthocView ? { readOnly: true } : undefined} variant={this.props.posthocView ? "filled" : undefined} name='source_url' label="Source URL" validator={combinedValidator(notEmptyValidator, emptyOrValidUrlValidator)} valid={this.props.valid} required value={this.props.data["source_url"]} onChange={this.props.handleFieldChange} tooltip="Please copy-paste the URL where you found the answer here. Try to avoid using other fact-checking articles as sources." />
+                <TextFieldWithTooltip InputProps={this.props.posthocView ? { readOnly: true } : undefined} variant={this.props.posthocView ? "filled" : undefined} name='source_url' label="Source URL" validator={combinedValidator(combinedValidator(notEmptyValidator, emptyOrValidUrlValidator), noUrlOverlapValidator(this.props.claim["web_archive"]))} valid={this.props.valid} required value={this.props.data["source_url"]} onChange={this.props.handleFieldChange} tooltip="Please copy-paste the URL where you found the answer here. Try to avoid using other fact-checking articles as sources." />
               }
             </>
           }
@@ -317,6 +318,9 @@ class QuestionEntryField extends React.Component {
   }
 
   render() {
+    console.log("render question entry field")
+    console.log(this.props.data)
+    console.log(this.props.claim)
     if (!this.props.data["answers"]) {
       this.props.data["answers"] = [{},]
     }
@@ -324,6 +328,7 @@ class QuestionEntryField extends React.Component {
       <AnswerCard
         data={answer}
         valid={this.props.valid}
+        claim={this.props.claim}
         posthocView={this.props.posthocView}
         handleFieldChange={(event) => this.handleAnswerFieldChange(index, event)}
         handleAnswerTypeFieldChange={(event) => this.handleAnswerTypeFieldChange(index, event)} />

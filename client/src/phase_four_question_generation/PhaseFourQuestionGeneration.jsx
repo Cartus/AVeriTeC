@@ -11,7 +11,7 @@ import { Redirect } from "react-router-dom";
 import config from "../config.json"
 import moment from "moment";
 import QuestionGenerationConfirmation from "../question_generation/QuestionGenerationConfirmation"
-import { notEmptyValidator, atLeastOneValidator, notBooleanValidator, emptyOrValidUrlValidator } from '../utils/validation.js'
+import { notEmptyValidator, atLeastOneValidator, notBooleanValidator, emptyOrValidUrlValidator, noUrlOverlapValidator } from '../utils/validation.js'
 
 const QADataField = styled.div`
     width: -webkit-calc(40% - 10px)!important;
@@ -94,6 +94,11 @@ function validate(content) {
             console.log("no source medium and not unanswerable");
             valid = false;
           }
+        }
+
+        if ("source_url" in answer && noUrlOverlapValidator(content["claim"]["web_archive"])(answer["source_url"]).error) {
+          console.log("url overlap");
+          valid = false;
         }
 
         if (answer["answer_type"] == "Boolean") {

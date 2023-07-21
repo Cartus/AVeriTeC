@@ -33,6 +33,26 @@ export function emptyOrValidUrlValidator(data){
   return { error: false, message: "" }
 }
 
+export function noUrlOverlapValidator(blocked_url) {
+  // Split bloocked url at https:// or http://
+  let blocked_url_split = blocked_url.split(/(https?:\/\/)/g)
+
+  // Take the last element of the blocked url
+  blocked_url_split = blocked_url_split[blocked_url_split.length - 1]
+
+  return (data) => {
+    console.log(data)
+    console.log(blocked_url_split)
+    console.log(data.includes(blocked_url_split))
+    if (data && blocked_url_split && data.includes(blocked_url_split)) {
+      console.log("URL overlaps with blocked URL")
+      return { error: true, message: "URL overlaps with blocked URL" }
+    } else {
+      return { error: false, message: "" }
+    }
+  }
+}
+
 export function combinedValidator(validator1, validator2) {
   return (data) => {
     let v1 = validator1(data)

@@ -134,6 +134,7 @@ class EntryCardContainer extends React.Component {
             onChange={this.props.handleExtraFieldChange}
             valid={true}
             data={this.props.extra_entries[field_id]}
+            claim={this.props.claim}
             removeDelete={true}
             {...this.props}
           />
